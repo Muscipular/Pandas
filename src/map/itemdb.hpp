@@ -1,4 +1,4 @@
-ï»¿// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
+// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
 #ifndef ITEMDB_HPP
@@ -971,6 +971,19 @@ enum e_random_item_group {
 	IG_SHADOW_CUBE_SHIELD,
 	IG_SHADOW_CUBE_SHOES,
 	IG_SHADOW_CUBE_WEAPON,
+	IG_BS_ITEM_M_S_52,
+	IG_BS_ITEM_M_S_53,
+	IG_BS_ITEM_M_S_54,
+	IG_BS_ITEM_M_S_55,
+	IG_BS_ITEM_M_S_56,
+	IG_BS_ITEM_M_S_57,
+	IG_BS_ITEM_M_S_58,
+	IG_BS_ITEM_M_S_59,
+	IG_MONTHLY_PACKAGE_1,
+	IG_MONTHLY_PACKAGE_2,
+	IG_MONTHLY_PACKAGE_3,
+	IG_MONTHLY_BUFF_PACKAGE,
+	IG_MONTHLY_BATTLE_PACKAGE,
 
 	IG_MAX,
 };
@@ -1258,18 +1271,18 @@ struct item_data
 #endif // Pandas_Struct_Item_Data_Script_Plaintext
 
 #ifdef Pandas_Struct_Item_Data_Taming_Mobid
-		// ä½¿ item_data å¯è®°å½•å½“å‰ç‰©å“å¯æ•æ‰çš„é­”ç‰©ç¼–å· [Solaä¸¶å°å…‹]
-		// è‹¥ vector ä¸ºç©ºåˆ™è¡¨ç¤ºè¿™ä¸æ˜¯å® ç‰©æ•æ‰é“å…·, è‹¥éç©ºåˆ™è®°å½•æ­¤é“å…·æ”¯æŒæ•æ‰çš„é­”ç‰©ç¼–å·
+		// Ê¹ item_data ¿É¼ÇÂ¼µ±Ç°ÎïÆ·¿É²¶×½µÄÄ§Îï±àºÅ [SolaØ¼Ğ¡¿Ë]
+		// Èô vector Îª¿ÕÔò±íÊ¾Õâ²»ÊÇ³èÎï²¶×½µÀ¾ß, Èô·Ç¿ÕÔò¼ÇÂ¼´ËµÀ¾ßÖ§³Ö²¶×½µÄÄ§Îï±àºÅ
 		std::vector<uint32> taming_mobid;
 #endif // Pandas_Struct_Item_Data_Taming_Mobid
 
 #ifdef Pandas_Struct_Item_Data_Has_CallFunc
-		// ä½¿ item_data å¯è®°å½•æ­¤ç‰©å“çš„ä½¿ç”¨è„šæœ¬æ˜¯å¦æ‰§è¡Œäº† callfunc æŒ‡ä»¤ [Solaä¸¶å°å…‹]
+		// Ê¹ item_data ¿É¼ÇÂ¼´ËÎïÆ·µÄÊ¹ÓÃ½Å±¾ÊÇ·ñÖ´ĞĞÁË callfunc Ö¸Áî [SolaØ¼Ğ¡¿Ë]
 		bool has_callfunc = false;
 #endif // Pandas_Struct_Item_Data_Has_CallFunc
 
 #ifdef Pandas_Struct_Item_Data_Properties
-		// ä½¿ item_data å¯è®°å½•æ­¤ç‰©å“çš„ç‰¹æ®Šå±æ€§ [Solaä¸¶å°å…‹]
+		// Ê¹ item_data ¿É¼ÇÂ¼´ËÎïÆ·µÄÌØÊâÊôĞÔ [SolaØ¼Ğ¡¿Ë]
 		struct {
 			uint32 special_mask = 0;
 			uint32 noview_mask = 0;
