@@ -14164,7 +14164,7 @@ Body:
       bonus bStr,4;
   - Combos:
       - Combo:
-          - aegis_400049
+          - Stripe_Hat
           - MH_P89_OS
     Script: |
       .@r_weapon = getequiprefinerycnt(EQI_HAND_R);
@@ -14172,7 +14172,7 @@ Body:
       bonus bLongAtkRate,3*(.@r_weapon/2);
   - Combos:
       - Combo:
-          - aegis_400049
+          - Stripe_Hat
           - AC_B44_OS
     Script: |
       .@r_weapon = getequiprefinerycnt(EQI_HAND_R);
@@ -14180,7 +14180,7 @@ Body:
       bonus bLongAtkRate,3*(.@r_weapon/2);
   - Combos:
       - Combo:
-          - aegis_400049
+          - Stripe_Hat
           - Boost_Lance_OS
     Script: |
       .@r_weapon = getequiprefinerycnt(EQI_HAND_R);
