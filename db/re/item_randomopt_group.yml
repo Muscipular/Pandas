@@ -12388,7 +12388,7 @@ Body:
             MaxValue: 3
             Chance: 190
       - Slot: 2
-        Chacnce: 3300
+        Chance: 3300
         Options:
           - Option: VAR_CRITICAL_RATE
             MinValue: 1
@@ -12541,7 +12541,7 @@ Body:
             MaxValue: 3
             Chance: 190
       - Slot: 2
-        Chacnce: 3300
+        Chance: 3300
         Options:
           - Option: VAR_CRITICAL_RATE
             MinValue: 1
@@ -12694,7 +12694,7 @@ Body:
             MaxValue: 3
             Chance: 190
       - Slot: 2
-        Chacnce: 3300
+        Chance: 3300
         Options:
           - Option: VAR_CRITICAL_RATE
             MinValue: 1
@@ -12847,7 +12847,7 @@ Body:
             MaxValue: 3
             Chance: 190
       - Slot: 2
-        Chacnce: 3300
+        Chance: 3300
         Options:
           - Option: VAR_CRITICAL_RATE
             MinValue: 1
