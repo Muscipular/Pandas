@@ -12286,7 +12286,6 @@ Body:
             MaxValue: 5
             Chance: 769
   # Source: https://ro.gnjoy.com/news/probability/View.asp?category=6&seq=4136330
-  # Slot 2 should only have 33% chance to be applied
   - Id: 145
     Group: MAJORAUTOSPELL_UP
     Slots:
@@ -12389,6 +12388,7 @@ Body:
             MaxValue: 3
             Chance: 190
       - Slot: 2
+        Chacnce: 3300
         Options:
           - Option: VAR_CRITICAL_RATE
             MinValue: 1
@@ -12439,7 +12439,6 @@ Body:
             MaxValue: 15
             Chance: 140
   # Source: https://ro.gnjoy.com/news/probability/View.asp?category=6&seq=4136331
-  # Slot 2 should only have 33% chance to be applied
   - Id: 146
     Group: HASTY_UP
     Slots:
@@ -12542,6 +12541,7 @@ Body:
             MaxValue: 3
             Chance: 190
       - Slot: 2
+        Chacnce: 3300
         Options:
           - Option: VAR_CRITICAL_RATE
             MinValue: 1
@@ -12592,7 +12592,6 @@ Body:
             MaxValue: 15
             Chance: 140
   # Source: https://ro.gnjoy.com/news/probability/View.asp?category=6&seq=4136332
-  # Slot 2 should only have 33% chance to be applied
   - Id: 147
     Group: PHYSICALSHADOW_UP
     Slots:
@@ -12695,6 +12694,7 @@ Body:
             MaxValue: 3
             Chance: 190
       - Slot: 2
+        Chacnce: 3300
         Options:
           - Option: VAR_CRITICAL_RATE
             MinValue: 1
@@ -12745,7 +12745,6 @@ Body:
             MaxValue: 15
             Chance: 140
   # Source: https://ro.gnjoy.com/news/probability/View.asp?category=6&seq=4136333
-  # Slot 2 should only have 33% chance to be applied
   - Id: 148
     Group: PERFECTSIZE_UP
     Slots:
@@ -12848,6 +12847,7 @@ Body:
             MaxValue: 3
             Chance: 190
       - Slot: 2
+        Chacnce: 3300
         Options:
           - Option: VAR_CRITICAL_RATE
             MinValue: 1
