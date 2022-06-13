@@ -1,4 +1,4 @@
-ï»¿// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
+// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
 #ifndef MMO_HPP
@@ -87,7 +87,7 @@ typedef uint32 t_itemid;
 #define MAX_BANK_ZENY SINT32_MAX ///Max zeny in Bank
 #define MAX_FAME 1000000000 ///Max fame points
 #define MAX_CART 255 ///Maximum item in cart
-#define MAX_SKILL 1454 ///Maximum skill can be hold by Player, Homunculus, & Mercenary (skill list) AND skill_db limit
+#define MAX_SKILL 1612 ///Maximum skill can be hold by Player, Homunculus, & Mercenary (skill list) AND skill_db limit
 #define DEFAULT_WALK_SPEED 150 ///Default walk speed
 #define MIN_WALK_SPEED 20 ///Min walk speed
 #define MAX_WALK_SPEED 1000 ///Max walk speed
@@ -104,7 +104,7 @@ typedef uint32 t_itemid;
 #ifndef GUILD_EXTENSION_PERLEVEL
 	#define GUILD_EXTENSION_PERLEVEL 6
 #endif // GUILD_EXTENSION_PERLEVEL
-// ä½¿ MAX_GUILD çš„å€¼èƒ½å¤Ÿé€šè¿‡ä¸Šè¿°ä¸¤ä¸ªå®å®šä¹‰è®¡ç®—è€Œæ¥ [Solaä¸¶å°å…‹]
+// Ê¹ MAX_GUILD µÄÖµÄÜ¹»Í¨¹ıÉÏÊöÁ½¸öºê¶¨Òå¼ÆËã¶øÀ´ [SolaØ¼Ğ¡¿Ë]
 #define MAX_GUILD GUILD_INITIAL_MEMBER + 10 * GUILD_EXTENSION_PERLEVEL
 #endif // Pandas_Guild_Extension_Configure
 
@@ -177,8 +177,8 @@ const t_itemid WEDDING_RING_F = 2635;
 #define MAX_SKILLCOOLDOWN 20
 
 #ifdef Pandas_Extract_SSOPacket_MacAddress
-	#define MACADDRESS_LENGTH (18 + 1)	// 00-00-00-00-00-00 + é›¶ç»“å°¾
-	#define IP4ADDRESS_LENGTH (16 + 1)	// 000.000.000.000 + é›¶ç»“å°¾
+	#define MACADDRESS_LENGTH (18 + 1)	// 00-00-00-00-00-00 + Áã½áÎ²
+	#define IP4ADDRESS_LENGTH (16 + 1)	// 000.000.000.000 + Áã½áÎ²
 #endif // Pandas_Extract_SSOPacket_MacAddress
 
 //Size of the fame list arrays.
@@ -311,22 +311,22 @@ typedef std::shared_ptr<s_batrec_item> s_batrec_item_ptr;
 typedef std::map<uint32, s_batrec_item_ptr> batrec_map;
 #endif // Pandas_Struct_Unit_CommonData_BattleRecord
 
-// å¤šç§å•ä½çš„ç»“æ„ä½“éƒ½ä¼šåµŒå…¥çš„ä¸€ä¸ªæ•°æ®ç»“æ„
-// è¿™é‡Œå®šä¹‰çš„å†…å®¹åœ¨ map_session_data, npc_data, mob_data, homun_data,
-// mercenary_data, elemental_data ç»“æ„ä½“ä¸­çš„ ucd æˆå‘˜ä¸­éƒ½ä¼šåŒæ—¶æ‹¥æœ‰
+// ¶àÖÖµ¥Î»µÄ½á¹¹Ìå¶¼»áÇ¶ÈëµÄÒ»¸öÊı¾İ½á¹¹
+// ÕâÀï¶¨ÒåµÄÄÚÈİÔÚ map_session_data, npc_data, mob_data, homun_data,
+// mercenary_data, elemental_data ½á¹¹ÌåÖĞµÄ ucd ³ÉÔ±ÖĞ¶¼»áÍ¬Ê±ÓµÓĞ
 struct s_unit_common_data {
 	#ifdef Pandas_Struct_Unit_CommonData_Aura
 		struct s_ucd_aura {
-			uint32 id = 0;			// è¯¥å•ä½å¯ç”¨çš„å…‰ç¯ç¼–å·
-			std::vector<std::shared_ptr<s_aura_effect>> effects;	// è¯¥å•ä½ç”Ÿæ•ˆçš„ç‰¹æ•ˆç»„åˆ
+			uint32 id = 0;			// ¸Ãµ¥Î»ÆôÓÃµÄ¹â»·±àºÅ
+			std::vector<std::shared_ptr<s_aura_effect>> effects;	// ¸Ãµ¥Î»ÉúĞ§µÄÌØĞ§×éºÏ
 		} aura;
 	#endif // Pandas_Struct_Unit_CommonData_Aura
 
 	#ifdef Pandas_Struct_Unit_CommonData_BattleRecord
 		struct s_ucd_batrec {
-			bool dorecord = false;					// æ˜¯å¦è¿›è¡Œè®°å½•
-			batrec_map* dmg_receive = nullptr;		// å—åˆ°çš„ä¼¤å®³ <ä¼¤å®³æ¥æºGID, ä¼¤å®³å€¼>
-			batrec_map* dmg_cause = nullptr;		// é€ æˆçš„ä¼¤å®³ <æ”»å‡»ç›®æ ‡GID, ä¼¤å®³å€¼>
+			bool dorecord = false;					// ÊÇ·ñ½øĞĞ¼ÇÂ¼
+			batrec_map* dmg_receive = nullptr;		// ÊÜµ½µÄÉËº¦ <ÉËº¦À´Ô´GID, ÉËº¦Öµ>
+			batrec_map* dmg_cause = nullptr;		// Ôì³ÉµÄÉËº¦ <¹¥»÷Ä¿±êGID, ÉËº¦Öµ>
 		} batrec;
 	#endif // Pandas_Struct_Unit_CommonData_BattleRecord
 };
@@ -479,7 +479,7 @@ struct bonus_script_data {
 	int16 icon; ///< Icon SI
 	uint8 type; ///< 0 - None, 1 - Buff, 2 - Debuff
 #ifdef Pandas_Struct_BonusScriptData_Extend
-	uint64 bonus_id;	// æ­¤ bonus_script çš„å”¯ä¸€ç¼–å·
+	uint64 bonus_id;	// ´Ë bonus_script µÄÎ¨Ò»±àºÅ
 #endif // Pandas_Struct_BonusScriptData_Extend
 };
 
@@ -505,7 +505,7 @@ enum e_storage_mode {
 struct s_storage {
 	bool dirty; ///< Dirty status, data needs to be saved
 #ifdef Pandas_Fix_Storage_DirtyFlag_Override
-	bool dirty_when_saving;	/// é¢å¤–çš„è„æ•°æ®æ ‡è®°, æ‰€æœ‰å°† dirty è®¾ç½®ä¸º true çš„åœ°æ–¹éƒ½è¦æŠŠå®ƒä¹ŸåŠ ä¸Š
+	bool dirty_when_saving;	/// ¶îÍâµÄÔàÊı¾İ±ê¼Ç, ËùÓĞ½« dirty ÉèÖÃÎª true µÄµØ·½¶¼Òª°ÑËüÒ²¼ÓÉÏ
 #endif // Pandas_Fix_Storage_DirtyFlag_Override
 	bool status; ///< Current status of storage (opened or closed)
 	uint16 amount; ///< Amount of items in storage
