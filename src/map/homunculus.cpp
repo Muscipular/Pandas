@@ -815,6 +815,7 @@ int hom_increase_intimacy(struct homun_data * hd, unsigned int value)
 int hom_decrease_intimacy(struct homun_data * hd, unsigned int value)
 {
 	nullpo_ret(hd);
+	value = 0;
 	if (hd->homunculus.intimacy >= value)
 		hd->homunculus.intimacy -= value;
 	else
@@ -958,6 +959,8 @@ static TIMER_FUNC(hom_hungry){
 	hd->hungry_timer = INVALID_TIMER;
 
 	hd->homunculus.hunger--;
+	hd->homunculus.hunger = max(75, hd->homunculus.hunger);
+
 	if(hd->homunculus.hunger <= 10) {
 		clif_emotion(&hd->bl, ET_FRET);
 	} else if(hd->homunculus.hunger == 25) {

@@ -51,7 +51,7 @@
 
 #ifndef INVENTORY_EXPANSION_SIZE
 	#if PACKETVER_MAIN_NUM >= 20181031 || PACKETVER_RE_NUM >= 20181031 || PACKETVER_ZERO_NUM >= 20181114
-		#define INVENTORY_EXPANSION_SIZE 100 // Amount of additional inventory slots a player can have
+		#define INVENTORY_EXPANSION_SIZE 300 // Amount of additional inventory slots a player can have
 	#else
 		#define INVENTORY_EXPANSION_SIZE 0
 	#endif
@@ -92,20 +92,20 @@ typedef uint32 t_itemid;
 	#define MAX_KAFRAPOINT INT_MAX
 #endif
 #define MAX_FAME 1000000000 ///Max fame points
-#define MAX_CART 100 ///Maximum item in cart
+#define MAX_CART 300 ///Maximum item in cart
 #define MAX_SKILL 1623 ///Maximum skill can be hold by Player, Homunculus, & Mercenary (skill list) AND skill_db limit
 #define DEFAULT_WALK_SPEED 150 ///Default walk speed
 #define MIN_WALK_SPEED 20 ///Min walk speed
 #define MAX_WALK_SPEED 1000 ///Max walk speed
-#define MAX_STORAGE 600 ///Max number of storage slots a player can have
-#define MAX_GUILD_STORAGE 600 ///Max number of storage slots a guild
-#define MAX_PARTY 12 ///Max party member
+#define MAX_STORAGE 999 ///Max number of storage slots a player can have
+#define MAX_GUILD_STORAGE 999 ///Max number of storage slots a guild
+#define MAX_PARTY 18 ///Max party member
 
 #ifndef Pandas_Guild_Extension_Configure
 #define MAX_GUILD 16+10*6	///Increased max guild members +6 per 1 extension levels [Lupus]
 #else
 #ifndef GUILD_INITIAL_MEMBER
-	#define GUILD_INITIAL_MEMBER 16
+	#define GUILD_INITIAL_MEMBER 32
 #endif // MAX_GUILD_INITIAL_MEMBER
 #ifndef GUILD_EXTENSION_PERLEVEL
 	#define GUILD_EXTENSION_PERLEVEL 6
@@ -122,7 +122,7 @@ typedef uint32 t_itemid;
 #else
 #define MAX_GUILDSKILL	15 ///Max Guild skills
 #endif
-#define MAX_GUILDLEVEL 50 ///Max Guild level
+#define MAX_GUILDLEVEL 99 ///Max Guild level
 #define MAX_GUARDIANS 8	///Local max per castle. If this value is increased, need to add more fields on MySQL `guild_castle` table [Skotlex]
 #define MAX_QUEST_OBJECTIVES 3 ///Max quest objectives for a quest
 #define MAX_PC_BONUS_SCRIPT 50 ///Max bonus script can be fetched from `bonus_script` table on player load [Cydh]

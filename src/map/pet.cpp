@@ -635,7 +635,7 @@ void pet_set_intimate(struct pet_data *pd, int value)
 {
 	nullpo_retv(pd);
 
-	pd->pet.intimate = cap_value(value, PET_INTIMATE_NONE, PET_INTIMATE_MAX);
+	pd->pet.intimate = max(pd->pet.intimate, min(value, PET_INTIMATE_MAX));
 
 	map_session_data *sd = pd->master;
 
@@ -863,6 +863,7 @@ static TIMER_FUNC(pet_hungry){
 		interval = pet_db_ptr->hungry_delay;
 
 	pd->pet.hungry -= pet_db_ptr->fullness;
+	pd->pet.hungry = max(PET_HUNGRY_NEUTRAL, pd->pet.hungry);
 
 	if( pd->pet.hungry < PET_HUNGRY_NONE ) {
 		pet_stop_attack(pd);

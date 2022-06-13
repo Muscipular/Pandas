@@ -26,7 +26,7 @@
 #include <custom/defines_pre.hpp>
 
 /// Max number of items on @autolootid list
-#define AUTOLOOTITEM_SIZE 10
+#define AUTOLOOTITEM_SIZE 30
 
 /// The maximum number of atcommand and @warp suggestions
 #define MAX_SUGGESTIONS 10
