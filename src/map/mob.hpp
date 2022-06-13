@@ -26,10 +26,10 @@ struct guardian_data;
 //#define AUTOLOOT_DISTANCE AREA_SIZE
 
 //The number of drops all mobs have and the max drop-slot that the steal skill will attempt to steal from.
-#define MAX_MOB_DROP 10
-#define MAX_MVP_DROP 3
-#define MAX_MOB_DROP_ADD 5
-#define MAX_MVP_DROP_ADD 2
+#define MAX_MOB_DROP 15
+#define MAX_MVP_DROP 6
+#define MAX_MOB_DROP_ADD 8
+#define MAX_MVP_DROP_ADD 4
 #define MAX_MOB_DROP_TOTAL (MAX_MOB_DROP+MAX_MOB_DROP_ADD)
 #define MAX_MVP_DROP_TOTAL (MAX_MVP_DROP+MAX_MVP_DROP_ADD)
 
