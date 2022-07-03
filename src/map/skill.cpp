@@ -3646,7 +3646,7 @@ int64 skill_attack (int attack_type, struct block_list* src, struct block_list *
 
 	if( dmg.flag&BF_MAGIC && ( skill_id != NPC_EARTHQUAKE || (battle_config.eq_single_target_reflectable && (flag&0xFFF) == 1) ) )
 	{ // Earthquake on multiple targets is not counted as a target skill. [Inkfish]
-		if( (dmg.damage || dmg.damage2) && (type = skill_magic_reflect(src, bl, src==dsrc)) )
+		if( (dmg.damage || dmg.damage2) && (type = skill_magic_reflect(src, bl, (src==dsrc && (skill_get_inf(skill_id)&(INF_ATTACK_SKILL|INF_SUPPORT_SKILL))))) )
 		{	//Magic reflection, switch caster/target
 			struct block_list *tbl = bl;
 			rmdamage = true;
@@ -16597,6 +16597,11 @@ int skill_unit_onplace_timer(struct skill_unit *unit, struct block_list *bl, t_t
 		case UNT_HYUN_ROKS_BREEZE:
 		case UNT_FUUMASHOUAKU:
 		case UNT_KUNAIKAITEN:
+		case UNT_GRENADES_DROPPING:
+		case UNT_GROUND_GRAVITATION:
+		case UNT_STAR_BURST:
+		case UNT_MISSION_BOMBARD:
+		case UNT_JACK_FROST_NOVA:
 			skill_attack(skill_get_type(sg->skill_id),ss,&unit->bl,bl,sg->skill_id,sg->skill_lv,tick,0);
 			break;
 
@@ -17255,14 +17260,6 @@ int skill_unit_onplace_timer(struct skill_unit *unit, struct block_list *bl, t_t
 
 		case UNT_ACIDIFIED_ZONE_FIRE:
 			skill_attack(skill_get_type(BO_ACIDIFIED_ZONE_FIRE_ATK), ss, &unit->bl, bl, BO_ACIDIFIED_ZONE_FIRE_ATK, sg->skill_lv, tick, 0);
-			break;
-
-		case UNT_GRENADES_DROPPING:
-		case UNT_GROUND_GRAVITATION:
-		case UNT_STAR_BURST:
-		case UNT_MISSION_BOMBARD:
-		case UNT_JACK_FROST_NOVA:
-			skill_attack(skill_get_type(sg->skill_id), ss, &unit->bl, bl, sg->skill_id, sg->skill_lv, tick, 0);
 			break;
 			
 		case UNT_ASTRAL_STRIKE:
