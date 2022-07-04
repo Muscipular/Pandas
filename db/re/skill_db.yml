@@ -44563,6 +44563,7 @@ Body:
     Range: 9
     Hit: Multi_Hit
     HitCount: 2
+    GiveAp: 2
     Element: Weapon
     SplashArea:
       - Level: 1
