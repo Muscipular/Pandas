@@ -157438,7 +157438,6 @@ Body:
     Refineable: true
     Script: |
       .@r = getrefine();
-      bonus bMatk,150;
       bonus2 bAddEle,Ele_Dark,7;
       bonus2 bMagicAddEle,Ele_Dark,7;
       bonus2 bAddEle,Ele_Undead,7;
@@ -162309,13 +162308,12 @@ Body:
     Script: |
       .@r = getrefine();
       bonus bUnbreakableWeapon;
-      bonus bMatk,175;
-      bonus2 bMagicAddEle,Ele_Ghost,10;
+      bonus2 bMagicAddEle,Ele_Neutral,10;
       bonus2 bMagicAddEle,Ele_Earth,10;
       if (.@r >= 7) {
         bonus bVariableCastrate,-10;
         if (.@r >= 9) {
-          bonus2 bMagicAtkEle,Ele_Ghost,30;
+          bonus2 bMagicAtkEle,Ele_Neutral,30;
           bonus2 bMagicAtkEle,Ele_Fire,30;
           if (.@r >= 11) {
             bonus bDelayrate,-15;
@@ -162341,7 +162339,6 @@ Body:
     Refineable: true
     Script: |
       .@r = getrefine();
-      bonus bMatk,350;
       bonus bMatkRate,7;
       if (.@r >= 7) {
         bonus2 bSkillAtk,"SU_SV_STEMSPEAR",30;
@@ -162351,8 +162348,8 @@ Body:
           bonus2 bMagicAtkEle,Ele_Fire,20;
           bonus2 bMagicAtkEle,Ele_Water,20;
           bonus2 bMagicAtkEle,Ele_Wind,20;
-          bonus2 bMagicAtkEle,Ele_Poison,20;
           bonus2 bMagicAtkEle,Ele_Ghost,20;
+          bonus2 bMagicAtkEle,Ele_Neutral,20;
           if (.@r >= 11) {
             bonus2 bSkillAtk,"SU_CN_METEOR",45;
           }
@@ -165972,7 +165969,6 @@ Body:
     Script: |
       .@r = getrefine();
       bonus bUnbreakableWeapon;
-      bonus bMatk,170;
       bonus bMatkRate,5;
       if (.@r >= 7) {
         bonus bVariableCastrate,-10;
@@ -171489,7 +171485,6 @@ Body:
     Refineable: true
     Script: |
       .@r = getrefine();
-      bonus bMatk,135;
       bonus bLongAtkRate,7;
       if (.@r >= 7) {
         bonus bAspdRate,10;
