@@ -3942,7 +3942,7 @@ ACMD_FUNC(mapexit)
 ACMD_FUNC(idsearch)
 {
 	char item_name[100];
-	unsigned int i, match;
+	uint16 i, match;
 	struct item_data *item_array[MAX_SEARCH];
 	nullpo_retr(-1, sd);
 
@@ -4336,6 +4336,19 @@ ACMD_FUNC(reload) {
 		clif_displaymessage(fd, msg_txt_cn(sd, 106)); // Aura database has been reloaded.
 	}
 #endif // Pandas_Aura_Mechanism
+#ifdef Pandas_AtCommand_ReloadLaphineDB
+	else if (strstr(command, "laphinedb") || strncmp(message, "laphinedb", 4) == 0) {
+		laphine_synthesis_db.reload();
+		laphine_upgrade_db.reload();
+		clif_displaymessage(fd, msg_txt_cn(sd, 142)); // Laphine database has been reloaded.
+	}
+#endif // Pandas_AtCommand_ReloadLaphineDB
+#ifdef Pandas_AtCommand_ReloadBarterDB
+	else if (strstr(command, "barterdb") || strncmp(message, "barterdb", 4) == 0) {
+		barter_db.reload();
+		clif_displaymessage(fd, msg_txt_cn(sd, 143)); // Barters database has been reloaded.
+	}
+#endif // Pandas_AtCommand_ReloadBarterDB
 
 	return 0;
 }
@@ -7856,8 +7869,7 @@ ACMD_FUNC(mobinfo)
 	unsigned char melement[ELE_ALL][8] = { "Neutral", "Water", "Earth", "Fire", "Wind", "Poison", "Holy", "Dark", "Ghost", "Undead" };
 	char atcmd_output2[CHAT_SIZE_MAX];
 	struct item_data *item_data;
-	uint16 mob_ids[MAX_SEARCH];
-	int count;
+	uint16 mob_ids[MAX_SEARCH], count;
 	int i, k;
 
 	memset(atcmd_output, '\0', sizeof(atcmd_output));
@@ -8400,7 +8412,7 @@ ACMD_FUNC(homshuffle)
 ACMD_FUNC(iteminfo)
 {
 	struct item_data *item_array[MAX_SEARCH];
-	int i, count = 1;
+	uint16 i, count = 1;
 
 	if (!message || !*message) {
 		clif_displaymessage(fd, msg_txt(sd,1276)); // Please enter an item name/ID (usage: @ii/@iteminfo <item name/ID>).
@@ -8451,7 +8463,7 @@ ACMD_FUNC(iteminfo)
 ACMD_FUNC(whodrops)
 {
 	struct item_data *item_data, *item_array[MAX_SEARCH];
-	int i,j, count = 1;
+	uint16 i, j, count = 1;
 
 	if (!message || !*message) {
 		clif_displaymessage(fd, msg_txt(sd,1284)); // Please enter item name/ID (usage: @whodrops <item name/ID>).
@@ -8513,8 +8525,7 @@ ACMD_FUNC(whodrops)
 
 ACMD_FUNC(whereis)
 {
-	uint16 mob_ids[MAX_SEARCH] = {0};
-	int count = 0;
+	uint16 mob_ids[MAX_SEARCH] = {0}, count;
 
 	if (!message || !*message) {
 		clif_displaymessage(fd, msg_txt(sd,1288)); // Please enter a monster name/ID (usage: @whereis <monster_name_or_monster_ID>).
@@ -11289,6 +11300,12 @@ void atcommand_basecommands(void) {
 #ifdef Pandas_AtCommand_Aura
 		ACMD_DEF(aura),					// 激活指定的光环组合 [Sola丶小克]
 #endif // Pandas_AtCommand_Aura
+#ifdef Pandas_AtCommand_ReloadLaphineDB
+		ACMD_DEF2("reloadlaphinedb", reload),			// 重新加载 Laphine 数据库 [Sola丶小克]
+#endif // Pandas_AtCommand_ReloadLaphineDB
+#ifdef Pandas_AtCommand_ReloadBarterDB
+		ACMD_DEF2("reloadbarterdb", reload),			// 重新加载 Barters 以物易物数据库 [Sola丶小克]
+#endif // Pandas_AtCommand_ReloadBarterDB
 		// PYHELP - ATCMD - INSERT POINT - <Section 3>
 
 #include "../custom/atcommand_def.inc"
