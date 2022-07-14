@@ -1421,7 +1421,7 @@ bool battle_status_block_damage(struct block_list *src, struct block_list *targe
 
 	//TODO: What's causing this status?
 	if (sc->data[SC_HANDICAPSTATE_HOLYFLAME] && flag&BF_MAGIC)	{ 
-			clif_skill_nodamage(0, target, AL_HEAL,damage/2, 1);
+			clif_skill_nodamage(0, target, AL_HEAL, (int)cap_value(damage / 2, INT_MIN, INT_MAX), 1);
 			status_heal(target,(int)cap_value(damage/2, INT_MIN, INT_MAX),0,0,0);
 	}
 	
@@ -9737,8 +9737,8 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 
 			npc_script_event(esd, NPCX_PCATTACK);
 
-			wd.damage = (int)cap_value(pc_readreg(esd, add_str("@attack_damage_right")), INT_MIN, INT_MAX);
-			wd.damage2 = (int)cap_value(pc_readreg(esd, add_str("@attack_damage_left")), INT_MIN, INT_MAX);
+			wd.damage = pc_readreg(esd, add_str("@attack_damage_right"));
+			wd.damage2 = pc_readreg(esd, add_str("@attack_damage_left"));
 			damage = wd.damage + wd.damage2;
 		}
 	}
