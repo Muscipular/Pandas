@@ -2900,13 +2900,16 @@ uint64 pc_calc_skilltree_normalize_job_sub( map_session_data *sd ){
 	int skill_point = pc_calc_skillpoint( sd );
 
 	if( sd->class_ & MAPID_SUMMONER ){
-		// Novice's skill points for basic skill.
+		// Summoner's skill points for base skills.
 		std::shared_ptr<s_job_info> summoner_job = job_db.find( JOB_SUMMONER );
 
 		int summoner_skills = summoner_job->max_job_level - 1;
 
 		if( skill_point < summoner_skills ){
 			return MAPID_SUMMONER;
+		}
+		else {
+			return MAPID_SPIRIT_HANDLER;
 		}
 
 		skill_point -= summoner_skills;
@@ -14865,8 +14868,8 @@ void JobDatabase::loadingFinished() {
 				}
 			}
 
-			// Summoner
-			if( ( class_ & MAPID_BASEMASK ) == MAPID_SUMMONER ){
+			// Summoner / Spirit Handler
+			if ((class_ & MAPID_SUMMONER) == MAPID_SUMMONER) {
 				max = battle_config.max_summoner_parameter;
 				break;
 			}
@@ -16070,7 +16073,7 @@ short pc_maxaspd(map_session_data *sd) {
 			// 先根据 rAthena 默认的攻速公式, 计算出即将返回的攻速数值
 			int aspd = ((sd->class_ & JOBL_THIRD) ? battle_config.max_third_aspd : (
 				((sd->class_ & MAPID_UPPERMASK) == MAPID_KAGEROUOBORO || (sd->class_ & MAPID_UPPERMASK) == MAPID_REBELLION) ? battle_config.max_extended_aspd : (
-					(sd->class_ & MAPID_BASEMASK) == MAPID_SUMMONER) ? battle_config.max_summoner_aspd :
+					(sd->class_ & MAPID_SUMMONER) == MAPID_SUMMONER) ? battle_config.max_summoner_aspd :
 				battle_config.max_aspd));
 
 			val = 2000 - val * 10;
@@ -16085,7 +16088,7 @@ short pc_maxaspd(map_session_data *sd) {
 
 	return (( sd->class_&JOBL_THIRD) ? battle_config.max_third_aspd : (
 			((sd->class_&MAPID_UPPERMASK) == MAPID_KAGEROUOBORO || (sd->class_&MAPID_UPPERMASK) == MAPID_REBELLION) ? battle_config.max_extended_aspd : (
-			(sd->class_&MAPID_BASEMASK) == MAPID_SUMMONER) ? battle_config.max_summoner_aspd : 
+			(sd->class_&MAPID_SUMMONER) == MAPID_SUMMONER) ? battle_config.max_summoner_aspd :
 			battle_config.max_aspd ));
 }
 

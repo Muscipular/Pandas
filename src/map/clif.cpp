@@ -23635,7 +23635,7 @@ bool clif_parse_stylist_buy_sub( map_session_data* sd, _look look, int16 index )
 
 	std::shared_ptr<s_stylist_costs> costs;
 
-	if( ( sd->class_ & MAPID_BASEMASK ) == MAPID_SUMMONER ){
+	if( ( sd->class_ & MAPID_SUMMONER) == MAPID_SUMMONER ){
 		costs = entry->doram;
 	}else{
 		costs = entry->human;
