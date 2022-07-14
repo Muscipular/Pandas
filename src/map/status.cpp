@@ -1,4 +1,4 @@
-// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
+ï»¿// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
 #include "status.hpp"
@@ -3506,8 +3506,8 @@ bool status_calc_weight(struct map_session_data *sd, enum e_status_calc_weight_o
 #ifndef Pandas_Extreme_Computing
 	sd->max_weight = job_db.get_maxWeight(pc_mapid2jobid(sd->class_, sd->status.sex)) + sd->status.str * 300; // Recalculate max weight
 #else
-	// ¿Í»§¶ËÄÜÕ¹ÏÖ×î´óµÄ¸ºÖØÊıÖµÊÇ 0x7FFFFFFF (2147483647)
-	// ÓÉÓÚ½â³ıÁË str µÄÉÏÏŞ, ÕâÀï¿ÉÄÜ»á±¬µô, Òò´Ë¶îÍâ×öÒ»Ğ©·ÀÖ¹Òç³öµÄ¹æ±Ü´ëÊ©
+	// å®¢æˆ·ç«¯èƒ½å±•ç°æœ€å¤§çš„è´Ÿé‡æ•°å€¼æ˜¯ 0x7FFFFFFF (2147483647)
+	// ç”±äºè§£é™¤äº† str çš„ä¸Šé™, è¿™é‡Œå¯èƒ½ä¼šçˆ†æ‰, å› æ­¤é¢å¤–åšä¸€äº›é˜²æ­¢æº¢å‡ºçš„è§„é¿æªæ–½
 	sd->max_weight = cap_value(job_db.get_maxWeight(pc_mapid2jobid(sd->class_, sd->status.sex)) + sd->status.str * 300, 0, PEC_MAX_WEIGHT);
 #endif // Pandas_Extreme_Computing
 
@@ -3549,7 +3549,7 @@ bool status_calc_weight(struct map_session_data *sd, enum e_status_calc_weight_o
 		else if (pc_isridingdragon(sd))
 			add_max_weight += 5000 + 2000 * pc_checkskill(sd, RK_DRAGONTRAINING);
 
-		// ¼ÆËã SC_KNOWLEDGE Ê±ĞèÒªÒÀÀµµş¼ÓÖÁ½ñµÄ max_weight, ¸³ÖµÒ»ÏÂ
+		// è®¡ç®— SC_KNOWLEDGE æ—¶éœ€è¦ä¾èµ–å åŠ è‡³ä»Šçš„ max_weight, èµ‹å€¼ä¸€ä¸‹
 		sd->max_weight = cap_value(sd->max_weight + add_max_weight, 0, PEC_MAX_WEIGHT);
 		add_max_weight = 0;
 
@@ -3701,7 +3701,7 @@ int status_calc_pc_sub(struct map_session_data* sd, uint8 opt)
 	// Give them all modes except these (useful for clones)
 	base_status->mode = static_cast<e_mode>(MD_MASK&~(MD_STATUSIMMUNE|MD_IGNOREMELEE|MD_IGNOREMAGIC|MD_IGNORERANGED|MD_IGNOREMISC|MD_DETECTOR|MD_ANGRY|MD_TARGETWEAK));
 
-	base_status->size = (sd->class_&JOBL_BABY) ? SZ_SMALL : (((sd->class_&MAPID_BASEMASK) == MAPID_SUMMONER) ? battle_config.summoner_size : SZ_MEDIUM);
+	base_status->size = (sd->class_&JOBL_BABY) ? SZ_SMALL : (((sd->class_& MAPID_SUMMONER) == MAPID_SUMMONER) ? battle_config.summoner_size : SZ_MEDIUM);
 	if (battle_config.character_size && pc_isriding(sd)) { // [Lupus]
 		if (sd->class_&JOBL_BABY) {
 			if (battle_config.character_size&SZ_BIG)
@@ -3712,7 +3712,7 @@ int status_calc_pc_sub(struct map_session_data* sd, uint8 opt)
 	}
 	base_status->aspd_rate = 1000;
 	base_status->ele_lv = 1;
-	base_status->race = ((sd->class_&MAPID_BASEMASK) == MAPID_SUMMONER) ? battle_config.summoner_race : RC_PLAYER_HUMAN;
+	base_status->race = ((sd->class_& MAPID_SUMMONER) == MAPID_SUMMONER) ? battle_config.summoner_race : RC_PLAYER_HUMAN;
 	base_status->class_ = CLASS_NORMAL;
 
 	sd->autospell.clear();
@@ -3748,8 +3748,8 @@ int status_calc_pc_sub(struct map_session_data* sd, uint8 opt)
 	sd->itemsphealrate.clear();
 	sd->itemgroupsphealrate.clear();
 #ifdef Pandas_Bonus2_bAddSkillRange
-	// Èô addskillrange ÖĞ´æÔÚ±»µ÷Õû¹ı¹¥»÷¾àÀëµÄ¼¼ÄÜ,
-	// ÄÇÃ´ÔÚÖØÖÃÖ®Ç°ÏÈ½«¼¼ÄÜ±àºÅ±£´æÏÂÀ´
+	// è‹¥ addskillrange ä¸­å­˜åœ¨è¢«è°ƒæ•´è¿‡æ”»å‡»è·ç¦»çš„æŠ€èƒ½,
+	// é‚£ä¹ˆåœ¨é‡ç½®ä¹‹å‰å…ˆå°†æŠ€èƒ½ç¼–å·ä¿å­˜ä¸‹æ¥
 	std::vector<uint16> skillid_list;
 	if (sd->addskillrange.size()) {
 		for (auto& it : sd->addskillrange) {
@@ -3757,10 +3757,10 @@ int status_calc_pc_sub(struct map_session_data* sd, uint8 opt)
 		}
 	}
 
-	// È»ºó½øĞĞÖØÖÃ²Ù×÷
+	// ç„¶åè¿›è¡Œé‡ç½®æ“ä½œ
 	sd->addskillrange.clear();
 
-	// ×îºóË¢ĞÂ¿Í»§¶Ë¹ØÓÚÕâĞ©¼¼ÄÜµÄ¹¥»÷¾àÀëĞÅÏ¢
+	// æœ€ååˆ·æ–°å®¢æˆ·ç«¯å…³äºè¿™äº›æŠ€èƒ½çš„æ”»å‡»è·ç¦»ä¿¡æ¯
 	for (auto& it : skillid_list) {
 		clif_skillinfo(sd, it, 0);
 	}
@@ -4251,7 +4251,7 @@ int status_calc_pc_sub(struct map_session_data* sd, uint8 opt)
 	base_status->max_hp = sd->status.max_hp = status_calc_maxhpsp_pc(sd,base_status->vit,true);
 
 #ifndef Pandas_Extreme_Computing
-	// ´Ë´¦Âß¼­ÒÑ¾­±»×ªÈëµ½ status_calc_maxhpsp_pc º¯ÊıÖĞÊµÏÖ, ´Ë´¦ÎŞĞèÖØ¸´½øĞĞ
+	// æ­¤å¤„é€»è¾‘å·²ç»è¢«è½¬å…¥åˆ° status_calc_maxhpsp_pc å‡½æ•°ä¸­å®ç°, æ­¤å¤„æ— éœ€é‡å¤è¿›è¡Œ
 	if(battle_config.hp_rate != 100)
 		base_status->max_hp = (unsigned int)(battle_config.hp_rate * (base_status->max_hp/100.));
 
@@ -4267,7 +4267,7 @@ int status_calc_pc_sub(struct map_session_data* sd, uint8 opt)
 	base_status->max_sp = sd->status.max_sp = status_calc_maxhpsp_pc(sd,base_status->int_,false);
 
 #ifndef Pandas_Extreme_Computing
-	// ´Ë´¦Âß¼­ÒÑ¾­±»×ªÈëµ½ status_calc_maxhpsp_pc º¯ÊıÖĞÊµÏÖ, ´Ë´¦ÎŞĞèÖØ¸´½øĞĞ
+	// æ­¤å¤„é€»è¾‘å·²ç»è¢«è½¬å…¥åˆ° status_calc_maxhpsp_pc å‡½æ•°ä¸­å®ç°, æ­¤å¤„æ— éœ€é‡å¤è¿›è¡Œ
 	if(battle_config.sp_rate != 100)
 		base_status->max_sp = (unsigned int)(battle_config.sp_rate * (base_status->max_sp/100.));
 
@@ -5943,7 +5943,7 @@ void status_calc_bl_main(struct block_list *bl, std::bitset<SCB_MAX> flag)
 			status->max_hp = status_calc_maxhpsp_pc(sd,status->vit,true);
 
 #ifndef Pandas_Extreme_Computing
-			// ´Ë´¦Âß¼­ÒÑ¾­±»×ªÈëµ½ status_calc_maxhpsp_pc º¯ÊıÖĞÊµÏÖ, ´Ë´¦ÎŞĞèÖØ¸´½øĞĞ
+			// æ­¤å¤„é€»è¾‘å·²ç»è¢«è½¬å…¥åˆ° status_calc_maxhpsp_pc å‡½æ•°ä¸­å®ç°, æ­¤å¤„æ— éœ€é‡å¤è¿›è¡Œ
 			if(battle_config.hp_rate != 100)
 				status->max_hp = (unsigned int)(battle_config.hp_rate * (status->max_hp/100.));
 
@@ -5969,7 +5969,7 @@ void status_calc_bl_main(struct block_list *bl, std::bitset<SCB_MAX> flag)
 			status->max_sp = status_calc_maxhpsp_pc(sd,status->int_,false);
 
 #ifndef Pandas_Extreme_Computing
-			// ´Ë´¦Âß¼­ÒÑ¾­±»×ªÈëµ½ status_calc_maxhpsp_pc º¯ÊıÖĞÊµÏÖ, ´Ë´¦ÎŞĞèÖØ¸´½øĞĞ
+			// æ­¤å¤„é€»è¾‘å·²ç»è¢«è½¬å…¥åˆ° status_calc_maxhpsp_pc å‡½æ•°ä¸­å®ç°, æ­¤å¤„æ— éœ€é‡å¤è¿›è¡Œ
 			if(battle_config.sp_rate != 100)
 				status->max_sp = (unsigned int)(battle_config.sp_rate * (status->max_sp/100.));
 
@@ -6089,16 +6089,16 @@ void status_calc_bl_main(struct block_list *bl, std::bitset<SCB_MAX> flag)
 			status->amotion = cap_value(amotion, battle_config.max_aspd, 2000);
 
 #ifdef Pandas_MapFlag_MaxASPD
-			// ¸ù¾İµØÍ¼±ê¼ÇÖØĞÂ¼ÆËãÈË¹¤ÉúÃüÌåµÄ amotion ¶¯»­ÑÓ³ÙÊ±¼ä
+			// æ ¹æ®åœ°å›¾æ ‡è®°é‡æ–°è®¡ç®—äººå·¥ç”Ÿå‘½ä½“çš„ amotion åŠ¨ç”»å»¶è¿Ÿæ—¶é—´
 			if (map_getmapflag(bl->m, MF_MAXASPD)) {
 				int val = map_getmapflag_param(bl->m, MF_MAXASPD, 0);
 				if (val) {
-					// µØÍ¼±ê¼ÇÔ¤ÆÚµÄÑÓ³ÙÊ±¼ä
-					// ÑÓ³ÙÊ±¼ä = 2000 - 193(¼ÙÉè) * 10 = 2000 - 1930 = 70, Ò²¾ÍÊÇÑÓ³ÙÎª 70 ºÁÃë
+					// åœ°å›¾æ ‡è®°é¢„æœŸçš„å»¶è¿Ÿæ—¶é—´
+					// å»¶è¿Ÿæ—¶é—´ = 2000 - 193(å‡è®¾) * 10 = 2000 - 1930 = 70, ä¹Ÿå°±æ˜¯å»¶è¿Ÿä¸º 70 æ¯«ç§’
 					val = 2000 - val * 10;
-					// Ô­ÏÈÈË¹¤ÉúÃüÌåÓĞÒ»¸ö×Ô¼ºµÄ¶¯»­ÑÓ³ÙÊ±¼ä, ÓëµØÍ¼±ê¼ÇÔ¤ÆÚµÄÑÓ³ÙÊ±¼äÖĞÈ¡×î´óµÄÄÇ¸ö (ÑÓ³ÙÔ½´ó±íÊ¾¹¥»÷ËÙ¶ÈÔ½Âı)
+					// åŸå…ˆäººå·¥ç”Ÿå‘½ä½“æœ‰ä¸€ä¸ªè‡ªå·±çš„åŠ¨ç”»å»¶è¿Ÿæ—¶é—´, ä¸åœ°å›¾æ ‡è®°é¢„æœŸçš„å»¶è¿Ÿæ—¶é—´ä¸­å–æœ€å¤§çš„é‚£ä¸ª (å»¶è¿Ÿè¶Šå¤§è¡¨ç¤ºæ”»å‡»é€Ÿåº¦è¶Šæ…¢)
 					val = max(val, status->amotion);
-					// ËæºóÔÙÓë×î´óÑÓ³ÙÖµ 2000 ºÁÃë½øĞĞ±È½Ï, È¡±È½ÏĞ¡µÄÄÄ¸ö×÷ÎªÊµ¼ÊÉúĞ§Öµ
+					// éšåå†ä¸æœ€å¤§å»¶è¿Ÿå€¼ 2000 æ¯«ç§’è¿›è¡Œæ¯”è¾ƒ, å–æ¯”è¾ƒå°çš„å“ªä¸ªä½œä¸ºå®é™…ç”Ÿæ•ˆå€¼
 					status->amotion = min(val, 2000);
 				}
 			}
@@ -6141,48 +6141,48 @@ void status_calc_bl_main(struct block_list *bl, std::bitset<SCB_MAX> flag)
 			status->amotion = cap_value(amotion, battle_config.monster_max_aspd, 2000);
 
 #ifndef Pandas_MapFlag_MaxASPD
-			// Õâ²¿·Ö´¦ÀíÈË¹¤ÉúÃüÌåºÍÍæ¼Òµ¥Î»ÒÔÍâµÄÆäËûµ¥Î» (Ó¶±ø¡¢Ä§ÎïµÈ),
-			// ÈôÃ»ÓĞÆôÓÃ maxaspd µØÍ¼±ê¼ÇÔò×ßÔ­À´µÄÁ÷³Ì.
+			// è¿™éƒ¨åˆ†å¤„ç†äººå·¥ç”Ÿå‘½ä½“å’Œç©å®¶å•ä½ä»¥å¤–çš„å…¶ä»–å•ä½ (ä½£å…µã€é­”ç‰©ç­‰),
+			// è‹¥æ²¡æœ‰å¯ç”¨ maxaspd åœ°å›¾æ ‡è®°åˆ™èµ°åŸæ¥çš„æµç¨‹.
 			
-			// ÆäÖĞ temp ÔÚÕâÀïÊÇÖ¸½« b_status->adelay ¹¥»÷ÑÓ³ÙÖµ°´ÕÕ status->aspd_rate ½øĞĞËõ·ÅºóµÄĞÂµÄÑÓ³ÙÖµ
-			// È»ºóÈ·±£ temp ²»µÍÓÚ battle_config.monster_max_aspd*2 ÇÒ²»¸ßÓÚ 4000, È»ºó½«ËüÓ¦ÓÃµ½ status->adelay
+			// å…¶ä¸­ temp åœ¨è¿™é‡Œæ˜¯æŒ‡å°† b_status->adelay æ”»å‡»å»¶è¿Ÿå€¼æŒ‰ç…§ status->aspd_rate è¿›è¡Œç¼©æ”¾åçš„æ–°çš„å»¶è¿Ÿå€¼
+			// ç„¶åç¡®ä¿ temp ä¸ä½äº battle_config.monster_max_aspd*2 ä¸”ä¸é«˜äº 4000, ç„¶åå°†å®ƒåº”ç”¨åˆ° status->adelay
 			temp = b_status->adelay*status->aspd_rate/1000;
 			status->adelay = cap_value(temp, battle_config.monster_max_aspd*2, 4000);
 #else
-			// Õâ²¿·Ö´¦ÀíÈË¹¤ÉúÃüÌåºÍÍæ¼Òµ¥Î»ÒÔÍâµÄÆäËûµ¥Î» (Ó¶±ø¡¢Ä§ÎïµÈ),
-			// ÒÑ¾­ÆôÓÃÁË maxaspd µØÍ¼±ê¼ÇÊ±, ÔòĞèÒª½«ÆäÓ°Ïì¿¼ÂÇÔÚÄÚÊ¹Ö®ÉúĞ§.
+			// è¿™éƒ¨åˆ†å¤„ç†äººå·¥ç”Ÿå‘½ä½“å’Œç©å®¶å•ä½ä»¥å¤–çš„å…¶ä»–å•ä½ (ä½£å…µã€é­”ç‰©ç­‰),
+			// å·²ç»å¯ç”¨äº† maxaspd åœ°å›¾æ ‡è®°æ—¶, åˆ™éœ€è¦å°†å…¶å½±å“è€ƒè™‘åœ¨å†…ä½¿ä¹‹ç”Ÿæ•ˆ.
 			
-			// ´Ë´¦µÄ adelay_bonus ÊÇĞèÒª½« adelay ÍØÕ¹µÄ±¶ÂÊÏµÊı
+			// æ­¤å¤„çš„ adelay_bonus æ˜¯éœ€è¦å°† adelay æ‹“å±•çš„å€ç‡ç³»æ•°
 			float adelay_bonus = 1.0f;
 
-			// ´Ë´¦µÄ amotion_origin ÓÃÓÚ±£´æÔ­Ê¼µÄ¹¥»÷¶¯×÷ÑÓ³Ù(amotion), ×¢Òâ¸ÃÖµ²¢²»ÊÇ b_status->amotion
-			// ¶øÊÇ»ùÓÚ b_status->amotion ÒÑ¾­±» status_calc_aspd_rate ºÍ status_calc_fix_aspd ĞŞÕı¹ıµÄÖµ
+			// æ­¤å¤„çš„ amotion_origin ç”¨äºä¿å­˜åŸå§‹çš„æ”»å‡»åŠ¨ä½œå»¶è¿Ÿ(amotion), æ³¨æ„è¯¥å€¼å¹¶ä¸æ˜¯ b_status->amotion
+			// è€Œæ˜¯åŸºäº b_status->amotion å·²ç»è¢« status_calc_aspd_rate å’Œ status_calc_fix_aspd ä¿®æ­£è¿‡çš„å€¼
 			pec_ushort amotion_origin = status->amotion;
 
 			if (bl->m != -1 && map_getmapflag(bl->m, MF_MAXASPD) && amotion_origin) {
 				int val = map_getmapflag_param(bl->m, MF_MAXASPD, 0);
 				if (val) {
-					// µØÍ¼±ê¼ÇÔ¤ÆÚµÄÑÓ³ÙÊ±¼ä
-					// ÑÓ³ÙÊ±¼ä = 2000 - 193(¼ÙÉè) * 10 = 2000 - 1930 = 70, Ò²¾ÍÊÇÑÓ³ÙÎª 70 ºÁÃë
+					// åœ°å›¾æ ‡è®°é¢„æœŸçš„å»¶è¿Ÿæ—¶é—´
+					// å»¶è¿Ÿæ—¶é—´ = 2000 - 193(å‡è®¾) * 10 = 2000 - 1930 = 70, ä¹Ÿå°±æ˜¯å»¶è¿Ÿä¸º 70 æ¯«ç§’
 					val = 2000 - val * 10;
 
-					// ÔÚ¾­¹ıÁË status_calc_aspd_rate ºÍ status_calc_fix_aspd ĞŞÕı¹ıµÄ¹¥»÷¶¯×÷ÑÓ³Ù
-					// ÓëµØÍ¼±ê¼ÇÔ¤ÆÚµÄÑÓ³ÙÊ±¼äÖĞÈ¡×î´óµÄÄÇ¸ö (ÑÓ³ÙÔ½´ó±íÊ¾¹¥»÷ËÙ¶ÈÔ½Âı)
+					// åœ¨ç»è¿‡äº† status_calc_aspd_rate å’Œ status_calc_fix_aspd ä¿®æ­£è¿‡çš„æ”»å‡»åŠ¨ä½œå»¶è¿Ÿ
+					// ä¸åœ°å›¾æ ‡è®°é¢„æœŸçš„å»¶è¿Ÿæ—¶é—´ä¸­å–æœ€å¤§çš„é‚£ä¸ª (å»¶è¿Ÿè¶Šå¤§è¡¨ç¤ºæ”»å‡»é€Ÿåº¦è¶Šæ…¢)
 					val = max(val, status->amotion);
 
-					// ËæºóÔÙÓë×î´óÑÓ³ÙÖµ 2000 ºÁÃë½øĞĞ±È½Ï, È¡±È½ÏĞ¡µÄÄÄ¸ö×÷ÎªÊµ¼ÊÉúĞ§Öµ
+					// éšåå†ä¸æœ€å¤§å»¶è¿Ÿå€¼ 2000 æ¯«ç§’è¿›è¡Œæ¯”è¾ƒ, å–æ¯”è¾ƒå°çš„å“ªä¸ªä½œä¸ºå®é™…ç”Ÿæ•ˆå€¼
 					status->amotion = min(val, 2000);
 
-					// ¼ÆËã³öÒ»¸ö×îĞÂµÄ¶¯×÷ÑÓ³ÙÖµÓëÔ­Ê¼µÄ¹¥»÷¶¯×÷ÑÓ³ÙÖµÖ®¼äµÄ±¶ÂÊÏµÊı
+					// è®¡ç®—å‡ºä¸€ä¸ªæœ€æ–°çš„åŠ¨ä½œå»¶è¿Ÿå€¼ä¸åŸå§‹çš„æ”»å‡»åŠ¨ä½œå»¶è¿Ÿå€¼ä¹‹é—´çš„å€ç‡ç³»æ•°
 					adelay_bonus = (float)status->amotion / (float)amotion_origin;
 				}
 			}
 
-			// ÆäÖĞ temp ÔÚÕâÀïÊÇÖ¸½« b_status->adelay ¹¥»÷ÑÓ³ÙÖµ°´ÕÕ status->aspd_rate ½øĞĞËõ·ÅºóµÄĞÂµÄÑÓ³ÙÖµ
-			// ÕâÀïÓëÈË¹¤ÉúÃüÌåËã·¨²îÒìµÄµØ·½ÊÇ: »¹»á¶îÍâ³ËÒÔ adelay_bonus ÏµÊı
+			// å…¶ä¸­ temp åœ¨è¿™é‡Œæ˜¯æŒ‡å°† b_status->adelay æ”»å‡»å»¶è¿Ÿå€¼æŒ‰ç…§ status->aspd_rate è¿›è¡Œç¼©æ”¾åçš„æ–°çš„å»¶è¿Ÿå€¼
+			// è¿™é‡Œä¸äººå·¥ç”Ÿå‘½ä½“ç®—æ³•å·®å¼‚çš„åœ°æ–¹æ˜¯: è¿˜ä¼šé¢å¤–ä¹˜ä»¥ adelay_bonus ç³»æ•°
 			temp = int((b_status->adelay * status->aspd_rate / 1000) * adelay_bonus);
 
-			// È»ºóÈ·±£ temp ²»µÍÓÚ battle_config.monster_max_aspd*2 ÇÒ²»¸ßÓÚ 4000, È»ºó½«ËüÓ¦ÓÃµ½ status->adelay
+			// ç„¶åç¡®ä¿ temp ä¸ä½äº battle_config.monster_max_aspd*2 ä¸”ä¸é«˜äº 4000, ç„¶åå°†å®ƒåº”ç”¨åˆ° status->adelay
 			status->adelay = cap_value(temp, battle_config.monster_max_aspd*2, 4000);
 #endif // Pandas_MapFlag_MaxASPD
 		}
@@ -6281,14 +6281,14 @@ void status_calc_bl_main(struct block_list *bl, std::bitset<SCB_MAX> flag)
 #ifdef Pandas_Persistent_SetUnitData_For_Monster_StatusData
 //************************************
 // Method:      restore_special_unitdata_for_mob
-// Description: Õë¶ÔÄ§Îïµ¥Î»¸ßÓÅÏÈ¼¶»Ö¸´ÒÑ¾­±» setunitdata ĞŞ¸Ä¹ıµÄ»ù´¡×´Ì¬ÉèÖÃ
+// Description: é’ˆå¯¹é­”ç‰©å•ä½é«˜ä¼˜å…ˆçº§æ¢å¤å·²ç»è¢« setunitdata ä¿®æ”¹è¿‡çš„åŸºç¡€çŠ¶æ€è®¾ç½®
 // Access:      public 
 // Parameter:   struct mob_data * md
 // Parameter:   struct status_data * status
 // Parameter:   struct status_data * previous_status
 // Parameter:   uint8 type
 // Returns:     void
-// Author:      SolaØ¼Ğ¡¿Ë(CairoLee)  2022/02/27 17:57
+// Author:      Solaä¸¶å°å…‹(CairoLee)  2022/02/27 17:57
 //************************************ 
 void restore_special_unitdata_for_mob(struct mob_data* md, struct status_data* status, struct status_data* previous_status, uint8 type) {
 	if (!md || !status || !previous_status)
@@ -6309,11 +6309,11 @@ void restore_special_unitdata_for_mob(struct mob_data* md, struct status_data* s
 	for (auto& it : *md->pandas.special_setunitdata) {
 
 		if (type & 1) {
-			// ÕıÔÚ³¢ÊÔ»Ö¸´µÄÄ¿±ê status ÊÇÕ½¶·×´Ì¬ (md->status) ¶ø²»ÊÇ»ù´¡×´Ì¬ (md->base_status),
-			// ÒÔÏÂÕâĞ©×Ö¶ÎÎÒÃÇÔÊĞíËû¸ßÓÅÏÈµÄ¸²¸Çµô¸ù¾İÁùÎ¬ÊôĞÔ¼ÆËã³öÀ´µÄÖµ.
+			// æ­£åœ¨å°è¯•æ¢å¤çš„ç›®æ ‡ status æ˜¯æˆ˜æ–—çŠ¶æ€ (md->status) è€Œä¸æ˜¯åŸºç¡€çŠ¶æ€ (md->base_status),
+			// ä»¥ä¸‹è¿™äº›å­—æ®µæˆ‘ä»¬å…è®¸ä»–é«˜ä¼˜å…ˆçš„è¦†ç›–æ‰æ ¹æ®å…­ç»´å±æ€§è®¡ç®—å‡ºæ¥çš„å€¼.
 			//
-			// ´ó¶àÊıµÄ×Ö¶ÎÆäÊµ»á×ğÖØ»ù´¡×´Ì¬ (base_status), ×ğÖØ»ù´¡×´Ì¬µÄ×Ö¶Î²»ÓÃÔÚ´ËÌØ±ğÉèÖÃ.
-			// Ö»ÓĞÀàËÆ UMOB_ATKMIN ºÍ UMOB_ATKMAX ÏÂÃæÕâËÄ¸ö²Å²»»á²Î¿¼»ù´¡×´Ì¬, Òò´ËËûÃÇĞèÒª±»ÌØÊâ´¦Àí.
+			// å¤§å¤šæ•°çš„å­—æ®µå…¶å®ä¼šå°Šé‡åŸºç¡€çŠ¶æ€ (base_status), å°Šé‡åŸºç¡€çŠ¶æ€çš„å­—æ®µä¸ç”¨åœ¨æ­¤ç‰¹åˆ«è®¾ç½®.
+			// åªæœ‰ç±»ä¼¼ UMOB_ATKMIN å’Œ UMOB_ATKMAX ä¸‹é¢è¿™å››ä¸ªæ‰ä¸ä¼šå‚è€ƒåŸºç¡€çŠ¶æ€, å› æ­¤ä»–ä»¬éœ€è¦è¢«ç‰¹æ®Šå¤„ç†.
 			switch (it.first) {
 			case UMOB_ATKMIN:
 			case UMOB_ATKMAX:
@@ -6421,17 +6421,17 @@ void status_calc_bl_(struct block_list* bl, std::bitset<SCB_MAX> flag, uint8 opt
 	}
 
 #ifdef Pandas_Persistent_SetUnitData_For_Monster_StatusData
-	// Èç¹ûÊÇÄ§ÎïÇÒÄ§ÎïÔø¾­±» setunitdata ÉèÖÃ¹ıÒ»Ğ©×Ö¶Î,
-	// ÄÇÃ´»Ö¸´ÕâĞ©×Ö¶Î¶ÔÄ§ÎïµÄÌØÊâÉèÖÃ (×¢Òâ: Ö»»á»Ö¸´Óë base_status Ïà¹ØµÄÉèÖÃ)
+	// å¦‚æœæ˜¯é­”ç‰©ä¸”é­”ç‰©æ›¾ç»è¢« setunitdata è®¾ç½®è¿‡ä¸€äº›å­—æ®µ,
+	// é‚£ä¹ˆæ¢å¤è¿™äº›å­—æ®µå¯¹é­”ç‰©çš„ç‰¹æ®Šè®¾ç½® (æ³¨æ„: åªä¼šæ¢å¤ä¸ base_status ç›¸å…³çš„è®¾ç½®)
 	if (flag[SCB_BASE] && bl->type == BL_MOB && backed_up) {
 		struct mob_data* md = BL_CAST(BL_MOB, bl);
 		if (md && !md->base_status && md->pandas.special_setunitdata && md->pandas.special_setunitdata->size()) {
-			// ÈôÄ§ÎïµÄ base_status ÊÇ¿ÕÖ¸Õë, ÄÇÃ´ËµÃ÷ÔÚÉÏÃæ status_calc_mob_ ¼ÆËã¹ı³ÌÖĞ±»ÊÍ·ÅÁË,
-			// ÕâÀïÖ±½Ó¸ù¾İ db ÖĞµÄ status Ö±½Ó½¨Á¢Ò»¸ö¸±±¾ÓÃÀ´³Ğ½Ó¼´½«Ë¢ÈëµÄÊı¾İ
+			// è‹¥é­”ç‰©çš„ base_status æ˜¯ç©ºæŒ‡é’ˆ, é‚£ä¹ˆè¯´æ˜åœ¨ä¸Šé¢ status_calc_mob_ è®¡ç®—è¿‡ç¨‹ä¸­è¢«é‡Šæ”¾äº†,
+			// è¿™é‡Œç›´æ¥æ ¹æ® db ä¸­çš„ status ç›´æ¥å»ºç«‹ä¸€ä¸ªå‰¯æœ¬ç”¨æ¥æ‰¿æ¥å³å°†åˆ·å…¥çš„æ•°æ®
 			md->base_status = (struct status_data*)aCalloc(1, sizeof(struct status_data));
 			memcpy(md->base_status, &md->db->status, sizeof(struct status_data));
 
-			// ÔÙ½«Ö®Ç°±¸·İµÄ previous_b_status °´ÒªÇóË¢Èëµ½µ±Ç°µÄ base_status ÖĞ
+			// å†å°†ä¹‹å‰å¤‡ä»½çš„ previous_b_status æŒ‰è¦æ±‚åˆ·å…¥åˆ°å½“å‰çš„ base_status ä¸­
 			restore_special_unitdata_for_mob(md, md->base_status, &previous_b_status, 0);
 		}
 	}
@@ -6446,9 +6446,9 @@ void status_calc_bl_(struct block_list* bl, std::bitset<SCB_MAX> flag, uint8 opt
 	status_calc_bl_main(bl, flag);
 
 #ifdef Pandas_Persistent_SetUnitData_For_Monster_StatusData
-	// ÉÏÃæµÄ status_calc_bl_main »á¸ù¾İÄ§ÎïµÄ STR µÈÁùÎ¬ÊôĞÔÀ´¼ÆËã matk_min¡¢matk_max µÈÕ½¶·Ê±µÄ¾ßÌåÊıÖµ.
-	// Õâ»áµ¼ÖÂÎÒÃÇÊ¹ÓÃ setunitdata ¿ÌÒâµ÷ÕûµÄ matk_min¡¢matk_max Ö±½ÓÊ§Ğ§,
-	// Òò´ËÕâÀïĞèÒªÔÙ½«ËûÃÇ»¹Ô­»ØÀ´µ½ÎÒÃÇµ÷ÓÃ setunitdata Ö®ºóÔ¤ÆÚµÄÊıÖµ
+	// ä¸Šé¢çš„ status_calc_bl_main ä¼šæ ¹æ®é­”ç‰©çš„ STR ç­‰å…­ç»´å±æ€§æ¥è®¡ç®— matk_minã€matk_max ç­‰æˆ˜æ–—æ—¶çš„å…·ä½“æ•°å€¼.
+	// è¿™ä¼šå¯¼è‡´æˆ‘ä»¬ä½¿ç”¨ setunitdata åˆ»æ„è°ƒæ•´çš„ matk_minã€matk_max ç›´æ¥å¤±æ•ˆ,
+	// å› æ­¤è¿™é‡Œéœ€è¦å†å°†ä»–ä»¬è¿˜åŸå›æ¥åˆ°æˆ‘ä»¬è°ƒç”¨ setunitdata ä¹‹åé¢„æœŸçš„æ•°å€¼
 	if (bl->type == BL_MOB && backed_up) {
 		struct mob_data* md = BL_CAST(BL_MOB, bl);
 		if (md && md->pandas.special_setunitdata && md->pandas.special_setunitdata->size()) {
@@ -9323,8 +9323,8 @@ int status_get_emblem_id(struct block_list *bl)
 	nullpo_ret(bl);
 
 #ifdef Pandas_MapFlag_HideGuildInfo
-	// Èôµ±Ç°µØÍ¼ÓĞ hideguildinfo ±ê¼Ç, ÄÇÃ´²»·µ»Ø½ÇÉ«¹«»áµÄÍ¼±ê±àºÅ
-	// ÕâÑùÔÚ GVG Ê±, ´¦ÓÚ GVG µØÍ¼Íæ¼Ò (ÒÔ¼°ÀàËÆµ¥Î») Í·ÉÏµÄ¹«»áÍ¼±ê²ÅÄÜ¹»±»Òş²Ø [SolaØ¼Ğ¡¿Ë]
+	// è‹¥å½“å‰åœ°å›¾æœ‰ hideguildinfo æ ‡è®°, é‚£ä¹ˆä¸è¿”å›è§’è‰²å…¬ä¼šçš„å›¾æ ‡ç¼–å·
+	// è¿™æ ·åœ¨ GVG æ—¶, å¤„äº GVG åœ°å›¾ç©å®¶ (ä»¥åŠç±»ä¼¼å•ä½) å¤´ä¸Šçš„å…¬ä¼šå›¾æ ‡æ‰èƒ½å¤Ÿè¢«éšè— [Solaä¸¶å°å…‹]
 	if (bl->m != -1 && map_getmapflag(bl->m, MF_HIDEGUILDINFO))
 		return 0;
 #endif // Pandas_MapFlag_HideGuildInfo
@@ -9644,17 +9644,17 @@ struct s_unit_common_data *status_get_ucd(struct block_list* bl)
 #ifdef Pandas_Helper_Common_Function
 //************************************
 // Method:      status_ishiding
-// Description: Óë pc_ishiding ÀàËÆ, ¿ÉÒÔÅĞ¶ÏÒ»¸öµ¥Î»ÊÇ·ñÒş²Ø
+// Description: ä¸ pc_ishiding ç±»ä¼¼, å¯ä»¥åˆ¤æ–­ä¸€ä¸ªå•ä½æ˜¯å¦éšè—
 // Access:      public 
 // Parameter:   struct block_list * bl
-//				¸Ã²ÎÊıÓÃÓÚÖ¸¶¨ĞèÒªÅĞ¶ÏÄÄ¸ö bl µ¥Î»µÄÊÇ·ñ´¦ÓÚÒş²Ø×´Ì¬
+//				è¯¥å‚æ•°ç”¨äºæŒ‡å®šéœ€è¦åˆ¤æ–­å“ªä¸ª bl å•ä½çš„æ˜¯å¦å¤„äºéšè—çŠ¶æ€
 // Parameter:   struct block_list * observer_bl
-//				¹Û²ìÕßµÄ bl Ö¸Õë (Ä¬ÈÏÎª nullptr ±íÊ¾Ã»ÓĞ¹Û²ìÕß, ÎŞĞè¿¼ÂÇ cloak Ó°Ïì)
-//				Í¨³£Çé¿öÏÂÒ»¸öÈç¹û±»¼ì²âµÄ bl µ¥Î»ÊÇÒ»¸ö npc,
-//				ÄÇÃ´¿ÉÄÜ»áÒòÎªÕâ¸ö npc ÒÑ¾­ÔÚÄ³¸ö observer_bl µÄÊÓÒ°ÖĞ±»Òş²Ø/ÏÔÊ¾ (cloakonnpc/cloakoffnpc)
-//				Òò´ËÏëÅĞ¶ÏÒ»¸öÄ¿±ê bl µ¥Î»µÄÊÇ·ñ´¦ÓÚÒş²Ø×´Ì¬µÄÊ±ºò, °Ñ observer_bl ´øÉÏÅĞ¶Ï¾Í»á´úÈë¹Û²ìÕßÊÓÒ°
+//				è§‚å¯Ÿè€…çš„ bl æŒ‡é’ˆ (é»˜è®¤ä¸º nullptr è¡¨ç¤ºæ²¡æœ‰è§‚å¯Ÿè€…, æ— éœ€è€ƒè™‘ cloak å½±å“)
+//				é€šå¸¸æƒ…å†µä¸‹ä¸€ä¸ªå¦‚æœè¢«æ£€æµ‹çš„ bl å•ä½æ˜¯ä¸€ä¸ª npc,
+//				é‚£ä¹ˆå¯èƒ½ä¼šå› ä¸ºè¿™ä¸ª npc å·²ç»åœ¨æŸä¸ª observer_bl çš„è§†é‡ä¸­è¢«éšè—/æ˜¾ç¤º (cloakonnpc/cloakoffnpc)
+//				å› æ­¤æƒ³åˆ¤æ–­ä¸€ä¸ªç›®æ ‡ bl å•ä½çš„æ˜¯å¦å¤„äºéšè—çŠ¶æ€çš„æ—¶å€™, æŠŠ observer_bl å¸¦ä¸Šåˆ¤æ–­å°±ä¼šä»£å…¥è§‚å¯Ÿè€…è§†é‡
 // Returns:     bool
-// Author:      SolaØ¼Ğ¡¿Ë(CairoLee)  2021/12/29 22:52
+// Author:      Solaä¸¶å°å…‹(CairoLee)  2021/12/29 22:52
 //************************************ 
 bool status_ishiding(struct block_list* bl, struct block_list* observer_bl) {
 	if (!bl) return false;
@@ -9678,11 +9678,11 @@ bool status_ishiding(struct block_list* bl, struct block_list* observer_bl) {
 
 //************************************
 // Method:      status_isinvisible
-// Description: Óë pc_isinvisible ÀàËÆ, ¿ÉÒÔÅĞ¶ÏÒ»¸öµ¥Î»ÊÇ·ñ´¦ÓÚ²»¿É¼û×´Ì¬
+// Description: ä¸ pc_isinvisible ç±»ä¼¼, å¯ä»¥åˆ¤æ–­ä¸€ä¸ªå•ä½æ˜¯å¦å¤„äºä¸å¯è§çŠ¶æ€
 // Access:      public 
 // Parameter:   struct block_list * bl
 // Returns:     bool
-// Author:      SolaØ¼Ğ¡¿Ë(CairoLee)  2020/10/11 17:53
+// Author:      Solaä¸¶å°å…‹(CairoLee)  2020/10/11 17:53
 //************************************
 bool status_isinvisible(struct block_list* bl) {
 	if (!bl) return false;
@@ -12142,7 +12142,7 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 			break;
 		case SC_GLOOMYDAY_SK:
 #ifdef Pandas_Crashfix_Divide_by_Zero
-			// ¼«¶ËÇé¿öÏÂ¿ÉÄÜ»áÔì³É³ıÊıÎªÁãµÄÇé¿ö, Ôø¾­ÓĞÈË±ÀÀ£ºóÉÏ±¨¹ı [SolaØ¼Ğ¡¿Ë]
+			// æç«¯æƒ…å†µä¸‹å¯èƒ½ä¼šé€ æˆé™¤æ•°ä¸ºé›¶çš„æƒ…å†µ, æ›¾ç»æœ‰äººå´©æºƒåä¸ŠæŠ¥è¿‡ [Solaä¸¶å°å…‹]
 			if (((sd ? pc_checkskill(sd, WM_LESSON) * 5 : 0) + val1 * 10) == 0) break;
 #endif // Pandas_Crashfix_Divide_by_Zero
 			// Random number between [15 ~ (Voice Lesson Skill Level x 5) + (Skill Level x 10)] %.
@@ -12661,7 +12661,7 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 		case SC_ARCLOUSEDASH:
 			val2 = 15 + 5 * val1; // AGI
 			val3 = 25; // Move speed increase
-			if (sd && (sd->class_&MAPID_BASEMASK) == MAPID_SUMMONER)
+			if (sd && (sd->class_& MAPID_SUMMONER) == MAPID_SUMMONER)
 				val4 = 10; // Ranged ATK increase
 			break;
 		case SC_SHRIMP:
@@ -13225,8 +13225,8 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 			clif_changelook(bl,LOOK_CLOTHES_COLOR,vd->cloth_color);
 		}
 #ifdef Pandas_Aura_Mechanism
-		// µ÷ÕûÒ»ÏÂ clif_changeoption ºÍ clif_changelook(bl,LOOK_BASE,vd->class_); µÄË³Ğò
-		// ËäÈ»ÔÚ status_change_start ÖĞÄ¿Ç°¿´ÆğÀ´ºÃÏñ²¢²»ĞèÒª, »¹ÊÇÒ»Æğ¸ÄÁË°É
+		// è°ƒæ•´ä¸€ä¸‹ clif_changeoption å’Œ clif_changelook(bl,LOOK_BASE,vd->class_); çš„é¡ºåº
+		// è™½ç„¶åœ¨ status_change_start ä¸­ç›®å‰çœ‹èµ·æ¥å¥½åƒå¹¶ä¸éœ€è¦, è¿˜æ˜¯ä¸€èµ·æ”¹äº†å§
 		clif_changeoption(bl);
 #endif // Pandas_Aura_Mechanism
 	}
@@ -13394,7 +13394,7 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 
 #ifdef Pandas_NpcExpress_SC_START
 	if (sd && sd->bl.type == BL_PC) {
-		pc_setreg(sd, add_str("@startedsc"), (int64)type);			// ÎªÁË¼æÈİSEAºÍCSEA
+		pc_setreg(sd, add_str("@startedsc"), (int64)type);			// ä¸ºäº†å…¼å®¹SEAå’ŒCSEA
 		pc_setreg(sd, add_str("@started_sc_id"), (int64)type);
 		pc_setreg(sd, add_str("@started_sc_rate"), rate);
 		pc_setreg(sd, add_str("@started_sc_tick"), tick);
@@ -14171,9 +14171,9 @@ int status_change_end_(struct block_list* bl, enum sc_type type, int tid, const 
 			clif_changelook(bl,LOOK_BODY2,cap_value(sd->status.body,0,battle_config.max_body_style));
 		}
 #ifdef Pandas_Aura_Mechanism
-		// ½«ÉÏÃæµÄ clif_changeoption ×ªÒÆµ½ÏÂÃæÀ´
-		// ·ñÔòÔÚ clif_changeoption ÖĞ¶Ô×Ô¼º·¢ËÍÌØÊâĞ§¹û (202 / 362) ĞÅÏ¢ºó, »á±»
-		// clif_changelook(bl,LOOK_BASE,sd->vd.class_); Çå¿Õµô, µ¼ÖÂ»Ö¸´ÒşÄä/Î±×°ºó×Ô¼ºÎŞ·¨¿´µ½ÌØÊâĞ§¹û
+		// å°†ä¸Šé¢çš„ clif_changeoption è½¬ç§»åˆ°ä¸‹é¢æ¥
+		// å¦åˆ™åœ¨ clif_changeoption ä¸­å¯¹è‡ªå·±å‘é€ç‰¹æ®Šæ•ˆæœ (202 / 362) ä¿¡æ¯å, ä¼šè¢«
+		// clif_changelook(bl,LOOK_BASE,sd->vd.class_); æ¸…ç©ºæ‰, å¯¼è‡´æ¢å¤éšåŒ¿/ä¼ªè£…åè‡ªå·±æ— æ³•çœ‹åˆ°ç‰¹æ®Šæ•ˆæœ
 		clif_changeoption(bl);
 #endif // Pandas_Aura_Mechanism
 	}
@@ -14201,7 +14201,7 @@ int status_change_end_(struct block_list* bl, enum sc_type type, int tid, const 
 
 #ifdef Pandas_NpcExpress_SC_END
 	if (sd && sd->bl.type == BL_PC) {
-		pc_setreg(sd, add_str("@endedsc"), (int64)type);			// ÎªÁË¼æÈİSEAºÍCSEA
+		pc_setreg(sd, add_str("@endedsc"), (int64)type);			// ä¸ºäº†å…¼å®¹SEAå’ŒCSEA
 		pc_setreg(sd, add_str("@ended_sc_id"), (int64)type);
 		npc_script_event(sd, NPCX_SC_END);
 	}
@@ -14525,18 +14525,18 @@ TIMER_FUNC(status_change_timer){
 					clif_bossmapinfo(sd, boss_md, BOSS_INFO_DEAD);
 				}
 #ifdef Pandas_ScriptCommand_BossMonster
-				// ÈôÖ®Ç°¸ú×ÙµÄ BOSS ÒÑ¾­ËÀÍö²¢µÈ´ıÖØÉú, ÄÇÃ´¸ú×ÙÏÂÒ»¸ö´æ»îµÄ BOSS
+				// è‹¥ä¹‹å‰è·Ÿè¸ªçš„ BOSS å·²ç»æ­»äº¡å¹¶ç­‰å¾…é‡ç”Ÿ, é‚£ä¹ˆè·Ÿè¸ªä¸‹ä¸€ä¸ªå­˜æ´»çš„ BOSS
 				if (boss_md->spawn_timer != INVALID_TIMER && sce->val2) {
-					// »ñÈ¡Íæ¼ÒËùÔÚµØÍ¼µÄÏÂÒ»Ö»´æ»îµÄ BOSS
+					// è·å–ç©å®¶æ‰€åœ¨åœ°å›¾çš„ä¸‹ä¸€åªå­˜æ´»çš„ BOSS
 					struct mob_data* next_boss_md = map_getmob_boss(sd->bl.m, true);
 
-					// Ö»Òª²»ÖØ¸´ÇÒÈ·Êµ»î×Å, ÔòÇĞ»»ÏÂÒ»´ÎÑ­»·Ê±¸ú×ÙµÄ BOSS µ¥Î»
+					// åªè¦ä¸é‡å¤ä¸”ç¡®å®æ´»ç€, åˆ™åˆ‡æ¢ä¸‹ä¸€æ¬¡å¾ªç¯æ—¶è·Ÿè¸ªçš„ BOSS å•ä½
 					if (next_boss_md && boss_md != next_boss_md) {
 						boss_md = next_boss_md;
 
 						sce->val1 = boss_md->bl.id;
 
-						// ÈôĞÂ¸ú×ÙµÄ BOSS ´¦ÓÚ´æ»î×´Ì¬, ÄÇÃ´ÖØĞÂ¸æËßÍæ¼ÒÎÒÃÇÌ½²âµ½ÁËĞÂµÄ BOSS
+						// è‹¥æ–°è·Ÿè¸ªçš„ BOSS å¤„äºå­˜æ´»çŠ¶æ€, é‚£ä¹ˆé‡æ–°å‘Šè¯‰ç©å®¶æˆ‘ä»¬æ¢æµ‹åˆ°äº†æ–°çš„ BOSS
 						if (boss_md->spawn_timer == INVALID_TIMER)
 							clif_bossmapinfo(sd, boss_md, BOSS_INFO_ALIVE_WITHMSG);
 					}
@@ -14545,20 +14545,20 @@ TIMER_FUNC(status_change_timer){
 			}
 #ifdef Pandas_ScriptCommand_BossMonster
 			else {
-				// Èô¸ú×ÙµÄ BOSS ÓÎÏ·µ¥Î»±àºÅÒÑ¾­²»´æÔÚ, ÄÇÃ´¸ú×ÙÏÂÒ»¸ö´æ»îµÄ BOSS
-				// ±¸×¢: ÁÙÊ±ÕÙ»½µÄ BOSS ²Å»á³öÏÖÕâÑùµÄÇé¿ö, ½Å±¾ÀïĞ´ËÀµÄ×ÔÈ»ÖØÉú BOSS ¾ÍËãËÀÍö, ÓÎÏ·µ¥Î»±àºÅÒ²»¹ÔÚ
+				// è‹¥è·Ÿè¸ªçš„ BOSS æ¸¸æˆå•ä½ç¼–å·å·²ç»ä¸å­˜åœ¨, é‚£ä¹ˆè·Ÿè¸ªä¸‹ä¸€ä¸ªå­˜æ´»çš„ BOSS
+				// å¤‡æ³¨: ä¸´æ—¶å¬å”¤çš„ BOSS æ‰ä¼šå‡ºç°è¿™æ ·çš„æƒ…å†µ, è„šæœ¬é‡Œå†™æ­»çš„è‡ªç„¶é‡ç”Ÿ BOSS å°±ç®—æ­»äº¡, æ¸¸æˆå•ä½ç¼–å·ä¹Ÿè¿˜åœ¨
 				struct mob_data* next_boss_md = map_getmob_boss(sd->bl.m, true);
 
-				// Ö»Òª²»ÖØ¸´ÇÒÈ·Êµ»î×Å, ÔòÇĞ»»ÏÂÒ»´ÎÑ­»·Ê±¸ú×ÙµÄ BOSS µ¥Î»
+				// åªè¦ä¸é‡å¤ä¸”ç¡®å®æ´»ç€, åˆ™åˆ‡æ¢ä¸‹ä¸€æ¬¡å¾ªç¯æ—¶è·Ÿè¸ªçš„ BOSS å•ä½
 				if (next_boss_md) {
 					sce->val1 = next_boss_md->bl.id;
 
-					// ÈôĞÂ¸ú×ÙµÄ BOSS ´¦ÓÚ´æ»î×´Ì¬, ÄÇÃ´ÖØĞÂ¸æËßÍæ¼ÒÎÒÃÇÌ½²âµ½ÁËĞÂµÄ BOSS
+					// è‹¥æ–°è·Ÿè¸ªçš„ BOSS å¤„äºå­˜æ´»çŠ¶æ€, é‚£ä¹ˆé‡æ–°å‘Šè¯‰ç©å®¶æˆ‘ä»¬æ¢æµ‹åˆ°äº†æ–°çš„ BOSS
 					if (next_boss_md->spawn_timer == INVALID_TIMER)
 						clif_bossmapinfo(sd, next_boss_md, BOSS_INFO_ALIVE_WITHMSG);
 				}
 				else if (!sce->val2) {
-					// Ã»ÓĞÕÒµ½ºÏÊÊµÄÏÂÒ»¸ö¿É¸ú×Ù BOSS, ÄÇÃ´ÇåÀíµô¿Í»§¶ËĞ¡µØÍ¼µÄ BOSS ±ê¼Ç
+					// æ²¡æœ‰æ‰¾åˆ°åˆé€‚çš„ä¸‹ä¸€ä¸ªå¯è·Ÿè¸ª BOSS, é‚£ä¹ˆæ¸…ç†æ‰å®¢æˆ·ç«¯å°åœ°å›¾çš„ BOSS æ ‡è®°
 					sce->val2 = 1;
 					clif_bossmapinfo_clear(sd);
 				}
