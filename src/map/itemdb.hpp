@@ -1,4 +1,4 @@
-// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
+ï»¿// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
 #ifndef ITEMDB_HPP
@@ -971,6 +971,29 @@ enum e_random_item_group {
 	IG_SHADOW_CUBE_SHIELD,
 	IG_SHADOW_CUBE_SHOES,
 	IG_SHADOW_CUBE_WEAPON,
+	IG_AUTOMATIC_MODULE_MIX,
+	IG_EPIC_MODULE_MIX,
+	IG_AUTO_M_I_BOX_A,
+	IG_AUTO_M_I_BOX_B,
+	IG_ILLUSION_MODULE_MIX,
+	IG_ENCHANT_STONE_BOX22,
+	IG_ENCHANT_STONE_BOX23,
+	IG_ENCHANT_STONE_BOX24,
+	IG_ENCHANT_STONE_BOX25,
+	IG_ENCHANT_STONE_BOX27,
+	IG_ANCIENT_HERO_BOX_1,
+	IG_3LV_9REFINE_WEAPON_7GU,
+	IG_3LV_10REFINE_WEAPON_8GU,
+	IG_3LV_11REFINE_WEAPON_9GU,
+	IG_3LV_12REFINE_WEAPON_10G,
+	IG_4LV_9REFINE_WEAPON_8GU,
+	IG_4LV_10REFINE_WEAPON_9GU,
+	IG_4LV_11REFINE_WEAPON_10G,
+	IG_BS_ITEM_M_S_52,
+	IG_Bs_Item_M_S_53,
+	IG_Bs_Item_M_S_54,
+	IG_Bs_Item_M_S_55,
+	IG_Bs_Item_M_S_56,
 	IG_BS_ITEM_M_S_52,
 	IG_BS_ITEM_M_S_53,
 	IG_BS_ITEM_M_S_54,
@@ -1272,18 +1295,18 @@ struct item_data
 #endif // Pandas_Struct_Item_Data_Script_Plaintext
 
 #ifdef Pandas_Struct_Item_Data_Taming_Mobid
-		// Ê¹ item_data ¿É¼ÇÂ¼µ±Ç°ÎïÆ·¿É²¶×½µÄÄ§Îï±àºÅ [SolaØ¼Ğ¡¿Ë]
-		// Èô vector Îª¿ÕÔò±íÊ¾Õâ²»ÊÇ³èÎï²¶×½µÀ¾ß, Èô·Ç¿ÕÔò¼ÇÂ¼´ËµÀ¾ßÖ§³Ö²¶×½µÄÄ§Îï±àºÅ
+		// ä½¿ item_data å¯è®°å½•å½“å‰ç‰©å“å¯æ•æ‰çš„é­”ç‰©ç¼–å· [Solaä¸¶å°å…‹]
+		// è‹¥ vector ä¸ºç©ºåˆ™è¡¨ç¤ºè¿™ä¸æ˜¯å® ç‰©æ•æ‰é“å…·, è‹¥éç©ºåˆ™è®°å½•æ­¤é“å…·æ”¯æŒæ•æ‰çš„é­”ç‰©ç¼–å·
 		std::vector<uint32> taming_mobid;
 #endif // Pandas_Struct_Item_Data_Taming_Mobid
 
 #ifdef Pandas_Struct_Item_Data_Has_CallFunc
-		// Ê¹ item_data ¿É¼ÇÂ¼´ËÎïÆ·µÄÊ¹ÓÃ½Å±¾ÊÇ·ñÖ´ĞĞÁË callfunc Ö¸Áî [SolaØ¼Ğ¡¿Ë]
+		// ä½¿ item_data å¯è®°å½•æ­¤ç‰©å“çš„ä½¿ç”¨è„šæœ¬æ˜¯å¦æ‰§è¡Œäº† callfunc æŒ‡ä»¤ [Solaä¸¶å°å…‹]
 		bool has_callfunc = false;
 #endif // Pandas_Struct_Item_Data_Has_CallFunc
 
 #ifdef Pandas_Struct_Item_Data_Properties
-		// Ê¹ item_data ¿É¼ÇÂ¼´ËÎïÆ·µÄÌØÊâÊôĞÔ [SolaØ¼Ğ¡¿Ë]
+		// ä½¿ item_data å¯è®°å½•æ­¤ç‰©å“çš„ç‰¹æ®Šå±æ€§ [Solaä¸¶å°å…‹]
 		struct {
 			uint32 special_mask = 0;
 			uint32 noview_mask = 0;
