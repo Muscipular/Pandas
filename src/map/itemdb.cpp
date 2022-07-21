@@ -831,8 +831,12 @@ uint64 ItemDatabase::parseBodyNode(const ryml::NodeRef& node) {
 
 			item->flag.dropEffect = static_cast<e_item_drop_effect>(constant);
 		} else {
-			if (!exists)
+			if (!exists) {
+				if (item->type == IT_CARD && item->subtype == CARD_NORMAL) {
+					item->flag.dropEffect = DROPEFFECT_GREEN_PILLAR;
+				}
 				item->flag.dropEffect = DROPEFFECT_NONE;
+			}
 		}
 	} else {
 		if (!exists) {
