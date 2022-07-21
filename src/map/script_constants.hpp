@@ -6296,10 +6296,10 @@
 	export_constant(IG_4LV_10REFINE_WEAPON_9GU);
 	export_constant(IG_4LV_11REFINE_WEAPON_10G);
 	export_constant(IG_BS_ITEM_M_S_52);
-	export_constant(IG_Bs_Item_M_S_53);
-	export_constant(IG_Bs_Item_M_S_54);
-	export_constant(IG_Bs_Item_M_S_55);
-	export_constant(IG_Bs_Item_M_S_56);
+	export_constant(IG_BS_ITEM_M_S_53);
+	export_constant(IG_BS_ITEM_M_S_54);
+	export_constant(IG_BS_ITEM_M_S_55);
+	export_constant(IG_BS_ITEM_M_S_56);
 	export_constant(IG_BS_ITEM_M_S_52);
 	export_constant(IG_BS_ITEM_M_S_53);
 	export_constant(IG_BS_ITEM_M_S_54);
