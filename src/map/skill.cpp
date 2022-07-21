@@ -3852,10 +3852,10 @@ int64 skill_attack (int attack_type, struct block_list* src, struct block_list *
 
 #ifdef Pandas_NpcExpress_PCHARMED
 	if (src && bl && damage > 0) {
-		// 负责执行事件的玩家对象 (事件执行者)
+		// 璐熻矗鎵ц浜嬩欢鐨勭帺瀹跺璞?(浜嬩欢鎵ц鑰?
 		struct map_session_data* esd = nullptr;
 
-		// 若受伤害者不是玩家单位, 那么试图获取受伤害者的主人
+		// 鑻ュ彈浼ゅ鑰呬笉鏄帺瀹跺崟浣? 閭ｄ箞璇曞浘鑾峰彇鍙椾激瀹宠€呯殑涓讳汉
 		if (bl->type != BL_PC) {
 			struct block_list* mbl = nullptr;
 			mbl = battle_get_master(bl);
@@ -3864,13 +3864,13 @@ int64 skill_attack (int attack_type, struct block_list* src, struct block_list *
 			}
 		}
 		
-		// 若负责执行事件的玩家对象依然没被指定
-		// 且受伤害者是一个玩家单位, 那么将受伤害者直接指定成负责执行事件的玩家
+		// 鑻ヨ礋璐ｆ墽琛屼簨浠剁殑鐜╁瀵硅薄渚濈劧娌¤鎸囧畾
+		// 涓斿彈浼ゅ鑰呮槸涓€涓帺瀹跺崟浣? 閭ｄ箞灏嗗彈浼ゅ鑰呯洿鎺ユ寚瀹氭垚璐熻矗鎵ц浜嬩欢鐨勭帺瀹?
 		if (!esd && bl->type == BL_PC) {
 			esd = (TBL_PC*)bl;
 		}
 
-		// 若到这里还没有一个合适的事件执行者则不需要触发事件
+		// 鑻ュ埌杩欓噷杩樻病鏈変竴涓悎閫傜殑浜嬩欢鎵ц鑰呭垯涓嶉渶瑕佽Е鍙戜簨浠?
 		if (esd) {
 			pc_setreg(esd, add_str("@harmed_target_type"), bl->type);
 			pc_setreg(esd, add_str("@harmed_target_gid"), bl->id);
@@ -24359,7 +24359,7 @@ uint64 SkillDatabase::parseBodyNode(const ryml::NodeRef& node) {
 #ifndef Pandas_UserExperience_Yaml_Error
 			this->invalidWarning(unitNode["Id"], "Unit requires an Id.\n");
 #else
-			// 上面都已经判断 Id 节点不存在了, 这里就不应该用 ["Id"] 啦
+			// 涓婇潰閮藉凡缁忓垽鏂?Id 鑺傜偣涓嶅瓨鍦ㄤ簡, 杩欓噷灏变笉搴旇鐢?["Id"] 鍟?
 			this->invalidWarning(unitNode, "Unit requires an Id.\n");
 #endif // Pandas_UserExperience_Yaml_Error
 			return 0;
