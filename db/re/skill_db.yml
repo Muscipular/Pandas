@@ -40911,12 +40911,11 @@ Body:
     TargetType: Attack
     DamageFlags:
       Critical: true
+      Splash: true
     Range: -9
     Hit: Multi_Hit
     HitCount: 1
     Element: Weapon
-    DamageFlags:
-      Splash: true
     SplashArea:
       - Level: 1
         Area: 2
@@ -43441,8 +43440,6 @@ Body:
     Hit: Multi_Hit
     HitCount: -3
     Element: Weapon
-    DamageFlags:
-      Splash: true
     SplashArea: 2
     CastTime: 1000
     Cooldown: 5000
