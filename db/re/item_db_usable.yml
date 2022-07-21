@@ -52672,7 +52672,7 @@ Body:
       getgroupitem(IG_MONTHLY_BUFF_PACKAGE);
   - Id: 200199
     AegisName: Monthly_Battle_Package
-    Name: Monthly Combat Manual Package	
+    Name: Monthly Combat Manual Package
     Type: Cash
     Flags:
       Container: true
