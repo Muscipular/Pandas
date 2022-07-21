@@ -6300,11 +6300,6 @@
 	export_constant(IG_BS_ITEM_M_S_54);
 	export_constant(IG_BS_ITEM_M_S_55);
 	export_constant(IG_BS_ITEM_M_S_56);
-	export_constant(IG_BS_ITEM_M_S_52);
-	export_constant(IG_BS_ITEM_M_S_53);
-	export_constant(IG_BS_ITEM_M_S_54);
-	export_constant(IG_BS_ITEM_M_S_55);
-	export_constant(IG_BS_ITEM_M_S_56);
 	export_constant(IG_BS_ITEM_M_S_57);
 	export_constant(IG_BS_ITEM_M_S_58);
 	export_constant(IG_BS_ITEM_M_S_59);
