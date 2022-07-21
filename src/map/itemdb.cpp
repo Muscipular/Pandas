@@ -814,12 +814,17 @@ uint64 ItemDatabase::parseBodyNode(const ryml::NodeRef& node) {
 			}
 
 			item->flag.dropEffect = static_cast<e_item_drop_effect>(constant);
+			if (item->type == IT_CARD && item->subtype == CARD_NORMAL && item->flag.dropEffect == DROPEFFECT_CLIENT) {
+				item->flag.dropEffect = DROPEFFECT_GREEN_PILLAR;
+			}
 		} else {
 			if (!exists) {
 				if (item->type == IT_CARD && item->subtype == CARD_NORMAL) {
 					item->flag.dropEffect = DROPEFFECT_GREEN_PILLAR;
 				}
-				item->flag.dropEffect = DROPEFFECT_NONE;
+				else {
+					item->flag.dropEffect = DROPEFFECT_NONE;
+				}
 			}
 		}
 	} else {
@@ -832,7 +837,12 @@ uint64 ItemDatabase::parseBodyNode(const ryml::NodeRef& node) {
 			item->flag.broadcast = false;
 			if (!(item->flag.delay_consume & DELAYCONSUME_TEMP))
 				item->flag.delay_consume = DELAYCONSUME_NONE;
-			item->flag.dropEffect = DROPEFFECT_NONE;
+			if (item->type == IT_CARD && item->subtype == CARD_NORMAL) {
+				item->flag.dropEffect = DROPEFFECT_GREEN_PILLAR;
+			}
+			else {
+				item->flag.dropEffect = DROPEFFECT_NONE;
+			}
 		}
 	}
 
