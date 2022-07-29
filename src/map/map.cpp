@@ -2953,6 +2953,9 @@ int map_addinstancemap(int src_m, int instance_id, bool no_mapflag)
 
 	if(!no_mapflag)
 		map_data_copy(dst_map, src_map);
+	else {
+		dst_map->flag.resize(MF_MAX, 0);
+	}
 
 	ShowInfo("[Instance] Created map '%s' (%d) from '%s' (%d).\n", dst_map->name, dst_map->m, name, src_map->m);
 

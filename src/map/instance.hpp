@@ -135,6 +135,7 @@ bool instance_delusers(int instance_id);
 void instance_generate_mapname(int map_id, int instance_id, char outname[MAP_NAME_LENGTH]);
 int16 instance_mapid(int16 m, int instance_id);
 int instance_addmap(int instance_id);
+int instance_addmap(int instance_id, const char *name, int nomapflag, int nonpc);
 
 void instance_addnpc(std::shared_ptr<s_instance_data> idata);
 
