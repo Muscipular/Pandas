@@ -140,6 +140,7 @@ void instance_generate_mapname(int map_id, int instance_id, char outname[MAP_NAM
 int16 instance_mapid(int16 m, int instance_id);
 int instance_addmap(int instance_id);
 int instance_addmap(int instance_id, const char *name, int nomapflag, int nonpc);
+const char* instance_addwarp(int instance_id, const char* from_map, int x, int y, const char* to_map, int to_x, int to_y);
 
 void instance_addnpc(std::shared_ptr<s_instance_data> idata);
 
