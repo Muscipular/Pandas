@@ -777,6 +777,29 @@ int instance_addmap(int instance_id, const char* name, int nomapflag, int nonpc)
 	return entry.m;
 }
 
+const char* instance_addwarp(int instance_id, const char* from_map, int x, int y, const char* to_map, int to_x, int to_y)
+{
+	char warpname[NPC_NAME_LENGTH];
+	unsigned short m, to_m;
+	struct npc_data* nd;
+
+	memset(warpname, '\0', sizeof(warpname));
+	sprintf_s(warpname, "%d_warp", instance_id);
+
+	m = map_mapname2mapid(from_map);
+	if (m < 0) {
+		return "NOFROMMAP";
+	}
+	to_m = mapindex_name2id(to_map);
+	if (to_m < 0) {
+		return "NOTOMAP";
+	}
+	nd = npc_add_warp(warpname, m, x, y, 2, 2, to_m, to_x, to_y);
+	if (nd == NULL)
+		return "NONPC";
+	return nd->name;
+}
+
 /**
  * Fills outname with the name of the instance map name
  * @param map_id: Mapid to use
