@@ -1,4 +1,4 @@
-ï»¿// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
+// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
 #include "status.hpp"
@@ -1917,7 +1917,6 @@ bool status_check_skilluse(struct block_list *src, struct block_list *target, ui
 				return false;
 			break;
 		case AL_TELEPORT:
-		case ALL_ODINS_POWER:
 			// Should fail when used on top of Land Protector [Skotlex]
 			if (src && map_getcell(src->m, src->x, src->y, CELL_CHKLANDPROTECTOR)
 				&& !status_has_mode(status,MD_STATUSIMMUNE)
@@ -2859,9 +2858,9 @@ int status_calc_mob_(struct mob_data* md, uint8 opt)
 						// Its unknown how the summoner's stats affects the ABR's stats.
 						// I decided to do something similar to elementals for now until I know.
 						// Also added hit increase from ABR-Mastery for balance reasons. [Rytech]
-						status->max_hp = (5000 + 2000 * abr_mastery) * mstatus->vit / 100;
-						status->rhw.atk = (2 * mstatus->batk + 500 + 200 * abr_mastery) * 70 / 100;
-						status->rhw.atk2 = 2 * mstatus->batk + 500 + 200 * abr_mastery;
+						status->max_hp = (5000 + 40000 * abr_mastery) * mstatus->vit / 100;
+						status->rhw.atk = (2 * mstatus->batk + 200 + 600 * abr_mastery) * 70 / 100;
+						status->rhw.atk2 = 2 * mstatus->batk + 200 + 600 * abr_mastery;
 						status->def = mstatus->def + 20 * abr_mastery;
 						status->mdef = mstatus->mdef + 4 * abr_mastery;
 						status->hit = mstatus->hit + 5 * abr_mastery / 2;
@@ -2894,10 +2893,10 @@ int status_calc_mob_(struct mob_data* md, uint8 opt)
 						// Its unknown how the summoner's stats affects the bionic's stats.
 						// I decided to do something similar to elementals for now until I know.
 						// Also added hit increase from Bionic-Mastery for balance reasons. [Rytech]
-						status->max_hp = (5000 + 2000 * bionic_mastery) * mstatus->vit / 100;
+						status->max_hp = (5000 + 40000 * bionic_mastery) * mstatus->vit / 100;
 						//status->max_sp = (50 + 20 * bionic_mastery) * mstatus->int_ / 100;// Wait what??? Bionic Mastery increases MaxSP? They have SP???
-						status->rhw.atk = (2 * mstatus->batk + 200 * bionic_mastery) * 70 / 100;
-						status->rhw.atk2 = 2 * mstatus->batk + 200 * bionic_mastery;
+						status->rhw.atk = (2 * mstatus->batk + 600 * bionic_mastery) * 70 / 100;
+						status->rhw.atk2 = 2 * mstatus->batk + 600 * bionic_mastery;
 						status->def = mstatus->def + 20 * bionic_mastery;
 						status->mdef = mstatus->mdef + 4 * bionic_mastery;
 						status->hit = mstatus->hit + 5 * bionic_mastery / 2;
@@ -3506,8 +3505,8 @@ bool status_calc_weight(struct map_session_data *sd, enum e_status_calc_weight_o
 #ifndef Pandas_Extreme_Computing
 	sd->max_weight = job_db.get_maxWeight(pc_mapid2jobid(sd->class_, sd->status.sex)) + sd->status.str * 300; // Recalculate max weight
 #else
-	// å®¢æˆ·ç«¯èƒ½å±•ç°æœ€å¤§çš„è´Ÿé‡æ•°å€¼æ˜¯ 0x7FFFFFFF (2147483647)
-	// ç”±äºè§£é™¤äº† str çš„ä¸Šé™, è¿™é‡Œå¯èƒ½ä¼šçˆ†æ‰, å› æ­¤é¢å¤–åšä¸€äº›é˜²æ­¢æº¢å‡ºçš„è§„é¿æªæ–½
+	// ¿Í»§¶ËÄÜÕ¹ÏÖ×î´óµÄ¸ºÖØÊıÖµÊÇ 0x7FFFFFFF (2147483647)
+	// ÓÉÓÚ½â³ıÁË str µÄÉÏÏŞ, ÕâÀï¿ÉÄÜ»á±¬µô, Òò´Ë¶îÍâ×öÒ»Ğ©·ÀÖ¹Òç³öµÄ¹æ±Ü´ëÊ©
 	sd->max_weight = cap_value(job_db.get_maxWeight(pc_mapid2jobid(sd->class_, sd->status.sex)) + sd->status.str * 300, 0, PEC_MAX_WEIGHT);
 #endif // Pandas_Extreme_Computing
 
@@ -3549,7 +3548,7 @@ bool status_calc_weight(struct map_session_data *sd, enum e_status_calc_weight_o
 		else if (pc_isridingdragon(sd))
 			add_max_weight += 5000 + 2000 * pc_checkskill(sd, RK_DRAGONTRAINING);
 
-		// è®¡ç®— SC_KNOWLEDGE æ—¶éœ€è¦ä¾èµ–å åŠ è‡³ä»Šçš„ max_weight, èµ‹å€¼ä¸€ä¸‹
+		// ¼ÆËã SC_KNOWLEDGE Ê±ĞèÒªÒÀÀµµş¼ÓÖÁ½ñµÄ max_weight, ¸³ÖµÒ»ÏÂ
 		sd->max_weight = cap_value(sd->max_weight + add_max_weight, 0, PEC_MAX_WEIGHT);
 		add_max_weight = 0;
 
@@ -3748,8 +3747,8 @@ int status_calc_pc_sub(struct map_session_data* sd, uint8 opt)
 	sd->itemsphealrate.clear();
 	sd->itemgroupsphealrate.clear();
 #ifdef Pandas_Bonus2_bAddSkillRange
-	// è‹¥ addskillrange ä¸­å­˜åœ¨è¢«è°ƒæ•´è¿‡æ”»å‡»è·ç¦»çš„æŠ€èƒ½,
-	// é‚£ä¹ˆåœ¨é‡ç½®ä¹‹å‰å…ˆå°†æŠ€èƒ½ç¼–å·ä¿å­˜ä¸‹æ¥
+	// Èô addskillrange ÖĞ´æÔÚ±»µ÷Õû¹ı¹¥»÷¾àÀëµÄ¼¼ÄÜ,
+	// ÄÇÃ´ÔÚÖØÖÃÖ®Ç°ÏÈ½«¼¼ÄÜ±àºÅ±£´æÏÂÀ´
 	std::vector<uint16> skillid_list;
 	if (sd->addskillrange.size()) {
 		for (auto& it : sd->addskillrange) {
@@ -3757,10 +3756,10 @@ int status_calc_pc_sub(struct map_session_data* sd, uint8 opt)
 		}
 	}
 
-	// ç„¶åè¿›è¡Œé‡ç½®æ“ä½œ
+	// È»ºó½øĞĞÖØÖÃ²Ù×÷
 	sd->addskillrange.clear();
 
-	// æœ€ååˆ·æ–°å®¢æˆ·ç«¯å…³äºè¿™äº›æŠ€èƒ½çš„æ”»å‡»è·ç¦»ä¿¡æ¯
+	// ×îºóË¢ĞÂ¿Í»§¶Ë¹ØÓÚÕâĞ©¼¼ÄÜµÄ¹¥»÷¾àÀëĞÅÏ¢
 	for (auto& it : skillid_list) {
 		clif_skillinfo(sd, it, 0);
 	}
@@ -4251,7 +4250,7 @@ int status_calc_pc_sub(struct map_session_data* sd, uint8 opt)
 	base_status->max_hp = sd->status.max_hp = status_calc_maxhpsp_pc(sd,base_status->vit,true);
 
 #ifndef Pandas_Extreme_Computing
-	// æ­¤å¤„é€»è¾‘å·²ç»è¢«è½¬å…¥åˆ° status_calc_maxhpsp_pc å‡½æ•°ä¸­å®ç°, æ­¤å¤„æ— éœ€é‡å¤è¿›è¡Œ
+	// ´Ë´¦Âß¼­ÒÑ¾­±»×ªÈëµ½ status_calc_maxhpsp_pc º¯ÊıÖĞÊµÏÖ, ´Ë´¦ÎŞĞèÖØ¸´½øĞĞ
 	if(battle_config.hp_rate != 100)
 		base_status->max_hp = (unsigned int)(battle_config.hp_rate * (base_status->max_hp/100.));
 
@@ -4267,7 +4266,7 @@ int status_calc_pc_sub(struct map_session_data* sd, uint8 opt)
 	base_status->max_sp = sd->status.max_sp = status_calc_maxhpsp_pc(sd,base_status->int_,false);
 
 #ifndef Pandas_Extreme_Computing
-	// æ­¤å¤„é€»è¾‘å·²ç»è¢«è½¬å…¥åˆ° status_calc_maxhpsp_pc å‡½æ•°ä¸­å®ç°, æ­¤å¤„æ— éœ€é‡å¤è¿›è¡Œ
+	// ´Ë´¦Âß¼­ÒÑ¾­±»×ªÈëµ½ status_calc_maxhpsp_pc º¯ÊıÖĞÊµÏÖ, ´Ë´¦ÎŞĞèÖØ¸´½øĞĞ
 	if(battle_config.sp_rate != 100)
 		base_status->max_sp = (unsigned int)(battle_config.sp_rate * (base_status->max_sp/100.));
 
@@ -4409,6 +4408,8 @@ int status_calc_pc_sub(struct map_session_data* sd, uint8 opt)
 		base_status->hit += 20;
 	if ((skill = pc_checkskill_imperial_guard(sd, 2)) > 0)// IG_SPEAR_SWORD_M
 		base_status->hit += skill * 3;
+	if ((skill = pc_checkskill(sd, SKE_WAR_BOOK_MASTERY))>0)
+		base_status->hit += skill * 3;
 
 	if ((skill = pc_checkskill(sd, SU_SOULATTACK)) > 0)
 		base_status->rhw.range += skill_get_range2(&sd->bl, SU_SOULATTACK, skill, true);
@@ -4447,10 +4448,34 @@ int status_calc_pc_sub(struct map_session_data* sd, uint8 opt)
 		base_status->patk += skill * 3;
 		base_status->smatk += skill * 3;
 	}
+	if (sd->status.weapon == W_2HSTAFF && (skill = pc_checkskill(sd, AG_TWOHANDSTAFF)) > 0)// 2-Handed Staff Mastery
+		base_status->smatk += pc_checkskill(sd, AG_TWOHANDSTAFF) * 2;
+	if ((skill = pc_checkskill(sd, NW_P_F_I)) > 0 && (sd->status.weapon >= W_REVOLVER && sd->status.weapon <= W_GRENADE))
+		base_status->patk += skill + 2;
+	if ((skill = pc_checkskill(sd, SOA_TALISMAN_MASTERY)) > 0)
+		base_status->smatk += skill;
+	if ((skill = pc_checkskill(sd, HN_SELFSTUDY_TATICS)) > 0)
+		base_status->patk += skill;
+	if ((skill = pc_checkskill(sd, HN_SELFSTUDY_SOCERY)) > 0)
+		base_status->smatk += skill;
+	if ((skill = pc_checkskill(sd, SKE_WAR_BOOK_MASTERY)) > 0)
+		base_status->patk += skill+2;
+	if ((skill = pc_checkskill(sd, SH_MYSTICAL_CREATURE_MASTERY)) > 0) {
+		base_status->smatk += 1 + (skill - 1) * 15 / 10 + ((skill - 1) * 15 % 10 ? 1 : 0);
+		base_status->patk += 1 + (skill - 1) * 15 / 10 + ((skill - 1) * 15 % 10 ? 1 : 0);
+	}
 
 // ----- PHYSICAL RESISTANCE CALCULATION -----
 	if ((skill = pc_checkskill_imperial_guard(sd, 1)) > 0)// IG_SHIELD_MASTERY
 		base_status->res += skill * 3;
+
+// ----- EQUIPMENT-DEF CALCULATION -----
+	if ((skill = pc_checkskill(sd, NW_GRENADE_MASTERY)) > 0)
+		base_status->con += skill;
+
+// ----- SPELL CALCULATION -----
+	if ((skill = pc_checkskill(sd, SOA_SOUL_MASTERY)) > 0)
+		base_status->spl += skill;
 
 // ----- EQUIPMENT-DEF CALCULATION -----
 
@@ -4561,15 +4586,14 @@ int status_calc_pc_sub(struct map_session_data* sd, uint8 opt)
 		sd->indexed_bonus.subele[ELE_FIRE] += skill*5;
 	}
 	if((skill=pc_checkskill(sd,SA_DRAGONOLOGY))>0) {
+		sd->right_weapon.addrace[RC_DRAGON]+=skill*4;
+		sd->left_weapon.addrace[RC_DRAGON]+=skill*4;
 #ifdef RENEWAL
-		skill = skill * 2;
+		sd->indexed_bonus.magic_addrace[RC_DRAGON]+=skill*2;
 #else
-		skill = skill * 4;
+		sd->indexed_bonus.magic_addrace[RC_DRAGON]+=skill*4;
 #endif
-		sd->right_weapon.addrace[RC_DRAGON]+=skill;
-		sd->left_weapon.addrace[RC_DRAGON]+=skill;
-		sd->indexed_bonus.magic_addrace[RC_DRAGON]+=skill;
-		sd->indexed_bonus.subrace[RC_DRAGON]+=skill;
+		sd->indexed_bonus.subrace[RC_DRAGON]+=skill*4;
 	}
 	if ((skill = pc_checkskill(sd, AB_EUCHARISTICA)) > 0) {
 		sd->right_weapon.addrace[RC_DEMON] += skill;
@@ -4800,20 +4824,23 @@ int status_calc_pc_sub(struct map_session_data* sd, uint8 opt)
 		}
 		if (sc->data[SC_STRIKING])
 			sd->bonus.perfect_hit += 20 + 10 * pc_checkskill(sd, SO_STRIKING);
-		if (sc->data[SC_VIGOR]) {
-			// Skill desc says increases physical damage. Supposed to affect damage from base ATK right???
-			// Because this is only boosting the ATK from the equipped weapon and not from base ATK. [Rytech]
-			sd->right_weapon.addrace[RC_DEMIHUMAN] += 50;
-			sd->left_weapon.addrace[RC_ANGEL] += 50;
+		if (sc->data[SC_RUSH_QUAKE2]) {
+			sd->bonus.short_attack_atk_rate += 5 * pc_checkskill(sd, MT_RUSH_QUAKE);
+			sd->bonus.long_attack_atk_rate += 5 * pc_checkskill(sd, MT_RUSH_QUAKE);
 		}
+		if (sc->data[SC_BO_HELL_DUSTY]) {
+			sd->bonus.long_attack_atk_rate += 20;
+			sd->right_weapon.addrace[RC_FORMLESS] += 20;
+			sd->right_weapon.addrace[RC_PLANT] += 20;
+		}
+		if (sc->data[SC_UNLIMIT])
+			sd->bonus.long_attack_atk_rate += sc->data[SC_UNLIMIT]->val2;
+		if (sc->data[SC_HIDDEN_CARD])
+			sd->bonus.long_attack_atk_rate += sc->data[SC_HIDDEN_CARD]->val3;
 		if (sc->data[SC_DEADLY_DEFEASANCE])
 			sd->special_state.no_magic_damage = 0;
 		if (sc->data[SC_CLIMAX_DES_HU])
 			sd->indexed_bonus.magic_atk_ele[ELE_WIND] += 30;
-		if (sc->data[SC_CLIMAX_EARTH])
-			sd->indexed_bonus.subele[ELE_EARTH] -= 100;
-		if (sc->data[SC_CLIMAX_BLOOM])
-			sd->indexed_bonus.subele[ELE_FIRE] -= 100;
 		if (sc->data[SC_CLIMAX_CRYIMP]) {
 			sd->indexed_bonus.subele[ELE_WATER] += 30;
 			sd->indexed_bonus.magic_atk_ele[ELE_WATER] += 30;
@@ -4854,6 +4881,24 @@ int status_calc_pc_sub(struct map_session_data* sd, uint8 opt)
 		if (sc->data[SC_POISON_SHIELD_OPTION]) {
 			sd->indexed_bonus.subele[ELE_POISON] += 100;
 			sd->indexed_bonus.subele[ELE_HOLY] -= 30;
+		}
+		if( sc->data[SC_TALISMAN_OF_FIVE_ELEMENTS] ) {
+			const std::vector<e_element> elements = { ELE_FIRE, ELE_WATER, ELE_WIND, ELE_EARTH, ELE_NEUTRAL };
+			int bonus = sc->data[SC_TALISMAN_OF_FIVE_ELEMENTS]->val2;
+
+			for( e_element element : elements ){
+				sd->indexed_bonus.magic_atk_ele[(int)element] += bonus;
+				sd->right_weapon.addele[(int)element] += bonus;
+				sd->left_weapon.addele[(int)element] += bonus;
+			}
+		}
+		if( sc->data[SC_HEAVEN_AND_EARTH] ) {
+			i = sc->data[SC_HEAVEN_AND_EARTH]->val2;
+			sd->right_weapon.addele[ELE_ALL] += i;
+			sd->left_weapon.addele[ELE_ALL] += i;
+			sd->indexed_bonus.magic_atk_ele[ELE_ALL] += i;
+			sd->bonus.short_attack_atk_rate += i;
+			sd->bonus.long_attack_atk_rate += i;
 		}
 	}
 	status_cpy(&sd->battle_status, base_status);
@@ -5021,6 +5066,31 @@ int status_calc_homunculus_(struct homun_data *hd, uint8 opt)
 #endif
 
 	status_calc_misc(&hd->bl, status, hom->level);
+
+	if((skill_lv = hom_checkskill(hd, MH_CLASSY_FLUTTER)) > 0) {
+		status->matk_min += 100 + 60* skill_lv;
+		status->matk_max += 100 + 60* skill_lv;
+	}
+
+	if((skill_lv = hom_checkskill(hd, MH_BRUSHUP_CLAW)) > 0) {
+		status->batk += 100 + 60* skill_lv;
+	}
+
+	if((skill_lv = hom_checkskill(hd, MH_POLISHING_NEEDLE)) > 0) {
+		status->matk_min += 50 + 20* skill_lv;
+		status->matk_max += 50 + 20* skill_lv;
+		status->batk += 100 + 40* skill_lv;
+	}
+
+	if((skill_lv = hom_checkskill(hd, MH_LICHT_GEHORN)) > 0) {
+		status->matk_min += 100 + 30* skill_lv;
+		status->matk_max += 100 + 30* skill_lv;
+		status->batk += 100 + 30* skill_lv;
+	}
+
+	if((skill_lv = hom_checkskill(hd, MH_BLAZING_LAVA)) > 0) {
+		status->batk += 100 + 60* skill_lv;
+	}
 
 	status_cpy(&hd->battle_status, status);
 	return 1;
@@ -5871,7 +5941,7 @@ void status_calc_bl_main(struct block_list *bl, std::bitset<SCB_MAX> flag)
 			status->max_hp = status_calc_maxhpsp_pc(sd,status->vit,true);
 
 #ifndef Pandas_Extreme_Computing
-			// æ­¤å¤„é€»è¾‘å·²ç»è¢«è½¬å…¥åˆ° status_calc_maxhpsp_pc å‡½æ•°ä¸­å®ç°, æ­¤å¤„æ— éœ€é‡å¤è¿›è¡Œ
+			// ´Ë´¦Âß¼­ÒÑ¾­±»×ªÈëµ½ status_calc_maxhpsp_pc º¯ÊıÖĞÊµÏÖ, ´Ë´¦ÎŞĞèÖØ¸´½øĞĞ
 			if(battle_config.hp_rate != 100)
 				status->max_hp = (unsigned int)(battle_config.hp_rate * (status->max_hp/100.));
 
@@ -5897,7 +5967,7 @@ void status_calc_bl_main(struct block_list *bl, std::bitset<SCB_MAX> flag)
 			status->max_sp = status_calc_maxhpsp_pc(sd,status->int_,false);
 
 #ifndef Pandas_Extreme_Computing
-			// æ­¤å¤„é€»è¾‘å·²ç»è¢«è½¬å…¥åˆ° status_calc_maxhpsp_pc å‡½æ•°ä¸­å®ç°, æ­¤å¤„æ— éœ€é‡å¤è¿›è¡Œ
+			// ´Ë´¦Âß¼­ÒÑ¾­±»×ªÈëµ½ status_calc_maxhpsp_pc º¯ÊıÖĞÊµÏÖ, ´Ë´¦ÎŞĞèÖØ¸´½øĞĞ
 			if(battle_config.sp_rate != 100)
 				status->max_sp = (unsigned int)(battle_config.sp_rate * (status->max_sp/100.));
 
@@ -6017,16 +6087,16 @@ void status_calc_bl_main(struct block_list *bl, std::bitset<SCB_MAX> flag)
 			status->amotion = cap_value(amotion, battle_config.max_aspd, 2000);
 
 #ifdef Pandas_MapFlag_MaxASPD
-			// æ ¹æ®åœ°å›¾æ ‡è®°é‡æ–°è®¡ç®—äººå·¥ç”Ÿå‘½ä½“çš„ amotion åŠ¨ç”»å»¶è¿Ÿæ—¶é—´
+			// ¸ù¾İµØÍ¼±ê¼ÇÖØĞÂ¼ÆËãÈË¹¤ÉúÃüÌåµÄ amotion ¶¯»­ÑÓ³ÙÊ±¼ä
 			if (map_getmapflag(bl->m, MF_MAXASPD)) {
 				int val = map_getmapflag_param(bl->m, MF_MAXASPD, 0);
 				if (val) {
-					// åœ°å›¾æ ‡è®°é¢„æœŸçš„å»¶è¿Ÿæ—¶é—´
-					// å»¶è¿Ÿæ—¶é—´ = 2000 - 193(å‡è®¾) * 10 = 2000 - 1930 = 70, ä¹Ÿå°±æ˜¯å»¶è¿Ÿä¸º 70 æ¯«ç§’
+					// µØÍ¼±ê¼ÇÔ¤ÆÚµÄÑÓ³ÙÊ±¼ä
+					// ÑÓ³ÙÊ±¼ä = 2000 - 193(¼ÙÉè) * 10 = 2000 - 1930 = 70, Ò²¾ÍÊÇÑÓ³ÙÎª 70 ºÁÃë
 					val = 2000 - val * 10;
-					// åŸå…ˆäººå·¥ç”Ÿå‘½ä½“æœ‰ä¸€ä¸ªè‡ªå·±çš„åŠ¨ç”»å»¶è¿Ÿæ—¶é—´, ä¸åœ°å›¾æ ‡è®°é¢„æœŸçš„å»¶è¿Ÿæ—¶é—´ä¸­å–æœ€å¤§çš„é‚£ä¸ª (å»¶è¿Ÿè¶Šå¤§è¡¨ç¤ºæ”»å‡»é€Ÿåº¦è¶Šæ…¢)
+					// Ô­ÏÈÈË¹¤ÉúÃüÌåÓĞÒ»¸ö×Ô¼ºµÄ¶¯»­ÑÓ³ÙÊ±¼ä, ÓëµØÍ¼±ê¼ÇÔ¤ÆÚµÄÑÓ³ÙÊ±¼äÖĞÈ¡×î´óµÄÄÇ¸ö (ÑÓ³ÙÔ½´ó±íÊ¾¹¥»÷ËÙ¶ÈÔ½Âı)
 					val = max(val, status->amotion);
-					// éšåå†ä¸æœ€å¤§å»¶è¿Ÿå€¼ 2000 æ¯«ç§’è¿›è¡Œæ¯”è¾ƒ, å–æ¯”è¾ƒå°çš„å“ªä¸ªä½œä¸ºå®é™…ç”Ÿæ•ˆå€¼
+					// ËæºóÔÙÓë×î´óÑÓ³ÙÖµ 2000 ºÁÃë½øĞĞ±È½Ï, È¡±È½ÏĞ¡µÄÄÄ¸ö×÷ÎªÊµ¼ÊÉúĞ§Öµ
 					status->amotion = min(val, 2000);
 				}
 			}
@@ -6069,48 +6139,48 @@ void status_calc_bl_main(struct block_list *bl, std::bitset<SCB_MAX> flag)
 			status->amotion = cap_value(amotion, battle_config.monster_max_aspd, 2000);
 
 #ifndef Pandas_MapFlag_MaxASPD
-			// è¿™éƒ¨åˆ†å¤„ç†äººå·¥ç”Ÿå‘½ä½“å’Œç©å®¶å•ä½ä»¥å¤–çš„å…¶ä»–å•ä½ (ä½£å…µã€é­”ç‰©ç­‰),
-			// è‹¥æ²¡æœ‰å¯ç”¨ maxaspd åœ°å›¾æ ‡è®°åˆ™èµ°åŸæ¥çš„æµç¨‹.
+			// Õâ²¿·Ö´¦ÀíÈË¹¤ÉúÃüÌåºÍÍæ¼Òµ¥Î»ÒÔÍâµÄÆäËûµ¥Î» (Ó¶±ø¡¢Ä§ÎïµÈ),
+			// ÈôÃ»ÓĞÆôÓÃ maxaspd µØÍ¼±ê¼ÇÔò×ßÔ­À´µÄÁ÷³Ì.
 			
-			// å…¶ä¸­ temp åœ¨è¿™é‡Œæ˜¯æŒ‡å°† b_status->adelay æ”»å‡»å»¶è¿Ÿå€¼æŒ‰ç…§ status->aspd_rate è¿›è¡Œç¼©æ”¾åçš„æ–°çš„å»¶è¿Ÿå€¼
-			// ç„¶åç¡®ä¿ temp ä¸ä½äº battle_config.monster_max_aspd*2 ä¸”ä¸é«˜äº 4000, ç„¶åå°†å®ƒåº”ç”¨åˆ° status->adelay
+			// ÆäÖĞ temp ÔÚÕâÀïÊÇÖ¸½« b_status->adelay ¹¥»÷ÑÓ³ÙÖµ°´ÕÕ status->aspd_rate ½øĞĞËõ·ÅºóµÄĞÂµÄÑÓ³ÙÖµ
+			// È»ºóÈ·±£ temp ²»µÍÓÚ battle_config.monster_max_aspd*2 ÇÒ²»¸ßÓÚ 4000, È»ºó½«ËüÓ¦ÓÃµ½ status->adelay
 			temp = b_status->adelay*status->aspd_rate/1000;
 			status->adelay = cap_value(temp, battle_config.monster_max_aspd*2, 4000);
 #else
-			// è¿™éƒ¨åˆ†å¤„ç†äººå·¥ç”Ÿå‘½ä½“å’Œç©å®¶å•ä½ä»¥å¤–çš„å…¶ä»–å•ä½ (ä½£å…µã€é­”ç‰©ç­‰),
-			// å·²ç»å¯ç”¨äº† maxaspd åœ°å›¾æ ‡è®°æ—¶, åˆ™éœ€è¦å°†å…¶å½±å“è€ƒè™‘åœ¨å†…ä½¿ä¹‹ç”Ÿæ•ˆ.
+			// Õâ²¿·Ö´¦ÀíÈË¹¤ÉúÃüÌåºÍÍæ¼Òµ¥Î»ÒÔÍâµÄÆäËûµ¥Î» (Ó¶±ø¡¢Ä§ÎïµÈ),
+			// ÒÑ¾­ÆôÓÃÁË maxaspd µØÍ¼±ê¼ÇÊ±, ÔòĞèÒª½«ÆäÓ°Ïì¿¼ÂÇÔÚÄÚÊ¹Ö®ÉúĞ§.
 			
-			// æ­¤å¤„çš„ adelay_bonus æ˜¯éœ€è¦å°† adelay æ‹“å±•çš„å€ç‡ç³»æ•°
+			// ´Ë´¦µÄ adelay_bonus ÊÇĞèÒª½« adelay ÍØÕ¹µÄ±¶ÂÊÏµÊı
 			float adelay_bonus = 1.0f;
 
-			// æ­¤å¤„çš„ amotion_origin ç”¨äºä¿å­˜åŸå§‹çš„æ”»å‡»åŠ¨ä½œå»¶è¿Ÿ(amotion), æ³¨æ„è¯¥å€¼å¹¶ä¸æ˜¯ b_status->amotion
-			// è€Œæ˜¯åŸºäº b_status->amotion å·²ç»è¢« status_calc_aspd_rate å’Œ status_calc_fix_aspd ä¿®æ­£è¿‡çš„å€¼
+			// ´Ë´¦µÄ amotion_origin ÓÃÓÚ±£´æÔ­Ê¼µÄ¹¥»÷¶¯×÷ÑÓ³Ù(amotion), ×¢Òâ¸ÃÖµ²¢²»ÊÇ b_status->amotion
+			// ¶øÊÇ»ùÓÚ b_status->amotion ÒÑ¾­±» status_calc_aspd_rate ºÍ status_calc_fix_aspd ĞŞÕı¹ıµÄÖµ
 			pec_ushort amotion_origin = status->amotion;
 
 			if (bl->m != -1 && map_getmapflag(bl->m, MF_MAXASPD) && amotion_origin) {
 				int val = map_getmapflag_param(bl->m, MF_MAXASPD, 0);
 				if (val) {
-					// åœ°å›¾æ ‡è®°é¢„æœŸçš„å»¶è¿Ÿæ—¶é—´
-					// å»¶è¿Ÿæ—¶é—´ = 2000 - 193(å‡è®¾) * 10 = 2000 - 1930 = 70, ä¹Ÿå°±æ˜¯å»¶è¿Ÿä¸º 70 æ¯«ç§’
+					// µØÍ¼±ê¼ÇÔ¤ÆÚµÄÑÓ³ÙÊ±¼ä
+					// ÑÓ³ÙÊ±¼ä = 2000 - 193(¼ÙÉè) * 10 = 2000 - 1930 = 70, Ò²¾ÍÊÇÑÓ³ÙÎª 70 ºÁÃë
 					val = 2000 - val * 10;
 
-					// åœ¨ç»è¿‡äº† status_calc_aspd_rate å’Œ status_calc_fix_aspd ä¿®æ­£è¿‡çš„æ”»å‡»åŠ¨ä½œå»¶è¿Ÿ
-					// ä¸åœ°å›¾æ ‡è®°é¢„æœŸçš„å»¶è¿Ÿæ—¶é—´ä¸­å–æœ€å¤§çš„é‚£ä¸ª (å»¶è¿Ÿè¶Šå¤§è¡¨ç¤ºæ”»å‡»é€Ÿåº¦è¶Šæ…¢)
+					// ÔÚ¾­¹ıÁË status_calc_aspd_rate ºÍ status_calc_fix_aspd ĞŞÕı¹ıµÄ¹¥»÷¶¯×÷ÑÓ³Ù
+					// ÓëµØÍ¼±ê¼ÇÔ¤ÆÚµÄÑÓ³ÙÊ±¼äÖĞÈ¡×î´óµÄÄÇ¸ö (ÑÓ³ÙÔ½´ó±íÊ¾¹¥»÷ËÙ¶ÈÔ½Âı)
 					val = max(val, status->amotion);
 
-					// éšåå†ä¸æœ€å¤§å»¶è¿Ÿå€¼ 2000 æ¯«ç§’è¿›è¡Œæ¯”è¾ƒ, å–æ¯”è¾ƒå°çš„å“ªä¸ªä½œä¸ºå®é™…ç”Ÿæ•ˆå€¼
+					// ËæºóÔÙÓë×î´óÑÓ³ÙÖµ 2000 ºÁÃë½øĞĞ±È½Ï, È¡±È½ÏĞ¡µÄÄÄ¸ö×÷ÎªÊµ¼ÊÉúĞ§Öµ
 					status->amotion = min(val, 2000);
 
-					// è®¡ç®—å‡ºä¸€ä¸ªæœ€æ–°çš„åŠ¨ä½œå»¶è¿Ÿå€¼ä¸åŸå§‹çš„æ”»å‡»åŠ¨ä½œå»¶è¿Ÿå€¼ä¹‹é—´çš„å€ç‡ç³»æ•°
+					// ¼ÆËã³öÒ»¸ö×îĞÂµÄ¶¯×÷ÑÓ³ÙÖµÓëÔ­Ê¼µÄ¹¥»÷¶¯×÷ÑÓ³ÙÖµÖ®¼äµÄ±¶ÂÊÏµÊı
 					adelay_bonus = (float)status->amotion / (float)amotion_origin;
 				}
 			}
 
-			// å…¶ä¸­ temp åœ¨è¿™é‡Œæ˜¯æŒ‡å°† b_status->adelay æ”»å‡»å»¶è¿Ÿå€¼æŒ‰ç…§ status->aspd_rate è¿›è¡Œç¼©æ”¾åçš„æ–°çš„å»¶è¿Ÿå€¼
-			// è¿™é‡Œä¸äººå·¥ç”Ÿå‘½ä½“ç®—æ³•å·®å¼‚çš„åœ°æ–¹æ˜¯: è¿˜ä¼šé¢å¤–ä¹˜ä»¥ adelay_bonus ç³»æ•°
+			// ÆäÖĞ temp ÔÚÕâÀïÊÇÖ¸½« b_status->adelay ¹¥»÷ÑÓ³ÙÖµ°´ÕÕ status->aspd_rate ½øĞĞËõ·ÅºóµÄĞÂµÄÑÓ³ÙÖµ
+			// ÕâÀïÓëÈË¹¤ÉúÃüÌåËã·¨²îÒìµÄµØ·½ÊÇ: »¹»á¶îÍâ³ËÒÔ adelay_bonus ÏµÊı
 			temp = int((b_status->adelay * status->aspd_rate / 1000) * adelay_bonus);
 
-			// ç„¶åç¡®ä¿ temp ä¸ä½äº battle_config.monster_max_aspd*2 ä¸”ä¸é«˜äº 4000, ç„¶åå°†å®ƒåº”ç”¨åˆ° status->adelay
+			// È»ºóÈ·±£ temp ²»µÍÓÚ battle_config.monster_max_aspd*2 ÇÒ²»¸ßÓÚ 4000, È»ºó½«ËüÓ¦ÓÃµ½ status->adelay
 			status->adelay = cap_value(temp, battle_config.monster_max_aspd*2, 4000);
 #endif // Pandas_MapFlag_MaxASPD
 		}
@@ -6209,14 +6279,14 @@ void status_calc_bl_main(struct block_list *bl, std::bitset<SCB_MAX> flag)
 #ifdef Pandas_Persistent_SetUnitData_For_Monster_StatusData
 //************************************
 // Method:      restore_special_unitdata_for_mob
-// Description: é’ˆå¯¹é­”ç‰©å•ä½é«˜ä¼˜å…ˆçº§æ¢å¤å·²ç»è¢« setunitdata ä¿®æ”¹è¿‡çš„åŸºç¡€çŠ¶æ€è®¾ç½®
+// Description: Õë¶ÔÄ§Îïµ¥Î»¸ßÓÅÏÈ¼¶»Ö¸´ÒÑ¾­±» setunitdata ĞŞ¸Ä¹ıµÄ»ù´¡×´Ì¬ÉèÖÃ
 // Access:      public 
 // Parameter:   struct mob_data * md
 // Parameter:   struct status_data * status
 // Parameter:   struct status_data * previous_status
 // Parameter:   uint8 type
 // Returns:     void
-// Author:      Solaä¸¶å°å…‹(CairoLee)  2022/02/27 17:57
+// Author:      SolaØ¼Ğ¡¿Ë(CairoLee)  2022/02/27 17:57
 //************************************ 
 void restore_special_unitdata_for_mob(struct mob_data* md, struct status_data* status, struct status_data* previous_status, uint8 type) {
 	if (!md || !status || !previous_status)
@@ -6237,11 +6307,11 @@ void restore_special_unitdata_for_mob(struct mob_data* md, struct status_data* s
 	for (auto& it : *md->pandas.special_setunitdata) {
 
 		if (type & 1) {
-			// æ­£åœ¨å°è¯•æ¢å¤çš„ç›®æ ‡ status æ˜¯æˆ˜æ–—çŠ¶æ€ (md->status) è€Œä¸æ˜¯åŸºç¡€çŠ¶æ€ (md->base_status),
-			// ä»¥ä¸‹è¿™äº›å­—æ®µæˆ‘ä»¬å…è®¸ä»–é«˜ä¼˜å…ˆçš„è¦†ç›–æ‰æ ¹æ®å…­ç»´å±æ€§è®¡ç®—å‡ºæ¥çš„å€¼.
+			// ÕıÔÚ³¢ÊÔ»Ö¸´µÄÄ¿±ê status ÊÇÕ½¶·×´Ì¬ (md->status) ¶ø²»ÊÇ»ù´¡×´Ì¬ (md->base_status),
+			// ÒÔÏÂÕâĞ©×Ö¶ÎÎÒÃÇÔÊĞíËû¸ßÓÅÏÈµÄ¸²¸Çµô¸ù¾İÁùÎ¬ÊôĞÔ¼ÆËã³öÀ´µÄÖµ.
 			//
-			// å¤§å¤šæ•°çš„å­—æ®µå…¶å®ä¼šå°Šé‡åŸºç¡€çŠ¶æ€ (base_status), å°Šé‡åŸºç¡€çŠ¶æ€çš„å­—æ®µä¸ç”¨åœ¨æ­¤ç‰¹åˆ«è®¾ç½®.
-			// åªæœ‰ç±»ä¼¼ UMOB_ATKMIN å’Œ UMOB_ATKMAX ä¸‹é¢è¿™å››ä¸ªæ‰ä¸ä¼šå‚è€ƒåŸºç¡€çŠ¶æ€, å› æ­¤ä»–ä»¬éœ€è¦è¢«ç‰¹æ®Šå¤„ç†.
+			// ´ó¶àÊıµÄ×Ö¶ÎÆäÊµ»á×ğÖØ»ù´¡×´Ì¬ (base_status), ×ğÖØ»ù´¡×´Ì¬µÄ×Ö¶Î²»ÓÃÔÚ´ËÌØ±ğÉèÖÃ.
+			// Ö»ÓĞÀàËÆ UMOB_ATKMIN ºÍ UMOB_ATKMAX ÏÂÃæÕâËÄ¸ö²Å²»»á²Î¿¼»ù´¡×´Ì¬, Òò´ËËûÃÇĞèÒª±»ÌØÊâ´¦Àí.
 			switch (it.first) {
 			case UMOB_ATKMIN:
 			case UMOB_ATKMAX:
@@ -6349,17 +6419,17 @@ void status_calc_bl_(struct block_list* bl, std::bitset<SCB_MAX> flag, uint8 opt
 	}
 
 #ifdef Pandas_Persistent_SetUnitData_For_Monster_StatusData
-	// å¦‚æœæ˜¯é­”ç‰©ä¸”é­”ç‰©æ›¾ç»è¢« setunitdata è®¾ç½®è¿‡ä¸€äº›å­—æ®µ,
-	// é‚£ä¹ˆæ¢å¤è¿™äº›å­—æ®µå¯¹é­”ç‰©çš„ç‰¹æ®Šè®¾ç½® (æ³¨æ„: åªä¼šæ¢å¤ä¸ base_status ç›¸å…³çš„è®¾ç½®)
+	// Èç¹ûÊÇÄ§ÎïÇÒÄ§ÎïÔø¾­±» setunitdata ÉèÖÃ¹ıÒ»Ğ©×Ö¶Î,
+	// ÄÇÃ´»Ö¸´ÕâĞ©×Ö¶Î¶ÔÄ§ÎïµÄÌØÊâÉèÖÃ (×¢Òâ: Ö»»á»Ö¸´Óë base_status Ïà¹ØµÄÉèÖÃ)
 	if (flag[SCB_BASE] && bl->type == BL_MOB && backed_up) {
 		struct mob_data* md = BL_CAST(BL_MOB, bl);
 		if (md && !md->base_status && md->pandas.special_setunitdata && md->pandas.special_setunitdata->size()) {
-			// è‹¥é­”ç‰©çš„ base_status æ˜¯ç©ºæŒ‡é’ˆ, é‚£ä¹ˆè¯´æ˜åœ¨ä¸Šé¢ status_calc_mob_ è®¡ç®—è¿‡ç¨‹ä¸­è¢«é‡Šæ”¾äº†,
-			// è¿™é‡Œç›´æ¥æ ¹æ® db ä¸­çš„ status ç›´æ¥å»ºç«‹ä¸€ä¸ªå‰¯æœ¬ç”¨æ¥æ‰¿æ¥å³å°†åˆ·å…¥çš„æ•°æ®
+			// ÈôÄ§ÎïµÄ base_status ÊÇ¿ÕÖ¸Õë, ÄÇÃ´ËµÃ÷ÔÚÉÏÃæ status_calc_mob_ ¼ÆËã¹ı³ÌÖĞ±»ÊÍ·ÅÁË,
+			// ÕâÀïÖ±½Ó¸ù¾İ db ÖĞµÄ status Ö±½Ó½¨Á¢Ò»¸ö¸±±¾ÓÃÀ´³Ğ½Ó¼´½«Ë¢ÈëµÄÊı¾İ
 			md->base_status = (struct status_data*)aCalloc(1, sizeof(struct status_data));
 			memcpy(md->base_status, &md->db->status, sizeof(struct status_data));
 
-			// å†å°†ä¹‹å‰å¤‡ä»½çš„ previous_b_status æŒ‰è¦æ±‚åˆ·å…¥åˆ°å½“å‰çš„ base_status ä¸­
+			// ÔÙ½«Ö®Ç°±¸·İµÄ previous_b_status °´ÒªÇóË¢Èëµ½µ±Ç°µÄ base_status ÖĞ
 			restore_special_unitdata_for_mob(md, md->base_status, &previous_b_status, 0);
 		}
 	}
@@ -6374,9 +6444,9 @@ void status_calc_bl_(struct block_list* bl, std::bitset<SCB_MAX> flag, uint8 opt
 	status_calc_bl_main(bl, flag);
 
 #ifdef Pandas_Persistent_SetUnitData_For_Monster_StatusData
-	// ä¸Šé¢çš„ status_calc_bl_main ä¼šæ ¹æ®é­”ç‰©çš„ STR ç­‰å…­ç»´å±æ€§æ¥è®¡ç®— matk_minã€matk_max ç­‰æˆ˜æ–—æ—¶çš„å…·ä½“æ•°å€¼.
-	// è¿™ä¼šå¯¼è‡´æˆ‘ä»¬ä½¿ç”¨ setunitdata åˆ»æ„è°ƒæ•´çš„ matk_minã€matk_max ç›´æ¥å¤±æ•ˆ,
-	// å› æ­¤è¿™é‡Œéœ€è¦å†å°†ä»–ä»¬è¿˜åŸå›æ¥åˆ°æˆ‘ä»¬è°ƒç”¨ setunitdata ä¹‹åé¢„æœŸçš„æ•°å€¼
+	// ÉÏÃæµÄ status_calc_bl_main »á¸ù¾İÄ§ÎïµÄ STR µÈÁùÎ¬ÊôĞÔÀ´¼ÆËã matk_min¡¢matk_max µÈÕ½¶·Ê±µÄ¾ßÌåÊıÖµ.
+	// Õâ»áµ¼ÖÂÎÒÃÇÊ¹ÓÃ setunitdata ¿ÌÒâµ÷ÕûµÄ matk_min¡¢matk_max Ö±½ÓÊ§Ğ§,
+	// Òò´ËÕâÀïĞèÒªÔÙ½«ËûÃÇ»¹Ô­»ØÀ´µ½ÎÒÃÇµ÷ÓÃ setunitdata Ö®ºóÔ¤ÆÚµÄÊıÖµ
 	if (bl->type == BL_MOB && backed_up) {
 		struct mob_data* md = BL_CAST(BL_MOB, bl);
 		if (md && md->pandas.special_setunitdata && md->pandas.special_setunitdata->size()) {
@@ -7060,7 +7130,9 @@ static pec_ushort status_calc_pow(struct block_list *bl, struct status_change *s
 
 	if (sc->data[SC_BENEDICTUM])
 		pow += sc->data[SC_BENEDICTUM]->val2;
-
+	if (sc->data[SC_MARINE_FESTIVAL])
+		pow += sc->data[SC_MARINE_FESTIVAL]->val2;
+	
 	return (unsigned short)cap_value(pow, 0, USHRT_MAX);
 }
 
@@ -7078,7 +7150,9 @@ static pec_ushort status_calc_sta(struct block_list *bl, struct status_change *s
 
 	if (sc->data[SC_RELIGIO])
 		sta += sc->data[SC_RELIGIO]->val2;
-
+	if (sc->data[SC_SANDY_FESTIVAL])
+		sta += sc->data[SC_SANDY_FESTIVAL]->val2;
+	
 	return (unsigned short)cap_value(sta, 0, USHRT_MAX);
 }
 
@@ -7096,6 +7170,8 @@ static pec_ushort status_calc_wis(struct block_list *bl, struct status_change *s
 
 	if (sc->data[SC_RELIGIO])
 		wis += sc->data[SC_RELIGIO]->val2;
+	if (sc->data[SC_SANDY_FESTIVAL])
+		wis += sc->data[SC_SANDY_FESTIVAL]->val2;
 
 	return (unsigned short)cap_value(wis, 0, USHRT_MAX);
 }
@@ -7114,6 +7190,8 @@ static pec_ushort status_calc_spl(struct block_list *bl, struct status_change *s
 
 	if (sc->data[SC_RELIGIO])
 		spl += sc->data[SC_RELIGIO]->val2;
+	if (sc->data[SC_SANDY_FESTIVAL])
+		spl += sc->data[SC_SANDY_FESTIVAL]->val2;
 
 	return (unsigned short)cap_value(spl, 0, USHRT_MAX);
 }
@@ -7132,7 +7210,9 @@ static pec_ushort status_calc_con(struct block_list *bl, struct status_change *s
 
 	if (sc->data[SC_BENEDICTUM])
 		con += sc->data[SC_BENEDICTUM]->val2;
-
+	if (sc->data[SC_MARINE_FESTIVAL])
+		con += sc->data[SC_MARINE_FESTIVAL]->val2;
+	
 	return (unsigned short)cap_value(con, 0, USHRT_MAX);
 }
 
@@ -7150,7 +7230,9 @@ static pec_ushort status_calc_crt(struct block_list *bl, struct status_change *s
 
 	if (sc->data[SC_BENEDICTUM])
 		crt += sc->data[SC_BENEDICTUM]->val2;
-
+	if (sc->data[SC_MARINE_FESTIVAL])
+		crt += sc->data[SC_MARINE_FESTIVAL]->val2;
+	
 	return (unsigned short)cap_value(crt, 0, USHRT_MAX);
 }
 
@@ -7227,6 +7309,8 @@ static pec_ushort status_calc_batk(struct block_list *bl, struct status_change *
 #endif
 	if (sc->data[SC_SUNSTANCE])
 		batk += batk * sc->data[SC_SUNSTANCE]->val2 / 100;
+	if (sc->data[SC_INTENSIVE_AIM])
+		batk += 150;
 
 	return (pec_ushort)cap_value(batk,0,PEC_USHRT_MAX);
 }
@@ -7335,8 +7419,6 @@ static pec_ushort status_calc_watk(struct block_list *bl, struct status_change *
 		watk += sc->data[SC_POWERFUL_FAITH]->val2;
 	if (sc->data[SC_GUARD_STANCE])
 		watk -= sc->data[SC_GUARD_STANCE]->val3;
-	if (sc->data[SC_ATTACK_STANCE])
-		watk += sc->data[SC_ATTACK_STANCE]->val3;
 
 	return (pec_ushort)cap_value(watk,0,PEC_USHRT_MAX);
 }
@@ -7527,6 +7609,10 @@ static pec_short status_calc_critical(struct block_list *bl, struct status_chang
 		critical += sc->data[SC_MTF_HITFLEE]->val1;
 	if (sc->data[SC_PACKING_ENVELOPE9])
 		critical += sc->data[SC_PACKING_ENVELOPE9]->val1 * 10;
+	if (sc->data[SC_HANDICAPSTATE_LASSITUDE])
+		critical -= critical * 30 / 100;
+	if (sc->data[SC_INTENSIVE_AIM])
+		critical += 300;
 
 	return (pec_short)cap_value(critical,10,PEC_SHRT_MAX);
 }
@@ -7571,6 +7657,8 @@ static pec_short status_calc_hit(struct block_list *bl, struct status_change *sc
 		hit -= sc->data[SC_HEAT_BARREL]->val4;
 	if(sc->data[SC__GROOMY])
 		hit -= hit * sc->data[SC__GROOMY]->val3 / 100;
+	if(sc->data[SC_HANDICAPSTATE_MISFORTUNE])
+		hit -= hit * 30 / 100;
 	if(sc->data[SC_FEAR])
 		hit -= hit * 20 / 100;
 	if (sc->data[SC_ASH])
@@ -7599,6 +7687,8 @@ static pec_short status_calc_hit(struct block_list *bl, struct status_change *sc
 		hit += sc->data[SC_PACKING_ENVELOPE10]->val1;
 	if (sc->data[SC_ABYSS_SLAYER])
 		hit += sc->data[SC_ABYSS_SLAYER]->val3;
+	if (sc->data[SC_INTENSIVE_AIM])
+		hit += 250;
 
 	return (pec_short)cap_value(hit,1,PEC_SHRT_MAX);
 }
@@ -7713,6 +7803,8 @@ static pec_short status_calc_flee(struct block_list *bl, struct status_change *s
 		flee += sc->data[SC_GROOMING]->val2;
 	if (sc->data[SC_PACKING_ENVELOPE5])
 		flee += sc->data[SC_PACKING_ENVELOPE5]->val1;
+	if (sc->data[SC_HANDICAPSTATE_DEEPBLIND])
+		flee -= flee * 30 / 100;
 
 	return (pec_short)cap_value(flee,1,PEC_SHRT_MAX);
 }
@@ -7739,6 +7831,8 @@ static pec_short status_calc_flee2(struct block_list *bl, struct status_change *
 		flee2 += sc->data[SC_HISS]->val2*10;
 	if (sc->data[SC_DORAM_FLEE2])
 		flee2 += sc->data[SC_DORAM_FLEE2]->val1;
+	if (sc->data[SC_HANDICAPSTATE_DEEPBLIND] )
+		flee2 -= flee2 * 30 / 100;
 
 	return (pec_short)cap_value(flee2,10,PEC_SHRT_MAX);
 }
@@ -7809,7 +7903,7 @@ static pec_defType status_calc_def(struct block_list *bl, struct status_change *
 		def -= def * sc->data[SC_STRIPSHIELD]->val2/100;
 	if (sc->data[SC_FLING])
 		def -= def * (sc->data[SC_FLING]->val2)/100;
-	if( sc->data[SC_FREEZING] )
+	if( sc->data[SC_FREEZING] || sc->data[SC_HANDICAPSTATE_FROSTBITE] || sc->data[SC_HANDICAPSTATE_DEADLYPOISON] )
 		def -= def * (bl->type == BL_PC ? 30 : 10) / 100;
 	if( sc->data[SC_ANALYZE] )
 		def -= def * (14 * sc->data[SC_ANALYZE]->val1) / 100;
@@ -7961,6 +8055,8 @@ static pec_defType status_calc_mdef(struct block_list *bl, struct status_change 
 		mdef += 25 * mdef / 100;
 	if(sc->data[SC_FREEZE])
 		mdef += 25 * mdef / 100;
+	if( sc->data[SC_HANDICAPSTATE_FROSTBITE] || sc->data[SC_HANDICAPSTATE_CRYSTALLIZATION] )
+		mdef -= mdef * (bl->type == BL_PC ? 30 : 10) / 100;
 	if(sc->data[SC_BURNING])
 		mdef -= 25 * mdef / 100;
 	if( sc->data[SC_NEUTRALBARRIER] )
@@ -8145,7 +8241,10 @@ static unsigned short status_calc_speed(struct block_list *bl, struct status_cha
 				val = max(val, sc->data[SC_SP_SHA]->val2);
 			if (sc->data[SC_CREATINGSTAR])
 				val = max(val, 90);
-
+			if (sc->data[SC_SHIELDCHAINRUSH])
+				val = max(val, 20); 
+			if (sc->data[SC_GROUNDGRAVITY])
+				val = max(val, 20);
 			if( sd && sd->bonus.speed_rate + sd->bonus.speed_add_rate > 0 ) // Permanent item-based speedup
 				val = max( val, sd->bonus.speed_rate + sd->bonus.speed_add_rate );
 		}
@@ -8198,6 +8297,8 @@ static unsigned short status_calc_speed(struct block_list *bl, struct status_cha
 			val = max(val, 25); // !TODO: Confirm bonus movement speed
 		if (sc->data[SC_EMERGENCY_MOVE])
 			val = max(val, sc->data[SC_EMERGENCY_MOVE]->val2);
+		if (sc->data[SC_SHADOW_CLOCK])
+			val = max(val, 75);
 		if( sc->data[SC_JAWAII_SERENADE] ){
 			val = max( val, 25 );
 		}
@@ -8208,6 +8309,8 @@ static unsigned short status_calc_speed(struct block_list *bl, struct status_cha
 		if( sd && sd->bonus.speed_rate + sd->bonus.speed_add_rate < 0 ) // Permanent item-based speedup
 			val = max( val, -(sd->bonus.speed_rate + sd->bonus.speed_add_rate) );
 
+		if (sc->data[SC_HANDICAPSTATE_LASSITUDE])
+			val = val * 130 / 100;
 		speed_rate -= val;
 
 		if( speed_rate < 40 )
@@ -8560,6 +8663,8 @@ static short status_calc_aspd_rate(struct block_list *bl, struct status_change *
 		aspd_rate -= 100;
 	if (sc->data[SC_STARSTANCE])
 		aspd_rate -= 10 * sc->data[SC_STARSTANCE]->val2;
+	if (sc->data[SC_HANDICAPSTATE_DEEPSILENCE])
+		aspd_rate += 50;
 
 	return (short)cap_value(aspd_rate,0,SHRT_MAX);
 }
@@ -8612,6 +8717,18 @@ static pec_short status_calc_patk(struct block_list *bl, struct status_change *s
 		patk += sc->data[SC_ABYSS_SLAYER]->val2;
 	if (sc->data[SC_PRON_MARCH])
 		patk += sc->data[SC_PRON_MARCH]->val2;
+	if (sc->data[SC_TALISMAN_OF_WARRIOR])
+		patk += sc->data[SC_TALISMAN_OF_WARRIOR]->val2;
+	if (sc->data[SC_ATTACK_STANCE])
+		patk += sc->data[SC_ATTACK_STANCE]->val3;
+	if (sc->data[SC_TEMPERING])
+		patk += sc->data[SC_TEMPERING]->val2;
+	if (sc->data[SC_HIDDEN_CARD])
+		patk += sc->data[SC_HIDDEN_CARD]->val2;
+	if (sc->data[SC_TEMPORARY_COMMUNION])
+		patk += sc->data[SC_TEMPORARY_COMMUNION]->val2;
+	if (sc->data[SC_BLESSING_OF_M_CREATURES])
+		patk += sc->data[SC_BLESSING_OF_M_CREATURES]->val2;
 
 	return (short)cap_value(patk, 0, PEC_SHRT_MAX);
 }
@@ -8636,6 +8753,16 @@ static pec_short status_calc_smatk(struct block_list *bl, struct status_change *
 		smatk += sc->data[SC_JAWAII_SERENADE]->val2;
 	if (sc->data[SC_SPELL_ENCHANTING])
 		smatk += sc->data[SC_SPELL_ENCHANTING]->val2;
+	if (sc->data[SC_TALISMAN_OF_MAGICIAN])
+		smatk += sc->data[SC_TALISMAN_OF_MAGICIAN]->val2;
+	if (sc->data[SC_T_FIFTH_GOD])
+		smatk += sc->data[SC_T_FIFTH_GOD]->val2;
+	if (sc->data[SC_ATTACK_STANCE])
+		smatk += sc->data[SC_ATTACK_STANCE]->val3;
+	if (sc->data[SC_TEMPORARY_COMMUNION])
+		smatk += sc->data[SC_TEMPORARY_COMMUNION]->val2;
+	if (sc->data[SC_BLESSING_OF_M_CREATURES])
+		smatk += sc->data[SC_BLESSING_OF_M_CREATURES]->val2;
 
 	return (short)cap_value(smatk, 0, PEC_SHRT_MAX);
 }
@@ -8658,10 +8785,14 @@ static pec_short status_calc_res(struct block_list *bl, struct status_change *sc
 		res += sc->data[SC_D_MACHINE]->val3;
 	if (sc->data[SC_MUSICAL_INTERLUDE])
 		res += sc->data[SC_MUSICAL_INTERLUDE]->val2;
+	if (sc->data[SC_GOLDENE_TONE])
+		res += sc->data[SC_GOLDENE_TONE]->val2;
 	if (sc->data[SC_SHADOW_STRIP] && bl->type != BL_PC)
 		res -= res * sc->data[SC_SHADOW_STRIP]->val2 / 100;
 	if (sc->data[SC_AIN_RHAPSODY])
 		res -= sc->data[SC_AIN_RHAPSODY]->val2;
+	if (sc->data[SC_TOXIN_OF_MANDARA])
+		res -= sc->data[SC_TOXIN_OF_MANDARA]->val2;
 
 	return (short)cap_value(res, 0, PEC_SHRT_MAX);
 }
@@ -8677,11 +8808,14 @@ static pec_short status_calc_mres(struct block_list *bl, struct status_change *s
 {
 	if (!sc || !sc->count)
 		return cap_value(mres, 0, PEC_SHRT_MAX);
-
+	if (sc->data[SC_GOLDENE_TONE])
+		mres += sc->data[SC_GOLDENE_TONE]->val2;
 	if (sc->data[SC_SHADOW_STRIP] && bl->type != BL_PC)
 		mres -= mres * sc->data[SC_SHADOW_STRIP]->val2 / 100;
 	if (sc->data[SC_GEF_NOCTURN])
 		mres -= sc->data[SC_GEF_NOCTURN]->val2;
+	if (sc->data[SC_TOXIN_OF_MANDARA])
+		mres -= sc->data[SC_TOXIN_OF_MANDARA]->val2;
 
 	return (short)cap_value(mres, 0, PEC_SHRT_MAX);
 }
@@ -8698,6 +8832,8 @@ static pec_short status_calc_hplus(struct block_list *bl, struct status_change *
 	if (!sc || !sc->count)
 		return cap_value(hplus, 0, PEC_SHRT_MAX);
 
+	if (sc->data[SC_TEMPORARY_COMMUNION])
+		hplus += sc->data[SC_TEMPORARY_COMMUNION]->val2;
 	return (short)cap_value(hplus, 0, PEC_SHRT_MAX);
 }
 
@@ -8788,13 +8924,13 @@ static unsigned char status_calc_element(struct block_list *bl, struct status_ch
 	if(!sc || !sc->count)
 		return cap_value(element, 0, UCHAR_MAX);
 
-	if(sc->data[SC_FREEZE] || sc->data[SC_CRYSTAL_ARMOR_OPTION])
+	if(sc->data[SC_FREEZE] || sc->data[SC_CRYSTAL_ARMOR_OPTION] || sc->data[SC_HANDICAPSTATE_FROSTBITE])
 		return ELE_WATER;
-	if(sc->data[SC_STONE] || sc->data[SC_STRONG_PROTECTION_OPTION])
+	if(sc->data[SC_STONE] || sc->data[SC_STRONG_PROTECTION_OPTION] || sc->data[SC_HANDICAPSTATE_CRYSTALLIZATION])
 		return ELE_EARTH;
-	if(sc->data[SC_FLAMEARMOR_OPTION])
+	if(sc->data[SC_FLAMEARMOR_OPTION] || sc->data[SC_HANDICAPSTATE_CONFLAGRATION])
 		return ELE_FIRE;
-	if(sc->data[SC_EYES_OF_STORM_OPTION])
+	if(sc->data[SC_EYES_OF_STORM_OPTION] || sc->data[SC_HANDICAPSTATE_LIGHTNINGSTRIKE])
 		return ELE_WIND;
 	if(sc->data[SC_POISON_SHIELD_OPTION])
 		return ELE_POISON;
@@ -9189,8 +9325,8 @@ int status_get_emblem_id(struct block_list *bl)
 	nullpo_ret(bl);
 
 #ifdef Pandas_MapFlag_HideGuildInfo
-	// è‹¥å½“å‰åœ°å›¾æœ‰ hideguildinfo æ ‡è®°, é‚£ä¹ˆä¸è¿”å›è§’è‰²å…¬ä¼šçš„å›¾æ ‡ç¼–å·
-	// è¿™æ ·åœ¨ GVG æ—¶, å¤„äº GVG åœ°å›¾ç©å®¶ (ä»¥åŠç±»ä¼¼å•ä½) å¤´ä¸Šçš„å…¬ä¼šå›¾æ ‡æ‰èƒ½å¤Ÿè¢«éšè— [Solaä¸¶å°å…‹]
+	// Èôµ±Ç°µØÍ¼ÓĞ hideguildinfo ±ê¼Ç, ÄÇÃ´²»·µ»Ø½ÇÉ«¹«»áµÄÍ¼±ê±àºÅ
+	// ÕâÑùÔÚ GVG Ê±, ´¦ÓÚ GVG µØÍ¼Íæ¼Ò (ÒÔ¼°ÀàËÆµ¥Î») Í·ÉÏµÄ¹«»áÍ¼±ê²ÅÄÜ¹»±»Òş²Ø [SolaØ¼Ğ¡¿Ë]
 	if (bl->m != -1 && map_getmapflag(bl->m, MF_HIDEGUILDINFO))
 		return 0;
 #endif // Pandas_MapFlag_HideGuildInfo
@@ -9510,17 +9646,17 @@ struct s_unit_common_data *status_get_ucd(struct block_list* bl)
 #ifdef Pandas_Helper_Common_Function
 //************************************
 // Method:      status_ishiding
-// Description: ä¸ pc_ishiding ç±»ä¼¼, å¯ä»¥åˆ¤æ–­ä¸€ä¸ªå•ä½æ˜¯å¦éšè—
+// Description: Óë pc_ishiding ÀàËÆ, ¿ÉÒÔÅĞ¶ÏÒ»¸öµ¥Î»ÊÇ·ñÒş²Ø
 // Access:      public 
 // Parameter:   struct block_list * bl
-//				è¯¥å‚æ•°ç”¨äºæŒ‡å®šéœ€è¦åˆ¤æ–­å“ªä¸ª bl å•ä½çš„æ˜¯å¦å¤„äºéšè—çŠ¶æ€
+//				¸Ã²ÎÊıÓÃÓÚÖ¸¶¨ĞèÒªÅĞ¶ÏÄÄ¸ö bl µ¥Î»µÄÊÇ·ñ´¦ÓÚÒş²Ø×´Ì¬
 // Parameter:   struct block_list * observer_bl
-//				è§‚å¯Ÿè€…çš„ bl æŒ‡é’ˆ (é»˜è®¤ä¸º nullptr è¡¨ç¤ºæ²¡æœ‰è§‚å¯Ÿè€…, æ— éœ€è€ƒè™‘ cloak å½±å“)
-//				é€šå¸¸æƒ…å†µä¸‹ä¸€ä¸ªå¦‚æœè¢«æ£€æµ‹çš„ bl å•ä½æ˜¯ä¸€ä¸ª npc,
-//				é‚£ä¹ˆå¯èƒ½ä¼šå› ä¸ºè¿™ä¸ª npc å·²ç»åœ¨æŸä¸ª observer_bl çš„è§†é‡ä¸­è¢«éšè—/æ˜¾ç¤º (cloakonnpc/cloakoffnpc)
-//				å› æ­¤æƒ³åˆ¤æ–­ä¸€ä¸ªç›®æ ‡ bl å•ä½çš„æ˜¯å¦å¤„äºéšè—çŠ¶æ€çš„æ—¶å€™, æŠŠ observer_bl å¸¦ä¸Šåˆ¤æ–­å°±ä¼šä»£å…¥è§‚å¯Ÿè€…è§†é‡
+//				¹Û²ìÕßµÄ bl Ö¸Õë (Ä¬ÈÏÎª nullptr ±íÊ¾Ã»ÓĞ¹Û²ìÕß, ÎŞĞè¿¼ÂÇ cloak Ó°Ïì)
+//				Í¨³£Çé¿öÏÂÒ»¸öÈç¹û±»¼ì²âµÄ bl µ¥Î»ÊÇÒ»¸ö npc,
+//				ÄÇÃ´¿ÉÄÜ»áÒòÎªÕâ¸ö npc ÒÑ¾­ÔÚÄ³¸ö observer_bl µÄÊÓÒ°ÖĞ±»Òş²Ø/ÏÔÊ¾ (cloakonnpc/cloakoffnpc)
+//				Òò´ËÏëÅĞ¶ÏÒ»¸öÄ¿±ê bl µ¥Î»µÄÊÇ·ñ´¦ÓÚÒş²Ø×´Ì¬µÄÊ±ºò, °Ñ observer_bl ´øÉÏÅĞ¶Ï¾Í»á´úÈë¹Û²ìÕßÊÓÒ°
 // Returns:     bool
-// Author:      Solaä¸¶å°å…‹(CairoLee)  2021/12/29 22:52
+// Author:      SolaØ¼Ğ¡¿Ë(CairoLee)  2021/12/29 22:52
 //************************************ 
 bool status_ishiding(struct block_list* bl, struct block_list* observer_bl) {
 	if (!bl) return false;
@@ -9544,11 +9680,11 @@ bool status_ishiding(struct block_list* bl, struct block_list* observer_bl) {
 
 //************************************
 // Method:      status_isinvisible
-// Description: ä¸ pc_isinvisible ç±»ä¼¼, å¯ä»¥åˆ¤æ–­ä¸€ä¸ªå•ä½æ˜¯å¦å¤„äºä¸å¯è§çŠ¶æ€
+// Description: Óë pc_isinvisible ÀàËÆ, ¿ÉÒÔÅĞ¶ÏÒ»¸öµ¥Î»ÊÇ·ñ´¦ÓÚ²»¿É¼û×´Ì¬
 // Access:      public 
 // Parameter:   struct block_list * bl
 // Returns:     bool
-// Author:      Solaä¸¶å°å…‹(CairoLee)  2020/10/11 17:53
+// Author:      SolaØ¼Ğ¡¿Ë(CairoLee)  2020/10/11 17:53
 //************************************
 bool status_isinvisible(struct block_list* bl) {
 	if (!bl) return false;
@@ -9579,11 +9715,17 @@ void status_change_init(struct block_list *bl)
 static int status_get_sc_interval(enum sc_type type)
 {
 	switch (type) {
+		case SC_STAR_BURST:
+			return 300;
 		case SC_POISON:
 		case SC_LEECHESEND:
 		case SC_DPOISON:
 		case SC_DEATHHURT:
+		case SC_HANDICAPSTATE_DEADLYPOISON:
 			return 1000;
+		case SC_HANDICAPSTATE_CONFLAGRATION:
+		case SC_HANDICAPSTATE_DEPRESSION:
+			return 2000;
 		case SC_BURNING:
 		case SC_PYREXIA:
 			return 3000;
@@ -10718,6 +10860,9 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 				if (sc && sc->data[type]->val2 & BREAK_NECK)
 					return 0; // BREAK_NECK cannot be stacked with new breaks until the status is over.
 				val2 |= sce->val2; // Stackable ailments
+			case SC_CLIMAX:
+				sce->val1 = val1;
+				break;
 			default:
 				if (scdb->flag[SCF_OVERLAPIGNORELEVEL])
 					break;
@@ -10829,7 +10974,10 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 			val2 = val1*20; // SP gained
 			break;
 		case SC_KYRIE:
-			if( val4 ) { // Formulas for Praefatio
+			if (val2 == RL_P_ALTER) { // Formulas for Platinum Altar caused Kyrie Eleison
+				val2 = status->max_hp * (val1 * 5) / 100; //%Max HP to absorb
+				val3 = 3 + val1; //Hits
+			} else if( val4 ) { // Formulas for Praefatio
 				val2 = (status->max_hp * (val1 * 2 + 10) / 100) + val4 * 2; //%Max HP to absorb
 				val3 = 6 + val1; //Hits
 			} else { // Formulas for Kyrie Eleison
@@ -11089,6 +11237,9 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 		case SC_POISON:
 		case SC_BLEEDING:
 		case SC_BURNING:
+		case SC_HANDICAPSTATE_CONFLAGRATION:
+		case SC_HANDICAPSTATE_DEADLYPOISON:
+		case SC_HANDICAPSTATE_DEPRESSION:
 			tick_time = status_get_sc_interval(type);
 			val4 = tick - tick_time; // Remaining time
 			break;
@@ -11996,7 +12147,7 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 			break;
 		case SC_GLOOMYDAY_SK:
 #ifdef Pandas_Crashfix_Divide_by_Zero
-			// æç«¯æƒ…å†µä¸‹å¯èƒ½ä¼šé€ æˆé™¤æ•°ä¸ºé›¶çš„æƒ…å†µ, æ›¾ç»æœ‰äººå´©æºƒåä¸ŠæŠ¥è¿‡ [Solaä¸¶å°å…‹]
+			// ¼«¶ËÇé¿öÏÂ¿ÉÄÜ»áÔì³É³ıÊıÎªÁãµÄÇé¿ö, Ôø¾­ÓĞÈË±ÀÀ£ºóÉÏ±¨¹ı [SolaØ¼Ğ¡¿Ë]
 			if (((sd ? pc_checkskill(sd, WM_LESSON) * 5 : 0) + val1 * 10) == 0) break;
 #endif // Pandas_Crashfix_Divide_by_Zero
 			// Random number between [15 ~ (Voice Lesson Skill Level x 5) + (Skill Level x 10)] %.
@@ -12311,9 +12462,18 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 		case SC_PYROCLASTIC:
 			val2 += 100 + 10*val1; // atk bonus // !TODO: Confirm formula
 			break;
+		case SC_TEMPERING:
+			val2 += 5 + val1; // patk bonus //
+			break;
+		case SC_GOLDENE_TONE:
+			val2 += 3 * val1; // res/mres bonus //
+			break;
 		case SC_PARALYSIS: // [Lighta] need real info
 			val2 = 2*val1; // def reduction
 			val3 = 500*val1; // varcast augmentation
+			break;
+		case SC_TOXIN_OF_MANDARA:
+			val2 = 15*val1; // res reduction
 			break;
 		case SC_LIGHT_OF_REGENE: // Yommy leak need confirm
 			val2 = 20 * val1; // hp reco on death %
@@ -12478,7 +12638,6 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 				if (sd)
 					n = (uint8)sd->spiritball_old;
 				val2 = 10 * n; // +atk
-				val3 = (status->max_hp * (val1 * 5) / 100); // Barrier HP
 			}
 			break;
 		case SC_E_CHAIN:
@@ -12708,7 +12867,7 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 			val4 = tick - tick_time; // Remaining Time
 			break;
 		case SC_VIGOR: {
-				uint8 hp_loss[10] = { 15, 14, 12, 11, 9, 8, 6, 5, 3, 2 };
+				uint8 hp_loss[10] = { 100, 90, 80, 70, 60, 50, 40, 30, 20, 10 };
 
 				val2 = hp_loss[val1- 1];
 			}
@@ -12731,7 +12890,7 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 			tick = INFINITE_TICK;
 			break;
 		case SC_GUARDIAN_S:
-			val2 = status->max_hp * (50 * val1) / 100;// Barrier HP
+			val2 = (status->max_hp / 2 ) * (50 * val1) / 100 + 15 * sd->status.sta;// Barrier HP
 			break;
 		case SC_REBOUND_S:
 			val2 = 10 * val1;// Reduced Damage From Devotion
@@ -12740,7 +12899,7 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 			break;
 		case SC_ATTACK_STANCE:
 			val2 = 40 * val1;// DEF Decrease
-			val3 = 5 + 5 * val1;// ATK Increase
+			val3 = 3 * val1;// P.ATK/S.MATK Increase
 			tick = INFINITE_TICK;
 			break;
 		case SC_HOLY_S:
@@ -12770,7 +12929,7 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 			tick_time = 300;
 			break;
 		case SC_POTENT_VENOM:
-			val2 = 3 * val1;// Res Pierce Percentage
+			val2 = 2 * val1;// Res Pierce Percentage
 			break;
 		case SC_SHADOW_WEAPON:
 			val2 = val1;// Success Chance of Shadow Scar
@@ -12862,6 +13021,57 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 		case SC_DEEP_POISONING_OPTION:
 			val3 = ELE_POISON;
 			break;
+		case SC_SUB_WEAPONPROPERTY:
+			if (sd && val3 == ASC_EDP) {
+				uint16 poison_level = pc_checkskill(sd, GC_RESEARCHNEWPOISON);
+
+				if (poison_level > 0) {
+					tick += 30000; // Base of 30 seconds
+					tick += poison_level * 15 * 1000; // Additional 15 seconds per level
+				}
+			}
+			break;
+		case SC_TALISMAN_OF_PROTECTION:
+			val2 = 2 * val1;
+			val4 = tick / 3000;
+			tick_time = 3000;
+			break;
+		case SC_TALISMAN_OF_WARRIOR:
+		case SC_TALISMAN_OF_MAGICIAN:
+			val2 = 2 * val1;
+			break;
+		case SC_T_FIFTH_GOD:
+			val2 = 5 * val1;
+			break;
+		case SC_TALISMAN_OF_FIVE_ELEMENTS:
+			val2 = 4 * val1;
+			break;
+		case SC_HEAVEN_AND_EARTH:
+			val2 = 5 + 2 * val1;
+			break;
+		case SC_HIDDEN_CARD:
+			val2 = 3 * val1;
+			val3 = 10 * val1;
+			break;
+		case SC_INTENSIVE_AIM:
+			tick = 500;
+			break;
+		case SC_KI_SUL_RAMPAGE:
+			val4 = tick / 1000;
+			tick_time = 100;
+			break;
+		case SC_STAR_BURST:
+			tick_time = status_get_sc_interval(type);
+			val4 = tick - tick_time; // Remaining time
+			break;
+		case SC_MARINE_FESTIVAL:
+		case SC_SANDY_FESTIVAL:
+			val2 = 2 * val1;
+			break;
+		case SC_TEMPORARY_COMMUNION:
+			val2 = val1 * 3;
+		case SC_BLESSING_OF_M_CREATURES:
+			val2 = val1 * 10;
 
 		default:
 			if (calc_flag.none() && scdb->skill_id == 0 && scdb->icon == EFST_BLANK && scdb->opt1 == OPT1_NONE && scdb->opt2 == OPT2_NONE && scdb->state.none() && scdb->flag.none() && scdb->end.empty() && scdb->endreturn.empty() && scdb->fail.empty()) {
@@ -13029,8 +13239,8 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 			clif_changelook(bl,LOOK_CLOTHES_COLOR,vd->cloth_color);
 		}
 #ifdef Pandas_Aura_Mechanism
-		// è°ƒæ•´ä¸€ä¸‹ clif_changeoption å’Œ clif_changelook(bl,LOOK_BASE,vd->class_); çš„é¡ºåº
-		// è™½ç„¶åœ¨ status_change_start ä¸­ç›®å‰çœ‹èµ·æ¥å¥½åƒå¹¶ä¸éœ€è¦, è¿˜æ˜¯ä¸€èµ·æ”¹äº†å§
+		// µ÷ÕûÒ»ÏÂ clif_changeoption ºÍ clif_changelook(bl,LOOK_BASE,vd->class_); µÄË³Ğò
+		// ËäÈ»ÔÚ status_change_start ÖĞÄ¿Ç°¿´ÆğÀ´ºÃÏñ²¢²»ĞèÒª, »¹ÊÇÒ»Æğ¸ÄÁË°É
 		clif_changeoption(bl);
 #endif // Pandas_Aura_Mechanism
 	}
@@ -13198,7 +13408,7 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 
 #ifdef Pandas_NpcExpress_SC_START
 	if (sd && sd->bl.type == BL_PC) {
-		pc_setreg(sd, add_str("@startedsc"), (int64)type);			// ä¸ºäº†å…¼å®¹SEAå’ŒCSEA
+		pc_setreg(sd, add_str("@startedsc"), (int64)type);			// ÎªÁË¼æÈİSEAºÍCSEA
 		pc_setreg(sd, add_str("@started_sc_id"), (int64)type);
 		pc_setreg(sd, add_str("@started_sc_rate"), rate);
 		pc_setreg(sd, add_str("@started_sc_tick"), tick);
@@ -13902,6 +14112,10 @@ int status_change_end_(struct block_list* bl, enum sc_type type, int tid, const 
 				pc_delabyssball( *sd, sd->abyssball );
 			}
 			break;
+		case SC_BLESSING_OF_M_CREATURES:
+			sc_start(bl,bl, SC_BLESSING_OF_M_C_DEBUFF, 100, 1, skill_get_time2(SH_BLESSING_OF_MYSTICAL_CREATURES, 1));
+			status_percent_change(bl,bl,0, 0, -100,1);
+			break;
 	}
 
 	// Reset the options as needed
@@ -13971,9 +14185,9 @@ int status_change_end_(struct block_list* bl, enum sc_type type, int tid, const 
 			clif_changelook(bl,LOOK_BODY2,cap_value(sd->status.body,0,battle_config.max_body_style));
 		}
 #ifdef Pandas_Aura_Mechanism
-		// å°†ä¸Šé¢çš„ clif_changeoption è½¬ç§»åˆ°ä¸‹é¢æ¥
-		// å¦åˆ™åœ¨ clif_changeoption ä¸­å¯¹è‡ªå·±å‘é€ç‰¹æ®Šæ•ˆæœ (202 / 362) ä¿¡æ¯å, ä¼šè¢«
-		// clif_changelook(bl,LOOK_BASE,sd->vd.class_); æ¸…ç©ºæ‰, å¯¼è‡´æ¢å¤éšåŒ¿/ä¼ªè£…åè‡ªå·±æ— æ³•çœ‹åˆ°ç‰¹æ®Šæ•ˆæœ
+		// ½«ÉÏÃæµÄ clif_changeoption ×ªÒÆµ½ÏÂÃæÀ´
+		// ·ñÔòÔÚ clif_changeoption ÖĞ¶Ô×Ô¼º·¢ËÍÌØÊâĞ§¹û (202 / 362) ĞÅÏ¢ºó, »á±»
+		// clif_changelook(bl,LOOK_BASE,sd->vd.class_); Çå¿Õµô, µ¼ÖÂ»Ö¸´ÒşÄä/Î±×°ºó×Ô¼ºÎŞ·¨¿´µ½ÌØÊâĞ§¹û
 		clif_changeoption(bl);
 #endif // Pandas_Aura_Mechanism
 	}
@@ -14001,7 +14215,7 @@ int status_change_end_(struct block_list* bl, enum sc_type type, int tid, const 
 
 #ifdef Pandas_NpcExpress_SC_END
 	if (sd && sd->bl.type == BL_PC) {
-		pc_setreg(sd, add_str("@endedsc"), (int64)type);			// ä¸ºäº†å…¼å®¹SEAå’ŒCSEA
+		pc_setreg(sd, add_str("@endedsc"), (int64)type);			// ÎªÁË¼æÈİSEAºÍCSEA
 		pc_setreg(sd, add_str("@ended_sc_id"), (int64)type);
 		npc_script_event(sd, NPCX_SC_END);
 	}
@@ -14056,6 +14270,22 @@ TIMER_FUNC(status_change_timer){
 	};
 	
 	switch(type) {
+	case SC_KI_SUL_RAMPAGE:
+		if (sce->val4-- > 0) {
+			int i = skill_get_splash(SH_KI_SUL_RAMPAGE, sce->val1);
+			int lv = sce->val1;
+			if ((sd && pc_checkskill(sd, SH_COMMUNE_WITH_KI_SUL)) || (sc && sc->data[SC_TEMPORARY_COMMUNION]))
+			{
+				i += 2;
+				lv += skill_get_max(SH_KI_SUL_RAMPAGE);
+			}
+			clif_skill_nodamage(bl, bl, SH_KI_SUL_RAMPAGE, lv, 1);
+			map_foreachinrange(skill_area_sub, bl, i, BL_CHAR,
+				bl, SH_KI_SUL_RAMPAGE, lv, tick, BCT_PARTY | SD_SPLASH | 1, skill_castend_nodamage_id);
+			sc_timer_next(1000 + tick);
+			return 0;
+		}
+		break;
 	case SC_MAXIMIZEPOWER:
 	case SC_CLOAKING:
 		if(!status_charge(bl, 0, 1))
@@ -14118,7 +14348,7 @@ TIMER_FUNC(status_change_timer){
 		if (sce->val4 >= 0 && status->hp > status->max_hp / 4)
 			status_percent_damage(nullptr, bl, -1, 0, false);
 		break;
-
+	case SC_HANDICAPSTATE_DEADLYPOISON: // TODO actual damage unknown [Muh]
 	case SC_POISON:
 	case SC_DPOISON:
 		if (sce->val4 >= 0 && !sc->data[SC_SLOWPOISON]) {
@@ -14142,7 +14372,12 @@ TIMER_FUNC(status_change_timer){
 			status_zap(bl, damage, 0);
 		}
 		break;
-
+	case SC_HANDICAPSTATE_DEPRESSION:
+		if (sce->val4 >= 0) {
+			status_heal(bl, 0, -(int)status->max_sp * 2 / 100, 0, 1);
+		}
+		break;
+	case SC_HANDICAPSTATE_CONFLAGRATION: // TODO actual damage unknown [Muh]
 	case SC_BURNING:
 		if (sce->val4 >= 0) {
 			int64 damage = 1000 + (3 * status->max_hp) / 100; // Deals fixed (1000 + 3%*MaxHP)
@@ -14297,18 +14532,18 @@ TIMER_FUNC(status_change_timer){
 					clif_bossmapinfo(sd, boss_md, BOSS_INFO_DEAD);
 				}
 #ifdef Pandas_ScriptCommand_BossMonster
-				// è‹¥ä¹‹å‰è·Ÿè¸ªçš„ BOSS å·²ç»æ­»äº¡å¹¶ç­‰å¾…é‡ç”Ÿ, é‚£ä¹ˆè·Ÿè¸ªä¸‹ä¸€ä¸ªå­˜æ´»çš„ BOSS
+				// ÈôÖ®Ç°¸ú×ÙµÄ BOSS ÒÑ¾­ËÀÍö²¢µÈ´ıÖØÉú, ÄÇÃ´¸ú×ÙÏÂÒ»¸ö´æ»îµÄ BOSS
 				if (boss_md->spawn_timer != INVALID_TIMER && sce->val2) {
-					// è·å–ç©å®¶æ‰€åœ¨åœ°å›¾çš„ä¸‹ä¸€åªå­˜æ´»çš„ BOSS
+					// »ñÈ¡Íæ¼ÒËùÔÚµØÍ¼µÄÏÂÒ»Ö»´æ»îµÄ BOSS
 					struct mob_data* next_boss_md = map_getmob_boss(sd->bl.m, true);
 
-					// åªè¦ä¸é‡å¤ä¸”ç¡®å®æ´»ç€, åˆ™åˆ‡æ¢ä¸‹ä¸€æ¬¡å¾ªç¯æ—¶è·Ÿè¸ªçš„ BOSS å•ä½
+					// Ö»Òª²»ÖØ¸´ÇÒÈ·Êµ»î×Å, ÔòÇĞ»»ÏÂÒ»´ÎÑ­»·Ê±¸ú×ÙµÄ BOSS µ¥Î»
 					if (next_boss_md && boss_md != next_boss_md) {
 						boss_md = next_boss_md;
 
 						sce->val1 = boss_md->bl.id;
 
-						// è‹¥æ–°è·Ÿè¸ªçš„ BOSS å¤„äºå­˜æ´»çŠ¶æ€, é‚£ä¹ˆé‡æ–°å‘Šè¯‰ç©å®¶æˆ‘ä»¬æ¢æµ‹åˆ°äº†æ–°çš„ BOSS
+						// ÈôĞÂ¸ú×ÙµÄ BOSS ´¦ÓÚ´æ»î×´Ì¬, ÄÇÃ´ÖØĞÂ¸æËßÍæ¼ÒÎÒÃÇÌ½²âµ½ÁËĞÂµÄ BOSS
 						if (boss_md->spawn_timer == INVALID_TIMER)
 							clif_bossmapinfo(sd, boss_md, BOSS_INFO_ALIVE_WITHMSG);
 					}
@@ -14317,20 +14552,20 @@ TIMER_FUNC(status_change_timer){
 			}
 #ifdef Pandas_ScriptCommand_BossMonster
 			else {
-				// è‹¥è·Ÿè¸ªçš„ BOSS æ¸¸æˆå•ä½ç¼–å·å·²ç»ä¸å­˜åœ¨, é‚£ä¹ˆè·Ÿè¸ªä¸‹ä¸€ä¸ªå­˜æ´»çš„ BOSS
-				// å¤‡æ³¨: ä¸´æ—¶å¬å”¤çš„ BOSS æ‰ä¼šå‡ºç°è¿™æ ·çš„æƒ…å†µ, è„šæœ¬é‡Œå†™æ­»çš„è‡ªç„¶é‡ç”Ÿ BOSS å°±ç®—æ­»äº¡, æ¸¸æˆå•ä½ç¼–å·ä¹Ÿè¿˜åœ¨
+				// Èô¸ú×ÙµÄ BOSS ÓÎÏ·µ¥Î»±àºÅÒÑ¾­²»´æÔÚ, ÄÇÃ´¸ú×ÙÏÂÒ»¸ö´æ»îµÄ BOSS
+				// ±¸×¢: ÁÙÊ±ÕÙ»½µÄ BOSS ²Å»á³öÏÖÕâÑùµÄÇé¿ö, ½Å±¾ÀïĞ´ËÀµÄ×ÔÈ»ÖØÉú BOSS ¾ÍËãËÀÍö, ÓÎÏ·µ¥Î»±àºÅÒ²»¹ÔÚ
 				struct mob_data* next_boss_md = map_getmob_boss(sd->bl.m, true);
 
-				// åªè¦ä¸é‡å¤ä¸”ç¡®å®æ´»ç€, åˆ™åˆ‡æ¢ä¸‹ä¸€æ¬¡å¾ªç¯æ—¶è·Ÿè¸ªçš„ BOSS å•ä½
+				// Ö»Òª²»ÖØ¸´ÇÒÈ·Êµ»î×Å, ÔòÇĞ»»ÏÂÒ»´ÎÑ­»·Ê±¸ú×ÙµÄ BOSS µ¥Î»
 				if (next_boss_md) {
 					sce->val1 = next_boss_md->bl.id;
 
-					// è‹¥æ–°è·Ÿè¸ªçš„ BOSS å¤„äºå­˜æ´»çŠ¶æ€, é‚£ä¹ˆé‡æ–°å‘Šè¯‰ç©å®¶æˆ‘ä»¬æ¢æµ‹åˆ°äº†æ–°çš„ BOSS
+					// ÈôĞÂ¸ú×ÙµÄ BOSS ´¦ÓÚ´æ»î×´Ì¬, ÄÇÃ´ÖØĞÂ¸æËßÍæ¼ÒÎÒÃÇÌ½²âµ½ÁËĞÂµÄ BOSS
 					if (next_boss_md->spawn_timer == INVALID_TIMER)
 						clif_bossmapinfo(sd, next_boss_md, BOSS_INFO_ALIVE_WITHMSG);
 				}
 				else if (!sce->val2) {
-					// æ²¡æœ‰æ‰¾åˆ°åˆé€‚çš„ä¸‹ä¸€ä¸ªå¯è·Ÿè¸ª BOSS, é‚£ä¹ˆæ¸…ç†æ‰å®¢æˆ·ç«¯å°åœ°å›¾çš„ BOSS æ ‡è®°
+					// Ã»ÓĞÕÒµ½ºÏÊÊµÄÏÂÒ»¸ö¿É¸ú×Ù BOSS, ÄÇÃ´ÇåÀíµô¿Í»§¶ËĞ¡µØÍ¼µÄ BOSS ±ê¼Ç
 					sce->val2 = 1;
 					clif_bossmapinfo_clear(sd);
 				}
@@ -14596,6 +14831,15 @@ TIMER_FUNC(status_change_timer){
 	case SC_HELLS_PLANT:
 		if( sce->val4 >= 0 ){
 			skill_castend_damage_id( bl, bl, GN_HELLS_PLANT_ATK, sce->val1, tick, 0 );
+		}
+		break;
+
+	case SC_STAR_BURST:
+		if (sce->val4 >= 0) {
+			struct block_list *src=map_id2bl(sce->val2);
+			if(src && tid != INVALID_TIMER) {
+				skill_unitsetting(src, SKE_STAR_BURST, sce->val1, bl->x, bl->y, 0);
+			}
 		}
 		break;
 
@@ -15068,7 +15312,7 @@ TIMER_FUNC(status_change_timer){
 	case SC_SERVANTWEAPON:
 		if (sce->val4 >= 0) {
 			if( sd && sd->servantball < MAX_SERVANTBALL ){
-				pc_addservantball( *sd, MAX_SERVANTBALL );
+				pc_addservantball( *sd, 1 );
 			}
 			interval = max(500, skill_get_time2(DK_SERVANTWEAPON, sce->val1));
 			map_freeblock_lock();
@@ -15083,6 +15327,22 @@ TIMER_FUNC(status_change_timer){
 			interval = max(500, skill_get_time2(ABC_FROM_THE_ABYSS, sce->val1));
 			map_freeblock_lock();
 			dounlock = true;
+		}
+		break;
+	case SC_INTENSIVE_AIM:
+		if (!sc || !sc->data[SC_INTENSIVE_AIM_COUNT])
+			sce->val4 = 0;
+		if (sce->val4 < 10) {
+			sce->val4++;
+			sc_start(bl, bl, SC_INTENSIVE_AIM_COUNT, 100, sce->val4, INFINITE_TICK);
+		}
+		sc_timer_next(500 + tick);
+		return 0;
+	case SC_TALISMAN_OF_PROTECTION:
+		if (--(sce->val4) >= 0) {
+			skill_castend_nodamage_id(bl, bl, SOA_TALISMAN_OF_PROTECTION, sce->val1, tick, 1);
+			sc_timer_next(3000 + tick);
+			return 0;
 		}
 		break;
 	}

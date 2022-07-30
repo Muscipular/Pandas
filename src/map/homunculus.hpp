@@ -94,7 +94,7 @@ struct homun_data {
 };
 
 #define MAX_HOM_SKILL_REQUIRE 5
-#define MAX_HOM_SKILL_TREE 8
+#define MAX_HOM_SKILL_TREE 10
 
 /// Homunculus skill entry [Celest]
 struct homun_skill_tree_entry {
