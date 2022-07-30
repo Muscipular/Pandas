@@ -745,6 +745,61 @@ int instance_addmap(int instance_id) {
 	return idata->map.size();
 }
 
+int instance_addmap(int instance_id, const char* name, int nomapflag, int nonpc) {
+	if (instance_id <= 0)
+		return 0;
+
+	std::shared_ptr<s_instance_data> idata = util::umap_find(instances, instance_id);
+
+	//// If the instance isn't idle, we can't do anything
+	//if (idata->state != INSTANCE_IDLE)
+	//	return 0;
+
+	std::shared_ptr<s_instance_db> db = instance_db.find(idata->id);
+
+	if (!db)
+		return 0;
+	struct s_instance_map entry;
+	unsigned short mapId = map_mapname2mapid(name);
+	unsigned short m = map_addinstancemap(mapId, instance_id, nomapflag);
+	entry.src_m = mapId;
+	entry.m = m;
+	if (m < 0) { // An error occured adding a map
+		ShowError("instance_addmap: No maps added to instance '%s' (%d).\n", db->name.c_str(), instance_id);
+		return 0;
+	}
+	idata->map.push_back(entry);
+	if (!nonpc) {
+		struct map_data* mapdata = map_getmapdata(entry.m);
+		map_foreachinallarea(instance_addnpc_sub, entry.src_m, 0, 0, mapdata->xs, mapdata->ys, BL_NPC, entry.m);
+		map_foreachinallarea(instance_npcinit, entry.m, 0, 0, mapdata->xs, mapdata->ys, BL_NPC, entry.m);
+	}
+	return entry.m;
+}
+
+const char* instance_addwarp(int instance_id, const char* from_map, int x, int y, const char* to_map, int to_x, int to_y)
+{
+	char warpname[NPC_NAME_LENGTH];
+	unsigned short m, to_m;
+	struct npc_data* nd;
+
+	memset(warpname, '\0', sizeof(warpname));
+	sprintf_s(warpname, "%d_warp", instance_id);
+
+	m = map_mapname2mapid(from_map);
+	if (m < 0) {
+		return "NOFROMMAP";
+	}
+	to_m = mapindex_name2id(to_map);
+	if (to_m < 0) {
+		return "NOTOMAP";
+	}
+	nd = npc_add_warp(warpname, m, x, y, 2, 2, to_m, to_x, to_y);
+	if (nd == NULL)
+		return "NONPC";
+	return nd->name;
+}
+
 /**
  * Fills outname with the name of the instance map name
  * @param map_id: Mapid to use

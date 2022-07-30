@@ -31940,6 +31940,37 @@ BUILDIN_FUNC(whodropitem) {
 }
 #endif // Pandas_ScriptCommand_WhoDropItem
 
+#ifdef Pandas_ScriptCommand_Instance_Add_Map
+/* ===========================================================
+ * 指令: instance_add_map
+ * 描述: 动态加地图
+ * 用法: instance_add_map <副本id>,<地图id>,<nomapflag>,<nonpc>;
+ * 返回: mapid
+ * 作者: Muscipular
+ * -----------------------------------------------------------*/
+BUILDIN_FUNC(instance_add_map) {
+	int n = instance_addmap(script_getnum(st, 2), script_getstr(st, 3), script_getnum(st, 4), script_getnum(st, 5));
+	script_pushint(st, n);
+	return SCRIPT_CMD_SUCCESS;
+}
+#endif // Pandas_ScriptCommand_Instance_Addmap
+#ifdef Pandas_ScriptCommand_Instance_Add_Warp
+/* ===========================================================
+ * 指令: instance_add_map
+ * 描述: 动态加地图
+ * 用法: instance_add_map <副本id>,<地图id>,<x>,<y>,<地图id>,<x>,<y>;
+ * 返回: npcName
+ * 作者: Muscipular
+ * -----------------------------------------------------------*/
+BUILDIN_FUNC(instance_add_warp) {
+	const char* n = instance_addwarp(script_getnum(st, 2),
+		script_getstr(st, 3), script_getnum(st, 4), script_getnum(st, 5),
+		script_getstr(st, 6), script_getnum(st, 7), script_getnum(st, 8));
+	script_pushstrcopy(st, n);
+	return SCRIPT_CMD_SUCCESS;
+}
+#endif // Pandas_ScriptCommand_Instance_Add_Warp
+
 // PYHELP - SCRIPTCMD - INSERT POINT - <Section 2>
 
 /// script command definitions
@@ -32891,6 +32922,12 @@ struct script_function buildin_func[] = {
 #ifdef Pandas_ScriptCommand_WhoDropItem
 	BUILDIN_DEF(whodropitem,"v??"),						// 查询指定道具会从哪些魔物身上掉落以及掉落的机率信息 [Sola丶小克]
 #endif // Pandas_ScriptCommand_WhoDropItem
+#ifdef Pandas_ScriptCommand_Instance_Add_Map
+	BUILDIN_DEF(instance_add_map,"isii"),						// 添加副本地图 [Muscipular]
+#endif // Pandas_ScriptCommand_Instance_Add_Map
+#ifdef Pandas_ScriptCommand_Instance_Add_Warp
+	BUILDIN_DEF(instance_add_warp,"isiisii"),						// 添加副本地图传送点 [Muscipular]
+#endif // Pandas_ScriptCommand_Instance_Add_Warp
 	// PYHELP - SCRIPTCMD - INSERT POINT - <Section 3>
 
 #include "../custom/script_def.inc"

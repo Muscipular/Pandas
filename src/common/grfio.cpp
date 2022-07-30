@@ -23,7 +23,7 @@ typedef struct _FILELIST {
 	int		srcpos;				// position of entry in grf
 	int		next;				// index of next filelist entry with same hash (-1: end of entry chain)
 	char	type;
-	char	fn[128-4*5];		// file name
+	char	fn[1024-4*5];		// file name
 	char*	fnd;				// if the file was cloned, contains name of original file
 	char	gentry;				// read grf file select
 } FILELIST;
@@ -541,12 +541,12 @@ static int grfio_entryread(const char* grfname, int gentry)
 	} else
 		ShowInfo("GRF data file found: '%s'\n",grfname);
 
-	fseek(fp,0,SEEK_END);
+	_fseeki64(fp,0,SEEK_END);
 	grf_size = ftell(fp);
-	fseek(fp,0,SEEK_SET);
+	_fseeki64(fp,0,SEEK_SET);
 
 	if(fread(grf_header,1,0x2e,fp) != 0x2e) { ShowError("Couldn't read all grf_header element of %s \n", grfname); }
-	if( strcmp((const char*)grf_header,"Master of Magic") != 0 || fseek(fp,getlong(grf_header+0x1e),SEEK_CUR) != 0 ) {
+	if( strcmp((const char*)grf_header,"Master of Magic") != 0 || _fseeki64(fp,getlong(grf_header+0x1e),SEEK_CUR) != 0 ) {
 		fclose(fp);
 		ShowError("GRF %s read error\n", grfname);
 		ShowError("GRF possibly over 2GB in size.\n");
