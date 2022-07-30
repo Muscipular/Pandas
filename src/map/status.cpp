@@ -7943,6 +7943,8 @@ static pec_defType status_calc_def(struct block_list *bl, struct status_change *
 		def += sc->data[SC_GUARD_STANCE]->val2;
 	if (sc->data[SC_ATTACK_STANCE])
 		def -= sc->data[SC_ATTACK_STANCE]->val2;
+	if (sc->data[SC_M_DEFSCROLL])
+		def += sc->data[SC_M_DEFSCROLL]->val1;
 
 	return (pec_defType)cap_value(def,PEC_DEFTYPE_MIN,PEC_DEFTYPE_MAX);
 }
@@ -8077,6 +8079,8 @@ static pec_defType status_calc_mdef(struct block_list *bl, struct status_change 
 		mdef += sc->data[SC_PACKING_ENVELOPE8]->val1;
 	if (sc->data[SC_CLIMAX_CRYIMP])
 		mdef += 100;
+	if (sc->data[SC_M_DEFSCROLL])
+		mdef += sc->data[SC_M_DEFSCROLL]->val2;
 
 	return (pec_defType)cap_value(mdef,PEC_DEFTYPE_MIN,PEC_DEFTYPE_MAX);
 }
