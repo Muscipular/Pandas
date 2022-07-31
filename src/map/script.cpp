@@ -20766,6 +20766,7 @@ BUILDIN_FUNC(setunitdata)
 #ifdef Pandas_Struct_Unit_CommonData_Aura
 			case UMOB_AURA: aura_make_effective(bl, value); break;
 #endif // Pandas_Struct_Unit_CommonData_Aura
+			case UMOB_DMGRATE: md->pandas.dmg_rate = cap_value(value, -1, 1000000000) / 100000.0f; break;
 #ifdef Pandas_ScriptParams_UnitData_Experience
 			case UMOB_MOBBASEEXP: md->pandas.base_exp = cap_value(value64, -1, (int64)MAX_EXP); break;
 			case UMOB_MOBJOBEXP: md->pandas.job_exp = cap_value(value64, -1, (int64)MAX_EXP); break;

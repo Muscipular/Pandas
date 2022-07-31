@@ -397,6 +397,7 @@ struct mob_data {
 		int64 base_exp = -1;	// 魔物实例被特殊设置的基础经验值, 若为 -1 则表示使用 db 中设置的基础经验
 		int64 job_exp = -1;		// 魔物实例被特殊设置的职业经验值, 若为 -1 则表示使用 db 中设置的职业经验
 #endif // Pandas_Struct_Mob_Data_SpecialExperience
+		float dmg_rate = -1;
 	} pandas;
 #endif // Pandas_Struct_Mob_Data_Pandas
 

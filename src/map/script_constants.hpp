@@ -5572,6 +5572,7 @@
 #endif // Pandas_Struct_Unit_CommonData_Aura
 
 #ifdef Pandas_ScriptParams_DamageTaken_From_Database
+	export_constant(UMOB_DMGRATE);
 	export_constant(UMOB_DAMAGETAKEN_DB);
 #endif // Pandas_ScriptParams_DamageTaken_From_Database
 
