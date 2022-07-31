@@ -2876,6 +2876,7 @@ bool map_addnpc(int16 m,struct npc_data *nd)
 		}
 	}
 	mapdata->npc_num++;
+	nd->instance_id = mapdata->instance_id;
 	idb_put(id_db,nd->bl.id,nd);
 	return true;
 }
