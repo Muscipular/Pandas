@@ -1866,6 +1866,9 @@ int64 battle_calc_damage(struct block_list *src,struct block_list *bl,struct Dam
 				if (md->pandas.damagetaken != 100)
 					damage = i64max(damage * md->pandas.damagetaken / 100, 1);
 			}
+			if (md->pandas.dmg_rate != 1 && md->pandas.dmg_rate >= 0) {
+				damage = i64max((int64)(damage * (double)md->pandas.dmg_rate), 1);
+			}
 		}
 #endif // Pandas_Struct_Mob_Data_DamageTaken
 	}

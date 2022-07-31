@@ -750,6 +750,7 @@ enum unitdata_mobtypes {
 	UMOB_AURA,
 #endif // Pandas_Struct_Unit_CommonData_Aura
 #ifdef Pandas_ScriptParams_UnitData_DamageTaken
+	UMOB_DMGRATE,
 	UMOB_DAMAGETAKEN,
 	UMOB_DAMAGETAKEN_DB,
 #endif // Pandas_ScriptParams_UnitData_DamageTaken
