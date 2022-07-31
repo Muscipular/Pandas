@@ -31944,7 +31944,7 @@ BUILDIN_FUNC(whodropitem) {
 /* ===========================================================
  * 指令: instance_add_map
  * 描述: 动态加地图
- * 用法: instance_add_map <副本id>,<地图id>,<nomapflag>,<nonpc>;
+ * 用法: instance_add_map <副本id>,<地图名字>,<nomapflag>,<nonpc>;
  * 返回: mapid
  * 作者: Muscipular
  * -----------------------------------------------------------*/
@@ -31956,9 +31956,9 @@ BUILDIN_FUNC(instance_add_map) {
 #endif // Pandas_ScriptCommand_Instance_Addmap
 #ifdef Pandas_ScriptCommand_Instance_Add_Warp
 /* ===========================================================
- * 指令: instance_add_map
+ * 指令: instance_add_warp
  * 描述: 动态加地图
- * 用法: instance_add_map <副本id>,<地图id>,<x>,<y>,<地图id>,<x>,<y>;
+ * 用法: instance_add_warp <副本id>,<地图名字>,<x>,<y>,<地图名字>,<x>,<y>;
  * 返回: npcName
  * 作者: Muscipular
  * -----------------------------------------------------------*/
@@ -31970,6 +31970,71 @@ BUILDIN_FUNC(instance_add_warp) {
 	return SCRIPT_CMD_SUCCESS;
 }
 #endif // Pandas_ScriptCommand_Instance_Add_Warp
+#ifdef Pandas_ScriptCommand_Map_Get_Size
+/* ===========================================================
+ * 指令: getmapsize
+ * 描述: 动态加地图
+ * 用法: getmapsize <地图名字>,<x>,<y>;
+ * 返回: int
+ * 作者: Muscipular
+ * -----------------------------------------------------------*/
+BUILDIN_FUNC(getmapsize) {
+	const char* mapn = script_getstr(st, 2), * name_x, * name_y;
+	struct script_data
+		* data_x = script_getdata(st, 3),
+		* data_y = script_getdata(st, 4);
+	struct block_list* bl = map_id2bl(st->rid);
+	struct map_session_data* sd = nullptr;
+	int16 m, x = 0, y = 0;
+	int rx = -1, ry = -1, flag = 1;
+
+	if (!data_isreference(data_x)) {
+		ShowWarning("script: buildin_getmapsize: rX is not a variable.\n");
+		return SCRIPT_CMD_FAILURE;
+	}
+	if (!data_isreference(data_y)) {
+		ShowWarning("script: buildin_getmapsize: rY is not a variable.\n");
+		return SCRIPT_CMD_FAILURE;
+	}
+	name_x = reference_getname(data_x);
+	name_y = reference_getname(data_y);
+
+	if (is_string_variable(name_x)) {
+		ShowWarning("script: buildin_getmapsize: rX is a string, must be an INT.\n");
+		return SCRIPT_CMD_FAILURE;
+	}
+	if (is_string_variable(name_y)) {
+		ShowWarning("script: buildin_getmapsize: rY is a string, must be an INT.\n");
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	if (not_server_variable(*name_x) || not_server_variable(*name_y)) {
+		if (!script_rid2sd(sd)) {
+			if (not_server_variable(*name_x))
+				ShowError("buildin_getmapsize: variable '%s' for mapX is not a server variable, but no player is attached!", name_x);
+			else
+				ShowError("buildin_getmapsize: variable '%s' for mapY is not a server variable, but no player is attached!", name_y);
+			return SCRIPT_CMD_FAILURE;
+		}
+	}
+	if (bl && strcmp(mapn, "this") == 0)
+		m = bl->m;
+	else
+		m = map_mapname2mapid(mapn);
+
+	struct map_data* data = map_getmapdata(m);
+
+	if (data == nullptr) {
+		ShowError("buildin_getmapsize: map '%s' not found", mapn);
+		return SCRIPT_CMD_FAILURE;
+	}
+	x = data->xs;
+	y = data->ys;
+	set_reg_num(st, sd, reference_getuid(data_x), name_x, x, data_x->ref);
+	set_reg_num(st, sd, reference_getuid(data_y), name_y, y, data_y->ref);
+	return SCRIPT_CMD_SUCCESS;
+}
+#endif // Pandas_ScriptCommand_Map_Get_Size
 
 // PYHELP - SCRIPTCMD - INSERT POINT - <Section 2>
 
@@ -32927,6 +32992,9 @@ struct script_function buildin_func[] = {
 #endif // Pandas_ScriptCommand_Instance_Add_Map
 #ifdef Pandas_ScriptCommand_Instance_Add_Warp
 	BUILDIN_DEF(instance_add_warp,"isiisii"),						// 添加副本地图传送点 [Muscipular]
+#endif // Pandas_ScriptCommand_Instance_Add_Warp
+#ifdef Pandas_ScriptCommand_Map_Get_Size
+	BUILDIN_DEF(getmapsize,"sii"),						// 获取地图大小 [Muscipular]
 #endif // Pandas_ScriptCommand_Instance_Add_Warp
 	// PYHELP - SCRIPTCMD - INSERT POINT - <Section 3>
 
