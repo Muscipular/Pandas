@@ -1917,6 +1917,7 @@ bool status_check_skilluse(struct block_list *src, struct block_list *target, ui
 				return false;
 			break;
 		case AL_TELEPORT:
+		case ALL_ODINS_POWER:
 			// Should fail when used on top of Land Protector [Skotlex]
 			if (src && map_getcell(src->m, src->x, src->y, CELL_CHKLANDPROTECTOR)
 				&& !status_has_mode(status,MD_STATUSIMMUNE)

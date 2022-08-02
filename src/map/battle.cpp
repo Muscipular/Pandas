@@ -1139,6 +1139,17 @@ bool battle_status_block_damage(struct block_list *src, struct block_list *targe
 			status_change_end(target, SC_KYRIE, INVALID_TIMER);
 	}
 
+	if ((sce = sc->data[SC_P_ALTER]) && damage > 0) {
+		clif_specialeffect(target, EF_GUARD, AREA);
+		sce->val3 -= static_cast<int>(cap_value(damage, INT_MIN, INT_MAX));
+		if (sce->val3 >= 0)
+			damage = 0;
+		else
+			damage = -sce->val3;
+		if (sce->val3 <= 0)
+			status_change_end(target, SC_P_ALTER, INVALID_TIMER);
+	}
+
 	if ((sce = sc->data[SC_TUNAPARTY]) && damage > 0) {
 		sce->val2 -= static_cast<int>(cap_value(damage, INT_MIN, INT_MAX));
 		if (sce->val2 >= 0)
@@ -1400,9 +1411,8 @@ bool battle_status_block_damage(struct block_list *src, struct block_list *targe
 
 	//TODO: What's causing this status?
 	if (sc->data[SC_HANDICAPSTATE_HOLYFLAME] && flag&BF_MAGIC)	{ 
-		int heal = (int)cap_value(damage/2, INT_MIN, INT_MAX);
-		clif_skill_nodamage(0, target, AL_HEAL,heal, 1);
-		status_heal(target,heal,0,0,0);
+			clif_skill_nodamage(0, target, AL_HEAL, (int)cap_value(damage / 2, INT_MIN, INT_MAX), 1);
+			status_heal(target,(int)cap_value(damage/2, INT_MIN, INT_MAX),0,0,0);
 	}
 	
 	return true;
@@ -3841,6 +3851,24 @@ static void battle_calc_skill_base_damage(struct Damage* wd, struct block_list *
 #endif
 			}
 			break;
+		case KO_HAPPOKUNAI:
+			if(sd) {
+				short index = sd->equip_index[EQI_AMMO];
+				int damagevalue = 3 * (
+#ifdef RENEWAL
+					2 *
+#endif
+					sstatus->batk + sstatus->rhw.atk + (index >= 0 && sd->inventory_data[index] ?
+						sd->inventory_data[index]->atk : 0)) * (skill_lv + 5) / 5;
+				if (sc && sc->data[SC_KAGEMUSYA])
+					damagevalue += damagevalue * sc->data[SC_KAGEMUSYA]->val2 / 100;
+				ATK_ADD(wd->damage, wd->damage2, damagevalue);
+#ifdef RENEWAL
+				ATK_ADD(wd->weaponAtk, wd->weaponAtk2, damagevalue);
+#endif
+			} else
+				ATK_ADD(wd->damage, wd->damage2, 5000);
+			break;
 		case HFLI_SBR44:	//[orn]
 			if(src->type == BL_HOM)
 				wd->damage = ((TBL_HOM*)src)->homunculus.intimacy ;
@@ -3900,6 +3928,10 @@ static void battle_calc_skill_base_damage(struct Damage* wd, struct block_list *
 			if(sd) {
 				int skill;
 
+				if (sd->bonus.atk_rate) {
+					ATK_ADDRATE(wd->damage, wd->damage2, sd->bonus.atk_rate);
+					RE_ALLATK_ADDRATE(wd, sd->bonus.atk_rate);
+				}
 #ifndef RENEWAL
 				if(sd->bonus.crit_atk_rate && is_attack_critical(wd, src, target, skill_id, skill_lv, false)) { // add +crit damage bonuses here in pre-renewal mode [helvetica]
 					ATK_ADDRATE(wd->damage, wd->damage2, sd->bonus.crit_atk_rate);

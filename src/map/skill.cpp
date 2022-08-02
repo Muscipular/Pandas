@@ -907,6 +907,8 @@ bool skill_isNotOk(uint16 skill_id, struct map_session_data *sd)
 		clif_skill_fail(sd,skill_id,USESKILL_FAIL_LEVEL,0);
 		return true;
 	}
+	if (sd->sc.data[SC_KI_SUL_RAMPAGE])
+		return true;
 #ifdef Pandas_MapFlag_NoSkill2
 	if (sd && map_getmapflag(sd->bl.m, MF_NOSKILL2)) {
 		if ((map_getmapflag_param(sd->bl.m, MF_NOSKILL2, 0) & BL_PC) == BL_PC)
@@ -1999,6 +2001,10 @@ int skill_additional_effect(struct block_list* src, struct block_list *bl, uint1
 			}
 			sd->itemid = 0;
 		}
+		break;
+	case GN_HELLS_PLANT_ATK:
+		sc_start(src,bl, SC_STUN,  20 + 10 * skill_lv, skill_lv, skill_get_time(skill_id, skill_lv));
+		sc_start2(src,bl, SC_BLEEDING, 5 + 5 * skill_lv, skill_lv, src->id,skill_get_time(skill_id, skill_lv));
 		break;
 	case EL_WIND_SLASH:	// Non confirmed rate.
 		sc_start2(src,bl, SC_BLEEDING, 25, skill_lv, src->id, skill_get_time(skill_id,skill_lv));
@@ -5957,6 +5963,7 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 	case SOA_EXORCISM_OF_MALICIOUS_SOUL:
 	case SOA_TALISMAN_OF_WHITE_TIGER:
 	case SOA_TALISMAN_OF_RED_PHOENIX:
+	case SOA_TALISMAN_OF_BLACK_TORTOISE:
 	case SOA_TALISMAN_OF_FOUR_BEARING_GOD:
 	case SOA_CIRCLE_OF_DIRECTIONS_AND_ELEMENTALS:
 	case BO_HELL_HOWLING:
@@ -6008,6 +6015,12 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 #endif
 				case SJ_PROMINENCEKICK: // Trigger the 2nd hit. (100% fire damage.)
 					skill_attack(skill_get_type(skill_id), src, src, bl, skill_id, skill_lv, tick, sflag|8|SD_ANIMATION);
+					break;
+
+				case SOA_TALISMAN_OF_BLACK_TORTOISE:
+					if (sc && (sc->data[SC_T_THIRD_GOD] && !sc->data[SC_T_FOURTH_GOD] && !sc->data[SC_T_FIFTH_GOD])){
+						sc_start(src, src, skill_get_sc(skill_id), 100, skill_lv, skill_get_time(skill_id, skill_lv));
+					}
 					break;
 			}
 		} else {
@@ -8332,6 +8345,10 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 	case TR_MYSTIC_SYMPHONY:
 	case TR_KVASIR_SONATA:
 	case EM_SPELL_ENCHANTING:
+	case SKE_ENCHANTING_SKY:
+	case HN_BREAKINGLIMIT:
+	case HN_RULEBREAK:
+	case SH_TEMPORARY_COMMUNION:
 		clif_skill_nodamage(src,bl,skill_id,skill_lv,
 			sc_start(src,bl,type,100,skill_lv,skill_get_time(skill_id,skill_lv)));
 		break;
@@ -14427,8 +14444,6 @@ int skill_castend_pos2(struct block_list* src, int x, int y, uint16 skill_id, ui
 	case GS_GROUNDDRIFT: //Ammo should be deleted right away.
 	case GN_WALLOFTHORN:
 	case GN_DEMONIC_FIRE:
-	case SS_FUUMASHOUAKU:
-		skill_unitsetting(src,skill_id,skill_lv,x,y,0);
 		break;
 	case SOA_TALISMAN_OF_BLACK_TORTOISE:
 		if (sc && (sc->data[SC_T_THIRD_GOD] && !sc->data[SC_T_FOURTH_GOD] && !sc->data[SC_T_FIFTH_GOD])){
@@ -15273,6 +15288,9 @@ int skill_castend_pos2(struct block_list* src, int x, int y, uint16 skill_id, ui
 		map_foreachinallarea(skill_area_sub, src->m, x - i, y - i, x + i, y + i, BL_CHAR,
 			src, skill_id, skill_lv, tick, flag | BCT_ENEMY | 1, skill_castend_damage_id);
 		skill_unitsetting(src, skill_id, skill_lv, x, y, UNIT_NOCONSUME_AMMO);
+	case SS_FUUMASHOUAKU:
+		flag |= 1;
+		skill_unitsetting(src, skill_id, skill_lv, x, y, 0);
 		break;
 	case SS_KUNAIKAITEN:
 		sc_start(src, src, skill_get_sc(skill_id), 100, skill_lv, skill_get_time2(skill_id, skill_lv));
