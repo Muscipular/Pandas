@@ -14444,6 +14444,8 @@ int skill_castend_pos2(struct block_list* src, int x, int y, uint16 skill_id, ui
 	case GS_GROUNDDRIFT: //Ammo should be deleted right away.
 	case GN_WALLOFTHORN:
 	case GN_DEMONIC_FIRE:
+	case SS_FUUMASHOUAKU:
+		skill_unitsetting(src,skill_id,skill_lv,x,y,0);
 		break;
 	case SOA_TALISMAN_OF_BLACK_TORTOISE:
 		if (sc && (sc->data[SC_T_THIRD_GOD] && !sc->data[SC_T_FOURTH_GOD] && !sc->data[SC_T_FIFTH_GOD])){
@@ -15288,9 +15290,6 @@ int skill_castend_pos2(struct block_list* src, int x, int y, uint16 skill_id, ui
 		map_foreachinallarea(skill_area_sub, src->m, x - i, y - i, x + i, y + i, BL_CHAR,
 			src, skill_id, skill_lv, tick, flag | BCT_ENEMY | 1, skill_castend_damage_id);
 		skill_unitsetting(src, skill_id, skill_lv, x, y, UNIT_NOCONSUME_AMMO);
-	case SS_FUUMASHOUAKU:
-		flag |= 1;
-		skill_unitsetting(src, skill_id, skill_lv, x, y, 0);
 		break;
 	case SS_KUNAIKAITEN:
 		sc_start(src, src, skill_get_sc(skill_id), 100, skill_lv, skill_get_time2(skill_id, skill_lv));
