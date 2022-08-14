@@ -32092,9 +32092,8 @@ BUILDIN_FUNC(instance_add_warp) {
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(mob_clear_skill) {
 	struct block_list* bl;
-	int gid = script_getnum(st, 2);
+	script_rid2bl(2, bl);
 	int reset = script_getnum(st, 3);
-	script_rid2bl(gid, bl);
 	if (bl == nullptr || bl->type != bl_type::BL_MOB) {
 		return SCRIPT_CMD_FAILURE;
 	}
@@ -32115,7 +32114,8 @@ BUILDIN_FUNC(mob_clear_skill) {
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(mob_add_skill) {
 	struct block_list* bl;
-	int gid = script_getnum(st, 2);
+	script_rid2bl(2, bl);
+	//int gid = script_getnum(st, 2);
 	const char* s_state = script_getstr(st, 3);
 	int skid = script_getnum(st, 4);
 	int lv = script_getnum(st, 5);
@@ -32126,7 +32126,7 @@ BUILDIN_FUNC(mob_add_skill) {
 	auto s_target = script_getstr(st, 10);
 	auto s_cond1 = script_getstr(st, 11);
 	auto s_cond2 = script_getstr(st, 12);
-	script_rid2bl(gid, bl);
+	//script_rid2bl(gid, bl);
 	if (bl == nullptr || bl->type != bl_type::BL_MOB) {
 		return SCRIPT_CMD_FAILURE;
 	}
