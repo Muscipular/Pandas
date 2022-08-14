@@ -373,6 +373,7 @@ void storage_storageadd(struct map_session_data* sd, struct s_storage *stor, int
 	else if (result == STORAGE_ADD_OK) {
 #ifdef Pandas_NpcFilter_STORAGE_ADD
 		if (npc_event_aide_storage_add(sd, stor, index, amount, TABLE_INVENTORY)) {
+			clif_storageitemremoved(sd, index, 0);
 			clif_dropitem(sd, index, 0);
 			return;
 		}
@@ -414,6 +415,7 @@ void storage_storageget(struct map_session_data *sd, struct s_storage *stor, int
 
 #ifdef Pandas_NpcFilter_STORAGE_DEL
 	if (npc_event_aide_storage_del(sd, stor, index, amount, TABLE_INVENTORY)) {
+		clif_storageitemremoved(sd, index, 0);
 		return;
 	}
 #endif // Pandas_NpcFilter_STORAGE_DEL
@@ -449,6 +451,8 @@ void storage_storageaddfromcart(struct map_session_data *sd, struct s_storage *s
 	else if (result == STORAGE_ADD_OK) {
 #ifdef Pandas_NpcFilter_STORAGE_ADD
 		if (npc_event_aide_storage_add(sd, stor, index, amount, TABLE_CART)) {
+			clif_storageitemremoved(sd, index, 0);
+			clif_cart_delitem(sd, index, 0);
 			return;
 		}
 #endif // Pandas_NpcFilter_STORAGE_ADD
@@ -494,6 +498,7 @@ void storage_storagegettocart(struct map_session_data* sd, struct s_storage *sto
 
 #ifdef Pandas_NpcFilter_STORAGE_DEL
 	if (npc_event_aide_storage_del(sd, stor, index, amount, TABLE_CART)) {
+		clif_storageitemremoved(sd, index, 0);
 		return;
 	}
 #endif // Pandas_NpcFilter_STORAGE_DEL
@@ -864,19 +869,20 @@ bool storage_guild_additem(struct map_session_data* sd, struct s_storage* stor, 
  * @return True : success, False : fail
  */
 bool storage_guild_additem2(struct s_storage* stor, struct item* item, int amount) {
-	struct item_data *id;
 	int i;
 
 	nullpo_ret(stor);
 	nullpo_ret(item);
 
-	if (item->nameid == 0 || amount <= 0 || !(id = itemdb_exists(item->nameid)))
+	if (item->nameid == 0 || amount <= 0)
 		return false;
 
-	if (item->expire_time)
+	std::shared_ptr<item_data> id = item_db.find(item->nameid);
+
+	if (id == nullptr || item->expire_time)
 		return false;
 
-	if (itemdb_isstackable2(id)) { // Stackable
+	if (itemdb_isstackable2(id.get())) { // Stackable
 		for (i = 0; i < stor->max_amount; i++) {
 			if (compare_item(&stor->u.items_guild[i], item)) {
 				// Set the amount, make it fit with max amount
@@ -977,6 +983,7 @@ void storage_guild_storageadd(struct map_session_data* sd, int index, int amount
 
 #ifdef Pandas_NpcFilter_STORAGE_ADD
 	if (npc_event_aide_storage_add(sd, stor, index, amount, TABLE_INVENTORY)) {
+		clif_storageitemremoved(sd, index, 0);
 		clif_dropitem(sd, index, 0);
 		return;
 	}
@@ -1024,6 +1031,7 @@ void storage_guild_storageget(struct map_session_data* sd, int index, int amount
 
 #ifdef Pandas_NpcFilter_STORAGE_DEL
 	if (npc_event_aide_storage_del(sd, stor, index, amount, TABLE_INVENTORY)) {
+		clif_storageitemremoved(sd, index, 0);
 		return;
 	}
 #endif // Pandas_NpcFilter_STORAGE_DEL
@@ -1063,6 +1071,8 @@ void storage_guild_storageaddfromcart(struct map_session_data* sd, int index, in
 
 #ifdef Pandas_NpcFilter_STORAGE_ADD
 	if (npc_event_aide_storage_add(sd, stor, index, amount, TABLE_CART)) {
+		clif_storageitemremoved(sd, index, 0);
+		clif_cart_delitem(sd, index, 0);
 		return;
 	}
 #endif // Pandas_NpcFilter_STORAGE_ADD
@@ -1104,6 +1114,7 @@ void storage_guild_storagegettocart(struct map_session_data* sd, int index, int 
 
 #ifdef Pandas_NpcFilter_STORAGE_DEL
 	if (npc_event_aide_storage_del(sd, stor, index, amount, TABLE_CART)) {
+		clif_storageitemremoved(sd, index, 0);
 		return;
 	}
 #endif // Pandas_NpcFilter_STORAGE_DEL
@@ -1225,7 +1236,7 @@ void storage_premiumStorage_open(struct map_session_data *sd) {
 		// 都会调用 storage_premiumStorage_open 来打开客户端的仓库界面
 		//
 		// 但如果本次查询是为了响应 getstoragelist 的请求, 那么就没必要打开客户端的仓库界面
-		if (sd->st->wating_premium_storage && sd->st->state == RERUNLINE) {
+		if (sd->st->waiting_premium_storage && sd->st->state == RERUNLINE) {
 			return;
 		}
 	}

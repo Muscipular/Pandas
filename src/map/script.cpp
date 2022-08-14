@@ -251,6 +251,13 @@ static char *str_buf;
 static int str_size = 0; // size of the buffer
 static int str_pos = 0; // next position to be assigned
 
+#ifdef Pandas_ScriptEngine_AddStr_Realloc_Memory
+// str_data 每次被重新分配时, 增加多少个字节的容量
+#define STR_DATA_INCREASING_SIZE 128 * 4
+
+// str_buf  每次被重新分配时, 增加多少个字节的容量
+#define STR_BUF_INCREASING_SIZE 256 * 32
+#endif // Pandas_ScriptEngine_AddStr_Realloc_Memory
 
 // Using a prime number for SCRIPT_HASH_SIZE should give better distributions
 #define SCRIPT_HASH_SIZE 1021
@@ -933,9 +940,15 @@ int add_str(const char* p)
 	// grow list if neccessary
 	if( str_num >= str_data_size )
 	{
+#ifndef Pandas_ScriptEngine_AddStr_Realloc_Memory
 		str_data_size += 128;
 		RECREATE(str_data,struct str_data_struct,str_data_size);
 		memset(str_data + (str_data_size - 128), '\0', 128);
+#else
+		str_data_size += STR_DATA_INCREASING_SIZE;
+		RECREATE(str_data,struct str_data_struct,str_data_size);
+		memset(str_data + (str_data_size - STR_DATA_INCREASING_SIZE), '\0', STR_DATA_INCREASING_SIZE);
+#endif // Pandas_ScriptEngine_AddStr_Realloc_Memory
 	}
 
 	len=(int)strlen(p);
@@ -943,9 +956,27 @@ int add_str(const char* p)
 	// grow string buffer if neccessary
 	while( str_pos+len+1 >= str_size )
 	{
+#ifndef Pandas_ScriptEngine_AddStr_Realloc_Memory
 		str_size += 256;
 		RECREATE(str_buf,char,str_size);
 		memset(str_buf + (str_size - 256), '\0', 256);
+#else
+		str_size += STR_BUF_INCREASING_SIZE;
+		RECREATE(str_buf,char,str_size);
+		memset(str_buf + (str_size - STR_BUF_INCREASING_SIZE), '\0', STR_BUF_INCREASING_SIZE);
+#endif // Pandas_ScriptEngine_AddStr_Realloc_Memory
+
+#ifdef Pandas_ScriptEngine_Relocation_Funcname_After_StrBuf_Realloc
+		DBIterator* iter = db_iterator(st_db);
+		struct script_state* st = nullptr;
+
+		for (st = static_cast<script_state*>(dbi_first(iter)); dbi_exists(iter); st = static_cast<script_state*>(dbi_next(iter))) {
+			struct script_data* data = script_getdata(st, 0);
+			st->funcname = reference_getname(data);
+		}
+
+		dbi_destroy(iter);
+#endif // Pandas_ScriptEngine_Relocation_Funcname_After_StrBuf_Realloc
 	}
 
 	safestrncpy(str_buf+str_pos, p, len+1);
@@ -3876,7 +3907,8 @@ struct script_state* script_alloc_state(struct script_code* rootscript, int pos,
 #endif // Pandas_ScriptCommand_UnlockCmd
 
 #ifdef Pandas_ScriptCommand_GetInventoryList
-	st->wating_premium_storage = 0;
+	st->waiting_premium_storage = 0;
+	st->waiting_guild_storage = 0;
 #endif // Pandas_ScriptCommand_GetInventoryList
 
 	if( st->script->instances != USHRT_MAX )
@@ -5462,6 +5494,107 @@ void script_both_setregstr(struct script_state* st, const char* varname_without_
 		varid = (isarray ? reference_uid(add_str(varname.c_str()), index) : add_str(varname.c_str()));
 		pc_setregstr(sd, varid, value);
 	}
+}
+
+//************************************
+// Method:      script_getstorage
+// Description: 根据指令名称来获取不同的存储空间
+// Parameter:   struct script_state * st
+// Parameter:   struct map_session_data * sd
+// Parameter:   struct s_storage * * stor
+// Parameter:   struct item * * inventory
+// Parameter:   int stor_id
+// Returns:     bool
+// Author:      Sola丶小克(CairoLee)  2022/08/06 12:11
+//************************************
+bool script_getstorage(struct script_state* st, struct map_session_data* sd, struct s_storage** stor, struct item** inventory, int stor_id = 0) {
+	nullpo_retr(false, st);
+	nullpo_retr(false, sd);
+	nullpo_retr(false, stor);
+	nullpo_retr(false, inventory);
+	
+	const char* command = script_getfuncname(st);
+	
+	if (strstr(command, "cart")) {
+		if (!pc_iscarton(sd)) {
+			ShowError("buildin_%s: player doesn't have cart (CID: %d).\n", command, sd->status.char_id);
+			return false;
+		}
+		*stor = &sd->cart;
+		*inventory = (*stor)->u.items_cart;
+	}
+	else if (strstr(command, "guildstorage")) {
+		if (!sd->status.guild_id || !sd->guild) {
+			ShowError("buildin_%s: player doesn't join the guild (CID: %d).\n", command, sd->status.char_id);
+			return false;
+		}
+
+#ifdef OFFICIAL_GUILD_STORAGE
+		if (!guild_checkskill(sd->guild, GD_GUILD_STORAGE)) {
+			ShowError("buildin_%s: player's guild has not learned the GD_GUILD_STORAGE skill (CID: %d).\n", command, sd->status.char_id);
+			return false;
+		}
+#endif // OFFICIAL_GUILD_STORAGE
+
+		if (guild2storage2(sd->status.guild_id) || st->waiting_guild_storage) {
+			// 如果该公会的仓库数据已经在地图服务器内存中, 则直接使用
+			*stor = guild2storage2(sd->status.guild_id);
+			if (!(*stor)) {
+				ShowError("buildin_%s: player's guild does not have a guild storage (CID: %d | Guild ID: %d).\n", command, sd->status.char_id, sd->status.guild_id);
+				return false;
+			}
+			*inventory = (*stor)->u.items_guild;
+
+			st->waiting_guild_storage = 0;
+			st->state = RUN;
+		}
+		else if (!st->waiting_guild_storage) {
+			// 否则, 需要先发送请求给角色服务器, 用于加载指定的公会仓库内容
+			st->state = RERUNLINE;
+			st->waiting_guild_storage = 1;
+			intif_request_guild_storage(sd->status.account_id, sd->status.guild_id);
+		}
+		else if (!guild2storage2(sd->status.guild_id)) {
+			ShowError("buildin_%s: player's guild does not have a guild storage (CID: %d | Guild ID: %d).\n", command, sd->status.char_id, sd->status.guild_id);
+			return false;
+		}
+	}
+	else if (strstr(command, "storage")) {
+		if (stor_id == 0) {
+			*stor = &sd->storage;
+			*inventory = (*stor)->u.items_storage;
+		}
+		else if (!storage_exists(stor_id)) {
+			ShowError("buildin_%s: Invalid storage id '%d'!\n", command, stor_id);
+			return false;
+		}
+		else {
+			if (sd->premiumStorage.stor_id == stor_id || st->waiting_premium_storage) {
+				// 如果现有的 premiumStorage 就是我们期望的拓展仓库
+				// 参考 storage_premiumStorage_load 的逻辑, 此时的 premiumStorage 内容可信
+				*stor = &sd->premiumStorage;
+				*inventory = (*stor)->u.items_storage;
+
+				st->waiting_premium_storage = 0;
+				st->state = RUN;
+			}
+			else if (!st->waiting_premium_storage) {
+				// 否则, 需要先发送请求给角色服务器, 用于加载指定的拓展仓库内容
+				st->state = RERUNLINE;
+				st->waiting_premium_storage = 1;
+				intif_storage_request(sd, TABLE_STORAGE, stor_id, STOR_MODE_ALL);
+			}
+		}
+	}
+	else {
+		if (!strstr(command, "inventory")) {
+			ShowWarning("%s: unknow function command: '%s', defaulting to inventory.\n", __func__, command);
+		}
+		*stor = &sd->inventory;
+		*inventory = (*stor)->u.items_inventory;
+	}
+
+	return true;
 }
 
 #endif // Pandas_ScriptCommands
@@ -7813,9 +7946,9 @@ static int script_countitem_sub(struct item *items, std::shared_ptr<item_data> i
 		for (int i = 0; i < size; i++) {
 			item *itm = &items[i];
 
-			if (itm == nullptr || itm->nameid == 0 || itm->amount < 1 || (!rental && itm->expire_time > 0))
+			if (itm == nullptr || itm->nameid == 0 || itm->amount < 1)
 				continue;
-			if (itm->nameid == nameid)
+			if (itm->nameid == nameid && ((rental && itm->expire_time > 0) || (!rental && itm->expire_time == 0)))
 				count += itm->amount;
 		}
 	} else { // For expanded functions
@@ -7847,9 +7980,11 @@ static int script_countitem_sub(struct item *items, std::shared_ptr<item_data> i
 		for (int i = 0; i < size; i++) {
 			item *itm = &items[i];
 
-			if (itm == nullptr || itm->nameid == 0 || itm->amount < 1 || (!rental && items[i].expire_time > 0))
+			if (itm == nullptr || itm->nameid == 0 || itm->amount < 1)
 				continue;
 			if (itm->nameid != it.nameid || itm->identify != it.identify || itm->refine != it.refine || itm->attribute != it.attribute)
+				continue;
+			if ((!rental && itm->expire_time > 0) || (rental && itm->expire_time == 0))
 				continue;
 			if (memcmp(it.card, itm->card, sizeof(it.card)))
 				continue;
@@ -11690,10 +11825,6 @@ BUILDIN_FUNC(monster)
 	int16 m;
 	int i;
 
-#ifdef Pandas_ScriptCommand_BossMonster
-	const char* command = script_getfuncname(st);
-#endif // Pandas_ScriptCommand_BossMonster
-
 	if (script_hasdata(st, 8)) {
 		event = script_getstr(st, 8);
 		check_event(st, event);
@@ -11705,7 +11836,7 @@ BUILDIN_FUNC(monster)
 #ifndef Pandas_ScriptCommand_BossMonster
 			ShowWarning("buildin_monster: Attempted to spawn non-existing size %d for monster class %d\n", size, class_);
 #else
-			ShowWarning("buildin_%s: Attempted to spawn non-existing size %d for monster class %d\n", command, size, class_);
+			ShowWarning("buildin_%s: Attempted to spawn non-existing size %d for monster class %d\n", script_getfuncname(st), size, class_);
 #endif // Pandas_ScriptCommand_BossMonster
 			return SCRIPT_CMD_FAILURE;
 		}
@@ -11717,7 +11848,7 @@ BUILDIN_FUNC(monster)
 #ifndef Pandas_ScriptCommand_BossMonster
 			ShowWarning("buildin_monster: Attempted to spawn non-existing ai %d for monster class %d\n", ai, class_);
 #else
-			ShowWarning("buildin_%s: Attempted to spawn non-existing ai %d for monster class %d\n", command, ai, class_);
+			ShowWarning("buildin_%s: Attempted to spawn non-existing ai %d for monster class %d\n", script_getfuncname(st), ai, class_);
 #endif // Pandas_ScriptCommand_BossMonster
 			return SCRIPT_CMD_FAILURE;
 		}
@@ -11727,7 +11858,7 @@ BUILDIN_FUNC(monster)
 #ifndef Pandas_ScriptCommand_BossMonster
 		ShowWarning("buildin_monster: Attempted to spawn non-existing monster class %d\n", class_);
 #else
-		ShowWarning("buildin_%s: Attempted to spawn non-existing monster class %d\n", command, class_);
+		ShowWarning("buildin_%s: Attempted to spawn non-existing monster class %d\n", script_getfuncname(st), class_);
 #endif // Pandas_ScriptCommand_BossMonster
 		return SCRIPT_CMD_FAILURE;
 	}
@@ -11743,7 +11874,7 @@ BUILDIN_FUNC(monster)
 #ifndef Pandas_ScriptCommand_BossMonster
 		int mobid = mob_once_spawn(sd, m, x, y, str, class_, 1, event, size, ai);
 #else
-		int mobid = mob_once_spawn(sd, m, x, y, str, class_, 1, event, size, ai, (!strcmp(command, "boss_monster")) ? 1 : 0);
+		int mobid = mob_once_spawn(sd, m, x, y, str, class_, 1, event, size, ai, (!strcmp(script_getfuncname(st), "boss_monster")) ? 1 : 0);
 #endif // Pandas_ScriptCommand_BossMonster
 
 		if (mobid)
@@ -15121,13 +15252,10 @@ BUILDIN_FUNC(getitemname)
  *------------------------------------------*/
 BUILDIN_FUNC(getitemslots)
 {
-	struct item_data *i_data;
-
 	t_itemid item_id=script_getnum(st,2);
+	std::shared_ptr<item_data> i_data = item_db.find(item_id);
 
-	i_data = itemdb_exists(item_id);
-
-	if (i_data)
+	if (i_data != nullptr)
 		script_pushint(st,i_data->slots);
 	else
 		script_pushint(st,-1);
@@ -15569,17 +15697,46 @@ BUILDIN_FUNC(getinventorylist) {
 	struct map_session_data* sd = nullptr;
 	char card_var[NAME_LENGTH] = { 0 }, randopt_var[50] = { 0 };
 	int j = 0, k = 0;
-	struct item* inventory = nullptr;
-	const char* command = script_getfuncname(st);
-	struct s_storage* stor = nullptr;
-	uint32 query_flag = INV_ALL;
 
-	if (!script_charid2sd(2, sd))
+	if (!script_charid2sd(2, sd)) {
 		return SCRIPT_CMD_FAILURE;
+	}
+
+	uint32 query_flag = INV_ALL;
 	if (script_hasdata(st, 3))
 		query_flag = script_getnum(st, 3);
 
-	// 清空上一次可能残留的查询结果记录数
+	struct s_storage* stor = nullptr;
+	struct item* inventory = nullptr;
+	int stor_id = (script_hasdata(st, 4) ? script_getnum(st, 4) : 0);
+
+	pc_setreg(sd, add_str("@inventorylist_count"), 0);
+	
+	if (!script_getstorage(st, sd, &stor, &inventory, stor_id)) {
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	if (st->state == RERUNLINE) {
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	if (!stor || !inventory) {
+		const char* command = script_getfuncname(st);
+		ShowError("buildin_%s: cannot read inventory or storage data.\n", command);
+		return SCRIPT_CMD_FAILURE;
+	}
+
+#define setreg(flag, arrayname, value)\
+	{ \
+		if ((query_flag & flag) == flag) \
+			pc_setreg(sd, reference_uid(add_str(arrayname), j), value); \
+	}
+#define setregstr(flag, arrayname, value)\
+	{ \
+		if ((query_flag & flag) == flag) \
+			pc_setregstr(sd, reference_uid(add_str(arrayname), j), value); \
+	}
+
 	script_cleararray_pc(sd, "@inventorylist_id");
 	script_cleararray_pc(sd, "@inventorylist_idx");
 	script_cleararray_pc(sd, "@inventorylist_amount");
@@ -15606,84 +15763,7 @@ BUILDIN_FUNC(getinventorylist) {
 	script_cleararray_pc(sd, "@inventorylist_favorite");
 	script_cleararray_pc(sd, "@inventorylist_uid$");
 	script_cleararray_pc(sd, "@inventorylist_equipswitch");
-	pc_setreg(sd, add_str("@inventorylist_count"), 0);
-	
-	// 根据不同的指令名称来决定读取什么位置的内容
-	if (!strcmp(command, "getcartlist")) {
-		if (!pc_iscarton(sd)) {
-			ShowError("buildin_%s: player doesn't have cart (CID: %d).\n", command, sd->status.char_id);
-			return SCRIPT_CMD_FAILURE;
-		}
-		stor = &sd->cart;
-		inventory = stor->u.items_cart;
-	}
-	else if (!strcmp(command, "getguildstoragelist")) {
-		if (!sd->status.guild_id) {
-			ShowError("buildin_%s: player doesn't join the guild (CID: %d).\n", command, sd->status.char_id);
-			return SCRIPT_CMD_FAILURE;
-		}
-		
-		stor = guild2storage2(sd->status.guild_id);
-		if (!stor) {
-			ShowError("buildin_%s: player's guild does not have a guild storage (CID: %d | Guild ID: %d).\n", command, sd->status.char_id, sd->status.guild_id);
-			return SCRIPT_CMD_FAILURE;
-		}
-		inventory = stor->u.items_guild;
-	}
-	else if (!strcmp(command, "getstoragelist")) {
-		int stor_id = 0;
 
-		if (script_hasdata(st, 4))
-			stor_id = script_getnum(st, 4);
-
-		if (stor_id == 0) {
-			stor = &sd->storage;
-			inventory = stor->u.items_storage;
-		}
-		else if (!storage_exists(stor_id)) {
-			ShowError("buildin_%s: Invalid storage id '%d'!\n", command, stor_id);
-			return SCRIPT_CMD_FAILURE;
-		}
-		else {
-			if (sd->premiumStorage.stor_id == stor_id || st->wating_premium_storage) {
-				// 如果现有的 premiumStorage 就是我们期望的拓展仓库
-				// 参考 storage_premiumStorage_load 的逻辑, 此时的 premiumStorage 内容可信
-				stor = &sd->premiumStorage;
-				inventory = stor->u.items_storage;
-
-				st->wating_premium_storage = 0;
-				st->state = RUN;
-			}
-			else if (!st->wating_premium_storage) {
-				// 否则, 需要先发送请求给角色服务器, 用于加载指定的拓展仓库内容
-				st->state = RERUNLINE;
-				st->wating_premium_storage = 1;
-				intif_storage_request(sd, TABLE_STORAGE, stor_id, STOR_MODE_ALL);
-				return SCRIPT_CMD_SUCCESS;
-			}
-		}
-	}
-	else {
-		stor = &sd->inventory;
-		inventory = stor->u.items_inventory;
-	}
-
-	if (!stor || !inventory) {
-		ShowError("buildin_%s: cannot read inventory or storage data.\n", command);
-		return SCRIPT_CMD_FAILURE;
-	}
-
-#define setreg(flag, arrayname, value)\
-	{ \
-		if ((query_flag & flag) == flag) \
-			pc_setreg(sd, reference_uid(add_str(arrayname), j), value); \
-	}
-#define setregstr(flag, arrayname, value)\
-	{ \
-		if ((query_flag & flag) == flag) \
-			pc_setregstr(sd, reference_uid(add_str(arrayname), j), value); \
-	}
-	
 	for (int i = 0; i < stor->max_amount; i++) {
 		if (inventory[i].nameid <= 0 || inventory[i].amount <= 0)
 			continue;
@@ -17502,18 +17582,19 @@ BUILDIN_FUNC(unequip) {
  **/
 BUILDIN_FUNC(equip) {
 	TBL_PC *sd;
-	struct item_data *item_data;
 
 	if (!script_charid2sd(3,sd))
 		return SCRIPT_CMD_FAILURE;
 
 	t_itemid nameid = script_getnum(st,2);
-	if ((item_data = itemdb_exists(nameid))) {
+	std::shared_ptr<item_data> id = item_db.find(nameid);
+
+	if (id != nullptr) {
 		int i;
 
 		ARR_FIND( 0, MAX_INVENTORY, i, sd->inventory.u.items_inventory[i].nameid == nameid );
 		if (i < MAX_INVENTORY) {
-			pc_equipitem(sd,i,item_data->equip);
+			pc_equipitem(sd,i,id->equip);
 			script_pushint(st,1);
 			return SCRIPT_CMD_SUCCESS;
 		}
@@ -17526,24 +17607,23 @@ BUILDIN_FUNC(equip) {
 
 BUILDIN_FUNC(autoequip)
 {
-	int flag;
-	struct item_data *item_data;
 	t_itemid nameid=script_getnum(st,2);
-	flag=script_getnum(st,3);
+	int flag=script_getnum(st,3);
+	std::shared_ptr<item_data> id = item_db.find(nameid);
 
-	if( ( item_data = itemdb_exists(nameid) ) == NULL )
+	if( id == nullptr )
 	{
 		ShowError("buildin_autoequip: Invalid item '%u'.\n", nameid);
 		return SCRIPT_CMD_FAILURE;
 	}
 
-	if( !itemdb_isequip2(item_data) )
+	if( !itemdb_isequip2(id.get()) )
 	{
 		ShowError("buildin_autoequip: Item '%u' cannot be equipped.\n", nameid);
 		return SCRIPT_CMD_FAILURE;
 	}
 
-	item_data->flag.autoequip = flag>0?1:0;
+	id->flag.autoequip = flag>0?1:0;
 	return SCRIPT_CMD_SUCCESS;
 }
 
@@ -18065,14 +18145,22 @@ BUILDIN_FUNC(sprintf)
 		if(data_isstring(data))  // String
 			StringBuf_Printf(&final_buf, buf2, script_getstr(st, arg+3));
 		else if(data_isint(data))  // Number
+#ifndef Pandas_Fix_Sprintf_ScriptCommand_Unsupport_Int64
 			StringBuf_Printf(&final_buf, buf2, script_getnum(st, arg+3));
+#else
+			StringBuf_Printf(&final_buf, buf2, script_getnum64(st, arg+3));
+#endif // Pandas_Fix_Sprintf_ScriptCommand_Unsupport_Int64
 		else if(data_isreference(data)) {  // Variable
 			char* name = reference_getname(data);
 
 			if(name[strlen(name)-1]=='$')  // var Str
 				StringBuf_Printf(&final_buf, buf2, script_getstr(st, arg+3));
 			else  // var Int
+#ifndef Pandas_Fix_Sprintf_ScriptCommand_Unsupport_Int64
 				StringBuf_Printf(&final_buf, buf2, script_getnum(st, arg+3));
+#else
+				StringBuf_Printf(&final_buf, buf2, script_getnum64(st, arg+3));
+#endif // Pandas_Fix_Sprintf_ScriptCommand_Unsupport_Int64
 		} else {  // Unsupported type
 			ShowError("buildin_sprintf: Unknown argument type!\n");
 			if(buf) aFree(buf);
@@ -19145,14 +19233,14 @@ BUILDIN_FUNC(setitemscript)
 {
 	int n = 0;
 	const char *script;
-	struct item_data *i_data;
 	struct script_code **dstscript;
 
 	t_itemid item_id = script_getnum(st,2);
 	script = script_getstr(st,3);
 	if( script_hasdata(st,4) )
 		n=script_getnum(st,4);
-	i_data = itemdb_exists(item_id);
+
+	std::shared_ptr<item_data> i_data = item_db.find(item_id);
 
 	if (!i_data || script==NULL || ( script[0] && script[0]!='{' )) {
 		script_pushint(st,0);
@@ -19206,7 +19294,7 @@ BUILDIN_FUNC(addmonsterdrop)
 	}
 
 	t_itemid item_id = script_getnum(st, 3);
-	item_data *itm = itemdb_exists(item_id);
+	std::shared_ptr<item_data> itm = item_db.find(item_id);
 
 	if (itm == nullptr) {
 		ShowError("addmonsterdrop: Nonexistant item %u requested.\n", item_id);
@@ -19456,7 +19544,7 @@ BUILDIN_FUNC(searchitem)
 {
 	struct script_data* data = script_getdata(st, 2);
 	const char *itemname = script_getstr(st,3);
-	struct item_data *items[MAX_SEARCH];
+	std::map<t_itemid, std::shared_ptr<item_data>> items;
 	int count;
 
 	char* name;
@@ -19465,10 +19553,10 @@ BUILDIN_FUNC(searchitem)
 	int32 i;
 	TBL_PC* sd = NULL;
 
-	if ((items[0] = itemdb_exists(atoi(itemname))))
+	if ((items[0] = item_db.find(strtoul(itemname, nullptr, 10))))
 		count = 1;
 	else
-		count = itemdb_searchname_array(items, ARRAYLENGTH(items), itemname);
+		count = itemdb_searchname_array(items, MAX_SEARCH, itemname);
 
 	if (!count) {
 		script_pushint(st, 0);
@@ -26781,15 +26869,15 @@ BUILDIN_FUNC(mail){
 		}
 
 		for( i = 0; i < num_items && start < end; i++, start++ ){
-			struct item_data *item = itemdb_exists(msg.item[i].nameid);
+			std::shared_ptr<item_data> itm = item_db.find(msg.item[i].nameid);
 
 			msg.item[i].amount = (short)get_val2_num( st, reference_uid( id, start ), reference_getref( data ) );
 
 			if( msg.item[i].amount <= 0 ){
 				ShowError( "buildin_mail: amount %d for item %u is invalid.\n", msg.item[i].amount, msg.item[i].nameid );
 				return SCRIPT_CMD_FAILURE;
-			}else if( itemdb_isstackable2(item) ){
-				uint16 max = item->stack.amount > 0 ? item->stack.amount : MAX_AMOUNT;
+			}else if( itemdb_isstackable2(itm.get()) ){
+				uint16 max = itm->stack.amount > 0 ? itm->stack.amount : MAX_AMOUNT;
 
 				if( msg.item[i].amount > max ){
 					ShowWarning( "buildin_mail: amount %d for item %u is exceeding the maximum of %d. Capping...\n", msg.item[i].amount, msg.item[i].nameid, max );
@@ -26815,11 +26903,11 @@ BUILDIN_FUNC(mail){
 		}
 
 		for (i = 0; i < num_items && start < end; i++, start++) {
-			struct item_data* item = itemdb_exists(msg.item[i].nameid);
+			std::shared_ptr<item_data> itm = item_db.find(msg.item[i].nameid);
 
 			msg.item[i].refine = (char)get_val2_num( st, reference_uid( id, start ), reference_getref( data ) );
 
-			if (!item->flag.no_refine && (item->type == IT_WEAPON || item->type == IT_ARMOR || item->type == IT_SHADOWGEAR)) {
+			if (!itm->flag.no_refine && (itm->type == IT_WEAPON || itm->type == IT_ARMOR || itm->type == IT_SHADOWGEAR)) {
 				if (msg.item[i].refine > MAX_REFINE)
 					msg.item[i].refine = MAX_REFINE;
 			}
@@ -26841,8 +26929,6 @@ BUILDIN_FUNC(mail){
 		}
 
 		for( i = 0; i < num_items && start < end; i++, start++ ){
-			struct item_data *item = itemdb_exists(msg.item[i].nameid);
-
 			msg.item[i].bound = (char)get_val2_num( st, reference_uid( id, start ), reference_getref( data ) );
 
 			if( msg.item[i].bound < BOUND_NONE || msg.item[i].bound >= BOUND_MAX ){
@@ -28071,7 +28157,6 @@ BUILDIN_FUNC(viewequip) {
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(countitemidx) {
 	struct map_session_data *sd = nullptr;
-	struct item_data *id = nullptr;
 	int idx = -1;
 
 	if (!script_charid2sd(3, sd)) {
@@ -28086,7 +28171,7 @@ BUILDIN_FUNC(countitemidx) {
 		return SCRIPT_CMD_SUCCESS;
 	}
 
-	if (!(id = itemdb_exists(sd->inventory.u.items_inventory[idx].nameid))) {
+	if (!item_db.find(sd->inventory.u.items_inventory[idx].nameid)) {
 		ShowWarning("buildin_countitemidx: Invalid Item ID (%u).\n", sd->inventory.u.items_inventory[idx].nameid);
 		script_pushint(st, 0);
 		return SCRIPT_CMD_SUCCESS;
@@ -28107,7 +28192,6 @@ BUILDIN_FUNC(countitemidx) {
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(identifyidx) {
 	struct map_session_data *sd = nullptr;
-	struct item_data *id = nullptr;
 	int idx = -1;
 
 	if (!script_charid2sd(3, sd)) {
@@ -28122,7 +28206,7 @@ BUILDIN_FUNC(identifyidx) {
 		return SCRIPT_CMD_SUCCESS;
 	}
 
-	if (!(id = itemdb_exists(sd->inventory.u.items_inventory[idx].nameid))) {
+	if (!item_db.find(sd->inventory.u.items_inventory[idx].nameid)) {
 		ShowWarning("buildin_identifyidx: Invalid Item ID (%u).\n", sd->inventory.u.items_inventory[idx].nameid);
 		script_pushint(st, 0);
 		return SCRIPT_CMD_SUCCESS;
@@ -28148,7 +28232,6 @@ BUILDIN_FUNC(identifyidx) {
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(unequipidx) {
 	struct map_session_data *sd = nullptr;
-	struct item_data *id = nullptr;
 	int idx = -1;
 
 	if (!script_charid2sd(3, sd)) {
@@ -28163,13 +28246,14 @@ BUILDIN_FUNC(unequipidx) {
 		return SCRIPT_CMD_SUCCESS;
 	}
 
-	if (!(id = itemdb_exists(sd->inventory.u.items_inventory[idx].nameid))) {
+	std::shared_ptr<item_data> id = item_db.find(sd->inventory.u.items_inventory[idx].nameid);
+	if (id == nullptr) {
 		ShowWarning("buildin_unequipidx: Invalid Item ID (%u).\n", sd->inventory.u.items_inventory[idx].nameid);
 		script_pushint(st, 0);
 		return SCRIPT_CMD_SUCCESS;
 	}
 
-	if (!itemdb_isequip2(id)) {
+	if (!itemdb_isequip2(id.get())) {
 		script_pushint(st, 0);
 		return SCRIPT_CMD_SUCCESS;
 	}
@@ -28194,7 +28278,6 @@ BUILDIN_FUNC(unequipidx) {
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(equipidx) {
 	struct map_session_data *sd = nullptr;
-	struct item_data *id = nullptr;
 	int idx = -1;
 
 	if (!script_charid2sd(3, sd)) {
@@ -28208,14 +28291,15 @@ BUILDIN_FUNC(equipidx) {
 		script_pushint(st, 0);
 		return SCRIPT_CMD_SUCCESS;
 	}
-
-	if (!(id = itemdb_exists(sd->inventory.u.items_inventory[idx].nameid))) {
+	
+	std::shared_ptr<item_data> id = item_db.find(sd->inventory.u.items_inventory[idx].nameid);
+	if (id == nullptr) {
 		ShowWarning("buildin_equipidx: Invalid Item ID (%u).\n", sd->inventory.u.items_inventory[idx].nameid);
 		script_pushint(st, 0);
 		return SCRIPT_CMD_SUCCESS;
 	}
 
-	if (!itemdb_isequip2(id)) {
+	if (!itemdb_isequip2(id.get())) {
 		script_pushint(st, 0);
 		return SCRIPT_CMD_SUCCESS;
 	}
@@ -28408,68 +28492,89 @@ BUILDIN_FUNC(getequipexpiretick) {
 /* ===========================================================
  * 指令: getinventoryinfo
  * 描述: 查询指定背包序号的道具的详细信息
- * 用法: getinventoryinfo <背包序号>,<要查看的信息类型>{,<角色编号>};
- * 返回: 查询失败返回 -1, 若查询成功除了类型为 11 的返回值是个字符串, 其他的皆为数值
+ * 用法: getinventoryinfo <道具的背包序号>,<要查看的信息类型>{,<角色编号>};
+ * 用法: getcartinfo <道具的手推车序号>,<要查看的信息类型>{,<角色编号>};
+ * 用法: getguildstorageinfo <道具的公会仓库序号>,<要查看的信息类型>{,<角色编号>};
+ * 用法: getstorageinfo <道具的个人仓库/扩充仓库序号>,<要查看的信息类型>{{,<仓库编号>},<角色编号>};
+ * 返回: 查询失败返回 -1, 若查询成功则返回你所查询的信息
  * 作者: Sola丶小克
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(getinventoryinfo) {
     struct map_session_data *sd = nullptr;
 	struct item_data *id = nullptr;
 	int idx = script_getnum(st, 2);
-	int64 retval = 0;
+	const char* command = script_getfuncname(st);
+	int charid_slot = (!stricmp(command, "getstorageinfo") ? 5 : 4);
+
+	if (!script_charid2sd(charid_slot, sd)) {
+		script_pushint(st, -1);
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	struct s_storage* stor = nullptr;
+	struct item* inventory = nullptr;
+	int stor_id = (script_hasdata(st, 4) ? script_getnum(st, 4) : 0);
+
+	if (!script_getstorage(st, sd, &stor, &inventory, stor_id)) {
+		return SCRIPT_CMD_FAILURE;
+	}
+	
+	if (st->state == RERUNLINE) {
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	if (!stor || !inventory) {
+		ShowError("buildin_%s: cannot read inventory or storage data.\n", command);
+		script_pushint(st, -1);
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	if (idx < 0 || idx >= stor->max_amount) {
+		script_pushint(st, -1);
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	if (!itemdb_exists(inventory[idx].nameid)) {
+		script_pushint(st, -1);
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	if (inventory[idx].amount <= 0) {
+		script_pushint(st, -1);
+		return SCRIPT_CMD_SUCCESS;
+	}
+
 	int type = script_getnum(st, 3);
-
-	if (!script_charid2sd(4, sd)) {
-		script_pushint(st, -1);
-		return SCRIPT_CMD_SUCCESS;
-	}
-
-	if (idx < 0 || idx >= sd->inventory.max_amount) {
-		script_pushint(st, -1);
-		return SCRIPT_CMD_SUCCESS;
-	}
-
-	if (!itemdb_exists(sd->inventory.u.items_inventory[idx].nameid)) {
-		script_pushint(st, -1);
-		return SCRIPT_CMD_SUCCESS;
-	}
-
-	if (sd->inventory.u.items_inventory[idx].amount <= 0) {
-		script_pushint(st, -1);
-		return SCRIPT_CMD_SUCCESS;
-	}
-
 	switch (type)
 	{
-	case 0: retval = sd->inventory.u.items_inventory[idx].nameid; break;
-	case 1: retval = sd->inventory.u.items_inventory[idx].amount; break;
-	case 2: retval = sd->inventory.u.items_inventory[idx].equip; break;
-	case 3: retval = sd->inventory.u.items_inventory[idx].refine; break;
-	case 4: retval = sd->inventory.u.items_inventory[idx].identify; break;
-	case 5: retval = sd->inventory.u.items_inventory[idx].attribute; break;
-	case 6: retval = sd->inventory.u.items_inventory[idx].card[0]; break;
-	case 7: retval = sd->inventory.u.items_inventory[idx].card[1]; break;
-	case 8: retval = sd->inventory.u.items_inventory[idx].card[2]; break;
-	case 9: retval = sd->inventory.u.items_inventory[idx].card[3]; break;
-	case 10: retval = sd->inventory.u.items_inventory[idx].expire_time; break;
-	case 11: retval = sd->inventory.u.items_inventory[idx].unique_id; break;
+	case 0:  script_pushint(st, inventory[idx].nameid); break;
+	case 1:  script_pushint(st, inventory[idx].amount); break;
+	case 2:  script_pushint(st, inventory[idx].equip); break;
+	case 3:  script_pushint(st, inventory[idx].refine); break;
+	case 4:  script_pushint(st, inventory[idx].identify); break;
+	case 5:  script_pushint(st, inventory[idx].attribute); break;
+	case 6:  script_pushint(st, inventory[idx].card[0]); break;
+	case 7:  script_pushint(st, inventory[idx].card[1]); break;
+	case 8:  script_pushint(st, inventory[idx].card[2]); break;
+	case 9:  script_pushint(st, inventory[idx].card[3]); break;
+	case 10: script_pushint(st, inventory[idx].expire_time); break;
+	case 11: script_pushint(st, inventory[idx].unique_id); break;
 	case 12: case 13: case 14: case 15: case 16:
-		retval = sd->inventory.u.items_inventory[idx].option[type - 12].id; break;
+		script_pushint(st, inventory[idx].option[type - 12].id); break;
 	case 17: case 18: case 19: case 20: case 21:
-		retval = sd->inventory.u.items_inventory[idx].option[type - 17].value; break;
+		script_pushint(st, inventory[idx].option[type - 17].value); break;
 	case 22: case 23: case 24: case 25: case 26:
-		retval = sd->inventory.u.items_inventory[idx].option[type - 22].param; break;
-	case 27:
-		retval = (int)sd->inventory.u.items_inventory[idx].bound; break;
-	case 28:
-		retval = (int)sd->inventory.u.items_inventory[idx].enchantgrade; break;
+		script_pushint(st, inventory[idx].option[type - 22].param); break;
+	case 27: script_pushint(st, inventory[idx].bound); break;
+	case 28: script_pushint(st, inventory[idx].enchantgrade); break;
+	case 29: script_pushint(st, inventory[idx].equipSwitch); break;
+	case 30: script_pushint(st, inventory[idx].favorite); break;
 	default:
-		ShowWarning("buildin_getinventoryinfo: The type should be in range 0-%d, currently type is: %d.\n", 28, type);
+		ShowWarning("buildin_%s: The type should be in range 0-%d, currently type is: %d.\n", command, 30, type);
 		script_pushint(st, -1);
-		return SCRIPT_CMD_SUCCESS;
+		return SCRIPT_CMD_FAILURE;
 	}
 
-	script_pushint(st, retval);
 	return SCRIPT_CMD_SUCCESS;
 }
 #endif // Pandas_ScriptCommand_GetInventoryInfo
@@ -28650,9 +28755,6 @@ BUILDIN_FUNC(script4each) {
 	const char *execute_script = script_getstr(st, 2);
 	int execute_range = script_getnum(st, 3);
 
-	char *cmdname = nullptr;
-	cmdname = script_getfuncname(st);
-
 	struct script_code* script = nullptr;
 	int pos = 0;
 	bool script_needfree = false;
@@ -28666,7 +28768,7 @@ BUILDIN_FUNC(script4each) {
 		pos = ev->pos;
 	}
 	else {
-		script = parse_script(execute_script, cmdname, 0, SCRIPT_IGNORE_EXTERNAL_BRACKETS);
+		script = parse_script(execute_script, script_getfuncname(st), 0, SCRIPT_IGNORE_EXTERNAL_BRACKETS);
 		script_needfree = (script != nullptr);
 	}
 #endif // !defined(Pandas_Helper_Common_Function) || !defined(Pandas_Redeclaration_Struct_Event_Data)
@@ -28676,15 +28778,16 @@ BUILDIN_FUNC(script4each) {
 	enum bl_type bltype = BL_PC;
 
 	// 根据使用的指令名称, 确定后续对什么类型的单位进行遍历
-	if (stricmp(cmdname, "script4each") == 0) {
+	const char* command = script_getfuncname(st);
+	if (stricmp(command, "script4each") == 0) {
 		bltype = BL_PC;
 		iter = mapit_geteachpc();
 	}
-	else if (stricmp(cmdname, "script4eachmob") == 0) {
+	else if (stricmp(command, "script4eachmob") == 0) {
 		bltype = BL_MOB;
 		iter = mapit_geteachmob();
 	}
-	else if (stricmp(cmdname, "script4eachnpc") == 0) {
+	else if (stricmp(command, "script4eachnpc") == 0) {
 		bltype = BL_NPC;
 		iter = mapit_geteachnpc();
 	}
@@ -28832,7 +28935,7 @@ BUILDIN_FUNC(script4each) {
 		break;
 	}
 	default:
-		ShowWarning("buildin_%s: Invalid execute range '%d'.\n", cmdname, execute_range);
+		ShowWarning("buildin_%s: Invalid execute range '%d'.\n", script_getfuncname(st), execute_range);
 		break;
 	}
 
@@ -29566,16 +29669,13 @@ BUILDIN_FUNC(gettimefmt) {
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(multicatchpet) {
 	TBL_PC* sd;
-	char* functionname = nullptr;
 	unsigned int i = 2;
 
 	if (!script_rid2sd(sd))
 		return SCRIPT_CMD_SUCCESS;
 
-	functionname = script_getfuncname(st);
-
 	if (!script_hasdata(st, i)) {
-		ShowError("buildin_%s: no arguments given!\n", functionname);
+		ShowError("buildin_%s: no arguments given!\n", script_getfuncname(st));
 		st->state = END;
 		return SCRIPT_CMD_FAILURE;
 	}
@@ -29589,7 +29689,7 @@ BUILDIN_FUNC(multicatchpet) {
 			sd->pandas.multi_catch_target_class.push_back(script_getnum(st, i));
 		}
 		else {
-			ShowError("buildin_%s: The No.%d parameter is not integer type.\n", functionname, i - 1);
+			ShowError("buildin_%s: The No.%d parameter is not integer type.\n", script_getfuncname(st), i - 1);
 			script_reportdata(data);
 			st->state = END;
 			return SCRIPT_CMD_FAILURE;
@@ -29872,7 +29972,6 @@ BUILDIN_FUNC(storagegetitem) {
 	struct item it = { 0 };
 	TBL_PC* sd = nullptr;
 	unsigned char flag = 0;
-	const char* command = script_getfuncname(st);
 	std::shared_ptr<item_data> id;
 
 	if (script_isstring(st, 2)) {// "<item name>"
@@ -29910,7 +30009,7 @@ BUILDIN_FUNC(storagegetitem) {
 	it.identify = 1;
 	it.bound = BOUND_NONE;
 
-	if (!strcmp(command, "storagegetitembound")) {
+	if (!strcmp(script_getfuncname(st), "storagegetitembound")) {
 		char bound = script_getnum(st, 4);
 		if (bound < BOUND_NONE || bound >= BOUND_MAX) {
 			ShowError("script_storagegetitembound: Not a correct bound type! Type=%d\n", bound);
@@ -29973,7 +30072,7 @@ BUILDIN_FUNC(storagegetitem) {
 /* ===========================================================
  * 指令: setinventoryinfo
  * 描述: 设置指定背包序号道具的部分详细信息, 与 getinventoryinfo 对应
- * 用法: setinventoryinfo <背包序号>,<要设置的信息类型>,<值>{{,<标记位>},<角色编号>};
+ * 用法: setinventoryinfo <道具的背包序号>,<要设置的信息类型>,<值>{{,<标记位>},<角色编号>};
  * 返回: 设置成功则返回 1, 设置失败或角色不存在则返回 0, 返回负数也是失败 (值表示不同失败原因)
  * 作者: Sola丶小克
  * -----------------------------------------------------------*/
@@ -30031,7 +30130,7 @@ BUILDIN_FUNC(setinventoryinfo) {
 			break;
 		}
 
-		struct item_data* card_itemdata = itemdb_exists((t_itemid)value);
+		std::shared_ptr<item_data> card_itemdata = item_db.find((t_itemid)value);
 		if (!card_itemdata) {
 			ShowWarning("buildin_setinventoryinfo: Nonexistant item : %u.\n", value);
 			script_pushint(st, 0);
@@ -30108,8 +30207,15 @@ BUILDIN_FUNC(setinventoryinfo) {
 		sd->inventory.u.items_inventory[idx].enchantgrade = (uint8)value;
 		need_recalc_status = true;
 		break;
+	case 29:
+		sd->inventory.u.items_inventory[idx].equipSwitch = (unsigned int)value;
+		break;
+	case 30:
+		value = cap_value(value, 0, 1);
+		sd->inventory.u.items_inventory[idx].favorite = (char)value;
+		break;
 	default:
-		ShowWarning("buildin_setinventoryinfo: The type should be in range 3-%d, currently type is: %d.\n", 28, type);
+		ShowWarning("buildin_setinventoryinfo: The type should be in range 3-%d, currently type is: %d.\n", 30, type);
 		script_pushint(st, 0);
 		return SCRIPT_CMD_SUCCESS;
 	}
@@ -31059,6 +31165,9 @@ BUILDIN_FUNC(getmapspawns) {
 	for (int i = 0; i < MAX_MOB_LIST_PER_MAP; i++) {
 		if (!mapdata || mapdata->moblist[i] == nullptr) continue;
 		struct spawn_data* data = mapdata->moblist[i];
+		if (!data) continue;
+		std::shared_ptr<s_mob_db> mob = mob_db.find(data->id);
+		if (!mob) continue;
 
 		script_both_setreg(st, "spawn_mobid", data->id, true, j, char_id);
 		script_both_setregstr(st, "spawn_name$", data->name, true, j, char_id);
@@ -31067,7 +31176,7 @@ BUILDIN_FUNC(getmapspawns) {
 		script_both_setreg(st, "spawn_size", data->state.size, true, j, char_id);
 		script_both_setreg(st, "spawn_isboss", data->state.boss, true, j, char_id);
 		script_both_setreg(st, "spawn_ai", data->state.ai, true, j, char_id);
-		script_both_setreg(st, "spawn_level", data->level, true, j, char_id);
+		script_both_setreg(st, "spawn_level", (data->level > 0 ? data->level : mob->lv), true, j, char_id);
 		script_both_setreg(st, "spawn_delay1", data->delay1, true, j, char_id);
 		script_both_setreg(st, "spawn_delay2", data->delay2, true, j, char_id);
 		script_both_setregstr(st, "spawn_eventname$", data->eventname, true, j, char_id);
@@ -31144,8 +31253,11 @@ BUILDIN_FUNC(getmobspawns) {
 		for (int i = 0; i < MAX_MOB_LIST_PER_MAP; i++) {
 			if (!mapdata || mapdata->moblist[i] == nullptr) continue;
 			struct spawn_data* data = mapdata->moblist[i];
+			if (!data) continue;
 			if (data->id != mob_id) continue;
-
+			std::shared_ptr<s_mob_db> mob = mob_db.find(data->id);
+			if (!mob) continue;
+			
 			script_both_setreg(st, "spawn_mobid", data->id, true, j, char_id);
 			script_both_setregstr(st, "spawn_name$", data->name, true, j, char_id);
 			script_both_setreg(st, "spawn_num", data->num, true, j, char_id);
@@ -31153,7 +31265,7 @@ BUILDIN_FUNC(getmobspawns) {
 			script_both_setreg(st, "spawn_size", data->state.size, true, j, char_id);
 			script_both_setreg(st, "spawn_isboss", data->state.boss, true, j, char_id);
 			script_both_setreg(st, "spawn_ai", data->state.ai, true, j, char_id);
-			script_both_setreg(st, "spawn_level", data->level, true, j, char_id);
+			script_both_setreg(st, "spawn_level", (data->level > 0 ? data->level : mob->lv), true, j, char_id);
 			script_both_setreg(st, "spawn_delay1", data->delay1, true, j, char_id);
 			script_both_setreg(st, "spawn_delay2", data->delay2, true, j, char_id);
 			script_both_setregstr(st, "spawn_eventname$", data->eventname, true, j, char_id);
@@ -32809,7 +32921,10 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF2(getequipexpiretick, "isrental", "i?"),	// 指定一个别名, 以便兼容的老版本或其他服务端
 #endif // Pandas_ScriptCommand_GetEquipExpireTick
 #ifdef Pandas_ScriptCommand_GetInventoryInfo
-	BUILDIN_DEF(getinventoryinfo, "ii?"),				// 查询指定背包序号的道具的详细信息 [Sola丶小克]
+	BUILDIN_DEF(getinventoryinfo, "ii?"),							// 查询指定背包序号的道具详细信息 [Sola丶小克]
+	BUILDIN_DEF2(getinventoryinfo, "getcartinfo", "ii?"),			// 查询指定手推车序号的道具详细信息 [Sola丶小克]
+	BUILDIN_DEF2(getinventoryinfo, "getguildstorageinfo", "ii?"),	// 查询指定公会仓库序号的道具详细信息 [Sola丶小克]
+	BUILDIN_DEF2(getinventoryinfo, "getstorageinfo", "ii??"),		// 查询指定个人仓库/扩充仓库序号的道具详细信息 [Sola丶小克]
 #endif // Pandas_ScriptCommand_GetInventoryInfo
 #ifdef Pandas_ScriptCommand_StatusCheck
 	BUILDIN_DEF(statuscheck, "i?"),						// 判断状态是否存在, 并取得相关的状态参数 [Sola丶小克]

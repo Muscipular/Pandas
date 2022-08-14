@@ -11844,7 +11844,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 					break;
 				i++;
 			}
-			pc_overheat(sd, limit[min(i, 2)]);
+			pc_overheat(*sd, limit[min(i, 2)]);
 		}
 		break;
 
@@ -19902,6 +19902,10 @@ struct s_skill_condition skill_get_requirement(struct map_session_data* sd, uint
 		req.eqItem.clear();
 		req.eqItem.shrink_to_fit();
 	}
+	if (noreq_opt & SKILL_REQ_APCOST)
+		req.ap = 0;
+	if (noreq_opt & SKILL_REQ_APRATECOST)
+		req.ap_rate = 0;
 
 	// 接下来是熊猫自定义的特殊选项
 	if (noreq_opt & SKILL_REQ_AMMO_COUNT) {
@@ -20025,11 +20029,7 @@ int skill_castfix_sc(struct block_list *bl, double time, uint8 flag)
 		}
 	}
 
-#ifndef Pandas_LGTM_Optimization
-	time = max(time, 0);
-#else
-	time = max((int)time, 0);
-#endif // Pandas_LGTM_Optimization
+	time = std::max(time, 0.0);
 	//ShowInfo("Castime castfix_sc = %f\n",time);
 
 	return (int)time;
