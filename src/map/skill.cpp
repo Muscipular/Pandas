@@ -3268,6 +3268,7 @@ int skill_mirage_cast(struct block_list* src, struct block_list* bl, int skill_i
 			case SS_KAGEGISSEN://damage splash
 				x = bl->x;
 				y = bl->y;
+				skill_area_temp[1] = 0;
 				clif_skill_nodamage(&itsu->unit->bl, bl, skill_id, skill_lv, tick);
 				if (battle_config.skill_eightpath_algorithm) {
 					//Use official AoE algorithm
@@ -6267,7 +6268,6 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 	case SS_ANTENPOU:
 	case SS_REIKETSUHOU:
 	case SS_KUNAIWAIKYOKU:
-	case SS_FUUMAKOUCHIKU:
 		if (flag & 1)
 			skill_attack(skill_get_type(skill_id), src, src, bl, skill_id, skill_lv, tick, flag);
 		break;
@@ -8472,7 +8472,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 	case EM_INCREASING_ACTIVITY:
 		if (bl->type == BL_PC) {
 			clif_skill_nodamage(src, bl, skill_id, skill_lv, 1);
-			status_heal(bl, 0, 0, 20 + 5 * skill_lv, 0);
+			status_heal(bl, 0, 0, 10 * skill_lv, 0);
 		} else
 			clif_skill_fail(sd, skill_id, USESKILL_FAIL, 0);
 		break;
@@ -15245,6 +15245,7 @@ int skill_castend_pos2(struct block_list* src, int x, int y, uint16 skill_id, ui
     	break;
 	case SS_RAIDENPOU:
 	case SS_SEKIENHOU:
+		skill_area_temp[1] = 0;
 		skill_mirage_cast(src, NULL,SS_ANTENPOU, skill_lv, x, y, tick, flag);
 		if( map_getcell(src->m, x, y, CELL_CHKLANDPROTECTOR) ) {
 			clif_skill_fail(sd,skill_id,USESKILL_FAIL,0);
@@ -15297,6 +15298,7 @@ int skill_castend_pos2(struct block_list* src, int x, int y, uint16 skill_id, ui
 		skill_unitsetting(src, SS_KUNAIWAIKYOKU, skill_lv, x, y, UNIT_NOCONSUME_AMMO);
 		break;
 	case SS_FUUMAKOUCHIKU:
+		skill_area_temp[1] = 0;
 		if (battle_config.skill_eightpath_algorithm) {
 			//Use official AoE algorithm
 			map_foreachindir(skill_attack_area, src->m, src->x, src->y, x, y,
@@ -18767,6 +18769,24 @@ bool skill_check_condition_castbegin(struct map_session_data* sd, uint16 skill_i
 		case SKE_DAWN_BREAK:
 			if (!sc || (!sc->data[SC_DAWN_MOON] && !sc->data[SC_MIDNIGHT_MOON] && !sc->data[SC_SKY_ENCHANT])){
 				clif_skill_fail(sd,skill_id,USESKILL_FAIL_CONDITION,0);
+				return false;
+			}
+			break;
+		case RL_P_ALTER:
+			if (sc && (sc->data[SC_HEAT_BARREL] || sc->data[SC_MADNESSCANCEL])){
+				clif_msg_color( sd, SKILL_FAIL_P_ALT_HEAT_B_MADNESSC, color_table[COLOR_RED] );
+				return false;
+			}
+			break;
+		case RL_HEAT_BARREL:
+			if (sc && (sc->data[SC_P_ALTER] || sc->data[SC_MADNESSCANCEL])){
+				clif_msg_color( sd, SKILL_FAIL_P_ALT_HEAT_B_MADNESSC, color_table[COLOR_RED] );
+				return false;
+			}
+			break;
+		case GS_MADNESSCANCEL:
+			if (sc && (sc->data[SC_HEAT_BARREL] || sc->data[SC_P_ALTER])){
+				clif_msg_color( sd, SKILL_FAIL_P_ALT_HEAT_B_MADNESSC, color_table[COLOR_RED] );
 				return false;
 			}
 			break;
