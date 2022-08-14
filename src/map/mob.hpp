@@ -396,6 +396,7 @@ struct mob_data {
 #endif // Pandas_Struct_Mob_Data_SpecialExperience
 		float dmg_rate = -1;
 		std::vector<std::shared_ptr<s_mob_skill>>* skill;
+		bool custom_skill = false;
 	} pandas;
 #endif // Pandas_Struct_Mob_Data_Pandas
 
@@ -567,9 +568,14 @@ int mob_countslave(struct block_list *bl);
 int mob_count_sub(struct block_list *bl, va_list ap);
 
 int mob_is_clone(int mob_id);
+bool mob_check_mobchatdb(int mob_chat_id);
+
 
 int mob_clone_spawn(struct map_session_data *sd, int16 m, int16 x, int16 y, const char *event, int master_id, enum e_mode mode, int flag, unsigned int duration);
 int mob_clone_delete(struct mob_data *md);
+
+int mob_add_skill(struct mob_data* md, struct s_mob_skill* skill);
+int mob_reset_skill(struct mob_data* md, bool reset);
 
 void mob_reload_itemmob_data(void);
 void mob_reload(void);

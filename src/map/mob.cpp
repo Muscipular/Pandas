@@ -511,6 +511,7 @@ struct mob_data* mob_spawn_dataset(struct spawn_data *data)
 	md->pandas.special_setunitdata = new std::map<uint16, int64>;
 #endif // Pandas_Struct_Mob_Data_Special_SetUnitData
 	md->pandas.skill = new std::vector<std::shared_ptr<s_mob_skill>>;
+	md->pandas.custom_skill = FALSE;
 	map_addiddb(&md->bl);
 	return md;
 }
@@ -3938,6 +3939,37 @@ bool mob_chat_display_message(mob_data &md, uint16 msg_id) {
 	return false;
 }
 
+int mob_add_skill(struct mob_data* md, struct s_mob_skill* skill) {
+	nullpo_ret(md);
+	nullpo_ret(skill);
+	if (!md->pandas.custom_skill) {
+		md->pandas.custom_skill = true;
+		if (mob_reset_skill(md, true) == 0) {
+			return 0;
+		}
+	}
+
+	s_mob_skill* ns = new s_mob_skill();
+	memcpy_s(ns, sizeof(s_mob_skill), skill, sizeof(s_mob_skill));
+	std::shared_ptr<s_mob_skill> ps(ns);
+	md->pandas.skill->push_back(ps);
+	return 1;
+}
+
+int mob_reset_skill(struct mob_data* md, bool reset) {
+	nullpo_ret(md);
+	if (md->pandas.skill->begin() != md->pandas.skill->end()) {
+		md->pandas.skill->erase(md->pandas.skill->begin(), md->pandas.skill->end());
+	}
+	if (reset) {
+		std::vector<std::shared_ptr<s_mob_skill>>& ms = md->db->skill;
+		for each (auto s in ms) {
+			md->pandas.skill->push_back(s);
+		}
+	}
+	return 1;
+}
+
 /*==========================================
  * Skill use judging
  *------------------------------------------*/
@@ -3952,6 +3984,10 @@ int mobskill_use(struct mob_data *md, t_tick tick, int event)
 	nullpo_ret(md);
 
 	std::vector<std::shared_ptr<s_mob_skill>> &ms = md->db->skill;
+	if (md->pandas.skill != nullptr && md->pandas.custom_skill != 0) {
+		ms = *md->pandas.skill;
+	}
+
 
 #ifdef Pandas_MapFlag_NoSkill2
 	if (md && map_getmapflag(md->bl.m, MF_NOSKILL2)) {
@@ -4217,6 +4253,10 @@ int mob_is_clone(int mob_id)
 	if (!mob_db.exists(mob_id))
 		return 0;
 	return mob_id;
+}
+
+bool mob_check_mobchatdb(int mob_chat_id) {
+	return mob_chat_db.find(mob_chat_id) != nullptr;
 }
 
 /**
