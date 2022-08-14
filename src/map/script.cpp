@@ -33074,6 +33074,261 @@ BUILDIN_FUNC(instance_add_warp) {
 	return SCRIPT_CMD_SUCCESS;
 }
 #endif // Pandas_ScriptCommand_Instance_Add_Warp
+/* ===========================================================
+ * 指令: mob_clear_skill
+ * 描述: 清空魔物skill
+ * 用法: mob_clear_skill gid, reset;
+ * 返回: int
+ * 作者: Muscipular
+ * -----------------------------------------------------------*/
+BUILDIN_FUNC(mob_clear_skill) {
+	struct block_list* bl;
+	int gid = script_getnum(st, 2);
+	int reset = script_getnum(st, 3);
+	script_rid2bl(gid, bl);
+	if (bl == nullptr || bl->type != bl_type::BL_MOB) {
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	struct mob_data* md = (struct mob_data*)bl;
+	if (md == nullptr)
+		return SCRIPT_CMD_FAILURE;
+	int r = mob_reset_skill(md, reset == 1);
+	script_pushint(st, r);
+	return SCRIPT_CMD_SUCCESS;
+}
+/* ===========================================================
+ * 指令: mob_add_skill
+ * 描述: 魔物添加skill
+ * 用法: mob_add_skill gid, State,SkillID,SkillLv,Rate,CastTime,Delay,Cancelable,Target,Condition type,Condition value,val1,val2,val3,val4,val5,Emotion,Chat;
+ * 返回: int
+ * 作者: Muscipular
+ * -----------------------------------------------------------*/
+BUILDIN_FUNC(mob_add_skill) {
+	struct block_list* bl;
+	int gid = script_getnum(st, 2);
+	const char* s_state = script_getstr(st, 3);
+	int skid = script_getnum(st, 4);
+	int lv = script_getnum(st, 5);
+	int permillage = script_getnum(st, 6);
+	int casttime = script_getnum(st, 7);
+	int delay = script_getnum(st, 8);
+	auto cancel = script_getstr(st, 9);
+	auto s_target = script_getstr(st, 10);
+	auto s_cond1 = script_getstr(st, 11);
+	auto s_cond2 = script_getstr(st, 12);
+	script_rid2bl(gid, bl);
+	if (bl == nullptr || bl->type != bl_type::BL_MOB) {
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	struct mob_data* md = (struct mob_data*)bl;
+	if (md == nullptr)
+		return SCRIPT_CMD_FAILURE;
+	s_mob_skill skill;
+	s_mob_skill* ms = &skill;
+
+
+	static const struct {
+		char str[32];
+		enum MobSkillState id;
+	} state[] = {
+		{	"any",		MSS_ANY		}, //All states except Dead
+		{	"idle",		MSS_IDLE	},
+		{	"walk",		MSS_WALK	},
+		{	"loot",		MSS_LOOT	},
+		{	"dead",		MSS_DEAD	},
+		{	"attack",	MSS_BERSERK	}, //Retaliating attack
+		{	"angry",	MSS_ANGRY	}, //Preemptive attack (aggressive mobs)
+		{	"chase",	MSS_RUSH	}, //Chase escaping target
+		{	"follow",	MSS_FOLLOW	}, //Preemptive chase (aggressive mobs)
+		{	"anytarget",MSS_ANYTARGET	}, //Berserk+Angry+Rush+Follow
+	};
+	static const struct {
+		char str[32];
+		int id;
+	} cond1[] = {
+		// enum e_mob_skill_condition
+		{ "always",            MSC_ALWAYS            },
+		{ "myhpltmaxrate",     MSC_MYHPLTMAXRATE     },
+		{ "myhpinrate",        MSC_MYHPINRATE        },
+		{ "friendhpltmaxrate", MSC_FRIENDHPLTMAXRATE },
+		{ "friendhpinrate",    MSC_FRIENDHPINRATE    },
+		{ "mystatuson",        MSC_MYSTATUSON        },
+		{ "mystatusoff",       MSC_MYSTATUSOFF       },
+		{ "friendstatuson",    MSC_FRIENDSTATUSON    },
+		{ "friendstatusoff",   MSC_FRIENDSTATUSOFF   },
+		{ "attackpcgt",        MSC_ATTACKPCGT        },
+		{ "attackpcge",        MSC_ATTACKPCGE        },
+		{ "slavelt",           MSC_SLAVELT           },
+		{ "slavele",           MSC_SLAVELE           },
+		{ "closedattacked",    MSC_CLOSEDATTACKED    },
+		{ "longrangeattacked", MSC_LONGRANGEATTACKED },
+		{ "skillused",         MSC_SKILLUSED         },
+		{ "afterskill",        MSC_AFTERSKILL        },
+		{ "casttargeted",      MSC_CASTTARGETED      },
+		{ "rudeattacked",      MSC_RUDEATTACKED      },
+		{ "masterhpltmaxrate", MSC_MASTERHPLTMAXRATE },
+		{ "masterattacked",    MSC_MASTERATTACKED    },
+		{ "alchemist",         MSC_ALCHEMIST         },
+		{ "onspawn",           MSC_SPAWN             },
+		{ "mobnearbygt",       MSC_MOBNEARBYGT       },
+	}, cond2[] = {
+		{	"anybad",		-1				},
+		{	"stone",		SC_STONE		},
+		{	"freeze",		SC_FREEZE		},
+		{	"stun",			SC_STUN			},
+		{	"sleep",		SC_SLEEP		},
+		{	"poison",		SC_POISON		},
+		{	"curse",		SC_CURSE		},
+		{	"silence",		SC_SILENCE		},
+		{	"confusion",	SC_CONFUSION	},
+		{	"blind",		SC_BLIND		},
+		{	"hiding",		SC_HIDING		},
+		{	"sight",		SC_SIGHT		},
+	}, target[] = {
+			// enum e_mob_skill_target
+			{	"target",	MST_TARGET	},
+			{	"randomtarget",	MST_RANDOM	},
+			{	"self",		MST_SELF	},
+			{	"friend",	MST_FRIEND	},
+			{	"master",	MST_MASTER	},
+			{	"around5",	MST_AROUND5	},
+			{	"around6",	MST_AROUND6	},
+			{	"around7",	MST_AROUND7	},
+			{	"around8",	MST_AROUND8	},
+			{	"around1",	MST_AROUND1	},
+			{	"around2",	MST_AROUND2	},
+			{	"around3",	MST_AROUND3	},
+			{	"around4",	MST_AROUND4	},
+			{	"around",	MST_AROUND	},
+	};
+	static int last_mob_id = 0;  // ensures that only one error message per mob id is printed
+	int mob_id = md->mob_id;
+	int j, tmp;
+	//State
+	ARR_FIND(0, ARRAYLENGTH(state), j, strcmp(s_state, state[j].str) == 0);
+	if (j < ARRAYLENGTH(state))
+		ms->state = state[j].id;
+	else {
+		ShowError("Unrecognized state '%s'", s_state);
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	//Skill ID
+	j = skid;
+	if (j <= 0 || j > MAX_SKILL_ID || !skill_get_index(j)) //fixed Lupus
+	{
+		ShowError("Invalid Skill ID (%d)\n", j);
+		return SCRIPT_CMD_FAILURE;
+	}
+	ms->skill_id = j;
+
+	//Skill lvl
+	j = lv;
+	ms->skill_lv = j > battle_config.mob_max_skilllvl ? battle_config.mob_max_skilllvl : j; //we strip max skill level
+	const t_tick MOB_MAX_DELAY = 24 * 3600 * 1000;
+
+	//Apply battle_config modifiers to rate (permillage) and delay [Skotlex]
+	tmp = permillage;
+	if (battle_config.mob_skill_rate != 100)
+		tmp = tmp * battle_config.mob_skill_rate / 100;
+	if (tmp > 10000)
+		ms->permillage = 10000;
+	else if (!tmp && battle_config.mob_skill_rate)
+		ms->permillage = 1;
+	else
+		ms->permillage = tmp;
+	ms->casttime = casttime;
+	ms->delay = delay;
+	if (battle_config.mob_skill_delay != 100)
+		ms->delay = ms->delay * battle_config.mob_skill_delay / 100;
+	if (ms->delay < 0 || ms->delay > MOB_MAX_DELAY) //time overflow?
+		ms->delay = MOB_MAX_DELAY;
+	ms->cancel = atoi(cancel);
+	if (strcmp(cancel, "yes") == 0)
+		ms->cancel = 1;
+
+	//Target
+	ARR_FIND(0, ARRAYLENGTH(target), j, strcmp(s_target, target[j].str) == 0);
+	if (j < ARRAYLENGTH(target))
+		ms->target = target[j].id;
+	else {
+		ShowWarning("Unrecognized target %s\n", s_target);
+		ms->target = MST_TARGET;
+	}
+
+	//Check that the target condition is right for the skill type. [Skotlex]
+	if (skill_get_casttype(ms->skill_id) == CAST_GROUND)
+	{	//Ground skill.
+		if (ms->target > MST_AROUND)
+		{
+			ShowWarning("Wrong mob skill target for ground skill %d (%s).\n",
+				ms->skill_id, skill_get_name(ms->skill_id));
+			ms->target = MST_TARGET;
+		}
+	}
+	else if (ms->target > MST_MASTER) {
+		ShowWarning("Wrong mob skill target 'around' for non-ground skill %d (%s).\n",
+			ms->skill_id, skill_get_name(ms->skill_id));
+		ms->target = MST_TARGET;
+	}
+
+	//Cond1
+	ARR_FIND(0, ARRAYLENGTH(cond1), j, strcmp(s_cond1, cond1[j].str) == 0);
+	if (j < ARRAYLENGTH(cond1))
+		ms->cond1 = cond1[j].id;
+	else {
+		ShowWarning("Unrecognized condition 1 %s\n", s_cond1);
+		ms->cond1 = -1;
+	}
+
+	//Cond2
+	// numeric value
+	ms->cond2 = atoi(s_cond2);
+	// or special constant
+	ARR_FIND(0, ARRAYLENGTH(cond2), j, strcmp(s_cond2, cond2[j].str) == 0);
+	if (j < ARRAYLENGTH(cond2))
+		ms->cond2 = cond2[j].id;
+
+	ms->val[0] = script_getnum(st, 13);
+	ms->val[1] = script_getnum(st, 14);
+	ms->val[2] = script_getnum(st, 15);
+	ms->val[3] = script_getnum(st, 16);
+	ms->val[4] = script_getnum(st, 17);
+
+	if (ms->skill_id == NPC_EMOTION && mob_id > 0 &&
+		ms->val[1] == md->db->status.mode)
+	{
+		ms->val[1] = 0;
+		ms->val[4] = 1; //request to return mode to normal.
+	}
+	if (ms->skill_id == NPC_EMOTION_ON && mob_id > 0 && ms->val[1])
+	{	//Adds a mode to the mob.
+		//Remove aggressive mode when the new mob type is passive.
+		if (!(ms->val[1] & MD_AGGRESSIVE))
+			ms->val[3] |= MD_AGGRESSIVE;
+		ms->val[2] |= ms->val[1]; //Add the new mode.
+		ms->val[1] = 0; //Do not "set" it.
+	}
+
+	//if (*script_getnum(st, 18))
+	//	ms->emotion = atoi(str[17]);
+	//else
+	ms->emotion = script_getnum(st, 18);
+
+	uint16 msg_id = script_getnum(st, 19);
+	if (mob_check_mobchatdb(msg_id))
+		ms->msg_id = msg_id;
+	else {
+		ms->msg_id = 0;
+		ShowWarning("Unknown chat ID %d\n", msg_id);
+	}
+
+	int r = mob_add_skill(md, ms);
+	script_pushint(st, r);
+	return SCRIPT_CMD_SUCCESS;
+}
 #ifdef Pandas_ScriptCommand_Map_Get_Size
 /* ===========================================================
  * 指令: getmapsize
@@ -33844,6 +34099,8 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(getenchantgrade, "??"),
 
 	BUILDIN_DEF(mob_setidleevent, "is"),
+	BUILDIN_DEF(mob_add_skill, "isiiiiissssiiiiiii"),
+	BUILDIN_DEF(mob_clear_skill, "ii"),
 
 	BUILDIN_DEF(setinstancevar,"rvi"),
 	BUILDIN_DEF(openstylist, "?"),
