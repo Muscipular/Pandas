@@ -4041,10 +4041,11 @@ int mob_reset_skill(struct mob_data* md, bool reset) {
 	}
 	if (reset) {
 		std::vector<std::shared_ptr<s_mob_skill>>& ms = md->db->skill;
-		for each (auto s in ms) {
+		for each (auto& s in ms) {
 			md->pandas.skill->push_back(s);
 		}
 	}
+	md->pandas.custom_skill = true;
 	return 1;
 }
 
@@ -4062,7 +4063,7 @@ int mobskill_use(struct mob_data *md, t_tick tick, int event, int64 damage)
 	nullpo_ret(md);
 
 	std::vector<std::shared_ptr<s_mob_skill>> &ms = md->db->skill;
-	if (md->pandas.skill != nullptr && md->pandas.custom_skill != 0) {
+	if (md->pandas.skill != nullptr && md->pandas.custom_skill) {
 		ms = *md->pandas.skill;
 	}
 
