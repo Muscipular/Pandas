@@ -19997,6 +19997,14 @@ BUILDIN_FUNC(getunitdata)
 			getunitdata_sub(UMOB_INT, md->status.int_);
 			getunitdata_sub(UMOB_DEX, md->status.dex);
 			getunitdata_sub(UMOB_LUK, md->status.luk);
+			//pow, sta, wis, spl, con, crt,
+			getunitdata_sub(UMOB_POW, md->status.pow);
+			getunitdata_sub(UMOB_STA, md->status.sta);
+			getunitdata_sub(UMOB_WIS, md->status.wis);
+			getunitdata_sub(UMOB_SPL, md->status.spl);
+			getunitdata_sub(UMOB_CON, md->status.con);
+			getunitdata_sub(UMOB_CRT, md->status.crt);
+			getunitdata_sub(UMOB_CHASERANGE, md->min_chase);
 			getunitdata_sub(UMOB_SLAVECPYMSTRMD, md->state.copy_master_mode);
 			getunitdata_sub(UMOB_DMGIMMUNE, md->ud.immune_attack);
 			getunitdata_sub(UMOB_ATKRANGE, md->status.rhw.range);
@@ -20422,6 +20430,13 @@ BUILDIN_FUNC(setunitdata)
 			case UMOB_INT: md->base_status->int_ = (unsigned short)value; status_calc_misc(bl, &md->status, md->level); calc_status = true; break;
 			case UMOB_DEX: md->base_status->dex = (unsigned short)value; status_calc_misc(bl, &md->status, md->level); calc_status = true; break;
 			case UMOB_LUK: md->base_status->luk = (unsigned short)value; status_calc_misc(bl, &md->status, md->level); calc_status = true; break;
+			case UMOB_POW: md->base_status->pow = (unsigned short)value; status_calc_misc(bl, &md->status, md->level); calc_status = true; break;
+			case UMOB_STA: md->base_status->sta = (unsigned short)value; status_calc_misc(bl, &md->status, md->level); calc_status = true; break;
+			case UMOB_WIS: md->base_status->wis = (unsigned short)value; status_calc_misc(bl, &md->status, md->level); calc_status = true; break;
+			case UMOB_SPL: md->base_status->spl = (unsigned short)value; status_calc_misc(bl, &md->status, md->level); calc_status = true; break;
+			case UMOB_CON: md->base_status->con = (unsigned short)value; status_calc_misc(bl, &md->status, md->level); calc_status = true; break;
+			case UMOB_CRT: md->base_status->crt = (unsigned short)value; status_calc_misc(bl, &md->status, md->level); calc_status = true; break;
+			case UMOB_CHASERANGE: md->min_chase = (unsigned short)value; break;
 			case UMOB_SLAVECPYMSTRMD:
 				if (value > 0) {
 					TBL_MOB *md2 = NULL;
@@ -22850,6 +22865,34 @@ BUILDIN_FUNC(instance_npcname)
 		st->state = END;
 		return SCRIPT_CMD_FAILURE;
 	}
+
+	return SCRIPT_CMD_SUCCESS;
+}
+
+
+/*==========================================
+ * Returns the name of a duplicated map
+ *
+ * instance_mapid2name <map_id>{,<instance_id>};
+ *------------------------------------------*/
+BUILDIN_FUNC(instance_mapid2name)
+{
+	const char* str;
+	int16 m;
+	int instance_id;
+
+	m = script_getnum(st, 2);
+
+	if (script_hasdata(st, 3))
+		instance_id = script_getnum(st, 3);
+	else
+		instance_id = script_instancegetid(st);
+
+	// Check that instance mapname is a valid map
+	if (instance_id <= 0 || m < 0)
+		script_pushconststr(st, "");
+	else
+		script_pushconststr(st, map_getmapdata(m)->name);
 
 	return SCRIPT_CMD_SUCCESS;
 }
@@ -33221,6 +33264,7 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(instance_enter,"s????"),
 	BUILDIN_DEF(instance_npcname,"s?"),
 	BUILDIN_DEF(instance_mapname,"s?"),
+	BUILDIN_DEF(instance_mapid2name,"i?"),
 	BUILDIN_DEF(instance_warpall,"sii?"),
 	BUILDIN_DEF(instance_announce,"isi?????"),
 	BUILDIN_DEF(instance_check_party,"i???"),

@@ -4924,6 +4924,56 @@ uint64 MobDatabase::parseBodyNode(const ryml::NodeRef& node) {
 			mob->status.luk = 1;
 	}
 
+	//pow, sta, wis, spl, con, crt,
+	if (this->nodeExists(node, "Pow")) {
+		uint16 stat;
+
+		if (!this->asUInt16(node, "Pow", stat))
+			return 0;
+
+		mob->status.pow = max(1, stat);
+	}
+	if (this->nodeExists(node, "Sta")) {
+		uint16 stat;
+
+		if (!this->asUInt16(node, "Sta", stat))
+			return 0;
+
+		mob->status.sta = max(1, stat);
+	}
+	if (this->nodeExists(node, "Wis")) {
+		uint16 stat;
+
+		if (!this->asUInt16(node, "Wis", stat))
+			return 0;
+
+		mob->status.wis = max(1, stat);
+	}
+	if (this->nodeExists(node, "Spl")) {
+		uint16 stat;
+
+		if (!this->asUInt16(node, "Spl", stat))
+			return 0;
+
+		mob->status.spl = max(1, stat);
+	}
+	if (this->nodeExists(node, "Con")) {
+		uint16 stat;
+
+		if (!this->asUInt16(node, "Con", stat))
+			return 0;
+
+		mob->status.con = max(1, stat);
+	}
+	if (this->nodeExists(node, "Crt")) {
+		uint16 stat;
+
+		if (!this->asUInt16(node, "Crt", stat))
+			return 0;
+
+		mob->status.crt = max(1, stat);
+	}
+
 	if (this->nodeExists(node, "AttackRange")) {
 		uint16 range;
 
