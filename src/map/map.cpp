@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include "../config/core.hpp"
+
 #include "../common/cbasetypes.hpp"
 #include "../common/cli.hpp"
 #include "../common/core.hpp"
@@ -41,6 +43,7 @@
 #include "mapreg.hpp"
 #include "mercenary.hpp"
 #include "mob.hpp"
+#include "navi.hpp"
 #include "npc.hpp"
 #include "party.hpp"
 #include "path.hpp"
@@ -118,7 +121,8 @@ char log_codepage[32] = "";
 #endif // Pandas_SQL_Configure_Optimization
 Sql* logmysql_handle;
 
-uint32 start_status_points = 48;
+// inter config
+struct inter_conf inter_config {};
 
 // DBMap declaration
 static DBMap* id_db=NULL; /// int id -> struct block_list*
@@ -542,17 +546,17 @@ int map_moveblock(struct block_list *bl, int x1, int y1, t_tick tick)
 		skill_unit_move(bl,tick,2);
 		if ( sc && sc->count ) //at least one to cancel
 		{
-			status_change_end(bl, SC_CLOSECONFINE, INVALID_TIMER);
-			status_change_end(bl, SC_CLOSECONFINE2, INVALID_TIMER);
-			status_change_end(bl, SC_TINDER_BREAKER, INVALID_TIMER);
-			status_change_end(bl, SC_TINDER_BREAKER2, INVALID_TIMER);
-	//		status_change_end(bl, SC_BLADESTOP, INVALID_TIMER); //Won't stop when you are knocked away, go figure...
-			status_change_end(bl, SC_TATAMIGAESHI, INVALID_TIMER);
-			status_change_end(bl, SC_MAGICROD, INVALID_TIMER);
-			status_change_end(bl, SC_SU_STOOP, INVALID_TIMER);
+			status_change_end(bl, SC_CLOSECONFINE);
+			status_change_end(bl, SC_CLOSECONFINE2);
+			status_change_end(bl, SC_TINDER_BREAKER);
+			status_change_end(bl, SC_TINDER_BREAKER2);
+	//		status_change_end(bl, SC_BLADESTOP); //Won't stop when you are knocked away, go figure...
+			status_change_end(bl, SC_TATAMIGAESHI);
+			status_change_end(bl, SC_MAGICROD);
+			status_change_end(bl, SC_SU_STOOP);
 			if (sc->data[SC_PROPERTYWALK] &&
 				sc->data[SC_PROPERTYWALK]->val3 >= skill_get_maxcount(sc->data[SC_PROPERTYWALK]->val1,sc->data[SC_PROPERTYWALK]->val2) )
-				status_change_end(bl,SC_PROPERTYWALK,INVALID_TIMER);
+				status_change_end(bl,SC_PROPERTYWALK);
 		}
 	} else
 	if (bl->type == BL_NPC)
@@ -580,7 +584,7 @@ int map_moveblock(struct block_list *bl, int x1, int y1, t_tick tick)
 			struct block_list *d_bl;
 			if( (d_bl = map_id2bl(((TBL_PC*)bl)->shadowform_id)) == NULL || !check_distance_bl(bl,d_bl,10) ) {
 				if( d_bl )
-					status_change_end(d_bl,SC__SHADOWFORM,INVALID_TIMER);
+					status_change_end(d_bl,SC__SHADOWFORM);
 				((TBL_PC*)bl)->shadowform_id = 0;
 			}
 		}
@@ -590,7 +594,7 @@ int map_moveblock(struct block_list *bl, int x1, int y1, t_tick tick)
 				skill_unit_move_unit_group(skill_id2group(sc->data[SC_DANCING]->val2), bl->m, x1-x0, y1-y0);
 			else {
 				if (sc->data[SC_CLOAKING] && sc->data[SC_CLOAKING]->val1 < 3 && !skill_check_cloaking(bl, NULL))
-					status_change_end(bl, SC_CLOAKING, INVALID_TIMER);
+					status_change_end(bl, SC_CLOAKING);
 				if (sc->data[SC_WARM])
 					skill_unit_move_unit_group(skill_id2group(sc->data[SC_WARM]->val4), bl->m, x1-x0, y1-y0);
 				if (sc->data[SC_BANDING])
@@ -604,7 +608,7 @@ int map_moveblock(struct block_list *bl, int x1, int y1, t_tick tick)
 				if( sc->data[SC__SHADOWFORM] ) {//Shadow Form Caster Moving
 					struct block_list *d_bl;
 					if( (d_bl = map_id2bl(sc->data[SC__SHADOWFORM]->val2)) == NULL || !check_distance_bl(bl,d_bl,10) )
-						status_change_end(bl,SC__SHADOWFORM,INVALID_TIMER);
+						status_change_end(bl,SC__SHADOWFORM);
 				}
 
 				if (sc->data[SC_PROPERTYWALK]
@@ -2288,20 +2292,20 @@ int map_quit(struct map_session_data *sd) {
 
 			//No need to save infinite status
 			if (flag[SCF_NOSAVEINFINITE] && sd->sc.data[it.first] && sd->sc.data[it.first]->val4 > 0) {
-				status_change_end(&sd->bl, static_cast<sc_type>(it.first), INVALID_TIMER);
+				status_change_end(&sd->bl, static_cast<sc_type>(it.first));
 				continue;
 			}
 
 			//Status that are not saved
 			if (flag[SCF_NOSAVE]) {
-				status_change_end(&sd->bl, static_cast<sc_type>(it.first), INVALID_TIMER);
+				status_change_end(&sd->bl, static_cast<sc_type>(it.first));
 				continue;
 			}
 			//Removes status by config
 			if (battle_config.debuff_on_logout&1 && flag[SCF_DEBUFF] || //Removes debuffs
 				(battle_config.debuff_on_logout&2 && !(flag[SCF_DEBUFF]))) //Removes buffs
 			{
-				status_change_end(&sd->bl, static_cast<sc_type>(it.first), INVALID_TIMER);
+				status_change_end(&sd->bl, static_cast<sc_type>(it.first));
 				continue;
 			}
 		}
@@ -4537,8 +4541,16 @@ int inter_config_read(const char *cfgName)
 		else
 #endif // Pandas_SQL_Configure_Optimization
 		if(strcmpi(w1,"start_status_points")==0)
-			start_status_points=atoi(w2);
+			inter_config.start_status_points=atoi(w2);
 		else
+		if(strcmpi(w1, "emblem_woe_change")==0)
+			inter_config.emblem_woe_change = config_switch(w2) == 1;
+		else
+		if (strcmpi(w1, "emblem_transparency_limit") == 0) {
+			auto val = atoi(w2);
+			val = cap_value(val, 0, 100);
+			inter_config.emblem_transparency_limit = val;
+		}
 		if( mapreg_config_read(w1,w2) )
 			continue;
 		//support the import command, just like any other config
@@ -5696,7 +5708,9 @@ void do_final(void){
 	do_final_battle();
 	do_final_chrif();
 	do_final_clan();
+#ifndef GENERATE_NAVI
 	do_final_clif();
+#endif
 	do_final_npc();
 	do_final_quest();
 	do_final_achievement();
@@ -5996,6 +6010,11 @@ int do_init(int argc, char *argv[])
 	map_default.x = 156;
 	map_default.y = 191;
 
+	// default inter_config
+	inter_config.start_status_points = 48;
+	inter_config.emblem_woe_change = true;
+	inter_config.emblem_transparency_limit = 80;
+
 	cli_get_options(argc,argv);
 
 	rnd_init();
@@ -6075,7 +6094,9 @@ int do_init(int argc, char *argv[])
 	do_init_instance();
 	do_init_chrif();
 	do_init_clan();
+#ifndef GENERATE_NAVI
 	do_init_clif();
+#endif
 	do_init_script();
 	do_init_itemdb();
 #ifdef Pandas_Aura_Mechanism
@@ -6118,6 +6139,11 @@ int do_init(int argc, char *argv[])
 	performance_stop("core_init");
 	ShowStatus("The Map-server is " CL_GREEN "ready" CL_RESET " (Server is listening on the port %u, took %" PRIu64 " milliseconds).\n\n", map_port, performance_get_milliseconds("core_init"));
 #endif // Pandas_Speedup_Print_TimeConsuming_Of_KeySteps
+
+#ifdef GENERATE_NAVI
+	navi_create_lists();
+	runflag = CORE_ST_STOP;
+#endif
 
 	if( runflag != CORE_ST_STOP )
 	{

@@ -67,7 +67,7 @@
 	//         ^ 此处第四段为 1 表示这是一个 1.0.2 的开发版本 (develop)
 	// 
 	// 在 Windows 环境下, 程序启动时会根据第四段的值自动携带对应的版本后缀, 以便进行版本区分
-	#define Pandas_Version "1.1.17.1"
+	#define Pandas_Version "1.1.17.0"
 
 	// 在启动时显示 Pandas 的 LOGO
 	#define Pandas_Show_Logo
@@ -603,6 +603,9 @@
 	// 
 	// - 能够输出目标数据库当前所使用的编码
 	// - 当在 inter_athena.conf 中指定了 codepage 时, 能提示最终使用的编码
+	// - 若目标数据库使用 utf8 或者 utf8mb4 编码, 为了兼容性考虑会根据操作
+	//   系统语言来选择使用 gbk 或 big5 编码, 若不是简体中文也不是繁体中文则直接
+	//   使用当前数据库的 `character_set_database` 编码.
 	//
 	// --------------------------------------
 	// 改动三：用 mysql_set_character_set 来设置 MySQL 的编码字符集
@@ -1413,6 +1416,16 @@
 		// 事件类型: Filter / 事件名称: OnPCStorageDelFilter
 		// 常量名称: NPCF_STORAGE_DEL / 变量名称: storage_del_filter_name
 		#define Pandas_NpcFilter_STORAGE_DEL
+
+		// 当玩家准备将道具从背包存入手推车时触发过滤器 [香草]
+		// 事件类型: Filter / 事件名称: OnPCCartAddFilter
+		// 常量名称: NPCF_CART_ADD / 变量名称: cart_add_filter_name
+		#define Pandas_NpcFilter_CART_ADD
+
+		// 当玩家准备将道具从手推车取回背包时触发过滤器 [香草]
+		// 事件类型: Filter / 事件名称: OnPCCartDelFilter
+		// 常量名称: NPCF_CART_DEL / 变量名称: cart_del_filter_name
+		#define Pandas_NpcFilter_CART_DEL
 		// PYHELP - NPCEVENT - INSERT POINT - <Section 1>
 	#endif // Pandas_Struct_Map_Session_Data_EventHalt
 
@@ -2120,8 +2133,8 @@
 	#define Pandas_ScriptCommand_Next_Dropitem_Special
 
 	// 是否启用 getgradeitem 脚本指令 [Sola丶小克]
-	// 该指令用于创造带有指定附魔评级的道具, 按照目前大家理解比较接近的 getitem4 标准来实现
-	// 也就是在 getitem3 的基础上多增加一个附魔评级字段
+	// 该指令用于创造带有指定附魔评级的道具, 由于 rAthena 已经正式实现了 getitem4,
+	// getgradeitem 仅用于兼容旧版本的脚本, 请尽量使用 getitem4
 	#define Pandas_ScriptCommand_GetGradeItem
 
 	// 是否启用 getrateidx 脚本指令 [Sola丶小克]
@@ -2238,10 +2251,6 @@
 	#ifdef Pandas_WebServer_Database_EncodingAdaptive
 		#define Pandas_WebServer_Rewrite_Controller_HandlerFunc
 	#endif // Pandas_WebServer_Database_EncodingAdaptive
-
-	// 实现用于读写商店配置信息的 MerchantStore 接口 [Sola丶小克]
-	// 启用后将支持 /MerchantStore/load 和 /MerchantStore/save 两个相关接口
-	#define Pandas_WebServer_Implement_MerchantStore
 
 	// 实现用于冒险家中介所的 party 接口 [Sola丶小克]
 	// 启用后将支持 /party/{list|get|add|del|search} 这几个相关接口

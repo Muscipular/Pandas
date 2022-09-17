@@ -33,6 +33,7 @@
 #include "log.hpp"
 #include "map.hpp"
 #include "mob.hpp"
+#include "navi.hpp"
 #include "pc.hpp"
 #include "pet.hpp"
 #include "script.hpp" // script_config
@@ -2659,12 +2660,26 @@ bool npc_scriptcont(struct map_session_data* sd, int id, bool closing){
 		return true;
 	}
 
+#ifndef Pandas_ScriptCommand_GetInventoryList
 	if(id != fake_nd->bl.id) { // Not item script
 		if ((npc_checknear(sd, target)) == NULL) {
 			ShowWarning("npc_scriptcont: failed npc_checknear test.\n");
 			return true;
 		}
 	}
+#else
+	if(id != fake_nd->bl.id) { // Not item script
+		if ((npc_checknear(sd, target)) == NULL) {
+			// 若本次继续执行脚本是因为正在等待角色服务器返回仓库数据,
+			// 那么无需进行 npc_checknear 检查
+			if (sd->st && !(sd->st->waiting_guild_storage || sd->st->waiting_premium_storage)) {
+				ShowWarning("npc_scriptcont: failed npc_checknear test.\n");
+				return true;
+			}
+		}
+	}
+#endif // Pandas_ScriptCommand_GetInventoryList
+
 #ifdef SECURE_NPCTIMEOUT
 	if( !closing )
 		sd->npc_idle_tick = gettick(); //Update the last NPC iteration
@@ -4223,6 +4238,12 @@ struct npc_data *npc_create_npc(int16 m, int16 x, int16 y){
 	nd->progressbar.timeout = 0;
 	nd->vd = npc_viewdb[0]; // Default to JT_INVISIBLE
 
+#ifdef GENERATE_NAVI
+	nd->navi.pos = {m, x, y};
+	nd->navi.id = 0;
+	nd->navi.npc = nd;
+#endif
+
 #ifdef Pandas_ScriptCommand_ShowVend
 	nd->vendingboard.show = false;
 	memset(nd->vendingboard.message, 0, NAME_LENGTH + 1);
@@ -4357,6 +4378,11 @@ static const char* npc_parse_warp(char* w1, char* w2, char* w3, char* w4, const 
 	nd->u.warp.y = to_y;
 	nd->u.warp.xs = xs;
 	nd->u.warp.ys = ys;
+
+#ifdef GENERATE_NAVI
+	nd->navi.warp_dest = {map_mapindex2mapid(i), to_x, to_y};
+#endif
+
 	npc_warp++;
 	nd->bl.type = BL_NPC;
 	nd->subtype = NPCTYPE_WARP;
@@ -6460,6 +6486,14 @@ bool npc_event_is_filter(enum npce_event eventtype) {
 #ifdef Pandas_NpcFilter_STORAGE_DEL
 		NPCF_STORAGE_DEL,	// storage_del_filter_name	// OnPCStorageDelFilter		// 当玩家准备将道具取出仓库时触发过滤器
 #endif // Pandas_NpcFilter_STORAGE_DEL
+
+#ifdef Pandas_NpcFilter_CART_ADD
+		NPCF_CART_ADD,	// cart_add_filter_name	// OnPCCartAddFilter		// 当玩家准备将道具从背包存入手推车时触发过滤器
+#endif // Pandas_NpcFilter_CART_ADD
+
+#ifdef Pandas_NpcFilter_CART_DEL
+		NPCF_CART_DEL,	// cart_del_filter_name	// OnPCCartDelFilter		// 当玩家准备将道具从手推车取回背包时触发过滤器
+#endif // Pandas_NpcFilter_CART_DEL
 		// PYHELP - NPCEVENT - INSERT POINT - <Section 20>
 	};
 
@@ -6685,6 +6719,16 @@ const char *npc_get_script_event_name(int npce_index)
 	case NPCF_STORAGE_DEL:
 		return script_config.storage_del_filter_name;	// OnPCStorageDelFilter		// 当玩家准备将道具取出仓库时触发过滤器
 #endif // Pandas_NpcFilter_STORAGE_DEL
+
+#ifdef Pandas_NpcFilter_CART_ADD
+	case NPCF_CART_ADD:
+		return script_config.cart_add_filter_name;	// OnPCCartAddFilter		// 当玩家准备将道具从背包存入手推车时触发过滤器
+#endif // Pandas_NpcFilter_CART_ADD
+
+#ifdef Pandas_NpcFilter_CART_DEL
+	case NPCF_CART_DEL:
+		return script_config.cart_del_filter_name;	// OnPCCartDelFilter		// 当玩家准备将道具从手推车取回背包时触发过滤器
+#endif // Pandas_NpcFilter_CART_DEL
 	// PYHELP - NPCEVENT - INSERT POINT - <Section 3>
 
 	/************************************************************************/
