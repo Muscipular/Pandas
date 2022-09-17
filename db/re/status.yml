@@ -2950,7 +2950,8 @@ Body:
     End:
       Lukfood: true
   - Status: Fear
-    DurationLookup: RK_WINDCUTTER
+    Icon: EFST_HEALTHSTATE_FEAR
+    DurationLookup: RK_DRAGONHOWLING
     States:
       NoMove: true
       NoMoveCond: true
@@ -7640,6 +7641,7 @@ Body:
     Icon: EFST_CLIMAX_DES_HU
     DurationLookup: AG_DESTRUCTIVE_HURRICANE
     CalcFlags:
+      Base: true
       Matk: true
   - Status: Climax
     Icon: EFST_CLIMAX
