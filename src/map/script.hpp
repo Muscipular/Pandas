@@ -782,6 +782,14 @@ enum unitdata_mobtypes {
 	UMOB_MOBJOBEXP,
 	UMOB_MOBJOBEXP_DB,
 #endif // Pandas_ScriptParams_UnitData_Experience
+	//pow, sta, wis, spl, con, crt,
+	UMOB_POW,
+	UMOB_STA,
+	UMOB_WIS,
+	UMOB_SPL,
+	UMOB_CON,
+	UMOB_CRT,
+	UMOB_CHASERANGE,
 };
 
 enum unitdata_homuntypes {
