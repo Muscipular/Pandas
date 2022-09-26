@@ -382,7 +382,7 @@ float GetFloat(const unsigned char* buf)
 }
 
 /// calculates the value of A / B, in percent (rounded down)
-unsigned int get_percentage(const unsigned int A, const unsigned int B)
+unsigned int get_percentage(const uint64 A, const uint64 B)
 {
 	double result;
 

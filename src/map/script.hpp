@@ -775,7 +775,8 @@ enum unitdata_mobtypes {
 #ifdef Pandas_ScriptParams_DamageTaken_From_Database
 	UMOB_DMGRATE,
 	UMOB_DAMAGETAKEN_DB,
-#endif // Pandas_ScriptParams_DamageTaken_From_Database
+	UMOB_DMGRATE,
+	UMOB_DMGRATE2,
 #ifdef Pandas_ScriptParams_UnitData_Experience
 	UMOB_MOBBASEEXP,
 	UMOB_MOBBASEEXP_DB,
