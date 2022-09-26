@@ -501,6 +501,7 @@ struct mob_data* mob_spawn_dataset(struct spawn_data *data)
 #ifdef Pandas_Struct_Mob_Data_DamageTaken
 	md->pandas.damagetaken = -1;
 	md->pandas.dmg_rate = -1;
+	md->pandas.dmg_rate2 = -1;
 #endif // Pandas_Struct_Mob_Data_DamageTaken
 #ifdef Pandas_Struct_Mob_Data_SpecialExperience
 	md->pandas.base_exp = -1;

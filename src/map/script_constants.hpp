@@ -5420,6 +5420,7 @@
 
 #ifdef Pandas_ScriptParams_UnitData_DamageTaken
 	export_constant(UMOB_DMGRATE);
+	export_constant(UMOB_DMGRATE2);
 	export_constant(UMOB_DAMAGETAKEN);
 	export_constant(UMOB_DAMAGETAKEN_DB);
 #endif // Pandas_ScriptParams_UnitData_DamageTaken

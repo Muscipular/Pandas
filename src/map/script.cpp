@@ -85,6 +85,12 @@
 #include "mobdrop.hpp"
 #endif // Pandas_Database_MobItem_FixedRatio
 
+EXTERN_C_START
+#include "lua.h"
+#include "lualib.h"
+#include "lauxlib.h"
+EXTERN_C_END
+
 using namespace rathena;
 
 const int64 SCRIPT_INT_MIN = INT64_MIN;
@@ -97,6 +103,21 @@ unsigned int next_id;
 struct eri *st_ers;
 struct eri *stack_ers;
 std::atomic<int> script_batch{ 0 }; // For async SQL futures
+
+lua_State* lua;
+
+static bool init_lua() {
+	if (lua) {
+		return false;
+	}
+	lua = luaL_newstate();
+	if (lua) {
+		luaL_openlibs(lua);
+		auto ret = luaL_dostring(lua, "pcall(function() dofile('npc/init.lua') end);");
+		return ret;
+	}
+	return false;
+}
 
 static bool script_rid2sd_( struct script_state *st, struct map_session_data** sd, const char *func );
 
@@ -20035,6 +20056,8 @@ BUILDIN_FUNC(getunitdata)
 			getunitdata_sub(UMOB_AURA, md->ucd.aura.id);
 #endif // Pandas_Struct_Unit_CommonData_Aura
 #ifdef Pandas_ScriptParams_UnitData_DamageTaken
+			getunitdata_sub(UMOB_DMGRATE, md->pandas.dmg_rate);
+			getunitdata_sub(UMOB_DMGRATE2, md->pandas.dmg_rate2);
 			getunitdata_sub(UMOB_DAMAGETAKEN, md->pandas.damagetaken);
 			getunitdata_sub(UMOB_DAMAGETAKEN_DB, md->db->damagetaken);
 #endif // Pandas_ScriptParams_UnitData_DamageTaken
@@ -20347,7 +20370,8 @@ BUILDIN_FUNC(setunitdata)
 			return SCRIPT_CMD_FAILURE;
 	}
 
-	int type = script_getnum(st, 3), value = 0;
+	int type = script_getnum(st, 3);
+	int64 value = 0;
 	const char *mapname = NULL;
 	bool calc_status = false;
 #ifdef Pandas_ScriptParams_UnitData_Experience
@@ -20357,7 +20381,7 @@ BUILDIN_FUNC(setunitdata)
 	if ((type == UMOB_MAPID || type == UHOM_MAPID || type == UPET_MAPID || type == UMER_MAPID || type == UELE_MAPID || type == UNPC_MAPID) && script_isstring(st, 4))
 		mapname = script_getstr(st, 4);
 	else
-		value = script_getnum(st, 4);
+		value = script_getnum64(st, 4);
 
 #ifdef Pandas_ScriptParams_UnitData_Experience
 	if (bl->type == BL_MOB && (type == UMOB_MOBBASEEXP || type == UMOB_MOBJOBEXP)) {
@@ -20402,8 +20426,8 @@ BUILDIN_FUNC(setunitdata)
 		switch (type) {
 			case UMOB_SIZE: md->status.size = md->base_status->size = (unsigned char)value; break;
 			case UMOB_LEVEL: md->level = (unsigned short)value; clif_name_area(&md->bl); break;
-			case UMOB_HP: md->base_status->hp = (unsigned int)value; status_set_hp(bl, (unsigned int)value, 0); clif_name_area(&md->bl); break;
-			case UMOB_MAXHP: md->base_status->hp = md->base_status->max_hp = (unsigned int)value; status_set_maxhp(bl, (unsigned int)value, 0); clif_name_area(&md->bl); break;
+			case UMOB_HP: md->base_status->hp = (uint64)value; status_set_hp(bl, (uint64)value, 0); clif_name_area(&md->bl); break;
+			case UMOB_MAXHP: md->base_status->hp = md->base_status->max_hp = (uint64)value; status_set_maxhp(bl, (uint64)value, 0); clif_name_area(&md->bl); break;
 			case UMOB_MASTERAID: md->master_id = value; break;
 			case UMOB_MAPID: if (mapname) value = map_mapname2mapid(mapname); unit_warp(bl, (short)value, 0, 0, CLR_TELEPORT); break;
 			case UMOB_X: if (!unit_walktoxy(bl, (short)value, md->bl.y, 2)) unit_movepos(bl, (short)value, md->bl.y, 0, 0); break;
@@ -20493,6 +20517,7 @@ BUILDIN_FUNC(setunitdata)
 #ifdef Pandas_ScriptParams_UnitData_DamageTaken
 			case UMOB_DAMAGETAKEN: md->pandas.damagetaken = cap_value(value, -1, UINT16_MAX); break;
 			case UMOB_DMGRATE: md->pandas.dmg_rate = cap_value(value, -1, 1000000000) / 100000.0f; break;
+			case UMOB_DMGRATE2: md->pandas.dmg_rate2 = cap_value(value, -1, 1000000000) / 100000.0f; break;
 #endif // Pandas_ScriptParams_UnitData_DamageTaken
 #ifdef Pandas_ScriptParams_UnitData_Experience
 			case UMOB_MOBBASEEXP: md->pandas.base_exp = cap_value(value64, -1, (int64)MAX_EXP); break;
@@ -20529,8 +20554,8 @@ BUILDIN_FUNC(setunitdata)
 		switch (type) {
 			case UHOM_SIZE: hd->battle_status.size = hd->base_status.size = (unsigned char)value; break;
 			case UHOM_LEVEL: hd->homunculus.level = (unsigned short)value; break;
-			case UHOM_HP: hd->base_status.hp = (unsigned int)value; status_set_hp(bl, (unsigned int)value, 0); break;
-			case UHOM_MAXHP: hd->base_status.hp = hd->base_status.max_hp = (unsigned int)value; status_set_maxhp(bl, (unsigned int)value, 0); break;
+			case UHOM_HP: hd->base_status.hp = (uint64)value; status_set_hp(bl, (uint64)value, 0); break;
+			case UHOM_MAXHP: hd->base_status.hp = hd->base_status.max_hp = (uint64)value; status_set_maxhp(bl, (uint64)value, 0); break;
 			case UHOM_SP: hd->base_status.sp = (unsigned int)value; status_set_sp(bl, (unsigned int)value, 0); break;
 			case UHOM_MAXSP: hd->base_status.sp = hd->base_status.max_sp = (unsigned int)value; status_set_maxsp(bl, (unsigned int)value, 0); break;
 			case UHOM_MASTERCID: hd->homunculus.char_id = (uint32)value; break;
@@ -22877,7 +22902,7 @@ BUILDIN_FUNC(instance_npcname)
  *------------------------------------------*/
 BUILDIN_FUNC(instance_mapid2name)
 {
-	const char* str;
+	//const char* str;
 	int16 m;
 	int instance_id;
 
@@ -29700,7 +29725,7 @@ BUILDIN_FUNC(copynpc) {
 	// 本指令的绝大部分代码来源自 npc.cpp 的 npc_parse_duplicate 函数
 	// 若未来 rAthena 官方修改了 npc_parse_duplicate 那么这里也需要进行对应的调整, 以便确保主流程一致
 	// --------------------------------------------------------------------------------------
-
+	int flag = 0;
 	const char *w1 = nullptr, *w2 = nullptr, *w3 = nullptr, *w4 = nullptr;
 	char w1buf[256] = { 0 }, w2buf[256] = { 0 }, w3buf[256] = { 0 }, w4buf[256] = { 0 };
 	DBMap* npcname_db = get_npcname_db_ptr();
@@ -29733,6 +29758,19 @@ BUILDIN_FUNC(copynpc) {
 				break; // 这里的 break 表示流程正常结束, 无需报错
 			}
 		}
+		else if (script_lastdata(st) == 6) {
+			// 若用四个参数的形式调用 copynpc, 那么四个参数必须全部都是字符串类型
+			// 第四个参数可以允许是数值变量, 因为数值变量可以直接被 script_getstr 强制转换成字符串
+			if (script_isstring(st, 2) && script_isstring(st, 3) &&
+				script_isstring(st, 4) && (script_isstring(st, 5) || script_isint(st, 5))) {
+				w1 = script_getstr(st, 2);
+				w2 = script_getstr(st, 3);
+				w3 = script_getstr(st, 4);
+				w4 = script_getstr(st, 5);
+				flag = script_getnum(st, 6);
+				break; // 这里的 break 表示流程正常结束, 无需报错
+			}
+		}
 		else if (script_lastdata(st) == 8) {
 			// 若使用七个参数的形式调用 copynpc, 那么七个参数的类型分别需要是: siiissi
 			if (script_isstring(st, 2) && script_isint(st, 3) &&
@@ -29748,6 +29786,25 @@ BUILDIN_FUNC(copynpc) {
 				w2 = w2buf;
 				w3 = w3buf;
 				w4 = w4buf;
+				break; // 这里的 break 表示流程正常结束, 无需报错
+			}
+		}
+		else if (script_lastdata(st) == 9) {
+			// 若使用七个参数的形式调用 copynpc, 那么七个参数的类型分别需要是: siiissi
+			if (script_isstring(st, 2) && script_isint(st, 3) &&
+				script_isint(st, 4) && script_isint(st, 5) &&
+				script_isstring(st, 6) && script_isstring(st, 7) && script_isint(st, 8)) {
+
+				sprintf(w1buf, "%s,%d,%d,%d", script_getstr(st, 2), script_getnum(st, 3), script_getnum(st, 4), script_getnum(st, 5));
+				sprintf(w2buf, "%s", script_getstr(st, 6));
+				sprintf(w3buf, "%s", script_getstr(st, 7));
+				sprintf(w4buf, "%d", script_getnum(st, 8));
+
+				w1 = w1buf;
+				w2 = w2buf;
+				w3 = w3buf;
+				w4 = w4buf;
+				flag = script_getnum(st, 9);
 				break; // 这里的 break 表示流程正常结束, 无需报错
 			}
 		}
@@ -29858,6 +29915,15 @@ BUILDIN_FUNC(copynpc) {
 		nd->u.scr.xs = xs;
 		nd->u.scr.ys = ys;
 		nd->u.scr.script = dnd->u.scr.script;
+		if (flag) {
+			struct script_code* code;
+			CREATE(code, struct script_code, 1);
+			code->script_buf = dnd->u.scr.script->script_buf;
+			code->script_size = dnd->u.scr.script->script_size;
+			code->local.vars = NULL;
+			code->local.arrays = NULL;
+			nd->u.scr.script = code;
+		}
 		nd->u.scr.label_list = dnd->u.scr.label_list;
 		nd->u.scr.label_list_num = dnd->u.scr.label_list_num;
 		break;
@@ -32456,6 +32522,43 @@ BUILDIN_FUNC(mob_clear_skill) {
 	script_pushint(st, r);
 	return SCRIPT_CMD_SUCCESS;
 }
+// LUA
+BUILDIN_FUNC(lua_init) {
+	script_pushint(st, init_lua());
+	return SCRIPT_CMD_SUCCESS;
+}
+BUILDIN_FUNC(lua_call_fn) {
+	int n = script_lastdata(st);
+
+	lua_getglobal(lua, script_getstr(st, 2));
+	for (int i = 3; i <= n; i++)
+	{
+		script_data* data = script_getdata(st, i);
+		if (data_isint(data))
+		{
+			lua_pushnumber(lua, static_cast<lua_Number>(data->u.num));
+		}
+		else if (data_isstring(data)) {
+			lua_pushstring(lua, data->u.str);
+		}
+		else {
+			lua_pushstring(lua, conv_str(st, data));
+		}
+	}
+	int ret = lua_pcall(lua, n - 2, 1, 0);
+	if (ret == 0) {
+		if (lua_isnumber(lua, -1)) {
+			script_pushint64(st, static_cast<int64>(lua_tonumber(lua, -1)));
+		} else if (lua_isstring(lua, -1)) {
+			script_pushstrcopy(st, lua_tostring(lua, -1));
+		}
+		lua_pop(lua, lua_gettop(lua));
+		return SCRIPT_CMD_SUCCESS;
+	}
+	return SCRIPT_CMD_FAILURE;
+}
+
+// END LUA
 /* ===========================================================
  * 指令: mob_add_skill
  * 描述: 魔物添加skill
@@ -32692,7 +32795,7 @@ BUILDIN_FUNC(mob_add_skill) {
 #ifdef Pandas_ScriptCommand_Map_Get_Size
 /* ===========================================================
  * 指令: getmapsize
- * 描述: 动态加地图
+ * 描述: 获取地图大小
  * 用法: getmapsize <地图名字>,<x>,<y>;
  * 返回: int
  * 作者: Muscipular
@@ -33593,7 +33696,7 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(messagecolor, "s???"),					// 发送指定颜色的消息文本到聊天窗口中 [Sola丶小克]
 #endif // Pandas_ScriptCommand_MessageColor
 #ifdef Pandas_ScriptCommand_Copynpc
-	BUILDIN_DEF(copynpc, "???????"),					// 复制指定的 NPC 到一个新的位置 [Sola丶小克]
+	BUILDIN_DEF(copynpc, "????????"),					// 复制指定的 NPC 到一个新的位置 [Sola丶小克]
 #endif // Pandas_ScriptCommand_Copynpc
 #ifdef Pandas_ScriptCommand_GetTimeFmt
 	BUILDIN_DEF(gettimefmt, "s??"),						// 将当前时间格式化输出成字符串, 是 gettimestr 的改进版 [Sola丶小克]
@@ -33740,6 +33843,8 @@ struct script_function buildin_func[] = {
 #endif // Pandas_ScriptCommand_Instance_Add_Warp
 	// PYHELP - SCRIPTCMD - INSERT POINT - <Section 3>
 
+		BUILDIN_DEF(lua_init, ""),
+		BUILDIN_DEF(lua_call_fn, "s*"),
 #include "../custom/script_def.inc"
 
 	{NULL,NULL,NULL},

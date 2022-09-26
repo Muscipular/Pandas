@@ -766,6 +766,7 @@ enum unitdata_mobtypes {
 	UMOB_DAMAGETAKEN,
 	UMOB_DAMAGETAKEN_DB,
 	UMOB_DMGRATE,
+	UMOB_DMGRATE2,
 #endif // Pandas_ScriptParams_UnitData_DamageTaken
 #ifdef Pandas_ScriptParams_UnitData_Experience
 	UMOB_MOBBASEEXP,

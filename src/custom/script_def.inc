@@ -9,3 +9,5 @@
  **/
 
 //BUILDIN_DEF(example,""),
+//BUILDIN_DEF(lua_init, ""),
+//BUILDIN_DEF(lua_call_fn, "s*"),

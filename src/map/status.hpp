@@ -3085,9 +3085,12 @@ struct weapon_atk {
 
 ///For holding basic status (which can be modified by status changes)
 struct status_data {
+	uint64 hp;
 	unsigned int
-		hp, sp, ap, // see status_cpy before adding members before hp and sp
-		max_hp, max_sp, max_ap;
+		sp, ap; // see status_cpy before adding members before hp and sp
+	uint64 max_hp;
+	unsigned int
+		max_sp, max_ap;
 	pec_ushort
 		str, agi, vit, int_, dex, luk,
 		pow, sta, wis, spl, con, crt,
@@ -3258,8 +3261,8 @@ static int status_kill( struct block_list* bl ){
 	return status_percent_damage( nullptr, bl, 100, 0, 0, true );
 }
 //Used to set the hp/sp/ap of an object to an absolute value (can't kill)
-int status_set_hp(struct block_list *bl, unsigned int hp, int flag);
-int status_set_maxhp(struct block_list *bl, unsigned int hp, int flag);
+int status_set_hp(struct block_list *bl, uint64 hp, int flag);
+int status_set_maxhp(struct block_list *bl, uint64 hp, int flag);
 int status_set_sp(struct block_list *bl, unsigned int sp, int flag);
 int status_set_maxsp(struct block_list *bl, unsigned int hp, int flag);
 int status_set_ap(struct block_list *bl, unsigned int ap, int flag);
