@@ -29999,10 +29999,6 @@ BUILDIN_FUNC(copynpc) {
 		return SCRIPT_CMD_SUCCESS;
 	}
 
-	if (type == NPCTYPE_SCRIPT && flag)	{
-		nd->src_id = nd->bl.id;
-	}
-
 	//-----------------------------------------
 	// Loop through labels to export them as necessary
 	for (i = 0; i < nd->u.scr.label_list_num; i++) {
