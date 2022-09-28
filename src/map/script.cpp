@@ -29915,6 +29915,7 @@ BUILDIN_FUNC(copynpc) {
 		nd->u.scr.xs = xs;
 		nd->u.scr.ys = ys;
 		nd->u.scr.script = dnd->u.scr.script;
+		nd->u.scr.free_script = false;
 		if (flag) {
 			struct script_code* code;
 			CREATE(code, struct script_code, 1);
@@ -29923,6 +29924,7 @@ BUILDIN_FUNC(copynpc) {
 			code->local.vars = NULL;
 			code->local.arrays = NULL;
 			nd->u.scr.script = code;
+			nd->u.scr.free_script = true;
 		}
 		nd->u.scr.label_list = dnd->u.scr.label_list;
 		nd->u.scr.label_list_num = dnd->u.scr.label_list_num;
@@ -29995,6 +29997,10 @@ BUILDIN_FUNC(copynpc) {
 		//return end;
 		script_pushint(st, nd->bl.id);
 		return SCRIPT_CMD_SUCCESS;
+	}
+
+	if (type == NPCTYPE_SCRIPT && flag)	{
+		nd->src_id = nd->bl.id;
 	}
 
 	//-----------------------------------------
