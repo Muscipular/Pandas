@@ -5950,26 +5950,40 @@ int __cdecl callScript(lua_State* L) {
 			push_str(st->stack, c_op::C_STR, aStrdup(lua_tostring(L, i)));
 		}
 		else if (lua_istable(L, i)) {
-			lua_rawgeti(L, i, 1);
-			if (lua_isnumber(L, -1)) {
-				sprintf_s(str, ".@lua_arg_%d", i);
-				int uid = add_str(str);
-				idb_i64put(m2, uid, (int64)lua_tonumber(L, -1));
-				push_val2(st->stack, c_op::C_NAME, uid, &scope);
-			}
-			else if (lua_isstring(L, -1)) {
-				sprintf_s(str, ".@lua_arg_%d$", i);
-				int uid = add_str(str);
-				idb_put(m2, uid, aStrdup(lua_tostring(L, -1)));
-				push_val2(st->stack, c_op::C_NAME, uid, &scope);
+			if (lua_objlen(L, i) > 0) {
+				lua_rawgeti(L, i, 1);
+				if (lua_isnumber(L, -1)) {
+					sprintf_s(str, ".@lua_arg_%d", i);
+					int uid = add_str(str);
+					idb_i64put(m2, uid, (int64)lua_tonumber(L, -1));
+					push_val2(st->stack, c_op::C_NAME, uid, &scope);
+				}
+				else if (lua_isstring(L, -1)) {
+					sprintf_s(str, ".@lua_arg_%d$", i);
+					int uid = add_str(str);
+					idb_put(m2, uid, aStrdup(lua_tostring(L, -1)));
+					push_val2(st->stack, c_op::C_NAME, uid, &scope);
+				}
+				else {
+					sprintf_s(str, ".@lua_arg_%d", i);
+					int uid = add_str(str);
+					idb_i64put(m2, uid, 0);
+					push_val2(st->stack, c_op::C_NAME, uid, &scope);
+				}
+				lua_pop(L, 1);
 			}
 			else {
-				sprintf_s(str, ".@lua_arg_%d", i);
-				int uid = add_str(str);
-				idb_i64put(m2, uid, 0);
-				push_val2(st->stack, c_op::C_NAME, uid, &scope);
+				lua_getfield(L, i, "type");
+				c_op type = (c_op)lua_isnumber(L, -1);
+				lua_pop(L, 1);
+				lua_getfield(L, i, "num");
+				int uid = (int)lua_isnumber(L, -1);
+				lua_pop(L, 1);
+				lua_getfield(L, i, "ref");
+				reg_db* ref = (reg_db*)lua_touserdata(L, -1);
+				lua_pop(L, 1);
+				push_val2(st->stack, type, uid, ref);
 			}
-			lua_pop(L, 1);
 		}
 		else {
 			push_val(st->stack, c_op::C_INT, 0);
@@ -5988,7 +6002,19 @@ int __cdecl callScript(lua_State* L) {
 	else {
 		lua_pushnil(L);
 	}
+	int count = 1;
+	if (data_isreference(retData)) {
+		lua_newtable(L);
+		lua_pushnumber(L, retData->type);
+		lua_setfield(L, -2, "type");
+		lua_pushnumber(L, retData->u.num);
+		lua_setfield(L, -2, "num");
+		lua_pushlightuserdata(L, retData->ref);
+		lua_setfield(L, -2, "ref");
+		count++;
+	}
 	if (ret != SCRIPT_CMD_SUCCESS) {
+		lua_pop(L, count);
 		pop_stack(st, end0 - 1, st->end);
 		st->start = start0;
 		st->end = end0;
@@ -6016,7 +6042,7 @@ int __cdecl callScript(lua_State* L) {
 	st->funcname = funcname0;
 	db_destroy(m);
 	db_destroy(m2);
-	return 1;
+	return count;
 }
 
 static bool init_lua() {
