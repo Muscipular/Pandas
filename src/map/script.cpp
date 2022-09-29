@@ -6025,14 +6025,16 @@ int __cdecl callScript(lua_State* L) {
 	}
 	for (int i = 3; i <= argN; i++) {
 		if (lua_istable(L, i)) {
-			auto d = script_getdata(st, i - 1);
-			if (is_string_variable(reference_getname(d))) {
-				lua_pushstring(L, conv_str(st, d));
+			if (lua_objlen(L, i) > 0) {
+				auto d = script_getdata(st, i - 1);
+				if (is_string_variable(reference_getname(d))) {
+					lua_pushstring(L, conv_str(st, d));
+				}
+				else {
+					lua_pushnumber(L, conv_num64(st, d));
+				}
+				lua_rawseti(L, i, 1);
 			}
-			else {
-				lua_pushnumber(L, conv_num64(st, d));
-			}
-			lua_rawseti(L, i, 1);
 		}
 	}
 	pop_stack(st, end0 - 1, st->end);
