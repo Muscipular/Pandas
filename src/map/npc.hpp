@@ -199,7 +199,6 @@ struct npc_data {
 			struct npc_timerevent_list *timer_event;
 			int label_list_num;
 			struct npc_label_list *label_list;
-			bool free_script;
 		} scr;
 		struct {
 			struct npc_item_list *shop_item;
