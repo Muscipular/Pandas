@@ -5974,10 +5974,13 @@ int __cdecl callScript(lua_State* L) {
 			}
 			else {
 				lua_getfield(L, i, "type");
-				c_op type = (c_op)lua_isnumber(L, -1);
+				c_op type = (c_op)(int)lua_touserdata(L, -1);
 				lua_pop(L, 1);
-				lua_getfield(L, i, "num");
-				int uid = (int)lua_isnumber(L, -1);
+				lua_getfield(L, i, "num1");
+				int64 uid = (int)lua_touserdata(L, -1);
+				lua_pop(L, 1);
+				lua_getfield(L, i, "num2");
+				uid |= ((int64)(int)lua_touserdata(L, -1) << 32);
 				lua_pop(L, 1);
 				lua_getfield(L, i, "ref");
 				reg_db* ref = (reg_db*)lua_touserdata(L, -1);
@@ -5992,24 +5995,29 @@ int __cdecl callScript(lua_State* L) {
 	st->start = end0;
 	st->end = st->stack->sp;
 	int ret = buildin_func[fn].func(st);
-	auto retData = get_val(st, &st->stack->stack_data[st->stack->sp - 1]);
-	if (data_isstring(retData)) {
+	auto retData = &st->stack->stack_data[st->stack->sp - 1];
+	script_data data;
+	memcpy_s(&data, sizeof(script_data), retData, sizeof(script_data));
+	auto retDataActual = get_val(st, retData);
+	if (data_isstring(retDataActual)) {
 		lua_pushstring(L, retData->u.str);
 	}
-	else if (data_isint(retData)) {
+	else if (data_isint(retDataActual)) {
 		lua_pushinteger(L, retData->u.num);
 	}
 	else {
 		lua_pushnil(L);
 	}
 	int count = 1;
-	if (data_isreference(retData)) {
+	if (data_isreference(&data)) {
 		lua_newtable(L);
-		lua_pushnumber(L, retData->type);
+		lua_pushlightuserdata(L, (void*)(int)data.type);
 		lua_setfield(L, -2, "type");
-		lua_pushnumber(L, retData->u.num);
-		lua_setfield(L, -2, "num");
-		lua_pushlightuserdata(L, retData->ref);
+		lua_pushlightuserdata(L, (void*)(data.u.num & 0xffffffff));
+		lua_setfield(L, -2, "num1");
+		lua_pushlightuserdata(L, (void*)((data.u.num >> 32) & 0xffffffff));
+		lua_setfield(L, -2, "num2");
+		lua_pushlightuserdata(L, data.ref);
 		lua_setfield(L, -2, "ref");
 		count++;
 	}
@@ -30390,17 +30398,6 @@ BUILDIN_FUNC(copynpc) {
 		nd->u.scr.xs = xs;
 		nd->u.scr.ys = ys;
 		nd->u.scr.script = dnd->u.scr.script;
-		nd->u.scr.free_script = false;
-		if (flag) {
-			struct script_code* code;
-			CREATE(code, struct script_code, 1);
-			code->script_buf = dnd->u.scr.script->script_buf;
-			code->script_size = dnd->u.scr.script->script_size;
-			code->local.vars = NULL;
-			code->local.arrays = NULL;
-			nd->u.scr.script = code;
-			nd->u.scr.free_script = true;
-		}
 		nd->u.scr.label_list = dnd->u.scr.label_list;
 		nd->u.scr.label_list_num = dnd->u.scr.label_list_num;
 		break;
@@ -33033,6 +33030,9 @@ BUILDIN_FUNC(lua_call_fn) {
 		}
 		lua_pop(lua, lua_gettop(lua));
 		return SCRIPT_CMD_SUCCESS;
+	}
+	else {
+		printf_s("lua error: %s", "");
 	}
 	return SCRIPT_CMD_FAILURE;
 }
