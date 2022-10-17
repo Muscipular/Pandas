@@ -38,6 +38,7 @@
     <ClInclude Include="crashdump.hpp" />
     <ClInclude Include="mmo.hpp" />
     <ClInclude Include="msg_conf.hpp" />
+    <ClInclude Include="mysql_utils.h" />
     <ClInclude Include="nullpo.hpp" />
     <ClInclude Include="performance.hpp" />
     <ClInclude Include="processmutex.hpp" />
@@ -71,6 +72,7 @@
     <ClCompile Include="md5calc.cpp" />
     <ClCompile Include="crashdump.cpp" />
     <ClCompile Include="msg_conf.cpp" />
+    <ClCompile Include="mysql_utils.cpp" />
     <ClCompile Include="nullpo.cpp" />
     <ClCompile Include="performance.cpp" />
     <ClCompile Include="processmutex.cpp" />
@@ -95,6 +97,7 @@
     <ProjectGuid>{F8FD7B1E-8E1C-4CC3-9CD1-2E28F77B6559}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>common</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

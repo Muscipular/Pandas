@@ -5934,6 +5934,27 @@ void script_reload(void) {
 	mapreg_reload();
 }
 
+bool checkSupport(const char* fn) {
+	static std::vector<std::string> blockcmd = {
+	"mes", "next", "close", "close2", "menu", "select", "prompt", "input",
+	"openstorage", "guildopenstorage", "produce", "cooking", "birthpet",
+	"callshop", "sleep", "sleep2", "openmail", "openauction", "progressbar",
+	"buyingstore", "makerune", "opendressroom", "openstorage2"
+	};
+
+	std::vector<std::string>::iterator iter;
+	std::string funcname = std::string(fn);
+	std::transform(
+		funcname.begin(), funcname.end(), funcname.begin(),
+		static_cast<int(*)(int)>(std::tolower)
+	);
+	iter = std::find(blockcmd.begin(), blockcmd.end(), funcname);
+
+	if (iter != blockcmd.end()) {
+		return false;
+	}
+	return true;
+}
 
 int __cdecl callScript(lua_State* L) {
 	int argN = lua_gettop(L);
@@ -5960,6 +5981,9 @@ int __cdecl callScript(lua_State* L) {
 	}
 	if (fn < 0) {
 		return luaL_error(L, "callScript error: buildin_func not find %s", funcname);
+	}
+	if (!checkSupport(funcname)) {
+		return luaL_error(L, "callScript error: buildin_func %s not support", funcname);
 	}
 	auto start0 = st->start;
 	auto end0 = st->end;
@@ -6026,6 +6050,7 @@ int __cdecl callScript(lua_State* L) {
 			push_val(st->stack, c_op::C_INT, 0);
 		}
 	}
+
 	st->start = end0;
 	st->end = st->stack->sp;
 	int ret = buildin_func[fn].func(st);
@@ -10613,6 +10638,120 @@ BUILDIN_FUNC(getequipname)
 	else
 		script_pushconststr(st,"");
 
+	return SCRIPT_CMD_SUCCESS;
+}
+/**
+*setequipedcard <装备位置编号>,<第几个卡槽>,<物品ID>{,<角色ID>};
+
+在已装备的道具中设置相应卡槽中的物品, 不会在窗口提示卸下再穿上装备.
+如果 卡片ID 为 0 则拆下相应卡槽的道具
+注意: 设置卡槽不会对背包中任何道具增加或删除
+
+<装备位置编号> 是指 EQI_* 开头的位置常量
+<第几个卡槽> 从0开始 0~3的数字
+<物品ID> 为你想要插入卡槽的物品, 可以是任何物品
+*/
+BUILDIN_FUNC(setequipedcard)
+{
+	int i, num;
+	TBL_PC* sd;
+	struct item_data* item;
+
+	if (!script_charid2sd(5, sd)) {
+		script_pushint(st, 0);
+		return SCRIPT_CMD_FAILURE;
+	}
+	int slot = script_getnum(st, 3);
+	uint32 itemId = script_getnum(st, 4);
+	if (slot < 0 || slot > 3) {
+		script_pushint(st, 0);
+		return SCRIPT_CMD_FAILURE;
+	}
+	if (itemdb_search(itemId) == nullptr) {
+		script_pushint(st, 0);
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	num = script_getnum(st, 2);
+	if (!equip_index_check(num))
+	{
+		script_pushint(st, 0);
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	// get inventory position of item
+	i = pc_checkequip(sd, equip_bitmask[num]);
+	if (i < 0)
+	{
+		script_pushint(st, 0);
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	item = sd->inventory_data[i];
+	if (item != nullptr) {
+		sd->inventory.u.items_inventory[i].card[slot] = itemId;
+		clif_equiplist(sd);
+		script_pushint(st, 1);
+	}
+	else {
+		script_pushint(st, 0);
+	}
+	return SCRIPT_CMD_SUCCESS;
+}
+
+/**
+*setequipedattr <装备位置编号>,<第几个属性>,<属性ID>,<属性值>{,<角色ID>};
+
+在已装备的道具中设置相应卡槽中的物品, 不会在窗口提示卸下再穿上装备.
+如果 属性ID 为 0 则拆下相应卡槽的道具
+注意: 设置卡槽不会对背包中任何道具增加或删除
+
+<装备位置编号> 是指 EQI_* 开头的位置常量
+<第几个卡槽> 从0开始 0~4的数字
+<属性ID> 为你想要插入卡槽的物品, 可以是任何物品
+*/
+BUILDIN_FUNC(setequipedattr)
+{
+	int i, num;
+	TBL_PC* sd;
+	struct item_data* item;
+
+	if (!script_charid2sd(6, sd)) {
+		script_pushint(st, 0);
+		return SCRIPT_CMD_FAILURE;
+	}
+	int slot = script_getnum(st, 3);
+	char itemId = (char)script_getnum(st, 4);
+	short value = (short)script_getnum(st, 5);
+	if (slot < 0 || slot > 4) {
+		script_pushint(st, 0);
+		return SCRIPT_CMD_FAILURE;
+	}
+	num = script_getnum(st, 2);
+	if (!equip_index_check(num))
+	{
+		script_pushint(st, 0);
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	// get inventory position of item
+	i = pc_checkequip(sd, equip_bitmask[num]);
+	if (i < 0)
+	{
+		script_pushint(st, 0);
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	item = sd->inventory_data[i];
+	if (item != nullptr) {
+		sd->inventory.u.items_inventory[i].option[slot].param = itemId;
+		sd->inventory.u.items_inventory[i].option[slot].value = value;
+		clif_equiplist(sd);
+		script_pushint(st, 1);
+	}
+	else {
+		script_pushint(st, 0);
+	}
 	return SCRIPT_CMD_SUCCESS;
 }
 
@@ -33686,11 +33825,9 @@ BUILDIN_FUNC(lua_call_fn) {
 
 	lua_getglobal(lua, script_getstr(st, 2));
 	lua_pushlightuserdata(lua, st);
-	for (int i = 3; i <= n; i++)
-	{
-		script_data* data = script_getdata(st, i);
-		if (data_isint(data))
-		{
+	for (int i = 3; i <= n; i++) {
+		script_data* data = get_val(st, script_getdata(st, i));
+		if (data_isint(data)) {
 			lua_pushnumber(lua, static_cast<lua_Number>(data->u.num));
 		}
 		else if (data_isstring(data)) {
@@ -33711,11 +33848,33 @@ BUILDIN_FUNC(lua_call_fn) {
 		lua_pop(lua, lua_gettop(lua));
 		return SCRIPT_CMD_SUCCESS;
 	}
-	else {
-		printf_s("lua error: %s", "");
-	}
+	printf_s("lua error: %s\n", lua_tostring(lua, -1));
 	return SCRIPT_CMD_FAILURE;
 }
+
+//BUILDIN_FUNC(lua_run) {
+//	int n = script_lastdata(st);
+//
+//	auto L = lua_newthread(lua);
+//	lua_getglobal(L, script_getstr(st, 2));
+//	lua_pushlightuserdata(L, st);
+//	for (int i = 3; i <= n; i++) {
+//		script_data* data = get_val(st, script_getdata(st, i));
+//		if (data_isint(data)) {
+//			lua_pushnumber(L, static_cast<lua_Number>(data->u.num));
+//		}
+//		else if (data_isstring(data)) {
+//			lua_pushstring(L, data->u.str);
+//		}
+//		else {
+//			lua_pushstring(L, conv_str(st, data));
+//		}
+//	}
+//	lua_resume(L, )
+//
+//
+//	return SCRIPT_CMD_SUCCESS;
+//}
 
 // END LUA
 /* ===========================================================
@@ -34109,6 +34268,8 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(getequipid,"??"),
 	BUILDIN_DEF(getequipuniqueid,"i?"),
 	BUILDIN_DEF(getequipname,"i?"),
+	BUILDIN_DEF(setequipedcard,"iii?"),
+	BUILDIN_DEF(setequipedattr,"iiii?"),
 	BUILDIN_DEF(getbrokenid,"i?"), // [Valaris]
 	BUILDIN_DEF(repair,"i?"), // [Valaris]
 	BUILDIN_DEF(repairall,"?"),
