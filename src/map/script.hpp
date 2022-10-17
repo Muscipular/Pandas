@@ -12,7 +12,9 @@
 #include "../common/db.hpp"
 #include "../common/mmo.hpp"
 #include "../common/timer.hpp"
-
+extern "C" {
+#include "../../3rdparty/lua/lua.h"
+}
 #define NUM_WHISPER_VAR 10
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -531,6 +533,9 @@ struct script_state {
 	char* funcname; // Stores the current running function name
 	unsigned int id;
 	bool asyncSleep;
+	//struct lua_state {
+	//	lua_State* thread;
+	//} lua_state;
 };
 
 #ifdef Pandas_ScriptEngine_MutliStackBackup

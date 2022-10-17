@@ -116,6 +116,9 @@
     <ClInclude Include="configparser.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="mysql_utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cli.cpp">
@@ -206,6 +209,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="processmutex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mysql_utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
