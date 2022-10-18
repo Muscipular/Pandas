@@ -1644,6 +1644,12 @@ int status_heal(struct block_list *bl,int64 hhp,int64 hsp, int64 hap, int flag)
 {
 	struct status_data *status;
 	struct status_change *sc;
+
+	auto sd = BL_CAST(BL_PC, bl);
+	if (sd != NULL && sd->aprecov_rate != 100) {
+		hap = hap * sd->aprecov_rate / 100;
+	}
+
 	int hp = (int)cap_value(hhp,INT_MIN,INT_MAX);
 	int sp = (int)cap_value(hsp,INT_MIN,INT_MAX);
 	int ap = (int)cap_value(hap,INT_MIN,INT_MAX);
@@ -3660,8 +3666,10 @@ int status_calc_pc_sub(struct map_session_data* sd, uint8 opt)
 	sd->aprate = 100;
 	sd->castrate = 100;
 	sd->dsprate = 100;
+	sd->daprate = 100;
 	sd->hprecov_rate = 100;
 	sd->sprecov_rate = 100;
+	sd->aprecov_rate = 100;
 	sd->matk_rate = 100;
 	sd->critical_rate = sd->hit_rate = sd->flee_rate = sd->flee2_rate = 100;
 	sd->def_rate = sd->def2_rate = sd->mdef_rate = sd->mdef2_rate = 100;
@@ -4574,12 +4582,16 @@ int status_calc_pc_sub(struct map_session_data* sd, uint8 opt)
 	// Underflow protections.
 	if(sd->dsprate < 0)
 		sd->dsprate = 0;
+	if(sd->daprate < 0)
+		sd->daprate = 0;
 	if(sd->castrate < 0)
 		sd->castrate = 0;
 	if(sd->hprecov_rate < 0)
 		sd->hprecov_rate = 0;
 	if(sd->sprecov_rate < 0)
 		sd->sprecov_rate = 0;
+	if(sd->aprecov_rate < 0)
+		sd->aprecov_rate = 0;
 
 	// Anti-element and anti-race
 	if((skill=pc_checkskill(sd,CR_TRUST))>0)
