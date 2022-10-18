@@ -14402,6 +14402,7 @@ TIMER_FUNC(skill_castend_pos){
 								add_ap += 1;
 							break;
 					}
+
 					status_heal(&sd->bl, 0, 0, add_ap, 0);
 				}
 			}
@@ -19936,6 +19937,8 @@ struct s_skill_condition skill_get_requirement(map_session_data* sd, uint16 skil
 		req.ap += (status->ap * ap_rate) / 100;
 	else
 		req.ap += (status->max_ap * (-ap_rate)) / 100;
+	if (sd->daprate != 100)
+		req.ap = req.ap * sd->daprate / 100;
 
 	req.zeny = skill->require.zeny[skill_lv-1];
 

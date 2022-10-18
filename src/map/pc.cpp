@@ -4050,6 +4050,10 @@ void pc_bonus(map_session_data *sd,int type,int val)
 			if(sd->state.lr_flag != 2)
 				sd->dsprate+=val;
 			break;
+		case SP_APRATE:
+			if(sd->state.lr_flag != 2)
+				sd->daprate+=val;
+			break;
 		case SP_ATTACKRANGE:
 			switch (sd->state.lr_flag) {
 			case 2:
@@ -4098,6 +4102,10 @@ void pc_bonus(map_session_data *sd,int type,int val)
 		case SP_SP_RECOV_RATE:
 			if(sd->state.lr_flag != 2)
 				sd->sprecov_rate += val;
+			break;
+		case SP_AP_RECOV_RATE:
+			if(sd->state.lr_flag != 2)
+				sd->aprecov_rate += val;
 			break;
 		case SP_CRITICAL_DEF:
 			if(sd->state.lr_flag != 2)
@@ -10811,6 +10819,7 @@ int64 pc_readparam(map_session_data* sd,int64 type)
 		case SP_MAXSPRATE:	     val = sd->sprate; break;
 		case SP_MAXAPRATE:	     val = sd->aprate; break;
 		case SP_SPRATE:		     val = sd->dsprate; break;
+		case SP_APRATE:		     val = sd->daprate; break;
 		case SP_SPEED_RATE:	     val = sd->bonus.speed_rate; break;
 		case SP_SPEED_ADDRATE:   val = sd->bonus.speed_add_rate; break;
 		case SP_ASPD_RATE:
@@ -10822,6 +10831,7 @@ int64 pc_readparam(map_session_data* sd,int64 type)
 			break;
 		case SP_HP_RECOV_RATE:   val = sd->hprecov_rate; break;
 		case SP_SP_RECOV_RATE:   val = sd->sprecov_rate; break;
+		case SP_AP_RECOV_RATE:   val = sd->aprecov_rate; break;
 		case SP_CRITICAL_DEF:    val = sd->bonus.critical_def; break;
 		case SP_NEAR_ATK_DEF:    val = sd->bonus.near_attack_def_rate; break;
 		case SP_LONG_ATK_DEF:    val = sd->bonus.long_attack_def_rate; break;

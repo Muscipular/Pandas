@@ -1009,6 +1009,7 @@
 	export_constant2("bMaxSPrate",SP_MAXSPRATE);
 	export_constant2("bMaxAPrate", SP_MAXAPRATE);
 	export_constant2("bUseSPrate",SP_SPRATE);
+	export_constant2("bUseAPrate",SP_APRATE);
 	export_constant2("bAddEle",SP_ADDELE);
 	export_constant2("bAddRace",SP_ADDRACE);
 	export_constant2("bAddSize",SP_ADDSIZE);
@@ -1020,6 +1021,7 @@
 	export_constant2("bAspdRate",SP_ASPD_RATE);
 	export_constant2("bHPrecovRate",SP_HP_RECOV_RATE);
 	export_constant2("bSPrecovRate",SP_SP_RECOV_RATE);
+	export_constant2("bAPrecovRate",SP_AP_RECOV_RATE);
 	export_constant2("bSpeedRate",SP_SPEED_RATE);
 	export_constant2("bCriticalDef",SP_CRITICAL_DEF);
 	export_constant2("bNearAtkDef",SP_NEAR_ATK_DEF);

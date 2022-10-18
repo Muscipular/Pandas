@@ -773,8 +773,8 @@ public:
 	} bonus;
 	// zeroed vars end here.
 
-	int castrate,hprate,sprate,aprate,dsprate;
-	int hprecov_rate,sprecov_rate;
+	int castrate,hprate,sprate,aprate,dsprate,daprate;
+	int hprecov_rate,sprecov_rate,aprecov_rate;
 	int matk_rate;
 	int critical_rate,hit_rate,flee_rate,flee2_rate,def_rate,def2_rate,mdef_rate,mdef2_rate;
 	int patk_rate,smatk_rate,res_rate,mres_rate,hplus_rate,crate_rate;
