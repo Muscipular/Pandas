@@ -5922,7 +5922,11 @@ bool checkSupport(const char* fn) {
 	return true;
 }
 
-int __cdecl callScript(lua_State* L) {
+#define LUA_FUNC(s) int __cdecl s(lua_State* L)
+#define LUA_REGFUNC(s) luaL_Reg {#s, s}
+#define LUA_REGFUNC2(s,ss) luaL_Reg {s, ss}
+
+LUA_FUNC(callScript) {
 	int argN = lua_gettop(L);
 	if (argN < 2) {
 		return luaL_error(L, "callScript error: 0");
@@ -6080,6 +6084,36 @@ int __cdecl callScript(lua_State* L) {
 	return count;
 }
 
+LUA_FUNC(sleep) {
+	auto st = (script_state*)lua_touserdata(L, 1);
+	//if (st->sleep.tick == 0) {
+	int ticks;
+
+	ticks = luaL_optinteger(L, 2, 0);
+
+	if (ticks <= 0) {
+		ShowError("buildin_sleep: negative or zero amount('%d') of milli seconds is not supported\n", ticks);
+		lua_pushboolean(L, false);
+		return 1;
+	}
+
+	// detach the player
+	script_detach_rid(st);
+
+	// sleep for the target amount of time
+	st->state = RERUNLINE;
+	st->sleep.tick = ticks;
+	int n = lua_yield(L, 0);
+	if (n > 0) {
+		lua_pop(L, n);
+	}
+	lua_pushboolean(L, true);
+	return 1;
+	// Second call(by timer after sleeping time is over)
+	//}
+}
+
+
 static bool init_lua() {
 	if (lua) {
 		return false;
@@ -6091,8 +6125,9 @@ static bool init_lua() {
 	luaL_openlibs(lua);
 	auto ret = true;
 	luaL_Reg lib[] = {
-		{ "callScript", callScript },
-		{ NULL, NULL }
+		LUA_REGFUNC(callScript),
+		LUA_REGFUNC(sleep),
+		LUA_REGFUNC2(NULL, NULL)
 	};
 	luaL_register(lua, "NLG", lib);
 	static char cmd[2048];
@@ -6101,13 +6136,17 @@ static bool init_lua() {
 			break;
 		}
 		if (buildin_func[i].name && strlen(buildin_func[i].name) > 0) {
-			sprintf_s(cmd, "NLG['%s'] = function(st, ...) return NLG.callScript(st, '%s', ...) end;", buildin_func[i].name, buildin_func[i].name);
+			if (strcmp(buildin_func[i].name, "return")) {
+				continue;
+			}
+			sprintf_s(cmd, "if NLG['%s'] == nil then NLG['%s'] = function(st, ...) return NLG.callScript(st, '%s', ...) end end;", buildin_func[i].name, buildin_func[i].name, buildin_func[i].name);
 			ret = luaL_dostring(lua, cmd);
 			if (ret) {
 				return false;
 			}
 		}
 	}
+
 	ret = luaL_dostring(lua, "pcall(function() dofile('npc/init.lua') end);");
 	if (ret) {
 		return false;
@@ -33172,29 +33211,67 @@ BUILDIN_FUNC(lua_call_fn) {
 	return SCRIPT_CMD_FAILURE;
 }
 
-//BUILDIN_FUNC(lua_run) {
-//	int n = script_lastdata(st);
-//
-//	auto L = lua_newthread(lua);
-//	lua_getglobal(L, script_getstr(st, 2));
-//	lua_pushlightuserdata(L, st);
-//	for (int i = 3; i <= n; i++) {
-//		script_data* data = get_val(st, script_getdata(st, i));
-//		if (data_isint(data)) {
-//			lua_pushnumber(L, static_cast<lua_Number>(data->u.num));
-//		}
-//		else if (data_isstring(data)) {
-//			lua_pushstring(L, data->u.str);
-//		}
-//		else {
-//			lua_pushstring(L, conv_str(st, data));
-//		}
-//	}
-//	lua_resume(L, )
-//
-//
-//	return SCRIPT_CMD_SUCCESS;
-//}
+int resume_lua(script_state* st, lua_State* L, int n) {
+	int ret = lua_resume(L, n);
+	if (ret == LUA_YIELD) {
+		st->lua_state.thread = L;
+	}
+	else {
+		if (ret != 0) {
+			printf_s("lua error: %s\n", lua_tostring(lua, -1));
+		}
+		if (L == st->lua_state.thread) {
+			st->lua_state.thread = nullptr;
+		}
+		lua_close(L);
+	}
+	return ret;
+}
+
+BUILDIN_FUNC(lua_run) {
+	int n = script_lastdata(st);
+	int ret = 0;
+	if (st->state != e_script_state::RERUNLINE) {
+		auto L = lua_newthread(lua);
+		lua_getglobal(L, script_getstr(st, 2));
+		lua_pushlightuserdata(L, st);
+		for (int i = 3; i <= n; i++) {
+			script_data* data = get_val(st, script_getdata(st, i));
+			if (data_isint(data)) {
+				lua_pushnumber(L, static_cast<lua_Number>(data->u.num));
+			}
+			else if (data_isstring(data)) {
+				lua_pushstring(L, data->u.str);
+			}
+			else {
+				lua_pushstring(L, conv_str(st, data));
+			}
+		}
+		resume_lua(st, L, n - 2);
+	}
+	else if (st->lua_state.thread != nullptr) {
+		lua_pushlightuserdata(st->lua_state.thread, st);
+		if (strcmp(st->lua_state.lastCmd, "sleep") == 0) {
+			st->state = RUN;
+			st->sleep.tick = 0;
+			st->lua_state.lastCmd = nullptr;
+			resume_lua(st, st->lua_state.thread, 1);
+		}
+		//if (strcmp(st->lua_state.lastCmd, "sleep2") == 0) {
+		//	st->state = RUN;
+		//	st->sleep.tick = 0;
+		//	st->lua_state.lastCmd = nullptr;
+		//	resume_lua(st, st->lua_state.thread, 1);
+		//}
+		else {
+			st->state = RUN;
+			resume_lua(st, st->lua_state.thread, 1);
+		}
+	}
+
+
+	return SCRIPT_CMD_SUCCESS;
+}
 
 // END LUA
 /* ===========================================================
@@ -34483,8 +34560,9 @@ struct script_function buildin_func[] = {
 #endif // Pandas_ScriptCommand_Instance_Add_Warp
 	// PYHELP - SCRIPTCMD - INSERT POINT - <Section 3>
 
-		BUILDIN_DEF(lua_init, ""),
-		BUILDIN_DEF(lua_call_fn, "s*"),
+	BUILDIN_DEF(lua_init, ""),
+	BUILDIN_DEF(lua_call_fn, "s*"),
+	BUILDIN_DEF(lua_run, "s*"),
 #include "../custom/script_def.inc"
 
 	{NULL,NULL,NULL},

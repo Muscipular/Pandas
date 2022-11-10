@@ -1103,6 +1103,7 @@
 	export_constant2("bRestartFullRecover",SP_RESTART_FULL_RECOVER);
 	export_constant2("bNoCastCancel",SP_NO_CASTCANCEL);
 	export_constant2("bNoSizeFix",SP_NO_SIZEFIX);
+	export_constant2("bNoSizeFix2",SP_NO_SIZEFIX2);
 	export_constant2("bNoMagicDamage",SP_NO_MAGIC_DAMAGE);
 	export_constant2("bNoWeaponDamage",SP_NO_WEAPON_DAMAGE);
 	export_constant2("bNoGemStone",SP_NO_GEMSTONE);

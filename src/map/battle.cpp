@@ -2307,8 +2307,15 @@ static void battle_add_weapon_damage(struct map_session_data *sd, int64 *damage,
 #ifdef RENEWAL
 static int battle_calc_sizefix(int64 damage, struct map_session_data *sd, unsigned char t_size, unsigned char weapon_type, short flag)
 {
-	if (sd && !sd->special_state.no_sizefix && !flag) // Size fix only for players
-		damage = damage * (weapon_type == EQI_HAND_L ? sd->left_weapon.atkmods[t_size] : sd->right_weapon.atkmods[t_size]) / 100;
+	if (sd && sd->special_state.no_sizefix < 100 && !flag) // Size fix only for players
+	{
+		auto sizeRate = weapon_type == EQI_HAND_L ? sd->left_weapon.atkmods[t_size] : sd->right_weapon.atkmods[t_size];
+		auto bounsSizeRate = 0;
+		if (sd->special_state.no_sizefix > 0 && sizeRate < 100) {
+			bounsSizeRate = max(100 - sizeRate, 0) * max(0, sd->special_state.no_sizefix) / 100;
+		}
+		damage = damage * (sizeRate + bounsSizeRate) / 100;
+	}
 
 	return (int)cap_value(damage, INT_MIN, INT_MAX);
 }
@@ -2464,8 +2471,14 @@ static int64 battle_calc_base_damage(struct block_list *src, struct status_data 
 			damage += ( (flag&1) ? sd->bonus.arrow_atk : rnd()%sd->bonus.arrow_atk );
 
 		// Size fix only for players
-		if (!(sd->special_state.no_sizefix || (flag&8)))
-			damage = damage * (type == EQI_HAND_L ? sd->left_weapon.atkmods[t_size] : sd->right_weapon.atkmods[t_size]) / 100;
+		if (!(sd->special_state.no_sizefix >= 100 || (flag & 8))) {
+			auto sizeRate = type == EQI_HAND_L ? sd->left_weapon.atkmods[t_size] : sd->right_weapon.atkmods[t_size];
+			auto bounsSizeRate = 0;
+			if (sd->special_state.no_sizefix > 0 && sizeRate < 100) {
+				bounsSizeRate = max(100 - sizeRate, 0) * max(0, sd->special_state.no_sizefix) / 100;
+			}
+			damage = damage * (sizeRate + bounsSizeRate) / 100;
+		}
 	} else if (src->type == BL_ELEM) {
 		struct status_change *ele_sc = status_get_sc(src);
 		int ele_class = status_get_class(src);
