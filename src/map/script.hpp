@@ -542,9 +542,10 @@ struct script_state {
 	char* funcname; // Stores the current running function name
 	unsigned int id;
 	bool asyncSleep;
-	//struct lua_state {
-	//	lua_State* thread;
-	//} lua_state;
+	struct lua_state {
+		lua_State* thread;
+		const char* lastCmd;
+	} lua_state;
 };
 
 #ifdef Pandas_ScriptEngine_MutliStackBackup

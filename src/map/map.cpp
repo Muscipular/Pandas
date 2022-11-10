@@ -4804,8 +4804,9 @@ int map_sql_init(void)
 		exit(EXIT_FAILURE);
 	}
 	ShowStatus("Connect success! (Map Server Connection)\n");
+	setupMysql(qsmysql_handle);
 
-	setupMysql(map_server_ip.c_str(), map_server_id.c_str(), map_server_pw.c_str(), map_server_db.c_str(), map_codepage);
+	//setupMysql(map_server_ip.c_str(), map_server_id.c_str(), map_server_pw.c_str(), map_server_db.c_str(), map_codepage);
 
 #ifndef Pandas_SQL_Configure_Optimization
 	if( !default_codepage.empty() ) {

@@ -7,6 +7,7 @@
 #include <map>
 #include <mutex>
 #include "../../3rdparty/mysql/include/mysql.h"
+#include "./sql.hpp"
 
 enum class SqlResult {
 	OK,
@@ -55,7 +56,8 @@ using FnMysqlResult = TR(__cdecl*)(MYSQL_BIND* binds, MYSQL_FIELD* fields, size_
 
 NvMap FnMysqlResult1(MYSQL_BIND* binds, MYSQL_FIELD* fields, size_t fieldNum);
 
-void setupMysql(const char* server, const char* user, const char* pwd, const char* db, const char* charset);
+void setupMysql(Sql* sql);
+//void setupMysql(const char* server, const char* user, const char* pwd, const char* db, const char* charset);
 
 extern MYSQL* getConnection();
 extern std::mutex _sql_mutex;

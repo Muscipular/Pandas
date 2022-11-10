@@ -1,5 +1,17 @@
 ﻿#include "mysql_utils.h"
+#include "strlib.hpp"
 std::mutex _sql_mutex;
+
+struct Sql
+{
+	StringBuf buf;
+	MYSQL handle;
+	MYSQL_RES* result;
+	MYSQL_ROW row;
+	unsigned long* lengths;
+	int keepalive;
+};
+struct Sql* sql;
 
 NvMap FnMysqlResult1(MYSQL_BIND* binds, MYSQL_FIELD* fields, size_t fieldNum) {
 	NvMap map;
@@ -69,21 +81,19 @@ NvMap FnMysqlResult1(MYSQL_BIND* binds, MYSQL_FIELD* fields, size_t fieldNum) {
 }
 char server[256]; char user[256]; char pwd[256]; char db[256]; char charset[256];
 
-void setupMysql(const char* pserver, const char* puser, const char* ppwd, const char* pdb, const char* pcharset) {
-	memcpy_s(server, sizeof(server), pserver, strlen(pserver));
-	memcpy_s(user, sizeof(user), puser, strlen(puser));
-	memcpy_s(pwd, sizeof(pwd), ppwd, strlen(ppwd));
-	memcpy_s(db, sizeof(db), pdb, strlen(pdb));
-	memcpy_s(charset, sizeof(charset), pcharset, strlen(pcharset));
+void setupMysql(Sql* _sql) {
+	sql = _sql;
 }
 
 MYSQL* getConnection() {
-	static MYSQL* mysql;
+	MYSQL* mysql = &sql->handle;
 
 	if (mysql) {
 		return mysql;
 	}
-	auto mysql1 = mysql_init(NULL);
+	return nullptr;
+	//Sql_Query
+	/*auto mysql1 = mysql_init(NULL);
 	if (!mysql1) {
 		return NULL;
 	}
@@ -103,7 +113,7 @@ MYSQL* getConnection() {
 	}
 	mysql_set_character_set(mysql1, charset);
 	mysql_select_db(mysql1, db);
-	return mysql = mysql1;
+	return mysql = mysql1;*/
 }
 
 SqlResult runSql(const char* sql, std::vector<ArgValue>* args, int64_t* result) {

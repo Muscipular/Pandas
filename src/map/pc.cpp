@@ -4273,7 +4273,11 @@ void pc_bonus(map_session_data *sd,int type,int val)
 			break;
 		case SP_NO_SIZEFIX:
 			if(sd->state.lr_flag != 2)
-				sd->special_state.no_sizefix = 1;
+				sd->special_state.no_sizefix = 100;
+			break;
+		case SP_NO_SIZEFIX2:
+			if(sd->state.lr_flag != 2)
+				sd->special_state.no_sizefix = cap_value(max(val, sd->special_state.no_sizefix), 0, 100);
 			break;
 		case SP_NO_MAGIC_DAMAGE:
 			if(sd->state.lr_flag == 2)
@@ -10860,7 +10864,8 @@ int64 pc_readparam(map_session_data* sd,int64 type)
 		case SP_RESTART_FULL_RECOVER: val = sd->special_state.restart_full_recover?1:0; break;
 		case SP_NO_CASTCANCEL:   val = sd->special_state.no_castcancel?1:0; break;
 		case SP_NO_CASTCANCEL2:  val = sd->special_state.no_castcancel2?1:0; break;
-		case SP_NO_SIZEFIX:      val = sd->special_state.no_sizefix?1:0; break;
+		case SP_NO_SIZEFIX:      val = sd->special_state.no_sizefix; break;
+		case SP_NO_SIZEFIX2:      val = sd->special_state.no_sizefix; break;
 		case SP_NO_MAGIC_DAMAGE: val = sd->special_state.no_magic_damage; break;
 		case SP_NO_WEAPON_DAMAGE:val = sd->special_state.no_weapon_damage; break;
 		case SP_NO_MISC_DAMAGE:  val = sd->special_state.no_misc_damage; break;
