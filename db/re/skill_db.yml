@@ -17662,7 +17662,6 @@ Body:
       Interval: 500
       Target: Enemy
       Flag:
-        NoOverlap: true
         PathCheck: true
   - Id: 737
     Name: NPC_RAYOFGENESIS
@@ -19490,6 +19489,7 @@ Body:
     Range: 11
     Hit: Single
     HitCount: 1
+    Element: Wind
     CopyFlags:
       Skill:
         Reproduce: true
@@ -24183,7 +24183,9 @@ Body:
     Element: Weapon
     SplashArea: 3
     CastCancel: true
-    AfterCastActDelay: 2000
+    AfterCastActDelay: 1000
+    FixedCastTime: 500
+    Cooldown: 350
     Requires:
       SpCost:
         - Level: 1
@@ -27360,7 +27362,6 @@ Body:
       Interval: 500
       Target: Enemy
       Flag:
-        NoOverlap: true
         PathCheck: true
   - Id: 2450
     Name: SO_CLOUD_KILL
@@ -40878,6 +40879,8 @@ Body:
     MaxLevel: 5
     Type: Weapon
     TargetType: Attack
+    DamageFlags:
+      Critical: true
     Range: -9
     Hit: Single
     HitCount: 1
@@ -40995,7 +40998,7 @@ Body:
     TargetType: Ground
     Range: -9
     Hit: Single
-    HitCount: 1
+    HitCount: -3
     Element: Weapon
     DamageFlags:
       Splash: true

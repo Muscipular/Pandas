@@ -1,4 +1,4 @@
-ï»¿// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
+// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
 #include "battle.hpp"
@@ -531,7 +531,11 @@ int64 battle_attr_fix(struct block_list *src, struct block_list *target, int64 d
 #endif
 				}
 				if ( tsc->data[SC_CLIMAX_BLOOM])
+#ifdef RENEWAL
 					ratio += 100;
+#else
+					damage += (int64)(damage * 100 / 100);
+#endif
 				break;
 			case ELE_HOLY:
 				if (tsc->data[SC_ORATIO])
@@ -813,6 +817,15 @@ int battle_calc_cardfix(int attack_type, struct block_list *src, struct block_li
 					if( !nk[NK_IGNOREELEMENT] ) { // Affected by Element modifier bonuses
 						int ele_fix = sd->right_weapon.addele[tstatus->def_ele] + sd->right_weapon.addele[ELE_ALL]
 										+ (sd->state.arrow_atk ? sd->indexed_bonus.arrow_addele[tstatus->def_ele] + sd->indexed_bonus.arrow_addele[ELE_ALL] : 0);
+						//Spirit Charm Bonus as this isn't related to a SC [munkrej]
+						if(sd->spiritcharm_type != CHARM_TYPE_NONE && sd->spiritcharm >= MAX_SPIRITCHARM) {
+							if ((tstatus->def_ele == ELE_WATER && sd->spiritcharm_type == ELE_WIND) ||
+								(tstatus->def_ele == ELE_EARTH && sd->spiritcharm_type == ELE_FIRE) ||
+								(tstatus->def_ele == ELE_FIRE && sd->spiritcharm_type == ELE_WATER) ||
+								(tstatus->def_ele == ELE_WIND && sd->spiritcharm_type == ELE_EARTH)
+								)
+								ele_fix += 30;
+						}
 						for (const auto &it : sd->right_weapon.addele2) {
 							if (it.ele != ELE_ALL && it.ele != tstatus->def_ele)
 								continue;
@@ -839,6 +852,15 @@ int battle_calc_cardfix(int attack_type, struct block_list *src, struct block_li
 						if( !nk[NK_IGNOREELEMENT] ) { // Affected by Element modifier bonuses
 							int ele_fix_lh = sd->left_weapon.addele[tstatus->def_ele] + sd->left_weapon.addele[ELE_ALL]
 												+ (sd->state.arrow_atk ? sd->indexed_bonus.arrow_addele[tstatus->def_ele] + sd->indexed_bonus.arrow_addele[ELE_ALL] : 0);
+							//Spirit Charm Bonus as this isn't related to a SC [munkrej]
+							if(sd->spiritcharm_type != CHARM_TYPE_NONE && sd->spiritcharm >= MAX_SPIRITCHARM) {
+								if ((tstatus->def_ele == ELE_WATER && sd->spiritcharm_type == ELE_WIND) ||
+									(tstatus->def_ele == ELE_EARTH && sd->spiritcharm_type == ELE_FIRE) ||
+									(tstatus->def_ele == ELE_FIRE && sd->spiritcharm_type == ELE_WATER) ||
+									(tstatus->def_ele == ELE_WIND && sd->spiritcharm_type == ELE_EARTH)
+									)
+									ele_fix_lh += 30;
+							}
 							for (const auto &it : sd->left_weapon.addele2) {
 								if (it.ele != ELE_ALL && it.ele != tstatus->def_ele)
 									continue;
@@ -880,6 +902,15 @@ int battle_calc_cardfix(int attack_type, struct block_list *src, struct block_li
 								((it.flag)&flag)&BF_SKILLMASK))
 								continue;
 							ele_fix += it.rate;
+						}
+						//Spirit Charm Bonus as this isn't related to a SC [munkrej]
+						if(sd->spiritcharm_type != CHARM_TYPE_NONE && sd->spiritcharm >= MAX_SPIRITCHARM) {
+							if ((tstatus->def_ele == ELE_WATER && sd->spiritcharm_type == ELE_WIND) ||
+								(tstatus->def_ele == ELE_EARTH && sd->spiritcharm_type == ELE_FIRE) ||
+								(tstatus->def_ele == ELE_FIRE && sd->spiritcharm_type == ELE_WATER) ||
+								(tstatus->def_ele == ELE_WIND && sd->spiritcharm_type == ELE_EARTH)
+								)
+								ele_fix += 30;
 						}
 						for (const auto &it : sd->left_weapon.addele2) {
 							if (it.ele != ELE_ALL && it.ele != tstatus->def_ele)
@@ -1134,14 +1165,12 @@ bool battle_status_block_damage(struct block_list *src, struct block_list *targe
 	int flag = d->flag;
 
 	// SC Types that must be first because they may or may not block damage
-	if ((sce = sc->data[SC_KYRIE]) && damage > 0 && (flag & BF_WEAPON)) {
+	if ((sce = sc->data[SC_KYRIE]) && damage > 0 && ((flag & BF_WEAPON) || skill_id == TF_THROWSTONE)) {
 		sce->val2 -= static_cast<int>(cap_value(damage, INT_MIN, INT_MAX));
-		if (skill_id == TF_THROWSTONE) {
-			if (sce->val2 >= 0)
-				damage = 0;
-			else
-				damage = -sce->val2;
-		}
+		if (sce->val2 >= 0)
+			damage = 0;
+		else
+			damage = -sce->val2;
 		if ((--sce->val3) <= 0 || (sce->val2 <= 0) || skill_id == AL_HOLYLIGHT)
 			status_change_end(target, SC_KYRIE);
 	}
@@ -1455,14 +1484,18 @@ int64 battle_calc_damage(struct block_list *src,struct block_list *bl,struct Dam
 		&& skill_get_casttype(skill_id) == CAST_GROUND )
 		return 0;
 
+	sc = status_get_sc(bl); //check target status
+
 	if (bl->type == BL_PC) {
 		sd=(struct map_session_data *)bl;
 		//Special no damage states
 		if(flag&BF_WEAPON && sd->special_state.no_weapon_damage)
 			damage -= damage * sd->special_state.no_weapon_damage / 100;
 
-		if(flag&BF_MAGIC && sd->special_state.no_magic_damage)
-			damage -= damage * sd->special_state.no_magic_damage / 100;
+		if(flag&BF_MAGIC && sd->special_state.no_magic_damage) {
+			if (sc && !sc->data[SC_DEADLY_DEFEASANCE]) //put it here because in in pc_calc_sub with CalcFlag All it'll break setunitdata of monsters, with CalcFlag Base it'll break other sc's bonuses [datawulf]
+				damage -= damage * sd->special_state.no_magic_damage / 100;
+		}
 
 		if(flag&BF_MISC && sd->special_state.no_misc_damage)
 			damage -= damage * sd->special_state.no_misc_damage / 100;
@@ -1470,8 +1503,6 @@ int64 battle_calc_damage(struct block_list *src,struct block_list *bl,struct Dam
 		if(!damage)
 			return 0;
 	}
-
-	sc = status_get_sc(bl); //check target status
 
 	if( sc && sc->data[SC_INVINCIBLE] && !sc->data[SC_INVINCIBLEOFF] )
 		return 1;
@@ -2599,6 +2630,7 @@ static int battle_range_type(struct block_list *src, struct block_list *target, 
 		case ABC_UNLUCKY_RUSH: // 7 cell cast range.
 		case MH_THE_ONE_FIGHTER_RISES: // 7 cell cast range.
 		case SS_SHIMIRU: // 11 cell cast range.
+		//case ABC_DEFT_STAB: // 2 cell cast range???
 		case NPC_MAXPAIN_ATK:
 			return BF_SHORT;
 		case CD_PETITIO: { // Skill range is 2 but damage is melee with books and ranged with mace.
@@ -2977,20 +3009,25 @@ static bool is_attack_critical(struct Damage* wd, struct block_list *src, struct
 			case SKE_NOON_BLAST:
 				if (!(sc && (sc->data[SC_NOON_SUN] || sc->data[SC_SKY_ENCHANT])))
 					return false;
+				break;
 			case SKE_SUNSET_BLAST:
 				if (!(sc && (sc->data[SC_SUNSET_SUN] || sc->data[SC_SKY_ENCHANT])))
 					return false;
+				break;
 			case NW_ONLY_ONE_BULLET:
 			case NW_SPIRAL_SHOOTING:
 				if (!(sd && sd->weapontype1 == W_RIFLE))
 					return false;
+				break;
 			case NW_MAGAZINE_FOR_ONE:
 				if (!(sd && sd->weapontype1 == W_REVOLVER))
 					return false;
+				break;
 			case SH_CHUL_HO_SONIC_CLAW:
 			case SH_HOGOGONG_STRIKE:
 				if (!(sd && pc_checkskill(sd, SH_COMMUNE_WITH_CHUL_HO)) || !(sc && sc->data[SC_TEMPORARY_COMMUNION]))
 					return false;
+				break;
 		}
 		if(tsd && tsd->bonus.critical_def)
 			cri = cri * ( 100 - tsd->bonus.critical_def ) / 100;
@@ -3371,8 +3408,6 @@ int battle_get_weapon_element(struct Damage* wd, struct block_list *src, struct 
 			element = sstatus->lhw.ele;
 		if(is_skill_using_arrow(src, skill_id) && sd && sd->bonus.arrow_ele && weapon_position == EQI_HAND_R)
 			element = sd->bonus.arrow_ele;
-		if(sd && sd->spiritcharm_type != CHARM_TYPE_NONE && sd->spiritcharm >= MAX_SPIRITCHARM)
-			element = sd->spiritcharm_type; // Summoning 10 spiritcharm will endow your weapon
 		// on official endows override all other elements [helvetica]
 		if(sc && sc->data[SC_ENCHANTARMS]) // Check for endows
 			element = sc->data[SC_ENCHANTARMS]->val1;
@@ -4877,16 +4912,12 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			if (sc && sc->data[SC_SPEAR_SCAR])
 				skillratio += 400;
 			RE_LVL_DMOD(100);
-			if (sc && sc->data[SC_SPEAR_SCAR])// Whats the official increase? [Rytech]
-				skillratio += skillratio * 50 / 100;
 			break;
 		case LG_BANISHINGPOINT:
 			skillratio += -100 + (100 * skill_lv) + ((sd) ? pc_checkskill(sd,SM_BASH) * 70 : 0);
 			if (sc && sc->data[SC_SPEAR_SCAR])
 				skillratio += 800;
 			RE_LVL_DMOD(100);
-			if (sc && sc->data[SC_SPEAR_SCAR])// Whats the official increase? [Rytech]
-				skillratio += skillratio * 50 / 100;
 			break;
 		case LG_SHIELDPRESS:
 			skillratio += -100 + 200 * skill_lv + sstatus->str;
@@ -4899,8 +4930,6 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 					skillratio += sd->inventory_data[index]->weight / 10;
 			}
 			RE_LVL_DMOD(100);
-			if (sc && sc->data[SC_SHIELD_POWER])// Whats the official increase? [Rytech]
-				skillratio += skillratio * 50 / 100;
 			break;
 		case LG_PINPOINTATTACK:
 			skillratio += -100 + 100 * skill_lv + 5 * status_get_agi(src);
@@ -4930,8 +4959,6 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			if (sc && sc->data[SC_SHIELD_POWER]) 
 				skillratio += skill_lv * 37 * pc_checkskill(sd,IG_SHIELD_MASTERY);
 			RE_LVL_DMOD(100);
-			if (sc && sc->data[SC_SHIELD_POWER])// Whats the official increase? [Rytech]
-				skillratio += skillratio * 50 / 100;
 			break;
 		case LG_HESPERUSLIT:
 			if (sc && sc->data[SC_INSPIRATION])
@@ -5249,7 +5276,7 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			RE_LVL_DMOD(100);
 			break;
 		case RL_R_TRIP:
-			skillratio += -100 + 350 * skill_lv;
+			skillratio += -100 + 500 + 200 * skill_lv;
 			RE_LVL_DMOD(100);
 			break;
 		case RL_R_TRIP_PLUSATK:
@@ -5296,7 +5323,7 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			break;
 		case SU_LUNATICCARROTBEAT:
 		case SU_LUNATICCARROTBEAT2:
-			skillratio += 100 + 100 * skill_lv; // !TODO: What's the STR bonus?
+			skillratio += 100 + 100 * skill_lv;
 			RE_LVL_DMOD(100);
 			if (sd && pc_checkskill(sd, SU_SPIRITOFLIFE))
 				skillratio += skillratio * status_get_hp(src) / status_get_max_hp(src);
@@ -7350,8 +7377,6 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 
 	if (s_ele == ELE_WEAPON) { // pl=-1 : the skill takes the weapon's element
 		s_ele = sstatus->rhw.ele;
-		if(sd && sd->spiritcharm_type != CHARM_TYPE_NONE && sd->spiritcharm >= MAX_SPIRITCHARM)
-			s_ele = sd->spiritcharm_type; // Summoning 10 spiritcharm will endow your weapon
 	} else if (s_ele == ELE_ENDOWED) //Use status element
 		s_ele = status_get_attack_sc_element(src,status_get_sc(src));
 	else if (s_ele == ELE_RANDOM) //Use random element
@@ -7569,7 +7594,7 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 #ifndef Pandas_LGTM_Optimization
 				ad.damage = sstatus->rhw.atk * 20 * skill_lv;
 #else
-				// ä¹˜æ³•è®¡ç®—æ—¶ä½¿ç”¨è¾ƒå¤§çš„æ•°å€¼ç±»å‹æ¥é¿å…è®¡ç®—ç»“æœæº¢å‡º: https://lgtm.com/rules/2157860313/
+				// ³Ë·¨¼ÆËãÊ±Ê¹ÓÃ½Ï´óµÄÊıÖµÀàĞÍÀ´±ÜÃâ¼ÆËã½á¹ûÒç³ö: https://lgtm.com/rules/2157860313/
 				ad.damage = (int64)sstatus->rhw.atk * 20 * skill_lv;
 #endif // Pandas_LGTM_Optimization
 				break;
@@ -7739,7 +7764,7 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 					case SOA_EXORCISM_OF_MALICIOUS_SOUL:
 						skillratio += -100 + 150 * skill_lv + 5 * sstatus->spl;
 						if (sd)
-							skillratio += pc_checkskill(sd, SOA_SOUL_MASTERY) * 2 * sd->soulball;
+							skillratio += pc_checkskill(sd, SOA_SOUL_MASTERY) * 2 * sd->soulball_old;
 						if (sc && sc->data[SC_TOTEM_OF_TUTELARY])
 							skillratio += skillratio * 50 / 100;
 						if (tsc && tsc->data[SC_SOULCURSE])
@@ -8168,7 +8193,7 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 						skillratio += -100 + 5 * skill_lv;
 						break;
 					case SP_SWHOO:
-						skillratio += 1000 + 200 * skill_lv;
+						skillratio += -100 + 1500 + 200 * skill_lv;
 						RE_LVL_DMOD(100);
 						break;
 					case NPC_STORMGUST2:
@@ -9083,16 +9108,16 @@ struct Damage battle_calc_attack(int attack_type,struct block_list *bl,struct bl
 	if (skill_id && bl && map_getmapflag(bl->m, MF_MAXDMG_SKILL)) {
 		int val = map_getmapflag_param(bl->m, MF_MAXDMG_SKILL, 0);
 		if (val > 0 && d.damage + d.damage2 > val) {
-			int64 overval = (d.damage + d.damage2) - val;	// è¶…äº†å¤šå°‘
+			int64 overval = (d.damage + d.damage2) - val;	// ³¬ÁË¶àÉÙ
 			if (d.damage2 >= overval) {
-				// å¦‚æœ damage2 è¶³å¤Ÿè¢«æ‰£å‡, é‚£ä¹ˆä¼˜å…ˆæ‰£å‡ damage2
+				// Èç¹û damage2 ×ã¹»±»¿Û¼õ, ÄÇÃ´ÓÅÏÈ¿Û¼õ damage2
 				d.damage2 -= overval;
 			}
 			else {
-				// å¦‚æœ damage2 ä¸è¶³ä»¥è¢«æ‰£å‡, é‚£ä¹ˆå…ˆæŠŠ damage2 è°ƒä¸º 0
-				overval -= d.damage2;	// æ›´æ–°è¶…å‡ºçš„ä¼¤å®³æ•°
+				// Èç¹û damage2 ²»×ãÒÔ±»¿Û¼õ, ÄÇÃ´ÏÈ°Ñ damage2 µ÷Îª 0
+				overval -= d.damage2;	// ¸üĞÂ³¬³öµÄÉËº¦Êı
 				d.damage2 = 0;
-				d.damage = cap_value(d.damage - overval, 0, val);	// æœ€åå†æ‰£å‡ damage ä¸­çš„ä¼¤å®³
+				d.damage = cap_value(d.damage - overval, 0, val);	// ×îºóÔÙ¿Û¼õ damage ÖĞµÄÉËº¦
 			}
 		}
 	}
@@ -9102,16 +9127,16 @@ struct Damage battle_calc_attack(int attack_type,struct block_list *bl,struct bl
 	if (!skill_id && bl && map_getmapflag(bl->m, MF_MAXDMG_NORMAL)) {
 		int val = map_getmapflag_param(bl->m, MF_MAXDMG_NORMAL, 0);
 		if (val > 0 && d.damage + d.damage2 > val) {
-			int64 overval = (d.damage + d.damage2) - val;	// è¶…äº†å¤šå°‘
+			int64 overval = (d.damage + d.damage2) - val;	// ³¬ÁË¶àÉÙ
 			if (d.damage2 >= overval) {
-				// å¦‚æœ damage2 è¶³å¤Ÿè¢«æ‰£å‡, é‚£ä¹ˆä¼˜å…ˆæ‰£å‡ damage2
+				// Èç¹û damage2 ×ã¹»±»¿Û¼õ, ÄÇÃ´ÓÅÏÈ¿Û¼õ damage2
 				d.damage2 -= overval;
 			}
 			else {
-				// å¦‚æœ damage2 ä¸è¶³ä»¥è¢«æ‰£å‡, é‚£ä¹ˆå…ˆæŠŠ damage2 è°ƒä¸º 0
-				overval -= d.damage2;	// æ›´æ–°è¶…å‡ºçš„ä¼¤å®³æ•°
+				// Èç¹û damage2 ²»×ãÒÔ±»¿Û¼õ, ÄÇÃ´ÏÈ°Ñ damage2 µ÷Îª 0
+				overval -= d.damage2;	// ¸üĞÂ³¬³öµÄÉËº¦Êı
 				d.damage2 = 0;
-				d.damage = cap_value(d.damage - overval, 0, val);	// æœ€åå†æ‰£å‡ damage ä¸­çš„ä¼¤å®³
+				d.damage = cap_value(d.damage - overval, 0, val);	// ×îºóÔÙ¿Û¼õ damage ÖĞµÄÉËº¦
 			}
 		}
 	}
@@ -9806,10 +9831,10 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 
 #ifdef Pandas_NpcExpress_PCHARMED
 	if (src && target && damage > 0) {
-		// è´Ÿè´£æ‰§è¡Œäº‹ä»¶çš„ç©å®¶å¯¹è±¡ (äº‹ä»¶æ‰§è¡Œè€…)
+		// ¸ºÔğÖ´ĞĞÊÂ¼şµÄÍæ¼Ò¶ÔÏó (ÊÂ¼şÖ´ĞĞÕß)
 		struct map_session_data* esd = nullptr;
 
-		// è‹¥å—ä¼¤å®³è€…ä¸æ˜¯ç©å®¶å•ä½, é‚£ä¹ˆè¯•å›¾è·å–å—ä¼¤å®³è€…çš„ä¸»äºº
+		// ÈôÊÜÉËº¦Õß²»ÊÇÍæ¼Òµ¥Î», ÄÇÃ´ÊÔÍ¼»ñÈ¡ÊÜÉËº¦ÕßµÄÖ÷ÈË
 		if (target->type != BL_PC) {
 			struct block_list* mbl = nullptr;
 			mbl = battle_get_master(target);
@@ -9818,13 +9843,13 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 			}
 		}
 		
-		// è‹¥è´Ÿè´£æ‰§è¡Œäº‹ä»¶çš„ç©å®¶å¯¹è±¡ä¾ç„¶æ²¡è¢«æŒ‡å®š
-		// ä¸”å—ä¼¤å®³è€…æ˜¯ä¸€ä¸ªç©å®¶å•ä½, é‚£ä¹ˆå°†å—ä¼¤å®³è€…ç›´æ¥æŒ‡å®šæˆè´Ÿè´£æ‰§è¡Œäº‹ä»¶çš„ç©å®¶
+		// Èô¸ºÔğÖ´ĞĞÊÂ¼şµÄÍæ¼Ò¶ÔÏóÒÀÈ»Ã»±»Ö¸¶¨
+		// ÇÒÊÜÉËº¦ÕßÊÇÒ»¸öÍæ¼Òµ¥Î», ÄÇÃ´½«ÊÜÉËº¦ÕßÖ±½ÓÖ¸¶¨³É¸ºÔğÖ´ĞĞÊÂ¼şµÄÍæ¼Ò
 		if (!esd && target->type == BL_PC) {
 			esd = (TBL_PC*)target;
 		}
 
-		// è‹¥åˆ°è¿™é‡Œè¿˜æ²¡æœ‰ä¸€ä¸ªåˆé€‚çš„äº‹ä»¶æ‰§è¡Œè€…åˆ™ä¸éœ€è¦è§¦å‘äº‹ä»¶
+		// Èôµ½ÕâÀï»¹Ã»ÓĞÒ»¸öºÏÊÊµÄÊÂ¼şÖ´ĞĞÕßÔò²»ĞèÒª´¥·¢ÊÂ¼ş
 		if (esd) {
 			pc_setreg(esd, add_str("@harmed_target_type"), target->type);
 			pc_setreg(esd, add_str("@harmed_target_gid"), target->id);
@@ -9848,10 +9873,10 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 
 #ifdef Pandas_NpcExpress_PCATTACK
 	if (src && target && damage > 0) {
-		// è´Ÿè´£æ‰§è¡Œäº‹ä»¶çš„ç©å®¶å¯¹è±¡ (äº‹ä»¶æ‰§è¡Œè€…)
+		// ¸ºÔğÖ´ĞĞÊÂ¼şµÄÍæ¼Ò¶ÔÏó (ÊÂ¼şÖ´ĞĞÕß)
 		struct map_session_data* esd = nullptr;
 
-		// è‹¥æ”»å‡»è€…ä¸æ˜¯ç©å®¶å•ä½, é‚£ä¹ˆè¯•å›¾è·å–æ”»å‡»è€…çš„ä¸»äºº
+		// Èô¹¥»÷Õß²»ÊÇÍæ¼Òµ¥Î», ÄÇÃ´ÊÔÍ¼»ñÈ¡¹¥»÷ÕßµÄÖ÷ÈË
 		if (src->type != BL_PC) {
 			struct block_list* mbl = nullptr;
 			mbl = battle_get_master(src);
@@ -9860,14 +9885,14 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 			}
 		}
 
-		// è‹¥è´Ÿè´£æ‰§è¡Œäº‹ä»¶çš„ç©å®¶å¯¹è±¡ä¾ç„¶æ²¡è¢«æŒ‡å®š
-		// ä¸”æ”»å‡»è€…æ˜¯ä¸€ä¸ªç©å®¶å•ä½, é‚£ä¹ˆå°†æ”»å‡»è€…ç›´æ¥æŒ‡å®šæˆè´Ÿè´£æ‰§è¡Œäº‹ä»¶çš„ç©å®¶
+		// Èô¸ºÔğÖ´ĞĞÊÂ¼şµÄÍæ¼Ò¶ÔÏóÒÀÈ»Ã»±»Ö¸¶¨
+		// ÇÒ¹¥»÷ÕßÊÇÒ»¸öÍæ¼Òµ¥Î», ÄÇÃ´½«¹¥»÷ÕßÖ±½ÓÖ¸¶¨³É¸ºÔğÖ´ĞĞÊÂ¼şµÄÍæ¼Ò
 		if (!esd && src->type == BL_PC) {
 			esd = (TBL_PC*)src;
 		}
 
 
-		// è‹¥åˆ°è¿™é‡Œè¿˜æ²¡æœ‰ä¸€ä¸ªåˆé€‚çš„äº‹ä»¶æ‰§è¡Œè€…åˆ™ä¸éœ€è¦è§¦å‘äº‹ä»¶
+		// Èôµ½ÕâÀï»¹Ã»ÓĞÒ»¸öºÏÊÊµÄÊÂ¼şÖ´ĞĞÕßÔò²»ĞèÒª´¥·¢ÊÂ¼ş
 		if (esd) {
 			pc_setreg(esd, add_str("@attack_src_type"), src->type);
 			pc_setreg(esd, add_str("@attack_src_gid"), src->id);
@@ -11134,7 +11159,7 @@ static const struct _battle_data {
 	{ "fame_taekwon_mission",               &battle_config.fame_taekwon_mission,            1,      0,      INT_MAX,        },
 	{ "fame_refine_lv1",                    &battle_config.fame_refine_lv1,                 1,      0,      INT_MAX,        },
 #ifndef Pandas_BattleConfig_Verification
-	// å‡ºç°äº†é‡å¤å®šä¹‰, è¿™é‡Œå…ˆç®€å•æ³¨é‡Šæ‰, å¦‚æœ rAthena å®˜æ–¹å¾ˆä¹…ä¸æ”¹çš„è¯, æ‰¾ä¸ªæ—¶é—´å†æäº¤ä¸ª PullRequest ä¿®æ­£ä¸‹ [Solaä¸¶å°å…‹]
+	// ³öÏÖÁËÖØ¸´¶¨Òå, ÕâÀïÏÈ¼òµ¥×¢ÊÍµô, Èç¹û rAthena ¹Ù·½ºÜ¾Ã²»¸ÄµÄ»°, ÕÒ¸öÊ±¼äÔÙÌá½»¸ö PullRequest ĞŞÕıÏÂ [SolaØ¼Ğ¡¿Ë]
 	{ "fame_refine_lv1",                    &battle_config.fame_refine_lv1,                 1,      0,      INT_MAX,        },
 #endif // Pandas_BattleConfig_Verification
 	{ "fame_refine_lv2",                    &battle_config.fame_refine_lv2,                 25,     0,      INT_MAX,        },
@@ -11434,25 +11459,25 @@ void battle_adjust_conf()
 	battle_config.max_cart_weight *= 10;
 
 #ifdef Pandas_BattleConfig_MaxAspdForPVP
-	// æ ¹æ® max_aspd_for_pvp çº¦æŸç©å®¶çš„æœ€å¤§æ”»é€Ÿ [Solaä¸¶å°å…‹]
-	// è¿™é‡Œå¯¹é…ç½®çš„ ASPD æ•°å€¼ (ä¾‹å¦‚: 193, 197) è½¬æ¢æˆç¨‹åºåˆ¤æ–­ç”¨çš„æ”»å‡»é—´éš”æ—¶é—´
+	// ¸ù¾İ max_aspd_for_pvp Ô¼ÊøÍæ¼ÒµÄ×î´ó¹¥ËÙ [SolaØ¼Ğ¡¿Ë]
+	// ÕâÀï¶ÔÅäÖÃµÄ ASPD ÊıÖµ (ÀıÈç: 193, 197) ×ª»»³É³ÌĞòÅĞ¶ÏÓÃµÄ¹¥»÷¼ä¸ôÊ±¼ä
 	// 
-	// æ”»å‡»é—´éš” = 2000 - æ”»é€Ÿçš„ Aspd æ•°å€¼ * 10
-	// æ”»å‡»é—´éš” = 2000 - 193 * 10
-	// æ”»å‡»é—´éš” = 2000 - 1930
-	// æ”»å‡»é—´éš” = 70 æ¯«ç§’
+	// ¹¥»÷¼ä¸ô = 2000 - ¹¥ËÙµÄ Aspd ÊıÖµ * 10
+	// ¹¥»÷¼ä¸ô = 2000 - 193 * 10
+	// ¹¥»÷¼ä¸ô = 2000 - 1930
+	// ¹¥»÷¼ä¸ô = 70 ºÁÃë
 	if (battle_config.max_aspd_for_pvp > 0)
 		battle_config.max_aspd_for_pvp = 2000 - battle_config.max_aspd_for_pvp * 10;
 #endif // Pandas_BattleConfig_MaxAspdForPVP
 
 #ifdef Pandas_BattleConfig_MaxAspdForGVG
-	// æ ¹æ® max_aspd_for_gvg çº¦æŸç©å®¶çš„æœ€å¤§æ”»é€Ÿ [Solaä¸¶å°å…‹]
-	// è¿™é‡Œå¯¹é…ç½®çš„ ASPD æ•°å€¼ (ä¾‹å¦‚: 193, 197) è½¬æ¢æˆç¨‹åºåˆ¤æ–­ç”¨çš„æ”»å‡»é—´éš”æ—¶é—´
+	// ¸ù¾İ max_aspd_for_gvg Ô¼ÊøÍæ¼ÒµÄ×î´ó¹¥ËÙ [SolaØ¼Ğ¡¿Ë]
+	// ÕâÀï¶ÔÅäÖÃµÄ ASPD ÊıÖµ (ÀıÈç: 193, 197) ×ª»»³É³ÌĞòÅĞ¶ÏÓÃµÄ¹¥»÷¼ä¸ôÊ±¼ä
 	// 
-	// æ”»å‡»é—´éš” = 2000 - æ”»é€Ÿçš„ Aspd æ•°å€¼ * 10
-	// æ”»å‡»é—´éš” = 2000 - 193 * 10
-	// æ”»å‡»é—´éš” = 2000 - 1930
-	// æ”»å‡»é—´éš” = 70 æ¯«ç§’
+	// ¹¥»÷¼ä¸ô = 2000 - ¹¥ËÙµÄ Aspd ÊıÖµ * 10
+	// ¹¥»÷¼ä¸ô = 2000 - 193 * 10
+	// ¹¥»÷¼ä¸ô = 2000 - 1930
+	// ¹¥»÷¼ä¸ô = 70 ºÁÃë
 	if (battle_config.max_aspd_for_gvg > 0)
 		battle_config.max_aspd_for_gvg = 2000 - battle_config.max_aspd_for_gvg * 10;
 #endif // Pandas_BattleConfig_MaxAspdForGVG
@@ -11706,8 +11731,8 @@ int battle_config_read(const char* cfgName)
 		} bc_whitelist[] = {
 			{ "traps_setting" },
 			{ "item_enabled_npc" },
-			{ "guild_skill_relog_type" },		// ä¸åŒå·¥ä½œæ¨¡å¼ä¸‹æ‹¥æœ‰ä¸åŒçš„é»˜è®¤å€¼, å› æ­¤ rAthena åœ¨ conf ä¸­é»˜è®¤æ³¨é‡Šäº†æ­¤é€‰é¡¹
-			{ "pet_hungry_friendly_decrease" }	// rAthena å¯¹æ˜¯å¦å¼ƒç”¨æ­¤é€‰é¡¹ä¸æ˜ç¡®, å…ˆå¿½ç•¥æ£€æµ‹
+			{ "guild_skill_relog_type" },		// ²»Í¬¹¤×÷Ä£Ê½ÏÂÓµÓĞ²»Í¬µÄÄ¬ÈÏÖµ, Òò´Ë rAthena ÔÚ conf ÖĞÄ¬ÈÏ×¢ÊÍÁË´ËÑ¡Ïî
+			{ "pet_hungry_friendly_decrease" }	// rAthena ¶ÔÊÇ·ñÆúÓÃ´ËÑ¡Ïî²»Ã÷È·, ÏÈºöÂÔ¼ì²â
 		};
 
 		for (i = 0; i < ARRAYLENGTH(battle_data); i++) {

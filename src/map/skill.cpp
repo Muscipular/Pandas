@@ -1,4 +1,4 @@
-ï»¿// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
+// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
 #include "skill.hpp"
@@ -796,7 +796,7 @@ int skill_calc_heal(struct block_list *src, struct block_list *target, uint16 sk
 		hp += hp * status_get_hplus(src) / 100;
 
 #ifdef Pandas_MapFlag_MaxHeal
-	// é™åˆ¶æ²»æ„ˆæŠ€èƒ½å•æ¬¡æ–½æ³•çš„æœ€å¤§æ²»æ„ˆé‡
+	// ÏÞÖÆÖÎÓú¼¼ÄÜµ¥´ÎÊ©·¨µÄ×î´óÖÎÓúÁ¿
 	if (src && map_getmapflag(src->m, MF_MAXHEAL)) {
 		int result = (heal) ? max(1, hp) : hp;
 		int val = map_getmapflag_param(src->m, MF_MAXHEAL, 0);
@@ -808,7 +808,7 @@ int skill_calc_heal(struct block_list *src, struct block_list *target, uint16 sk
 #else
 
 #ifdef Pandas_MapFlag_MaxHeal
-	// é™åˆ¶æ²»æ„ˆæŠ€èƒ½å•æ¬¡æ–½æ³•çš„æœ€å¤§æ²»æ„ˆé‡
+	// ÏÞÖÆÖÎÓú¼¼ÄÜµ¥´ÎÊ©·¨µÄ×î´óÖÎÓúÁ¿
 	if (src && map_getmapflag(src->m, MF_MAXHEAL)) {
 		int val = map_getmapflag_param(src->m, MF_MAXHEAL, 0);
 		return (val > 0) ? cap_value(hp, 0, val) : hp;
@@ -2232,7 +2232,7 @@ int skill_additional_effect(struct block_list* src, struct block_list *bl, uint1
 	case SS_KAGEAKUMU:
 	case SS_HITOUAKUMU:
 	case SS_ANKOKURYUUAKUMU:
-		status_change_end(bl, SC_NIGHTMARE, INVALID_TIMER);
+		status_change_end(bl, SC_NIGHTMARE);
 		break;
 	case NW_THE_VIGILANTE_AT_NIGHT:
 	case NW_ONLY_ONE_BULLET:
@@ -2240,7 +2240,7 @@ int skill_additional_effect(struct block_list* src, struct block_list *bl, uint1
 	case NW_MAGAZINE_FOR_ONE:
 	case NW_WILD_FIRE:
 		if (sc && sc->data[SC_INTENSIVE_AIM_COUNT])
-			status_change_end(src, SC_INTENSIVE_AIM_COUNT, INVALID_TIMER);
+			status_change_end(src, SC_INTENSIVE_AIM_COUNT);
 		break;
 	case HN_SHIELD_CHAIN_RUSH:
 	case HN_JACK_FROST_NOVA:
@@ -4015,10 +4015,10 @@ int64 skill_attack (int attack_type, struct block_list* src, struct block_list *
 
 #ifdef Pandas_NpcExpress_PCHARMED
 	if (src && bl && damage > 0) {
-		// è´Ÿè´£æ‰§è¡Œäº‹ä»¶çš„çŽ©å®¶å¯¹è±¡ (äº‹ä»¶æ‰§è¡Œè€…)
+		// ¸ºÔðÖ´ÐÐÊÂ¼þµÄÍæ¼Ò¶ÔÏó (ÊÂ¼þÖ´ÐÐÕß)
 		struct map_session_data* esd = nullptr;
 
-		// è‹¥å—ä¼¤å®³è€…ä¸æ˜¯çŽ©å®¶å•ä½, é‚£ä¹ˆè¯•å›¾èŽ·å–å—ä¼¤å®³è€…çš„ä¸»äºº
+		// ÈôÊÜÉËº¦Õß²»ÊÇÍæ¼Òµ¥Î», ÄÇÃ´ÊÔÍ¼»ñÈ¡ÊÜÉËº¦ÕßµÄÖ÷ÈË
 		if (bl->type != BL_PC) {
 			struct block_list* mbl = nullptr;
 			mbl = battle_get_master(bl);
@@ -4027,13 +4027,13 @@ int64 skill_attack (int attack_type, struct block_list* src, struct block_list *
 			}
 		}
 		
-		// è‹¥è´Ÿè´£æ‰§è¡Œäº‹ä»¶çš„çŽ©å®¶å¯¹è±¡ä¾ç„¶æ²¡è¢«æŒ‡å®š
-		// ä¸”å—ä¼¤å®³è€…æ˜¯ä¸€ä¸ªçŽ©å®¶å•ä½, é‚£ä¹ˆå°†å—ä¼¤å®³è€…ç›´æŽ¥æŒ‡å®šæˆè´Ÿè´£æ‰§è¡Œäº‹ä»¶çš„çŽ©å®¶
+		// Èô¸ºÔðÖ´ÐÐÊÂ¼þµÄÍæ¼Ò¶ÔÏóÒÀÈ»Ã»±»Ö¸¶¨
+		// ÇÒÊÜÉËº¦ÕßÊÇÒ»¸öÍæ¼Òµ¥Î», ÄÇÃ´½«ÊÜÉËº¦ÕßÖ±½ÓÖ¸¶¨³É¸ºÔðÖ´ÐÐÊÂ¼þµÄÍæ¼Ò
 		if (!esd && bl->type == BL_PC) {
 			esd = (TBL_PC*)bl;
 		}
 
-		// è‹¥åˆ°è¿™é‡Œè¿˜æ²¡æœ‰ä¸€ä¸ªåˆé€‚çš„äº‹ä»¶æ‰§è¡Œè€…åˆ™ä¸éœ€è¦è§¦å‘äº‹ä»¶
+		// Èôµ½ÕâÀï»¹Ã»ÓÐÒ»¸öºÏÊÊµÄÊÂ¼þÖ´ÐÐÕßÔò²»ÐèÒª´¥·¢ÊÂ¼þ
 		if (esd) {
 			pc_setreg(esd, add_str("@harmed_target_type"), bl->type);
 			pc_setreg(esd, add_str("@harmed_target_gid"), bl->id);
@@ -4057,10 +4057,10 @@ int64 skill_attack (int attack_type, struct block_list* src, struct block_list *
 
 #ifdef Pandas_NpcExpress_PCATTACK
 	if (src && bl && damage > 0) {
-		// è´Ÿè´£æ‰§è¡Œäº‹ä»¶çš„çŽ©å®¶å¯¹è±¡ (äº‹ä»¶æ‰§è¡Œè€…)
+		// ¸ºÔðÖ´ÐÐÊÂ¼þµÄÍæ¼Ò¶ÔÏó (ÊÂ¼þÖ´ÐÐÕß)
 		struct map_session_data *esd = nullptr;
 
-		// è‹¥æ”»å‡»è€…ä¸æ˜¯çŽ©å®¶å•ä½, é‚£ä¹ˆè¯•å›¾èŽ·å–æ”»å‡»è€…çš„ä¸»äºº
+		// Èô¹¥»÷Õß²»ÊÇÍæ¼Òµ¥Î», ÄÇÃ´ÊÔÍ¼»ñÈ¡¹¥»÷ÕßµÄÖ÷ÈË
 		if (src->type != BL_PC) {
 			struct block_list* mbl = nullptr;
 			mbl = battle_get_master(src);
@@ -4069,13 +4069,13 @@ int64 skill_attack (int attack_type, struct block_list* src, struct block_list *
 			}
 		}
 
-		// è‹¥è´Ÿè´£æ‰§è¡Œäº‹ä»¶çš„çŽ©å®¶å¯¹è±¡ä¾ç„¶æ²¡è¢«æŒ‡å®š
-		// ä¸”æ”»å‡»è€…æ˜¯ä¸€ä¸ªçŽ©å®¶å•ä½, é‚£ä¹ˆå°†æ”»å‡»è€…ç›´æŽ¥æŒ‡å®šæˆè´Ÿè´£æ‰§è¡Œäº‹ä»¶çš„çŽ©å®¶
+		// Èô¸ºÔðÖ´ÐÐÊÂ¼þµÄÍæ¼Ò¶ÔÏóÒÀÈ»Ã»±»Ö¸¶¨
+		// ÇÒ¹¥»÷ÕßÊÇÒ»¸öÍæ¼Òµ¥Î», ÄÇÃ´½«¹¥»÷ÕßÖ±½ÓÖ¸¶¨³É¸ºÔðÖ´ÐÐÊÂ¼þµÄÍæ¼Ò
 		if (!esd && src->type == BL_PC) {
 			esd = (TBL_PC*)src;
 		}
 
-		// è‹¥åˆ°è¿™é‡Œè¿˜æ²¡æœ‰ä¸€ä¸ªåˆé€‚çš„äº‹ä»¶æ‰§è¡Œè€…åˆ™ä¸éœ€è¦è§¦å‘äº‹ä»¶
+		// Èôµ½ÕâÀï»¹Ã»ÓÐÒ»¸öºÏÊÊµÄÊÂ¼þÖ´ÐÐÕßÔò²»ÐèÒª´¥·¢ÊÂ¼þ
 		if (esd) {
 			pc_setreg(esd, add_str("@attack_src_type"), src->type);
 			pc_setreg(esd, add_str("@attack_src_gid"), src->id);
@@ -6176,7 +6176,7 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 				case SHC_SAVAGE_IMPACT:
 					if (sc && sc->data[SC_CLOAKINGEXCEED])
 						skill_area_temp[0] = 2;
-					status_change_end(src, SC_CLOAKINGEXCEED, INVALID_TIMER);
+					status_change_end(src, SC_CLOAKINGEXCEED);
 				case SHC_FATAL_SHADOW_CROW:
 					// Jump to the target before attacking.
 					if (skill_check_unit_movepos(5, src, bl->x, bl->y, 0, 1))
@@ -6465,6 +6465,7 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 			map_foreachinrange(skill_area_sub, bl, splash, BL_CHAR, src, skill_id, skill_lv, tick, flag | BCT_ENEMY | SD_SPLASH | 1, skill_castend_damage_id);
 		}
 		break;
+
 	//Place units around target
 	case NJ_BAKUENRYU:
 		clif_skill_nodamage(src, bl, skill_id, skill_lv, 1);
@@ -9031,6 +9032,9 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 		struct status_change *sc = status_get_sc(src);
 		int starget = BL_CHAR|BL_SKILL;
 
+		if (skill_id == LG_OVERBRAND)
+			clif_skill_poseffect(src, skill_id, skill_lv, src->x, src->y, tick);
+
 		if (skill_id == SR_HOWLINGOFLION)
 			starget = splash_target(src);
 		if (skill_id == SJ_NEWMOONKICK) {
@@ -9059,6 +9063,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 		if (skill_id == SOA_EXORCISM_OF_MALICIOUS_SOUL ) {
 			if (sd) {
 				// Remove old souls if any exist.
+				sd->soulball_old = sd->soulball;
 				pc_delsoulball(sd, sd->soulball, 0);
 			}
 		}
@@ -9076,7 +9081,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 				else if (!sc->data[SC_DAWN_MOON])
 					sc_start(src, src, SC_DAWN_MOON, 100, skill_lv, skill_get_time(skill_id, skill_lv));
 				else if (sc->data[SC_RISING_SUN])
-					status_change_end(bl, SC_DAWN_MOON, INVALID_TIMER);
+					status_change_end(bl, SC_DAWN_MOON);
 			} else {
 				sc_start(src, src, SC_RISING_MOON, 100, skill_lv, skill_get_time(skill_id, skill_lv));
 			}
@@ -11361,7 +11366,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 		break;
 	case SS_AKUMUKESU:
 		if (flag & 1) {
-			status_change_end(bl, SC_NIGHTMARE, INVALID_TIMER);
+			status_change_end(bl, SC_NIGHTMARE);
 		} else {
 			i = skill_get_splash(skill_id, skill_lv);
 			clif_skill_nodamage(src, bl, skill_id, skill_lv, 1);
@@ -11432,26 +11437,11 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 		}
 		break;
 	case SH_MARINE_FESTIVAL_OF_KI_SUL:
+	case SH_SANDY_FESTIVAL_OF_KI_SUL:
 		if (flag & 1) {	
 			int time = skill_get_time(skill_id, skill_lv);
 			if ((sd && pc_checkskill(sd, SH_COMMUNE_WITH_KI_SUL)) || (sc && sc->data[SC_TEMPORARY_COMMUNION]))
-				int time = 2 * skill_get_time(skill_id, skill_lv);
-			sc_start(src, bl, type, 100, skill_lv, time);
-			clif_skill_nodamage(src, bl, skill_id, skill_lv, 1);
-		} else {
-			i = skill_get_splash(skill_id, skill_lv);
-			if ((sd && pc_checkskill(sd, SH_COMMUNE_WITH_KI_SUL)) || (sc && sc->data[SC_TEMPORARY_COMMUNION]))
-				i += 2;
-
-			map_foreachinrange(skill_area_sub, bl, i, BL_CHAR,
-				src, skill_id, skill_lv, tick, flag | BCT_PARTY | SD_SPLASH | 1, skill_castend_nodamage_id);
-		}
-		break;
-	case SH_SANDY_FESTIVAL_OF_KI_SUL:
-		if (flag & 1) {
-			int time = skill_get_time(skill_id, skill_lv);
-			if ((sd && pc_checkskill(sd, SH_COMMUNE_WITH_KI_SUL)) || (sc && sc->data[SC_TEMPORARY_COMMUNION]))
-				int time = 2 * skill_get_time(skill_id, skill_lv);
+				time *= 2;
 			sc_start(src, bl, type, 100, skill_lv, time);
 			clif_skill_nodamage(src, bl, skill_id, skill_lv, 1);
 		} else {
@@ -11465,7 +11455,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 		break;
 	case SH_COLORS_OF_HYUN_ROK:
 		for(i = SC_COLORS_OF_HYUN_ROK_1; i < SC_COLORS_OF_HYUN_ROK_1+6; i++)
-			status_change_end(src, (sc_type)i, INVALID_TIMER);
+			status_change_end(src, (sc_type)i);
 		if (skill_lv < 7)
 		{
 			if ((sd && pc_checkskill(sd, SH_COMMUNE_WITH_HYUN_ROK)) || (sc && sc->data[SC_TEMPORARY_COMMUNION]))
@@ -13454,10 +13444,10 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 
 	case NW_INTENSIVE_AIM:
 		if (tsc && tsc->data[type]) {
-			status_change_end(src, SC_INTENSIVE_AIM_COUNT, INVALID_TIMER);
-			status_change_end(bl, type, INVALID_TIMER);
+			status_change_end(src, SC_INTENSIVE_AIM_COUNT);
+			status_change_end(bl, type);
 		} else {
-			status_change_end(src, SC_INTENSIVE_AIM_COUNT, INVALID_TIMER);
+			status_change_end(src, SC_INTENSIVE_AIM_COUNT);
 			sc_start(src, bl, type, 100, skill_lv, skill_get_time(skill_id, skill_lv));
 		}
 		clif_skill_nodamage(src, src, skill_id, skill_lv, 1);
@@ -13470,16 +13460,16 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 		break;
 
 	case NW_GRENADE_FRAGMENT:
-		status_change_end(src, type, INVALID_TIMER);
+		status_change_end(src, type);
 		if (skill_lv < 7)
 			sc_start(src, bl, (sc_type)(SC_GRENADE_FRAGMENT_1 -1 + skill_lv), 100, skill_lv, skill_get_time(skill_id, skill_lv));
 		else if (skill_lv == 7) {
-			status_change_end(src, SC_GRENADE_FRAGMENT_1, INVALID_TIMER);
-			status_change_end(src, SC_GRENADE_FRAGMENT_2, INVALID_TIMER);
-			status_change_end(src, SC_GRENADE_FRAGMENT_3, INVALID_TIMER);
-			status_change_end(src, SC_GRENADE_FRAGMENT_4, INVALID_TIMER);
-			status_change_end(src, SC_GRENADE_FRAGMENT_5, INVALID_TIMER);
-			status_change_end(src, SC_GRENADE_FRAGMENT_6, INVALID_TIMER);
+			status_change_end(src, SC_GRENADE_FRAGMENT_1);
+			status_change_end(src, SC_GRENADE_FRAGMENT_2);
+			status_change_end(src, SC_GRENADE_FRAGMENT_3);
+			status_change_end(src, SC_GRENADE_FRAGMENT_4);
+			status_change_end(src, SC_GRENADE_FRAGMENT_5);
+			status_change_end(src, SC_GRENADE_FRAGMENT_6);
 		}
 		clif_skill_nodamage(src, src, skill_id, skill_lv, 1);
 		break;
@@ -14049,7 +14039,7 @@ TIMER_FUNC(skill_castend_id){
 			pc_setreg(sd, add_str("@useskill_pos_y"), -1);
 			pc_setreg(sd, add_str("@useskill_target_gid"), ud->skilltarget);
 
-			// ä¸‹é¢å‡ ä¸ªå‚æ•°æ˜¯ä¸ºäº†å…¼å®¹å…¶ä»–æ¨¡æ‹Ÿå™¨æˆ–è€ç‰ˆæœ¬äº‹ä»¶è€Œåˆ»æ„èµ‹å€¼çš„
+			// ÏÂÃæ¼¸¸ö²ÎÊýÊÇÎªÁË¼æÈÝÆäËûÄ£ÄâÆ÷»òÀÏ°æ±¾ÊÂ¼þ¶ø¿ÌÒâ¸³ÖµµÄ
 			pc_setreg(sd, add_str("@useskill_x"), -1);
 			pc_setreg(sd, add_str("@useskill_y"), -1);
 			pc_setreg(sd, add_str("@useskill_target"), ud->skilltarget);
@@ -14255,7 +14245,7 @@ TIMER_FUNC(skill_castend_pos){
 			pc_setreg(sd, add_str("@useskill_pos_y"), ud->skilly);
 			pc_setreg(sd, add_str("@useskill_target_gid"), 0);
 
-			// ä¸‹é¢å‡ ä¸ªå‚æ•°æ˜¯ä¸ºäº†å…¼å®¹å…¶ä»–æ¨¡æ‹Ÿå™¨æˆ–è€ç‰ˆæœ¬äº‹ä»¶è€Œåˆ»æ„èµ‹å€¼çš„
+			// ÏÂÃæ¼¸¸ö²ÎÊýÊÇÎªÁË¼æÈÝÆäËûÄ£ÄâÆ÷»òÀÏ°æ±¾ÊÂ¼þ¶ø¿ÌÒâ¸³ÖµµÄ
 			pc_setreg(sd, add_str("@useskill_x"), ud->skillx);
 			pc_setreg(sd, add_str("@useskill_y"), ud->skilly);
 			pc_setreg(sd, add_str("@useskill_target"), 0);
@@ -14677,8 +14667,8 @@ int skill_castend_pos2(struct block_list* src, int x, int y, uint16 skill_id, ui
 		short tmpx = 0, tmpy = 0;
 
 #ifdef Pandas_Crashfix_Divide_by_Zero
-		// è‹¥è¿™é‡Œè¯»å–åˆ°çš„ä¿¡æ¯ä¸º 0 çš„è¯ï¼Œé‚£ä¹ˆç›´æŽ¥ break
-		// å¦åˆ™ä¸‹é¢ä¼šå¯¼è‡´é™¤æ•°ä¸èƒ½ä¸º 0 çš„é”™è¯¯å‘ç”Ÿï¼Œè¿›è€Œå¯¼è‡´åœ°å›¾æœåŠ¡å™¨å´©æºƒ [Solaä¸¶å°å…‹]
+		// ÈôÕâÀï¶ÁÈ¡µ½µÄÐÅÏ¢Îª 0 µÄ»°£¬ÄÇÃ´Ö±½Ó break
+		// ·ñÔòÏÂÃæ»áµ¼ÖÂ³ýÊý²»ÄÜÎª 0 µÄ´íÎó·¢Éú£¬½ø¶øµ¼ÖÂµØÍ¼·þÎñÆ÷±ÀÀ£ [SolaØ¼Ð¡¿Ë]
 		if (skill_get_unit_interval(skill_id) == 0) break;
 #endif // Pandas_Crashfix_Divide_by_Zero
 
@@ -17389,7 +17379,7 @@ int skill_unit_onplace_timer(struct skill_unit *unit, struct block_list *bl, t_t
 		case UNT_ACIDIFIED_ZONE_FIRE:
 			skill_attack(skill_get_type(BO_ACIDIFIED_ZONE_FIRE_ATK), ss, &unit->bl, bl, BO_ACIDIFIED_ZONE_FIRE_ATK, sg->skill_lv, tick, 0);
 			break;
-			
+
 		case UNT_ASTRAL_STRIKE:
 			skill_attack(skill_get_type(AG_ASTRAL_STRIKE_ATK), ss, &unit->bl, bl, AG_ASTRAL_STRIKE_ATK, sg->skill_lv, tick, 0);
 			break;
@@ -18147,8 +18137,8 @@ bool skill_check_condition_castbegin(struct map_session_data* sd, uint16 skill_i
 				pc_delitem(sd,i,1,0,0,LOG_TYPE_CONSUME); // Rental usable items are not consumed until expiration
 #else
 			{
-				// åˆ¤æ–­æ˜¯å¦éœ€è¦é¿å…ç‰©å“è¢«çŽ©å®¶ä¸»åŠ¨ä½¿ç”¨è€Œæ¶ˆè€—
-				// è‹¥å¯ä»¥è¢«çŽ©å®¶ä¸»åŠ¨ä½¿ç”¨è€Œæ¶ˆè€—, é‚£ä¹ˆæ‰§è¡ŒåŽŸæœ‰çš„é“å…·åˆ é™¤æµç¨‹
+				// ÅÐ¶ÏÊÇ·ñÐèÒª±ÜÃâÎïÆ·±»Íæ¼ÒÖ÷¶¯Ê¹ÓÃ¶øÏûºÄ
+				// Èô¿ÉÒÔ±»Íæ¼ÒÖ÷¶¯Ê¹ÓÃ¶øÏûºÄ, ÄÇÃ´Ö´ÐÐÔ­ÓÐµÄµÀ¾ßÉ¾³ýÁ÷³Ì
 				struct item_data* id = nullptr;
 				id = sd->inventory_data[i];
 				if (!ITEM_PROPERTIES_HASFLAG(id, special_mask, ITEM_PRO_AVOID_CONSUME_FOR_USE)) {
@@ -19629,8 +19619,8 @@ struct s_skill_condition skill_get_requirement(struct map_session_data* sd, uint
 		req.sp = req.sp * sd->dsprate / 100;
 
 #ifdef Pandas_Bonus2_bSkillNoRequire
-	// è‹¥æŒ‡å®šå¿½ç•¥ SKILL_REQ_HPRATECOST / SKILL_REQ_SPRATECOST æ¡ä»¶
-	// é‚£ä¹ˆä¸‹é¢çš„ä»£ç å°†å›žæ»š req.hp å’Œ req.sp æ¥è¦†ç›–æŽ‰ hp_rate å’Œ sp_rate åšå‡ºçš„è°ƒæ•´
+	// ÈôÖ¸¶¨ºöÂÔ SKILL_REQ_HPRATECOST / SKILL_REQ_SPRATECOST Ìõ¼þ
+	// ÄÇÃ´ÏÂÃæµÄ´úÂë½«»Ø¹ö req.hp ºÍ req.sp À´¸²¸Çµô hp_rate ºÍ sp_rate ×ö³öµÄµ÷Õû
 	if ((noreq_opt & SKILL_REQ_HPRATECOST)) {
 		req.hp = skill->require.hp[skill_lv - 1];
 	}
@@ -19992,8 +19982,8 @@ struct s_skill_condition skill_get_requirement(struct map_session_data* sd, uint
 	}
 
 #ifdef Pandas_Bonus2_bSkillNoRequire
-	// ä»¥ä¸‹è¿™éƒ¨åˆ†ä»£ç ç›´æŽ¥ä»Žä¸Šé¢è¿™ä¸€æ®µä»£ç ä¸­æ‹·è´ä¸‹æ¥ä½¿ç”¨
-	// è‹¥æœªæ¥ rAthena æœ‰æ›´æ–°çš„è¯ä¸¤éƒ¨åˆ†æœ€å¥½éƒ½åŒæ—¶æ›´æ–°, ä»¥ä¾¿ä½¿ bSkillNoRequire èƒ½æ”¯æŒæ–°é€‰é¡¹
+	// ÒÔÏÂÕâ²¿·Ö´úÂëÖ±½Ó´ÓÉÏÃæÕâÒ»¶Î´úÂëÖÐ¿½±´ÏÂÀ´Ê¹ÓÃ
+	// ÈôÎ´À´ rAthena ÓÐ¸üÐÂµÄ»°Á½²¿·Ö×îºÃ¶¼Í¬Ê±¸üÐÂ, ÒÔ±ãÊ¹ bSkillNoRequire ÄÜÖ§³ÖÐÂÑ¡Ïî
 
 	if (noreq_opt & SKILL_REQ_HPCOST)
 		req.hp = 0;
@@ -20034,7 +20024,7 @@ struct s_skill_condition skill_get_requirement(struct map_session_data* sd, uint
 	if (noreq_opt & SKILL_REQ_APRATECOST)
 		req.ap_rate = 0;
 
-	// æŽ¥ä¸‹æ¥æ˜¯ç†ŠçŒ«è‡ªå®šä¹‰çš„ç‰¹æ®Šé€‰é¡¹
+	// ½ÓÏÂÀ´ÊÇÐÜÃ¨×Ô¶¨ÒåµÄÌØÊâÑ¡Ïî
 	if (noreq_opt & SKILL_REQ_AMMO_COUNT) {
 		req.ammo_qty = 0;
 	}
@@ -20248,7 +20238,7 @@ int skill_vfcastfix(struct block_list *bl, double time, uint16 skill_id, uint16 
 		if (sc->data[SC_SUFFRAGIUM]) {
 			VARCAST_REDUCTION(sc->data[SC_SUFFRAGIUM]->val2);
 #ifndef RENEWAL
-			status_change_end(bl, SC_SUFFRAGIUM, INVALID_TIMER);
+			status_change_end(bl, SC_SUFFRAGIUM);
 #endif
 		}
 		if (sc->data[SC_MEMORIZE]) {
@@ -20292,6 +20282,8 @@ int skill_vfcastfix(struct block_list *bl, double time, uint16 skill_id, uint16 
 			fixed += sc->data[SC_GLOOMYDAY]->val1 * 500;
 		if (sc->data[SC_IZAYOI])
 			fixed = 0;
+		if (sc->data[SC_GLOOMYDAY])
+			fixed += skill_lv * 500;
 		if (sc->data[SC_2011RWC_SCROLL])
 			VARCAST_REDUCTION(5);
 	}
@@ -23660,9 +23652,9 @@ int skill_magicdecoy(struct map_session_data *sd, t_itemid nameid) {
 
 	// Spawn Position
 #ifndef Pandas_Fix_MagicDecoy_Twice_Deduction_Of_Ore
-	// ä¸Šé¢çš„ if æ¡ä»¶å·²ç»æ‰£å‡äº†ä¸€æ¬¡åŽŸçŸ³, ä¸‹é¢æ— éœ€é‡å¤å†æ¬¡æ‰£å‡
-	// å› ä¸ºä½œä¸ºæŠ€èƒ½æ¶ˆè€—å“, ä½†å‡¡æ‰£å‡é“å…·æ€»è¦åˆ¤æ–­è¿”å›žå€¼,
-	// ç„¶è€Œåªæœ‰è¿™ä¸ªåœ°æ–¹æ²¡åˆ¤æ–­, æ ¹æ®ç»éªŒåˆ¤æ–­, å› æ­¤åº”è¯¥æ˜¯æ­¤å¤„é‡å¤è°ƒç”¨äº†.
+	// ÉÏÃæµÄ if Ìõ¼þÒÑ¾­¿Û¼õÁËÒ»´ÎÔ­Ê¯, ÏÂÃæÎÞÐèÖØ¸´ÔÙ´Î¿Û¼õ
+	// ÒòÎª×÷Îª¼¼ÄÜÏûºÄÆ·, µ«·²¿Û¼õµÀ¾ß×ÜÒªÅÐ¶Ï·µ»ØÖµ,
+	// È»¶øÖ»ÓÐÕâ¸öµØ·½Ã»ÅÐ¶Ï, ¸ù¾Ý¾­ÑéÅÐ¶Ï, Òò´ËÓ¦¸ÃÊÇ´Ë´¦ÖØ¸´µ÷ÓÃÁË.
 	pc_delitem(sd,i,1,0,0,LOG_TYPE_CONSUME);
 #endif // Pandas_Fix_MagicDecoy_Twice_Deduction_Of_Ore
 	x = sd->sc.comet_x;
@@ -25540,14 +25532,14 @@ uint64 SkillDatabase::parseBodyNode(const ryml::NodeRef& node) {
 #ifndef Pandas_Fix_SkillDB_ItemCost_NoexistsItem_Crash
 					this->invalidWarning(it["Item"], "Requires ItemCost Item %s does not exist.\n", item_name.c_str());
 #else
-					// æŒ‡å®šçš„å¿…é¡»æ˜¯ä¸€ä¸ª ryml::NodeRef èŠ‚ç‚¹,
-					// æ²¡å¿…è¦è¿›ä¸€æ­¥æŒ‡å®šåˆ°ä»– ItemCost é‡Œé¢å…·ä½“çš„æŸä¸ª Item èŠ‚ç‚¹.
+					// Ö¸¶¨µÄ±ØÐëÊÇÒ»¸ö ryml::NodeRef ½Úµã,
+					// Ã»±ØÒª½øÒ»²½Ö¸¶¨µ½Ëû ItemCost ÀïÃæ¾ßÌåµÄÄ³¸ö Item ½Úµã.
 					//
-					// ç›®å‰å·²çŸ¥çš„é—®é¢˜æ—¶, è‹¥æŒ‡å®šåˆ°å…·ä½“çš„æŸä¸ª Item èŠ‚ç‚¹, é‚£ä¹ˆä¼šå¯¼è‡´ Item ä¸å­˜åœ¨æ—¶
-					// invalidWarning å†…éƒ¨è°ƒç”¨ node.Mark() æ—¶ç›´æŽ¥å´©æºƒæŠ¥é”™
+					// Ä¿Ç°ÒÑÖªµÄÎÊÌâÊ±, ÈôÖ¸¶¨µ½¾ßÌåµÄÄ³¸ö Item ½Úµã, ÄÇÃ´»áµ¼ÖÂ Item ²»´æÔÚÊ±
+					// invalidWarning ÄÚ²¿µ÷ÓÃ node.Mark() Ê±Ö±½Ó±ÀÀ£±¨´í
 					//
-					// ä¾‹å¦‚:
-					// åœ¨å¤å…´åŽç‰ˆæœ¬ä¸­ç§»é™¤ 12392 é“å…·, å°†å¯¼è‡´è¯»å– 2275 æŠ€èƒ½æ—¶è§£æžåˆ° RepairA ä¸å­˜åœ¨è€Œå´©æºƒ
+					// ÀýÈç:
+					// ÔÚ¸´ÐËºó°æ±¾ÖÐÒÆ³ý 12392 µÀ¾ß, ½«µ¼ÖÂ¶ÁÈ¡ 2275 ¼¼ÄÜÊ±½âÎöµ½ RepairA ²»´æÔÚ¶ø±ÀÀ£
 					this->invalidWarning(it, "Requires ItemCost Item %s does not exist.\n", item_name.c_str());
 #endif // Pandas_Fix_SkillDB_ItemCost_NoexistsItem_Crash
 					return 0;
@@ -25640,7 +25632,7 @@ uint64 SkillDatabase::parseBodyNode(const ryml::NodeRef& node) {
 #ifndef Pandas_UserExperience_Yaml_Error
 			this->invalidWarning(unitNode["Id"], "Unit requires an Id.\n");
 #else
-			// æ¶“å©‡æ½°é–®è—‰å‡¡ç¼å¿“åž½é‚?Id é‘ºå‚œå£æ¶“å¶…ç“¨é¦ã„¤ç°¡, æ©æ¬“å™·çå˜ç¬‰æ´æ—‡î‡šé¢?["Id"] éŸ?
+			// ä¸Šé¢éƒ½å·²ç»åˆ¤æ–?Id èŠ‚ç‚¹ä¸å­˜åœ¨äº†, è¿™é‡Œå°±ä¸åº”è¯¥ç”?["Id"] å•?
 			this->invalidWarning(unitNode, "Unit requires an Id.\n");
 #endif // Pandas_UserExperience_Yaml_Error
 			return 0;

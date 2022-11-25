@@ -2665,8 +2665,7 @@ enum e_skill_unit_id : uint16 {
 	UNT_TWINKLING_GALAXY,
 	UNT_STAR_CANNON,
 	UNT_GRENADES_DROPPING,
-	UNT_UNKNOWN_2,// Shows Nothing
-	UNT_FUUMASHOUAKU,// Huuma Shuriken - Grasp
+	UNT_FUUMASHOUAKU = 290, // Huuma Shuriken - Grasp
 	UNT_MISSION_BOMBARD,
 	UNT_TOTEM_OF_TUTELARY,
 	UNT_HYUN_ROKS_BREEZE,
@@ -2677,7 +2676,6 @@ enum e_skill_unit_id : uint16 {
 	UNT_KUNAIWAIKYOKU,// Kunai - Distortion
 
 	UNT_STAR_BURST = 2409,
-	
 	// Skill units outside the normal unit range.
 	UNT_DEEPBLINDTRAP = 20852,
 	UNT_SOLIDTRAP,

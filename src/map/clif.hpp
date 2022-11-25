@@ -1,4 +1,4 @@
-ï»¿// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
+// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
 #ifndef CLIF_HPP
@@ -530,8 +530,8 @@ enum useskill_fail_cause : uint8_t
 	USESKILL_FAIL_THERE_ARE_NPC_AROUND = 83,
 	USESKILL_FAIL_NEED_MORE_BULLET = 84,
 	USESKILL_FAIL_COINS = 85,
-	USESKILL_FAIL_UNKNOWN_1, //#86 Unknown Usage MSG: Do you agree?
-	USESKILL_FAIL_MAP,
+	//#86 Unknown Usage MSG: Do you agree?
+	USESKILL_FAIL_MAP = 87,
 	USESKILL_FAIL_NEED_SUMMON_SP,
 	USESKILL_FAIL_SAME_VEND,
 	USESKILL_FAIL_NEED_BULLETS,
@@ -663,9 +663,9 @@ enum e_memorial_dungeon_command : uint16 {
 
 #ifdef Pandas_ScriptCommand_Next_Dropitem_Special
 struct s_next_dropitem_special {
-	uint32 rent_duration = 0;		// ç§Ÿèµæ—¶é•¿, å•ä½: ç§’ (ç§Ÿèµæ—¶é—´å¤§äº 0 çš„é“å…·å°†ä¼šåœ¨æ—¶é—´åˆ°ä¹‹åè¿‡æœŸ)
-	int8 bound = -1;				// é“å…·ç»‘å®šç±»å‹ (è®¾ä¸º -1 è¡¨ç¤ºä¸è¿›è¡Œç‰¹æ®Šæ§åˆ¶)
-	int8 drop_effect = -1;			// é“å…·æ‰è½åˆ°åœ°é¢çš„å…‰æŸ± (è®¾ä¸º -1 è¡¨ç¤ºå°Šé‡ DB ä¸­çš„é…ç½®)
+	uint32 rent_duration = 0;		// ×âÁŞÊ±³¤, µ¥Î»: Ãë (×âÁŞÊ±¼ä´óÓÚ 0 µÄµÀ¾ß½«»áÔÚÊ±¼äµ½Ö®ºó¹ıÆÚ)
+	int8 bound = -1;				// µÀ¾ß°ó¶¨ÀàĞÍ (ÉèÎª -1 ±íÊ¾²»½øĞĞÌØÊâ¿ØÖÆ)
+	int8 drop_effect = -1;			// µÀ¾ßµôÂäµ½µØÃæµÄ¹âÖù (ÉèÎª -1 ±íÊ¾×ğÖØ DB ÖĞµÄÅäÖÃ)
 };
 extern s_next_dropitem_special next_dropitem_special;
 #endif // Pandas_ScriptCommand_Next_Dropitem_Special
@@ -1025,7 +1025,7 @@ void clif_equipcheckbox(struct map_session_data* sd);
 void clif_msg(struct map_session_data* sd, unsigned short id);
 void clif_msg_value(struct map_session_data* sd, unsigned short id, int value);
 void clif_msg_skill(struct map_session_data* sd, uint16 skill_id, int msg_id);
-void clif_msg_color( struct map_session_data *sd, uint16 msg_id, uint32 color);
+void clif_msg_color( struct map_session_data* sd, uint16 msg_id, uint32 color );
 
 //quest system [Kevin] [Inkfish]
 void clif_quest_send_list(struct map_session_data * sd);
@@ -1310,7 +1310,7 @@ void clif_macro_reporter_select(map_session_data &sd, const std::vector<uint32> 
 void clif_macro_reporter_status(map_session_data &sd, e_macro_report_status stype);
 
 #ifdef Pandas_Character_Title_Controller
-// å°† rAthena å®˜æ–¹ç¼–å†™çš„ clif_change_title_ack æš´éœ²å‡ºæ¥, ä»¥ä¾¿ npc.cpp ä¸­çš„å‡½æ•°è°ƒç”¨
+// ½« rAthena ¹Ù·½±àĞ´µÄ clif_change_title_ack ±©Â¶³öÀ´, ÒÔ±ã npc.cpp ÖĞµÄº¯Êıµ÷ÓÃ
 void clif_change_title_ack(struct map_session_data* sd, unsigned char result, unsigned long title_id);
 #endif // Pandas_Character_Title_Controller
 
