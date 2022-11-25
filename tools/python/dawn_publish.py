@@ -218,6 +218,7 @@ def arrange_common(packagedir):
     remove_file(packagedir, 'configure')
     remove_file(packagedir, 'athena-start')
     remove_file(packagedir, 'CMakeLists.txt')
+    remove_file(packagedir, 'Jenkinsfile')
 
     remove_file(packagedir, 'DONATION.md')
     remove_file(packagedir, 'README.md')
@@ -228,8 +229,8 @@ def arrange_common(packagedir):
     rmdir(packagedir + 'sql-files/tools')
     rmdir(packagedir + 'sql-files/upgrades')
     
-    copyfile(packagedir + 'tools/batches/runserver.bat', packagedir + 'runserver.bat')
-    remove_file(packagedir + 'tools/batches', 'runserver.bat')
+    shutil.move(packagedir + 'tools/batches/runserver.bat', packagedir + 'runserver.bat')
+    shutil.move(packagedir + 'tools/batches/navigenerator.bat', packagedir + 'navigenerator.bat')
     
     # --------------------------------------------------------
     # 对数据库的创建脚本进行分类归档
@@ -313,6 +314,7 @@ def arrange_renewal(packagedir):
     copyfile(project_slndir + 'login-server.exe', packagedir + 'login-server.exe')
     copyfile(project_slndir + 'char-server.exe', packagedir + 'char-server.exe')
     copyfile(project_slndir + 'map-server.exe', packagedir + 'map-server.exe')
+    copyfile(project_slndir + 'map-server-generator.exe', packagedir + 'map-server-generator.exe')
     copyfile(project_slndir + 'web-server.exe', packagedir + 'web-server.exe')
     copyfile(project_slndir + 'csv2yaml.exe', packagedir + 'csv2yaml.exe')
     copyfile(project_slndir + 'mapcache.exe', packagedir + 'mapcache.exe')
@@ -336,6 +338,7 @@ def arrange_pre_renewal(packagedir):
     copyfile(project_slndir + 'login-server-pre.exe', packagedir + 'login-server.exe')
     copyfile(project_slndir + 'char-server-pre.exe', packagedir + 'char-server.exe')
     copyfile(project_slndir + 'map-server-pre.exe', packagedir + 'map-server.exe')
+    copyfile(project_slndir + 'map-server-generator-pre.exe', packagedir + 'map-server-generator.exe')
     copyfile(project_slndir + 'web-server-pre.exe', packagedir + 'web-server.exe')
     copyfile(project_slndir + 'csv2yaml-pre.exe', packagedir + 'csv2yaml.exe')
     copyfile(project_slndir + 'mapcache.exe', packagedir + 'mapcache.exe')
@@ -408,10 +411,9 @@ def process_sub(export_file, renewal, langinfo):
         arrange_pre_renewal(packagedir)
 
     # 专业版的特殊处理逻辑
-    if is_commercial:
-        remove_file(packagedir, 'VMProtectSDK32.dll')
-        remove_file(packagedir, 'VMProtectSDK64.dll')
-        rmdir(packagedir + 'secret')
+    remove_file(packagedir, 'VMProtectSDK32.dll')
+    remove_file(packagedir, 'VMProtectSDK64.dll')
+    rmdir(packagedir + 'secret')
 
     Message.ShowStatus('后期处理完毕, 即将把打包源压缩成 ZIP 文件...')
     
@@ -426,6 +428,17 @@ def process_sub(export_file, renewal, langinfo):
         model = '复兴后(RE)' if renewal else '复兴前(PRE)',
         lang = langinfo['name']
     ))
+
+    # 若处于 Jenkins 环境下, 则将制品复制到指定的目录中去
+    if Common.is_jenkins():
+        os.makedirs(os.path.join(
+            os.environ['WORKSPACE'], 'artifacts', 'packages'
+        ), exist_ok = True)
+        
+        copyfile(zipfilename, os.path.join(
+            os.environ['WORKSPACE'], 'artifacts', 'packages', os.path.basename(zipfilename)
+        ))
+        Message.ShowStatus('已将打包后的 ZIP 文件复制到制品输出目录中.')
 
 def process(export_file, renewal, publish_lang):
     '''

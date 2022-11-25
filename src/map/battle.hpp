@@ -216,6 +216,7 @@ struct Battle_Config
 	int guild_exp_limit;
 	int guild_max_castles;
 	int guild_skill_relog_delay;
+	int guild_skill_relog_type;
 	int emergency_call;
 	int guild_aura;
 	int pc_invincible_time;
@@ -562,6 +563,7 @@ struct Battle_Config
 	int discount_item_point_shop;
 	int update_enemy_position;
 	int devotion_rdamage;
+	int feature_itemlink;
 
 	// autotrade persistency
 	int feature_autotrade;
@@ -710,6 +712,13 @@ struct Battle_Config
 	int feature_barter;
 	int feature_barter_extended;
 	int break_mob_equip;
+	int macro_detection_retry;
+	int macro_detection_timeout;
+
+	int feature_dynamicnpc_timeout;
+	int feature_dynamicnpc_rangex;
+	int feature_dynamicnpc_rangey;
+	int feature_dynamicnpc_direction;
 
 	// Pandas Configure
 #ifdef Pandas_BattleConfig_Force_LoadEvent
@@ -800,7 +809,6 @@ struct Battle_Config
 	int mob_setunitdata_persistence;		// 是否高优先级持久化保存 setunitdata 对魔物的设置
 #endif // Pandas_BattleConfig_Mob_SetUnitData_Persistence
 	// PYHELP - BATTLECONFIG - INSERT POINT - <Section 2>
-
 #include "../custom/battle_config_struct.inc"
 };
 

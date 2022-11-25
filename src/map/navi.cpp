@@ -1,6 +1,6 @@
 ﻿#include "../config/core.hpp"
 
-#ifdef GENERATE_NAVI
+#ifdef MAP_GENERATOR
 
 #include <sys/stat.h>
 #include <algorithm>
@@ -12,8 +12,9 @@
 #include <vector>
 
 #include "../common/db.hpp"
-#include "../common/showmsg.hpp"
 #include "../common/malloc.hpp"
+#include "../common/showmsg.hpp"
+#include "../common/utils.hpp"
 #include "map.hpp"
 #include "mob.hpp"
 #include "navi.hpp"
@@ -419,10 +420,21 @@ void write_spawn(std::ostream &os, const struct map_data * m, const std::shared_
 }
 
 void write_object_lists() {
+#ifdef Pandas_UserExperience_AutoCreate_Generated_Directory
+	makeDirectories(filePrefix);
+#endif // Pandas_UserExperience_AutoCreate_Generated_Directory
+
 	auto mob_file = std::ofstream(filePrefix + "./navi_mob_krpri.lub");
 	auto links_file = std::ofstream(filePrefix + "./navi_link_krpri.lub");
 	auto npc_file = std::ofstream(filePrefix + "./navi_npc_krpri.lub");
 	auto map_file = std::ofstream(filePrefix + "./navi_map_krpri.lub");
+
+	if (!mob_file) {
+		ShowError("Failed to create mobfile.\n");
+		ShowError("Maybe the file directory \"%s\" does not exist?\n", filePrefix.c_str());
+		ShowInfo("Create the directory and rerun map-server-generator\n");
+		exit(1);
+	}
 
 	int warp_count = 0;
 	int npc_count = 0;
@@ -622,12 +634,6 @@ void navi_create_lists() {
 	BHEAP_INIT(g_open_set);
 
 	auto starttime = std::chrono::system_clock::now();
-
-	if (!fileExists(filePrefix)) {
-		ShowError("File directory %s does not exist.\n", filePrefix.c_str());
-		ShowInfo("Create the directory and rerun map-server");
-		exit(1);
-	}
 
 	npc_event_runall(script_config.navi_generate_name);
 

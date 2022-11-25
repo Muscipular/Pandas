@@ -272,6 +272,14 @@ struct Script_Config {
 #ifdef Pandas_NpcFilter_CART_DEL
 	const char* cart_del_filter_name;	// NPCF_CART_DEL	// OnPCCartDelFilter	// 当玩家准备将道具从手推车取回背包时触发过滤器
 #endif // Pandas_NpcFilter_CART_DEL
+
+#ifdef Pandas_NpcFilter_FAVORITE_ADD
+	const char* favorite_add_filter_name;	// NPCF_FAVORITE_ADD	// OnPCFavoriteAddFilter	// 当玩家准备将道具移入收藏栏位时触发过滤器 [香草]
+#endif // Pandas_NpcFilter_FAVORITE_ADD
+
+#ifdef Pandas_NpcFilter_FAVORITE_DEL
+	const char* favorite_del_filter_name;	// NPCF_FAVORITE_DEL	// OnPCFavoriteDelFilter	// 当玩家准备将道具从收藏栏位移出时触发过滤器 [香草]
+#endif // Pandas_NpcFilter_FAVORITE_DEL
 	// PYHELP - NPCEVENT - INSERT POINT - <Section 4>
 
 	/************************************************************************/
@@ -765,15 +773,15 @@ enum unitdata_mobtypes {
 	UMOB_IGNORE_CELL_STACK_LIMIT,
 	UMOB_RES,
 	UMOB_MRES,
+	UMOB_DAMAGETAKEN,
 #ifdef Pandas_Struct_Unit_CommonData_Aura
 	UMOB_AURA,
 #endif // Pandas_Struct_Unit_CommonData_Aura
-#ifdef Pandas_ScriptParams_UnitData_DamageTaken
-	UMOB_DAMAGETAKEN,
+#ifdef Pandas_ScriptParams_DamageTaken_From_Database
 	UMOB_DAMAGETAKEN_DB,
 	UMOB_DMGRATE,
 	UMOB_DMGRATE2,
-#endif // Pandas_ScriptParams_UnitData_DamageTaken
+#endif // Pandas_ScriptParams_DamageTaken_From_Database
 #ifdef Pandas_ScriptParams_UnitData_Experience
 	UMOB_MOBBASEEXP,
 	UMOB_MOBBASEEXP_DB,
@@ -2511,6 +2519,7 @@ void script_free_state(struct script_state* st);
 struct DBMap* script_get_label_db(void);
 struct DBMap* script_get_userfunc_db(void);
 void script_run_autobonus(const char *autobonus, struct map_session_data *sd, unsigned int pos);
+void script_run_petautobonus(const std::string &autobonus, map_session_data &sd);
 
 const char* script_get_constant_str(const char* prefix, int64 value);
 bool script_get_parameter(const char* name, int64* value);

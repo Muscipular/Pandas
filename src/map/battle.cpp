@@ -284,7 +284,7 @@ void battle_damage(struct block_list *src, struct block_list *target, int64 dama
 			// Trigger monster skill condition for non-skill attacks.
 			if (!status_isdead(target) && src != target) {
 				if (damage > 0)
-					mobskill_event(md, src, tick, attack_type);
+					mobskill_event(md, src, tick, attack_type, damage);
 				if (skill_id > 0)
 					mobskill_event(md, src, tick, MSC_SKILLUSED | (skill_id << 16));
 			}
@@ -1476,9 +1476,6 @@ int64 battle_calc_damage(struct block_list *src,struct block_list *bl,struct Dam
 	if( sc && sc->data[SC_INVINCIBLE] && !sc->data[SC_INVINCIBLEOFF] )
 		return 1;
 
-	if (sc && sc->data[SC_MAXPAIN])
-		return 0;
-
 	switch (skill_id) {
 #ifndef RENEWAL
 		case PA_PRESSURE:
@@ -1587,8 +1584,8 @@ int64 battle_calc_damage(struct block_list *src,struct block_list *bl,struct Dam
 			damage += damage * 50 / 100;
 		if (sc->data[SC_RUSH_QUAKE1] && (flag&(BF_WEAPON)) == (BF_WEAPON))
 			damage += damage * 50 / 100;
-		if (sc->data[SC_SHADOW_SCAR])// Need official adjustment for this too.
-			damage += damage * (10 * sc->data[SC_SHADOW_SCAR]->val1) / 100;
+		if (sc->data[SC_SHADOW_SCAR]) // !TODO: Need official adjustment for this too.
+			damage += damage * (3 * sc->data[SC_SHADOW_SCAR]->val1) / 100;
 
 		// Damage reductions
 		// Assumptio increases DEF on RE mode, otherwise gives a reduction on the final damage. [Igniz]
@@ -1911,26 +1908,17 @@ int64 battle_calc_damage(struct block_list *src,struct block_list *bl,struct Dam
 	if (bl->type == BL_MOB) { // Reduces damage received for Green Aura MVP
 		mob_data *md = BL_CAST(BL_MOB, bl);
 
-#ifndef Pandas_Struct_Mob_Data_DamageTaken
-		if (md && md->db->damagetaken != 100)
-			damage = i64max(damage * md->db->damagetaken / 100, 1);
-#else
-		if (md) {
-			if (md->pandas.damagetaken < 0) {
-				// 若魔物自己没有承伤倍率, 那么就用 db 里面的设置来计算
-				if (md->db->damagetaken != 100)
-					damage = i64max(damage * md->db->damagetaken / 100, 1);
-			}
-			else {
-				// 否则就用魔物自己的承伤倍率来进行伤害修正
-				if (md->pandas.damagetaken != 100)
-					damage = i64max(damage * md->pandas.damagetaken / 100, 1);
-			}
+#ifdef Pandas_ScriptParams_DamageTaken_Extend
+		if (md && md->damagetaken < 0) {
+			md->damagetaken = md->db->damagetaken;
 			if (md->pandas.dmg_rate != 1 && md->pandas.dmg_rate >= 0) {
 				damage = i64max((int64)(damage * (double)md->pandas.dmg_rate), 1);
 			}
 		}
-#endif // Pandas_Struct_Mob_Data_DamageTaken
+#endif // Pandas_ScriptParams_DamageTaken_Extend
+		
+		if (md && md->damagetaken != 100)
+			damage = i64max(damage * md->damagetaken / 100, 1);
 	}
 
 	if (src->type == BL_MOB) {
@@ -2611,6 +2599,7 @@ static int battle_range_type(struct block_list *src, struct block_list *target, 
 		case ABC_UNLUCKY_RUSH: // 7 cell cast range.
 		case MH_THE_ONE_FIGHTER_RISES: // 7 cell cast range.
 		case SS_SHIMIRU: // 11 cell cast range.
+		case NPC_MAXPAIN_ATK:
 			return BF_SHORT;
 		case CD_PETITIO: { // Skill range is 2 but damage is melee with books and ranged with mace.
 			map_session_data *sd = BL_CAST(BL_PC, src);
@@ -6598,8 +6587,10 @@ static void battle_calc_weapon_final_atk_modifiers(struct Damage* wd, struct blo
 		)
 	{
 		ATK_RATER(wd->damage, 50)
-		status_fix_damage(target,src,wd->damage,clif_damage(target,src,gettick(),0,0,wd->damage,0,DMG_NORMAL,0,false),ST_REJECTSWORD);
 		clif_skill_nodamage(target,target,ST_REJECTSWORD,tsc->data[SC_REJECTSWORD]->val1,1);
+		status_fix_damage(target,src,wd->damage,clif_damage(target,src,gettick(),0,0,wd->damage,0,DMG_NORMAL,0,false),ST_REJECTSWORD);
+		if (status_isdead(target))
+			return;
 		if( --(tsc->data[SC_REJECTSWORD]->val3) <= 0 )
 			status_change_end(target, SC_REJECTSWORD);
 	}
@@ -6882,6 +6873,12 @@ void battle_do_reflect(int attack_type, struct Damage *wd, struct block_list* sr
 		if (!tsc)
 			return;
 
+		if (tsc->data[SC_MAXPAIN]) {
+			tsc->data[SC_MAXPAIN]->val2 = (int)damage;
+			if (!tsc->data[SC_KYOMU] && !(tsc->data[SC_DARKCROW] && (wd->flag&BF_SHORT))) //SC_KYOMU invalidates reflecting ability. SC_DARKCROW also does, but only for short weapon attack.
+				skill_castend_damage_id(target, src, NPC_MAXPAIN_ATK, tsc->data[SC_MAXPAIN]->val1, tick, ((wd->flag & 1) ? wd->flag - 1 : wd->flag));
+		}
+		
 		// Calculate skill reflect damage separately
 		if ((ud && !ud->immune_attack) || !status_bl_has_mode(target, MD_SKILLIMMUNE))
 			rdamage = battle_calc_return_damage(target, src, &damage, wd->flag, skill_id,true);
@@ -6891,12 +6888,7 @@ void battle_do_reflect(int attack_type, struct Damage *wd, struct block_list* sr
 
 			if (sc && sc->data[SC_VITALITYACTIVATION])
 				rdamage /= 2;
-			if (tsc->data[SC_MAXPAIN]) {
-				tsc->data[SC_MAXPAIN]->val2 = (int)rdamage;
-				skill_castend_damage_id(target, src, NPC_MAXPAIN_ATK, tsc->data[SC_MAXPAIN]->val1, tick, wd->flag);
-				tsc->data[SC_MAXPAIN]->val2 = 0;
-			}
-			else if( attack_type == BF_WEAPON && tsc->data[SC_REFLECTDAMAGE] ) // Don't reflect your own damage (Grand Cross)
+			if( attack_type == BF_WEAPON && tsc->data[SC_REFLECTDAMAGE] ) // Don't reflect your own damage (Grand Cross)
 				map_foreachinshootrange(battle_damage_area,target,skill_get_splash(LG_REFLECTDAMAGE,1),BL_CHAR,tick,target,wd->amotion,sstatus->dmotion,rdamage,wd->flag);
 			else if( attack_type == BF_WEAPON || attack_type == BF_MISC) {
 				rdelay = clif_damage(src, (!d_bl) ? src : d_bl, tick, wd->amotion, sstatus->dmotion, rdamage, 1, DMG_ENDURE, 0, false);
@@ -7197,6 +7189,16 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src, struct bl
 			break;
 		case MH_EQC:
 			ATK_ADD(wd.damage, wd.damage2, 6000 * skill_lv + status_get_lv(src)); // !TODO: Confirm base level bonus
+			break;
+		case NPC_MAXPAIN_ATK:
+			if (sc && sc->data[SC_MAXPAIN]) {
+				if (sc->data[SC_MAXPAIN]->val2)
+					wd.damage = sc->data[SC_MAXPAIN]->val2 * skill_lv / 10;
+				else if (sc->data[SC_MAXPAIN]->val3)
+					wd.damage = sc->data[SC_MAXPAIN]->val3 * skill_lv / 10;
+			}
+			else 
+				wd.damage = 0;
 			break;
 	}
 
@@ -8859,12 +8861,6 @@ struct Damage battle_calc_misc_attack(struct block_list *src,struct block_list *
 			if (status_bl_has_mode(target, MD_STATUSIMMUNE))
 				md.damage /= 10;
 			break;
-		case NPC_MAXPAIN_ATK:
-			if (ssc && ssc->data[SC_MAXPAIN])
-				md.damage = ssc->data[SC_MAXPAIN]->val2;
-			else
-				md.damage = 0;
-			break;
 		case NPC_WIDESUCK:
 			md.damage = tstatus->max_hp * 15 / 100;
 			break;
@@ -9173,7 +9169,7 @@ int64 battle_calc_return_damage(struct block_list* tbl, struct block_list *src, 
 						return 0;
 				}
 			}
-			if ( tsc->data[SC_REFLECTSHIELD] && skill_id != WS_CARTTERMINATION ) {
+			if ( tsc->data[SC_REFLECTSHIELD] && skill_id != WS_CARTTERMINATION && skill_id != NPC_MAXPAIN_ATK ) {
 				// Don't reflect non-skill attack if has SC_REFLECTSHIELD from Devotion bonus inheritance
 				if (!skill_id && battle_config.devotion_rdamage_skill_only && tsc->data[SC_REFLECTSHIELD]->val4)
 					rdamage = 0;
@@ -9221,11 +9217,6 @@ int64 battle_calc_return_damage(struct block_list* tbl, struct block_list *src, 
 		}
 	}
 
-	if (tsc) {
-		if (tsc->data[SC_MAXPAIN])
-			rdamage = damage * tsc->data[SC_MAXPAIN]->val1 * 10 / 100;
-	}
-
 	// Config damage adjustment
 	map_data *mapdata = map_getmapdata(src->m);
 
@@ -9241,7 +9232,7 @@ int64 battle_calc_return_damage(struct block_list* tbl, struct block_list *src, 
 
 	if (skill_damage != 0) {
 		rdamage += rdamage * skill_damage / 100;
-		rdamage = i64max(rdamage, 1);
+		rdamage = i64max(rdamage, 0);
 	}
 
 	if (rdamage == 0)
@@ -10732,6 +10723,11 @@ static const struct _battle_data {
 	{ "gtb_sc_immunity",                    &battle_config.gtb_sc_immunity,                 50,     0,      INT_MAX,        },
 	{ "guild_max_castles",                  &battle_config.guild_max_castles,               0,      0,      INT_MAX,        },
 	{ "guild_skill_relog_delay",            &battle_config.guild_skill_relog_delay,         300000, 0,      INT_MAX,        },
+#ifdef RENEWAL
+	{ "guild_skill_relog_type",             &battle_config.guild_skill_relog_type,          0,      0,      1,              },
+#else
+	{ "guild_skill_relog_type",             &battle_config.guild_skill_relog_type,          1,      0,      1,              },
+#endif
 	{ "emergency_call",                     &battle_config.emergency_call,                  11,     0,      31,             },
 	{ "atcommand_spawn_quantity_limit",     &battle_config.atc_spawn_quantity_limit,        100,    0,      INT_MAX,        },
 	{ "atcommand_slave_clone_limit",        &battle_config.atc_slave_clone_limit,           25,     0,      INT_MAX,        },
@@ -11264,7 +11260,15 @@ static const struct _battle_data {
 
 	{ "feature.barter",                     &battle_config.feature_barter,                  1,      0,      1,              },
 	{ "feature.barter_extended",            &battle_config.feature_barter_extended,         1,      0,      1,              },
+	{ "feature.itemlink",                   &battle_config.feature_itemlink,                1,      0,      1,              },
 	{ "break_mob_equip",                    &battle_config.break_mob_equip,                 0,      0,      1,              },
+	{ "macro_detection_retry",              &battle_config.macro_detection_retry,           3,      1,      INT_MAX,        },
+	{ "macro_detection_timeout",            &battle_config.macro_detection_timeout,         60000,  0,      INT_MAX,        },
+
+	{ "feature.dynamicnpc_timeout",         &battle_config.feature_dynamicnpc_timeout,      1000,   60000,  INT_MAX,        },
+	{ "feature.dynamicnpc_rangex",          &battle_config.feature_dynamicnpc_rangex,       2,      0,      INT_MAX,        },
+	{ "feature.dynamicnpc_rangey",          &battle_config.feature_dynamicnpc_rangey,       2,      0,      INT_MAX,        },
+	{ "feature.dynamicnpc_direction",       &battle_config.feature_dynamicnpc_direction,    0,      0,      1,              },
 
 	// Pandas Configure
 #ifdef Pandas_BattleConfig_Force_LoadEvent
@@ -11331,28 +11335,28 @@ static const struct _battle_data {
 	{ "always_trigger_mvp_killevent",       &battle_config.always_trigger_mvp_killevent,    1,      0,      1,              },
 #endif // Pandas_BattleConfig_AlwaysTriggerMVPKillEvent
 #ifdef Pandas_BattleConfig_BattleRecord_AutoEnabled_Unit
-	{ "batrec_autoenabled_unit",           &battle_config.batrec_autoenabled_unit,          542,    0,      BL_ALL,         },
+	{ "batrec_autoenabled_unit",            &battle_config.batrec_autoenabled_unit,         542,    0,      BL_ALL,         },
 #endif // Pandas_BattleConfig_BattleRecord_AutoEnabled_Unit
 #ifdef Pandas_BattleConfig_Repeat_ClearUnit_Interval
-	{ "repeat_clearunit_interval",         &battle_config.repeat_clearunit_interval,        0,      0,      1000,           },
+	{ "repeat_clearunit_interval",          &battle_config.repeat_clearunit_interval,       0,      0,      1000,           },
 #endif // Pandas_BattleConfig_Repeat_ClearUnit_Interval
 #ifdef Pandas_BattleConfig_Dead_Area_Size
-	{ "dead_area_size",                    &battle_config.dead_area_size,                   28,     0,      200,            },
+	{ "dead_area_size",                     &battle_config.dead_area_size,                  28,     0,      200,            },
 #endif // Pandas_BattleConfig_Dead_Area_Size
 #ifdef Pandas_BattleConfig_Remove_Manhole_With_Status
-	{ "remove_manhole_with_status",        &battle_config.remove_manhole_with_status,       1,      0,      1,              },
+	{ "remove_manhole_with_status",         &battle_config.remove_manhole_with_status,      1,      0,      1,              },
 #endif // Pandas_BattleConfig_Remove_Manhole_With_Status
 #ifdef Pandas_BattleConfig_Restore_Mes_Logic
-	{ "restore_mes_logic",                 &battle_config.restore_mes_logic,                1,      0,      1,              },
+	{ "restore_mes_logic",                  &battle_config.restore_mes_logic,               1,      0,      1,              },
 #endif // Pandas_BattleConfig_Restore_Mes_Logic
 #ifdef Pandas_BattleConfig_ItemDB_Warning_Policy
-	{ "itemdb_warning_policy",             &battle_config.itemdb_warning_policy,            0,      0,      3,              },
+	{ "itemdb_warning_policy",              &battle_config.itemdb_warning_policy,           0,      0,      3,              },
 #endif // Pandas_BattleConfig_ItemDB_Warning_Policy
 #ifdef Pandas_BattleConfig_MobDB_DamageMotion_Min
-	{ "mob_default_damagemotion",          &battle_config.mob_default_damagemotion,         0,      0,      UINT16_MAX,     },
+	{ "mob_default_damagemotion",           &battle_config.mob_default_damagemotion,        0,      0,      UINT16_MAX,     },
 #endif // Pandas_BattleConfig_MobDB_DamageMotion_Min
 #ifdef Pandas_BattleConfig_Mob_SetUnitData_Persistence
-	{ "mob_setunitdata_persistence",       &battle_config.mob_setunitdata_persistence,      1,      0,      1,              },
+	{ "mob_setunitdata_persistence",        &battle_config.mob_setunitdata_persistence,     1,      0,      1,              },
 #endif // Pandas_BattleConfig_Mob_SetUnitData_Persistence
 	// PYHELP - BATTLECONFIG - INSERT POINT - <Section 3>
 #include "../custom/battle_config_init.inc"
@@ -11631,7 +11635,7 @@ void battle_adjust_conf()
 		ShowWarning("Battle setting 'custom_cell_stack_limit' takes no effect as this server was compiled without Cell Stack Limit support.\n");
 #endif
 
-#ifdef GENERATE_NAVI
+#ifdef MAP_GENERATOR
 	battle_config.dynamic_mobs = 1;
 #endif
 }
@@ -11702,6 +11706,7 @@ int battle_config_read(const char* cfgName)
 		} bc_whitelist[] = {
 			{ "traps_setting" },
 			{ "item_enabled_npc" },
+			{ "guild_skill_relog_type" },		// 不同工作模式下拥有不同的默认值, 因此 rAthena 在 conf 中默认注释了此选项
 			{ "pet_hungry_friendly_decrease" }	// rAthena 对是否弃用此选项不明确, 先忽略检测
 		};
 

@@ -709,12 +709,13 @@ enum e_mapflag : int16 {
 	MF_PRIVATEAIRSHIP_SOURCE,
 	MF_PRIVATEAIRSHIP_DESTINATION,
 	MF_SKILL_DURATION,
-	MF_NOCASHSHOP,
+	MF_NOCASHSHOP, // 70
 	MF_NORODEX,
 	MF_NORENEWALEXPPENALTY,
 	MF_NORENEWALDROPPENALTY,
 	MF_NOPETCAPTURE,
 	MF_NOBUYINGSTORE,
+	MF_NODYNAMICNPC,
 #ifdef Pandas_MapFlag_Mobinfo
 	MF_MOBINFO,
 #endif // Pandas_MapFlag_Mobinfo
@@ -966,7 +967,7 @@ struct map_data {
 
 	/* speeds up clif_updatestatus processing by causing hpmeter to run only when someone with the permission can view it */
 	unsigned short hpmeter_visible;
-#ifdef GENERATE_NAVI
+#ifdef MAP_GENERATOR
 	struct {
 		std::vector<const struct npc_data *> npcs;
 		std::vector<const struct navi_link *> warps_into;

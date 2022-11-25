@@ -127,6 +127,14 @@
 #ifdef Pandas_NpcFilter_CART_DEL
 	export_constant(NPCF_CART_DEL);	// cart_del_filter_name	// OnPCCartDelFilter		// 当玩家准备将道具从手推车取回背包时触发过滤器
 #endif // Pandas_NpcFilter_CART_DEL
+
+#ifdef Pandas_NpcFilter_FAVORITE_ADD
+	export_constant(NPCF_FAVORITE_ADD);	// favorite_add_filter_name	// OnPCFavoriteAddFilter		// 当玩家准备将道具移入收藏栏位时触发过滤器 [香草]
+#endif // Pandas_NpcFilter_FAVORITE_ADD
+
+#ifdef Pandas_NpcFilter_FAVORITE_DEL
+	export_constant(NPCF_FAVORITE_DEL);	// favorite_del_filter_name	// OnPCFavoriteDelFilter		// 当玩家准备将道具从收藏栏位移出时触发过滤器 [香草]
+#endif // Pandas_NpcFilter_FAVORITE_DEL
 	// PYHELP - NPCEVENT - INSERT POINT - <Section 6>
 
 	/************************************************************************/
@@ -778,6 +786,7 @@
 	export_constant(MF_NORENEWALEXPPENALTY);
 	export_constant(MF_NOPETCAPTURE);
 	export_constant(MF_NOBUYINGSTORE);
+	export_constant(MF_NODYNAMICNPC);
 
 #ifdef Pandas_MapFlag_Mobinfo
 	export_constant(MF_MOBINFO);
@@ -2239,10 +2248,31 @@
 	export_constant(SC_DEEP_POISONING_OPTION);
 	export_constant(SC_POISON_SHIELD);
 	export_constant(SC_POISON_SHIELD_OPTION);
+	export_constant(SC_SUB_WEAPONPROPERTY);
 	export_constant(SC_M_LIFEPOTION);
 	export_constant(SC_S_MANAPOTION);
-	export_constant(SC_SUB_WEAPONPROPERTY);
+	export_constant(SC_ALMIGHTY);
+	export_constant(SC_ULTIMATECOOK);
 	export_constant(SC_M_DEFSCROLL);
+	export_constant(SC_INFINITY_DRINK);
+	export_constant(SC_MENTAL_POTION);
+	export_constant(SC_LIMIT_POWER_BOOSTER);
+	export_constant(SC_COMBAT_PILL);
+	export_constant(SC_COMBAT_PILL2);
+	export_constant(SC_MYSTICPOWDER);
+	export_constant(SC_SPARKCANDY);
+	export_constant(SC_MAGICCANDY);
+	export_constant(SC_ACARAJE);
+	export_constant(SC_POPECOOKIE);
+	export_constant(SC_VITALIZE_POTION);
+	export_constant(SC_CUP_OF_BOZA);
+	export_constant(SC_SKF_MATK);
+	export_constant(SC_SKF_ATK);
+	export_constant(SC_SKF_ASPD);
+	export_constant(SC_SKF_CAST);
+	export_constant(SC_BEEF_RIB_STEW);
+	export_constant(SC_PORK_RIB_STEW);
+	export_constant(SC_WEAPONBREAKER);
 
 	export_constant(SC_RUSH_QUAKE1);
 	export_constant(SC_RUSH_QUAKE2);
@@ -5197,6 +5227,7 @@
 	export_constant(UMOB_IGNORE_CELL_STACK_LIMIT);
 	export_constant(UMOB_RES);
 	export_constant(UMOB_MRES);
+	export_constant(UMOB_DAMAGETAKEN);
 
 	/* unit control - homunculus */
 	export_constant(UHOM_SIZE);
@@ -5421,12 +5452,11 @@
 	export_constant(UNPC_AURA);
 #endif // Pandas_Struct_Unit_CommonData_Aura
 
-#ifdef Pandas_ScriptParams_UnitData_DamageTaken
+#ifdef Pandas_ScriptParams_DamageTaken_From_Database
 	export_constant(UMOB_DMGRATE);
 	export_constant(UMOB_DMGRATE2);
-	export_constant(UMOB_DAMAGETAKEN);
 	export_constant(UMOB_DAMAGETAKEN_DB);
-#endif // Pandas_ScriptParams_UnitData_DamageTaken
+#endif // Pandas_ScriptParams_DamageTaken_From_Database
 
 #ifdef Pandas_ScriptParams_UnitData_Experience
 	export_constant(UMOB_MOBBASEEXP);
@@ -5478,6 +5508,15 @@
 	export_constant(MOBG_RED_POUCH_OF_SURPRISE);
 	export_constant(MOBG_CLASSCHANGE);
 	export_constant(MOBG_TAEKWON_MISSION);
+
+	/* mob random groups flags */
+	export_constant(RMF_NONE);
+	export_constant(RMF_DB_RATE);
+	export_constant(RMF_CHECK_MOB_LV);
+	export_constant(RMF_MOB_NOT_BOSS);
+	export_constant(RMF_MOB_NOT_SPAWN);
+	export_constant(RMF_MOB_NOT_PLANT);
+	export_constant(RMF_ALL);
 
 	/* random option attributes */
 	export_constant(ROA_ID);
@@ -6326,6 +6365,39 @@
 	export_constant(IG_MONTHLY_BUFF_PACKAGE);
 	export_constant(IG_MONTHLY_BATTLE_PACKAGE);
 	export_constant(IG_MD_AIRBOAT_EXPBOX);
+	export_constant(IG_ENCHANT_STONE_BOX28);
+	export_constant(IG_S_FULLPENE_EARRING);
+	export_constant(IG_S_FULLPENE_PENDANT);
+	export_constant(IG_S_FULLPENE_ARMOR);
+	export_constant(IG_S_FULLPENE_SHOES);
+	export_constant(IG_S_FULLTEMP_EARRING);
+	export_constant(IG_S_FULLTEMP_PENDANT);
+	export_constant(IG_S_FULLTEMP_ARMOR);
+	export_constant(IG_S_FULLTEMP_SHOES);
+	export_constant(IG_S_DURABLE_WEAPON);
+	export_constant(IG_S_DURABLE_SHIELD);
+	export_constant(IG_S_CLEVER_WEAPON);
+	export_constant(IG_S_CLEVER_SHIELD);
+	export_constant(IG_S_ALLMIGHTY_EARRING);
+	export_constant(IG_S_ALLMIGHTY_PENDANT);
+	export_constant(IG_S_TRUEGEM_EARRING);
+	export_constant(IG_S_TRUEGEM_PENDANT);
+	export_constant(IG_S_TRUEGEM_SHOES);
+	export_constant(IG_S_TRUEGEM_ARMOR);
+	export_constant(IG_S_PERFECTSIZE_WEAPON);
+	export_constant(IG_S_PERFECTSIZE_ARMOR);
+	export_constant(IG_S_M_MAMMOTH_EARRING);
+	export_constant(IG_S_M_MAMMOTH_PENDANT);
+	export_constant(IG_S_M_MAMMOTH_ARMOR);
+	export_constant(IG_S_M_MAMMOTH_SHOES);
+	export_constant(IG_S_SPELLCASTER_EARRING);
+	export_constant(IG_S_SPELLCASTER_PENDANT);
+	export_constant(IG_S_SPELLCASTER_ARMOR);
+	export_constant(IG_S_SPELLCASTER_SHOES);
+	export_constant(IG_S_ABSORB_WEAPON);
+	export_constant(IG_S_ABSORB_SHIELD);
+	export_constant(IG_PORINGSPRECIOUSBOX);
+	export_constant(IG_ENCHANT_STONE_BOX29);
 
 
 

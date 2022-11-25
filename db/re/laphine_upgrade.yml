@@ -5174,3 +5174,11 @@ Body:
     TargetItems:
       - Item: S_PerfectSize_Armor
       - Item: S_PerfectSize_Weapon
+  - Item: SubjectCape_Refine_Cube
+    ResultRefine: 12
+    MaximumRefine: 11
+    CardsAllowed: true
+    TargetItems:
+      - Item: Subject_CapeRange_TH
+      - Item: Subject_CapeMagic_TH
+      - Item: Subject_CapeMelee_TH
