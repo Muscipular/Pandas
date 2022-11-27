@@ -95,6 +95,7 @@ add_subdirectory( yaml-cpp )
 add_subdirectory( zlib )
 add_subdirectory( breakpad )
 add_subdirectory( cryptopp )
+add_subdirectory( lua )
 
 include(CPM)
 

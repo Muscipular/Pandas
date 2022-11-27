@@ -512,7 +512,7 @@ struct mob_data* mob_spawn_dataset(struct spawn_data *data)
 	md->pandas.special_setunitdata = new std::map<uint16, int64>;
 #endif // Pandas_Struct_Mob_Data_Special_SetUnitData
 	md->pandas.skill = new std::vector<std::shared_ptr<s_mob_skill>>;
-	md->pandas.custom_skill = FALSE;
+	md->pandas.custom_skill = false;
 	map_addiddb(&md->bl);
 	return md;
 }
@@ -3415,7 +3415,7 @@ void mob_revive(struct mob_data *md, unsigned int hp)
 	md->last_pcneartime = 0;
 	//We reset the damage log and then set the already lost damage as self damage so players don't get exp for it [Playtester]
 	memset(md->dmglog, 0, sizeof(md->dmglog));
-	mob_log_damage(md, &md->bl, md->status.max_hp - hp);
+	mob_log_damage(md, &md->bl, (int)(md->status.max_hp - hp));
 	md->tdmg = 0;
 
 #ifdef Pandas_BattleRecord
@@ -3950,7 +3950,7 @@ int mob_add_skill(struct mob_data* md, struct s_mob_skill* skill) {
 	}
 
 	s_mob_skill* ns = new s_mob_skill();
-	memcpy_s(ns, sizeof(s_mob_skill), skill, sizeof(s_mob_skill));
+	memcpy(ns, skill, sizeof(s_mob_skill));
 	std::shared_ptr<s_mob_skill> ps(ns);
 	md->pandas.skill->push_back(ps);
 	return 1;
@@ -3963,8 +3963,9 @@ int mob_reset_skill(struct mob_data* md, bool reset) {
 	}
 	if (reset) {
 		std::vector<std::shared_ptr<s_mob_skill>>& ms = md->db->skill;
-		for each (auto& s in ms) {
-			md->pandas.skill->push_back(s);
+
+		for (auto s = ms.begin(); s != ms.end(); s++) {
+			md->pandas.skill->push_back(*s);
 		}
 	}
 	md->pandas.custom_skill = true;

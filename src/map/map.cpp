@@ -22,7 +22,7 @@
 #include "../common/timer.hpp"
 #include "../common/utilities.hpp"
 #include "../common/utils.hpp"
-#include "../common/mysql_utils.h"
+//#include "../common/mysql_utils.h"
 
 #include "achievement.hpp"
 #include "atcommand.hpp"
@@ -4593,7 +4593,7 @@ int map_sql_init(void)
 		exit(EXIT_FAILURE);
 	}
 	ShowStatus("Connect success! (Map Server Connection)\n");
-	setupMysql(qsmysql_handle);
+	//setupMysql(qsmysql_handle);
 
 	//setupMysql(map_server_ip.c_str(), map_server_id.c_str(), map_server_pw.c_str(), map_server_db.c_str(), map_codepage);
 

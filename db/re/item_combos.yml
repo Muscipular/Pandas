@@ -21118,10 +21118,10 @@ Body:
     Script: |
       .@sum = getequiprefinerycnt(EQI_SHADOW_ARMOR)+getequiprefinerycnt(EQI_SHADOW_SHOES);
       bonus bMatkRate,2;
-      if (.@sum >= 27) {
+      if (.@sum >= 20) {
          bonus3 bAutoSpell,"WL_JACKFROST",max(getskilllv("WL_JACKFROST"),4),80;
       }
-      else if (.@sum >= 27) {
+      else if (.@sum >= 18) {
          bonus3 bAutoSpell,"WL_JACKFROST",max(getskilllv("WL_JACKFROST"),2),40;
       }
   - Combos:

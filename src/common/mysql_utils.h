@@ -1,5 +1,10 @@
-﻿#pragma once
+﻿#ifndef MYSQL_UTILS_H
+#define MYSQL_UTILS_H
+#if WIN32
 #include "windows.h"
+#else
+typedef uint32_t DWORD;
+#endif
 #include <initializer_list>
 #include <string>
 #include <variant>
@@ -8,6 +13,7 @@
 #include <mutex>
 #include "../../3rdparty/mysql/include/mysql.h"
 #include "./sql.hpp"
+
 
 enum class SqlResult {
 	OK,
@@ -269,3 +275,5 @@ SqlResult runSql(const char* sql, std::vector<ArgValue>* args, int64_t* result);
 SqlResult runSql(const char* sql, std::initializer_list<ArgValue> args, int64_t* result);
 SqlResult runSql(const char* sql);
 SqlResult runSql(const char* sql, int64_t* result);
+
+#endif // !MYSQL_UTILS_H
