@@ -86,11 +86,11 @@
 #include "mobdrop.hpp"
 #endif // Pandas_Database_MobItem_FixedRatio
 
-EXTERN_C_START
+extern "C" {
 #include "lua.h"
 #include "lualib.h"
 #include "lauxlib.h"
-EXTERN_C_END
+}
 
 using namespace rathena;
 
@@ -228,6 +228,12 @@ static bool script_rid2bl_(struct script_state *st, uint8 loc, struct block_list
 #define script_mapid2sd(loc,sd) script_mapid2sd_(st,(loc),&(sd),__FUNCTION__)
 #define script_rid2sd(sd) script_rid2sd_(st,&(sd),__FUNCTION__)
 #define script_rid2bl(loc,bl) script_rid2bl_(st,(loc),&(bl),__FUNCTION__)
+
+
+
+#define LUA_FUNC(fn) int fn(lua_State* L)
+#define LUA_REGFUNC(s) luaL_Reg {#s, s}
+#define LUA_REGFUNC2(s,ss) luaL_Reg {s, ss}
 
 /// temporary buffer for passing around compiled bytecode
 /// @see add_scriptb, set_label, parse_script
@@ -5956,10 +5962,6 @@ bool checkSupport(const char* fn) {
 	return true;
 }
 
-#define LUA_FUNC(s) int __cdecl s(lua_State* L)
-#define LUA_REGFUNC(s) luaL_Reg {#s, s}
-#define LUA_REGFUNC2(s,ss) luaL_Reg {s, ss}
-
 LUA_FUNC(callScript) {
 	int argN = lua_gettop(L);
 	if (argN < 2) {
@@ -6015,19 +6017,19 @@ LUA_FUNC(callScript) {
 			if (lua_objlen(L, i) > 0) {
 				lua_rawgeti(L, i, 1);
 				if (lua_isnumber(L, -1)) {
-					sprintf_s(str, ".@lua_arg_%d", i);
+					sprintf(str, ".@lua_arg_%d", i);
 					int uid = add_str(str);
 					idb_i64put(m2, uid, (int64)lua_tonumber(L, -1));
 					push_val2(st->stack, c_op::C_NAME, uid, &scope);
 				}
 				else if (lua_isstring(L, -1)) {
-					sprintf_s(str, ".@lua_arg_%d$", i);
+					sprintf(str, ".@lua_arg_%d$", i);
 					int uid = add_str(str);
 					idb_put(m2, uid, aStrdup(lua_tostring(L, -1)));
 					push_val2(st->stack, c_op::C_NAME, uid, &scope);
 				}
 				else {
-					sprintf_s(str, ".@lua_arg_%d", i);
+					sprintf(str, ".@lua_arg_%d", i);
 					int uid = add_str(str);
 					idb_i64put(m2, uid, 0);
 					push_val2(st->stack, c_op::C_NAME, uid, &scope);
@@ -6036,13 +6038,13 @@ LUA_FUNC(callScript) {
 			}
 			else {
 				lua_getfield(L, i, "type");
-				c_op type = (c_op)(int)lua_touserdata(L, -1);
+				c_op type = (c_op)(uint64)lua_touserdata(L, -1);
 				lua_pop(L, 1);
 				lua_getfield(L, i, "num1");
-				int64 uid = (int)lua_touserdata(L, -1);
+				int64 uid = (int)(uint64)lua_touserdata(L, -1);
 				lua_pop(L, 1);
 				lua_getfield(L, i, "num2");
-				uid |= ((int64)(int)lua_touserdata(L, -1) << 32);
+				uid |= ((int64)(uint64)lua_touserdata(L, -1) << 32);
 				lua_pop(L, 1);
 				lua_getfield(L, i, "ref");
 				reg_db* ref = (reg_db*)lua_touserdata(L, -1);
@@ -6060,7 +6062,7 @@ LUA_FUNC(callScript) {
 	int ret = buildin_func[fn].func(st);
 	auto retData = &st->stack->stack_data[st->stack->sp - 1];
 	script_data data;
-	memcpy_s(&data, sizeof(script_data), retData, sizeof(script_data));
+	memcpy(&data, retData, sizeof(script_data));
 	auto retDataActual = get_val(st, retData);
 	if (data_isstring(retDataActual)) {
 		lua_pushstring(L, retData->u.str);
@@ -6173,7 +6175,7 @@ static bool init_lua() {
 			if (strcmp(buildin_func[i].name, "return")) {
 				continue;
 			}
-			sprintf_s(cmd, "if NLG['%s'] == nil then NLG['%s'] = function(st, ...) return NLG.callScript(st, '%s', ...) end end;", buildin_func[i].name, buildin_func[i].name, buildin_func[i].name);
+			sprintf(cmd, "if NLG['%s'] == nil then NLG['%s'] = function(st, ...) return NLG.callScript(st, '%s', ...) end end;", buildin_func[i].name, buildin_func[i].name, buildin_func[i].name);
 			ret = luaL_dostring(lua, cmd);
 			if (ret) {
 				return false;
@@ -33887,7 +33889,7 @@ BUILDIN_FUNC(lua_call_fn) {
 		lua_pop(lua, lua_gettop(lua));
 		return SCRIPT_CMD_SUCCESS;
 	}
-	printf_s("lua error: %s\n", lua_tostring(lua, -1));
+	printf("lua error: %s\n", lua_tostring(lua, -1));
 	return SCRIPT_CMD_FAILURE;
 }
 
@@ -33898,7 +33900,7 @@ int resume_lua(script_state* st, lua_State* L, int n) {
 	}
 	else {
 		if (ret != 0) {
-			printf_s("lua error: %s\n", lua_tostring(lua, -1));
+			printf("lua error: %s\n", lua_tostring(lua, -1));
 		}
 		if (L == st->lua_state.thread) {
 			st->lua_state.thread = nullptr;

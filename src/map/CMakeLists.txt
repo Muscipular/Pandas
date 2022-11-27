@@ -58,6 +58,13 @@ if( BUILD_SERVERS )
 	else()
 		message( STATUS "Disabled PCRE code" )
 	endif()
+	if( LUA_LIBRARIES )
+		set( LIBRARIES ${LIBRARIES} ${LUA_LIBRARIES} )	# 库文件
+		set( INCLUDE_DIRS ${INCLUDE_DIRS} ${LUA_INCLUDE_DIRS} )	# 包含目录
+		message( STATUS "LUA_LIBRARIES found! ${LUA_LIBRARIES} ${LUA_INCLUDE_DIRS}" )
+	else()
+		message( STATUS "LUA_LIBRARIES not found!" )
+	endif()
 
 	# 进行归类设置 - CMake 生成 Visual Studio 等可视化 IDE 的解决方案时使用
 	# 将 COMMON_BASE_HEADERS 和 COMMON_HEADERS 中的文件, 统统归入名为 common 的文件组

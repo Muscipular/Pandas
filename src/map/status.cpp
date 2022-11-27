@@ -1230,7 +1230,7 @@ static inline void status_cpy(struct status_data* a, const struct status_data* b
  *		Use 2 to display healing effect
  * @return heal or zapped HP if valid
  */
-int status_set_hp(struct block_list *bl, uint64 hp, int flag)
+uint64 status_set_hp(struct block_list *bl, uint64 hp, int flag)
 {
 	struct status_data *status;
 	if (hp < 1)
@@ -1256,7 +1256,7 @@ int status_set_hp(struct block_list *bl, uint64 hp, int flag)
  *		Use 2 to display healing effect
  * @return heal or zapped HP if valid
  */
-int status_set_maxhp(struct block_list *bl, uint64 maxhp, int flag)
+uint64 status_set_maxhp(struct block_list *bl, uint64 maxhp, int flag)
 {
 	struct status_data *status;
 	int64 heal;
@@ -1840,7 +1840,7 @@ int status_heal(struct block_list *bl,int64 hhp,int64 hsp, int64 hap, int flag)
 int status_percent_change(struct block_list *src, struct block_list *target, int8 hp_rate, int8 sp_rate, int8 ap_rate, uint8 flag)
 {
 	struct status_data *status;
-	unsigned int hp = 0, sp = 0, ap = 0;
+	uint64 hp = 0, sp = 0, ap = 0;
 
 	status = status_get_status_data(target);
 
@@ -13965,7 +13965,7 @@ int status_change_end(struct block_list* bl, enum sc_type type, int tid)
 			break;
 		case SC_GRANITIC_ARMOR:
 			{
-				int damage = status->max_hp*sce->val3/100;
+				int64 damage = status->max_hp*sce->val3/100;
 				if(status->hp < damage) // to not kill him
 					damage = status->hp-1;
 				status_damage(NULL,bl,damage,0,0,1,0);
@@ -14694,7 +14694,7 @@ TIMER_FUNC(status_change_timer){
 	case SC_POISON:
 	case SC_DPOISON:
 		if (sce->val4 >= 0 && !sc->getSCE(SC_SLOWPOISON)) {
-			unsigned int damage = 0;
+			uint64 damage = 0;
 			if (sd)
 				damage = (type == SC_DPOISON) ? 2 + status->max_hp / 50 : 2 + status->max_hp * 3 / 200;
 			else
@@ -15082,7 +15082,7 @@ TIMER_FUNC(status_change_timer){
 
 	case SC_RENOVATIO:
 		if( --(sce->val4) >= 0 ) {
-			int heal = status->max_hp * (sce->val1 + 4) / 100;
+			uint64 heal = status->max_hp * (sce->val1 + 4) / 100;
 			if( sc && sc->getSCE(SC_AKAITSUKI) && heal )
 				heal = ~heal + 1;
 			status_heal(bl, heal, 0, 3);
@@ -15161,7 +15161,7 @@ TIMER_FUNC(status_change_timer){
 		break;
 
 	case SC_WARMER: {
-			int hp = 0;
+			int64 hp = 0;
 			status_change *ssc = status_get_sc(map_id2bl(sce->val2));
 
 			if (ssc && ssc->getSCE(SC_HEATER_OPTION))

@@ -520,6 +520,11 @@ static bool isFullEncrypt(const char* fname)
 	return true;
 }
 
+#if WIN32
+#define  fseeki64 _fseeki64
+#else
+#define _fseeki64 fseeko64
+#endif // WIN32
 
 /// Loads all entries in the specified grf file into the filelist.
 /// @param gentry index of the grf file name in the gentry_table

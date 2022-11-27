@@ -10746,7 +10746,7 @@ void clif_name( struct block_list* src, struct block_list *bl, send_target targe
 				}
 
 				if (option & 1) {
-					str_p += sprintf(str_p, "HP: %llu/%llu | ", md->status.hp, md->status.max_hp);
+					str_p += sprintf(str_p, "HP: %llu/%llu | ", (long long unsigned int)md->status.hp, (long long unsigned int)md->status.max_hp);
 				}
 
 				if (option & 2) {

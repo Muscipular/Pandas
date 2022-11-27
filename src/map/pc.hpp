@@ -519,7 +519,7 @@ public:
 		unsigned int restart_full_recover : 1;
 		unsigned int no_castcancel : 1;
 		unsigned int no_castcancel2 : 1;
-		unsigned int no_sizefix : 1;
+		uint32_t no_sizefix;
 		unsigned int no_gemstone : 2;
 		unsigned int intravision : 1; // Maya Purple Card effect [DracoRPG]
 		unsigned int perfect_hiding : 1; // [Valaris]

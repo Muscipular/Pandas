@@ -843,7 +843,7 @@ const char* instance_addwarp(int instance_id, const char* from_map, int x, int y
 	struct npc_data* nd;
 
 	memset(warpname, '\0', sizeof(warpname));
-	sprintf_s(warpname, "%d_warp", instance_id);
+	sprintf(warpname, "%d_warp", instance_id);
 
 	m = map_mapname2mapid(from_map);
 	if (m < 0) {

@@ -6,6 +6,12 @@
 
 #include "cbasetypes.hpp"
 
+
+#if WIN32
+#else
+#define _fseeki64 fseeko64
+#endif // WIN32
+
 const int32 RSW_NO_WATER = 1000000;
 
 void grfio_init(const char* fname);

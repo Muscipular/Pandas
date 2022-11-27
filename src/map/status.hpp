@@ -3387,8 +3387,8 @@ static int status_kill( struct block_list* bl ){
 	return status_percent_damage( nullptr, bl, 100, 0, 0, true );
 }
 //Used to set the hp/sp/ap of an object to an absolute value (can't kill)
-int status_set_hp(struct block_list *bl, uint64 hp, int flag);
-int status_set_maxhp(struct block_list *bl, uint64 hp, int flag);
+uint64 status_set_hp(struct block_list *bl, uint64 hp, int flag);
+uint64 status_set_maxhp(struct block_list *bl, uint64 hp, int flag);
 int status_set_sp(struct block_list *bl, unsigned int sp, int flag);
 int status_set_maxsp(struct block_list *bl, unsigned int hp, int flag);
 int status_set_ap(struct block_list *bl, unsigned int ap, int flag);
