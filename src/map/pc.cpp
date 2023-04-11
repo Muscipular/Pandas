@@ -3669,7 +3669,7 @@ static void pc_bonus_subele(map_session_data* sd, unsigned char ele, short rate,
 
 	for (auto &it : sd->subele2) {
 		if (it.ele == ele && it.flag == flag) {
-			it.rate = util::safe_addition_cap(it.rate, rate, (short)10000);
+			it.rate = util::safe_addition_cap(it.rate, rate, (short)9500);
 			return;
 		}
 	}
@@ -3677,7 +3677,7 @@ static void pc_bonus_subele(map_session_data* sd, unsigned char ele, short rate,
 	struct s_addele2 entry = {};
 
 	entry.ele = ele;
-	entry.rate = cap_value(rate, -10000, 10000);
+	entry.rate = cap_value(rate, -10000, 9500);
 	entry.flag = flag;
 
 	sd->subele2.push_back(entry);
@@ -3710,7 +3710,7 @@ static void pc_bonus_subrace(map_session_data* sd, unsigned char race, short rat
 
 	for (auto &it : sd->subrace3) {
 		if (it.race == race && it.flag == flag) {
-			it.rate = util::safe_addition_cap(it.rate, rate, (short)10000);
+			it.rate = util::safe_addition_cap(it.rate, rate, (short)9500);
 			return;
 		}
 	}
@@ -3718,7 +3718,7 @@ static void pc_bonus_subrace(map_session_data* sd, unsigned char race, short rat
 	struct s_addrace2 entry = {};
 
 	entry.race = race;
-	entry.rate = cap_value(rate, -10000, 10000);
+	entry.rate = cap_value(rate, -10000, 9500);
 	entry.flag = flag;
 
 	sd->subrace3.push_back(entry);
@@ -4609,6 +4609,8 @@ void pc_bonus(map_session_data *sd,int type,int val)
 	}
 }
 
+#define MAX_VALUE_SET(a, b, c) a = min((a) + b, c * 100)
+
 /*==========================================
  * Player bonus (type) with args type2 and val, called trough bonus2 (npc)
  * format: bonus2 bBonusName,type2,val;
@@ -4661,17 +4663,17 @@ void pc_bonus2(map_session_data *sd,int type,int type2,int val)
 	case SP_SUBELE: // bonus2 bSubEle,e,x;
 		PC_BONUS_CHK_ELEMENT(type2,SP_SUBELE);
 		if(sd->state.lr_flag != 2)
-			sd->indexed_bonus.subele_script[type2] += val;
+			MAX_VALUE_SET(sd->indexed_bonus.subele_script[type2], val, 95);
 		break;
 	case SP_SUBRACE: // bonus2 bSubRace,r,x;
 		PC_BONUS_CHK_RACE(type2,SP_SUBRACE);
 		if(sd->state.lr_flag != 2)
-			sd->indexed_bonus.subrace[type2]+=val;
+			MAX_VALUE_SET(sd->indexed_bonus.subrace[type2], val, 95);
 		break;
 	case SP_SUBCLASS: // bonus2 bSubClass,c,x;
 		PC_BONUS_CHK_CLASS(type2,SP_SUBCLASS);
 		if(sd->state.lr_flag != 2)
-			sd->indexed_bonus.subclass[type2]+=val;
+			MAX_VALUE_SET(sd->indexed_bonus.subclass[type2], val, 95);
 		break;
 	case SP_ADDEFF: // bonus2 bAddEff,eff,n;
 		PC_BONUS_CHK_SC(type2,SP_ADDEFF);
@@ -4912,22 +4914,22 @@ void pc_bonus2(map_session_data *sd,int type,int type2,int val)
 	case SP_SUBSIZE: // bonus2 bSubSize,s,x;
 		PC_BONUS_CHK_SIZE(type2,SP_SUBSIZE);
 		if(sd->state.lr_flag != 2)
-			sd->indexed_bonus.subsize[type2]+=val;
+			MAX_VALUE_SET(sd->indexed_bonus.subsize[type2], val, 95);
 		break;
 	case SP_WEAPON_SUBSIZE: // bonus2 bWeaponSubSize,s,x;
 		PC_BONUS_CHK_SIZE(type2, SP_WEAPON_SUBSIZE);
 		if (sd->state.lr_flag != 2)
-			sd->indexed_bonus.weapon_subsize[type2] += val;
+			MAX_VALUE_SET(sd->indexed_bonus.weapon_subsize[type2], val, 95);
 		break;
 	case SP_MAGIC_SUBSIZE: // bonus2 bMagicSubSize,s,x;
 		PC_BONUS_CHK_SIZE(type2,SP_MAGIC_SUBSIZE);
 		if(sd->state.lr_flag != 2)
-			sd->indexed_bonus.magic_subsize[type2]+=val;
+			MAX_VALUE_SET(sd->indexed_bonus.magic_subsize[type2], val, 95);
 		break;
 	case SP_SUBRACE2: // bonus2 bSubRace2,mr,x;
 		PC_BONUS_CHK_RACE2(type2,SP_SUBRACE2);
 		if(sd->state.lr_flag != 2)
-			sd->indexed_bonus.subrace2[type2]+=val;
+			MAX_VALUE_SET(sd->indexed_bonus.subrace2[type2], val, 95);
 		break;
 	case SP_ADD_ITEM_HEAL_RATE: // bonus2 bAddItemHealRate,iid,n;
 		if(sd->state.lr_flag == 2)
@@ -5167,7 +5169,7 @@ void pc_bonus2(map_session_data *sd,int type,int type2,int val)
 		break;
 	case SP_SUBDEF_ELE: // bonus2 bSubDefEle,e,x;
 		PC_BONUS_CHK_ELEMENT(type2,SP_SUBDEF_ELE);
-		sd->indexed_bonus.subdefele[type2] += val;
+		MAX_VALUE_SET(sd->indexed_bonus.subdefele[type2], val, 95);
 		break;
 	case SP_COMA_CLASS: // bonus2 bComaClass,c,n;
 		PC_BONUS_CHK_CLASS(type2,SP_COMA_CLASS);
@@ -5201,7 +5203,7 @@ void pc_bonus2(map_session_data *sd,int type,int type2,int val)
 		break;
 	case SP_MAGIC_SUBDEF_ELE: // bonus2 bMagicSubDefEle,e,x;
 		PC_BONUS_CHK_ELEMENT(type2, SP_MAGIC_SUBDEF_ELE);
-		sd->indexed_bonus.magic_subdefele[type2] += val;
+		MAX_VALUE_SET(sd->indexed_bonus.magic_subdefele[type2], val, 95);
 		break;
 	case SP_ADD_ITEM_SPHEAL_RATE: // bonus2 bAddItemSPHealRate,iid,n;
 		if( sd->state.lr_flag == 2 ){
