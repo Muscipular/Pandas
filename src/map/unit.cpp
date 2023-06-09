@@ -3637,7 +3637,10 @@ int unit_free(struct block_list *bl, clr_type clrtype)
 				md->pandas.special_setunitdata = nullptr;
 			}
 #endif // Pandas_Struct_Mob_Data_Special_SetUnitData
-
+			if (md->pandas.skill) {
+				delete md->pandas.skill;
+				md->pandas.skill = nullptr;
+			}
 			md->~mob_data();
 
 			break;

@@ -498,8 +498,6 @@ struct mob_data* mob_spawn_dataset(struct spawn_data *data)
 #ifdef Pandas_BattleRecord
 	batrec_new(&md->bl);
 #endif // Pandas_BattleRecord
-
-#ifdef Pandas_ScriptParams_DamageTaken_Extend
 	md->damagetaken = -1;
 	md->pandas.dmg_rate = -1;
 	md->pandas.dmg_rate2 = -1;
@@ -513,6 +511,7 @@ struct mob_data* mob_spawn_dataset(struct spawn_data *data)
 #endif // Pandas_Struct_Mob_Data_Special_SetUnitData
 
 	md->pandas.custom_skill = false;
+	md->pandas.skill = new std::vector<std::shared_ptr<s_mob_skill>>;
 	map_addiddb(&md->bl);
 	return md;
 }

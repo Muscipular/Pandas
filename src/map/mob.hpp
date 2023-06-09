@@ -400,6 +400,7 @@ struct mob_data {
 		float dmg_rate = -1;
 		float dmg_rate2 = -1;
 		bool custom_skill = false;
+		std::vector<std::shared_ptr<s_mob_skill>>* skill;
 	} pandas;
 #endif // Pandas_Struct_Mob_Data_Pandas
 
