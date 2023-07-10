@@ -1252,6 +1252,17 @@ bool battle_status_block_damage(struct block_list *src, struct block_list *targe
 			break;
 	}
 
+	if ((sce = sc->getSCE(SC_P_ALTER)) && damage > 0) {
+		clif_specialeffect(target, EF_GUARD, AREA);
+		sce->val3 -= static_cast<int>(cap_value(damage, INT_MIN, INT_MAX));
+		if (sce->val3 >= 0)
+			damage = 0;
+		else
+			damage = -sce->val3;
+		if (sce->val3 <= 0)
+			status_change_end(target, SC_P_ALTER);
+	}
+
 	if ((sce = sc->getSCE(SC_TUNAPARTY)) && damage > 0) {
 		sce->val2 -= static_cast<int>(cap_value(damage, INT_MIN, INT_MAX));
 		if (sce->val2 >= 0)
@@ -3602,6 +3613,8 @@ int battle_get_magic_element(struct block_list* src, struct block_list* target, 
 	
 	if (element == ELE_WEAPON) { // pl=-1 : the skill takes the weapon's element
 		element = sstatus->rhw.ele;
+		if(sd && sd->spiritcharm_type != CHARM_TYPE_NONE && sd->spiritcharm >= MAX_SPIRITCHARM)
+			element = sd->spiritcharm_type; // Summoning 10 spiritcharm will endow your weapon
 	} else if (element == ELE_ENDOWED) //Use status element
 		element = status_get_attack_sc_element(src,status_get_sc(src));
 	else if (element == ELE_RANDOM) //Use random element
@@ -4100,6 +4113,24 @@ static void battle_calc_skill_base_damage(struct Damage* wd, struct block_list *
 #endif
 			}
 			break;
+		case KO_HAPPOKUNAI:
+			if(sd) {
+				short index = sd->equip_index[EQI_AMMO];
+				int damagevalue = 3 * (
+#ifdef RENEWAL
+					2 *
+#endif
+					sstatus->batk + sstatus->rhw.atk + (index >= 0 && sd->inventory_data[index] ?
+						sd->inventory_data[index]->atk : 0)) * (skill_lv + 5) / 5;
+				if (sc && sc->getSCE(SC_KAGEMUSYA))
+					damagevalue += damagevalue * sc->getSCE(SC_KAGEMUSYA)->val2 / 100;
+				ATK_ADD(wd->damage, wd->damage2, damagevalue);
+#ifdef RENEWAL
+				ATK_ADD(wd->weaponAtk, wd->weaponAtk2, damagevalue);
+#endif
+			} else
+				ATK_ADD(wd->damage, wd->damage2, 5000);
+			break;
 		case HFLI_SBR44:	//[orn]
 			if(src->type == BL_HOM)
 				wd->damage = ((TBL_HOM*)src)->homunculus.intimacy ;
@@ -4163,11 +4194,19 @@ static void battle_calc_skill_base_damage(struct Damage* wd, struct block_list *
 				if(sd->bonus.crit_atk_rate && is_attack_critical(wd, src, target, skill_id, skill_lv, false)) { // add +crit damage bonuses here in pre-renewal mode [helvetica]
 					ATK_ADDRATE(wd->damage, wd->damage2, sd->bonus.crit_atk_rate);
 				}
-#endif
-				if((skill=pc_checkskill(sd,TK_POWER)) > 0) {
-						ATK_ADDRATE(wd->damage, wd->damage2, 10+15*skill);
-						RE_ALLATK_ADDRATE(wd, 10+15*skill);
+				if(sd->status.party_id && (skill=pc_checkskill(sd,TK_POWER)) > 0) {
+					if( (i = party_foreachsamemap(party_sub_count, sd, 0)) > 1 ) { // exclude the player himself [Inkfish]
+						// Reduce count by one (self) [Tydus1]
+						i -= 1; 
+						ATK_ADDRATE(wd->damage, wd->damage2, 2*skill*i);
+					}
 				}
+#else
+				if ((skill = pc_checkskill(sd, TK_POWER)) > 0) {
+					ATK_ADDRATE(wd->damage, wd->damage2, 10 + 15 * skill);
+					RE_ALLATK_ADDRATE(wd, 10 + 15 * skill);
+				}
+#endif
 			}
 #ifndef RENEWAL
 			if(tsd != nullptr && tsd->bonus.crit_def_rate != 0 && !skill_id && is_attack_critical(wd, src, target, skill_id, skill_lv, false)) {
@@ -7023,6 +7062,10 @@ static struct Damage initialize_weapon_data(struct block_list *src, struct block
 			case LK_SPIRALPIERCE:
 				if (!sd) wd.flag = (wd.flag&~(BF_RANGEMASK|BF_WEAPONMASK))|BF_LONG|BF_MISC;
 				break;
+			case RK_WINDCUTTER:
+				if (sd && (sd->status.weapon == W_1HSPEAR || sd->status.weapon == W_2HSPEAR))
+					wd.flag |= BF_LONG;
+				break;
 			case NC_BOOSTKNUCKLE:
 			case NC_VULCANARM:
 			case NC_ARMSCANNON:
@@ -7627,7 +7670,9 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 			if (mflag == 2)
 				ad.div_ = 2;
 			break;
-
+		case TR_METALIC_FURY:// Deals up to 5 additional hits. But what affects the number of hits? [Rytech]
+			ad.div_ = min(ad.div_ + mflag, 5); // Number of hits doesn't go above 5.
+			break;
 		case AG_CRIMSON_ARROW_ATK:
 			if( sc != nullptr && sc->getSCE( SC_CLIMAX ) ){
 				ad.div_ = 2;
