@@ -305,7 +305,7 @@ void instance_getsd(int instance_id, map_session_data *&sd, enum send_target *ta
 			(*target) = SELF;
 			break;
 		case IM_GUILD:
-			sd = guild_getavailablesd(guild_search(idata->owner_id));
+			sd = guild_getavailablesd(guild_search(idata->owner_id)->guild);
 			(*target) = GUILD;
 			break;
 		case IM_PARTY:
@@ -348,7 +348,7 @@ static TIMER_FUNC(instance_subscription_timer){
 
 	map_session_data *sd;
 	struct party_data *pd;
-	struct guild *gd;
+	std::shared_ptr<MapGuild> gd;
 	struct clan *cd;
 	e_instance_mode mode = idata->mode;
 	int ret = instance_addmap(instance_id); // Check that maps have been added
@@ -613,7 +613,7 @@ int instance_create(int owner_id, const char *name, e_instance_mode mode) {
 
 	map_session_data *sd = nullptr;
 	struct party_data *pd;
-	struct guild *gd;
+	std::shared_ptr<MapGuild> gd;
 	struct clan* cd;
 
 	switch(mode) {
@@ -683,7 +683,7 @@ int instance_create(int owner_id, const char *name, e_instance_mode mode) {
 			break;
 		case IM_GUILD:
 			gd->instance_id = instance_id;
-			sd = map_charid2sd(gd->member[0].char_id);
+			sd = map_charid2sd(gd->guild.member[0].char_id);
 			break;
 		case IM_CLAN:
 			cd->instance_id = instance_id;
@@ -948,7 +948,7 @@ void instance_destroy_command(map_session_data *sd) {
 
 		instance_id = pd->instance_id;
 	} else if (sd->instance_mode == IM_GUILD && sd->guild != nullptr && sd->guild->instance_id > 0) {
-		guild *gd = guild_search(sd->status.guild_id);
+		auto gd = guild_search(sd->status.guild_id);
 
 		if (gd == nullptr)
 			return;
@@ -958,7 +958,7 @@ void instance_destroy_command(map_session_data *sd) {
 		if (idata == nullptr)
 			return;
 
-		if (strcmp(sd->status.name, gd->master) != 0) // Player is not guild master
+		if (strcmp(sd->status.name, gd->guild.master) != 0) // Player is not guild master
 			return;
 
 		instance_id = gd->instance_id;
@@ -985,7 +985,7 @@ void instance_destroy_command(map_session_data *sd) {
 			instance_reqinfo(sd, pd->instance_id);
 	}
 	if (sd->guild != nullptr && sd->guild->instance_id > 0) {
-		guild *gd = guild_search(sd->status.guild_id);
+		auto gd = guild_search(sd->status.guild_id);
 
 		if (gd == nullptr)
 			return;
@@ -1003,7 +1003,6 @@ void instance_destroy_command(map_session_data *sd) {
 //************************************
 void instance_destroy_command(map_session_data* sd) {
 	struct party_data* pd = NULL;
-	struct guild* gd = NULL;
 	struct instance_data* im = NULL;
 	int mi = 0;
 
@@ -1033,8 +1032,8 @@ void instance_destroy_command(map_session_data* sd) {
 			break;
 		}
 		case IM_GUILD: {
-			gd = guild_search(idata->owner_id);
-			if (!gd || gd->guild_id != sd->status.guild_id || !sd->state.gmaster_flag)
+			auto gd = guild_search(idata->owner_id);
+			if (!gd || gd->guild.guild_id != sd->status.guild_id || !sd->state.gmaster_flag)
 				continue;
 			break;
 		}
@@ -1071,7 +1070,7 @@ bool instance_destroy(int instance_id, bool skip_erase)
 
 	map_session_data *sd;
 	struct party_data *pd;
-	struct guild *gd;
+	std::shared_ptr<MapGuild> gd;
 	struct clan *cd;
 	e_instance_mode mode = idata->mode;
 	e_instance_notify type = IN_NOTIFY;
@@ -1240,7 +1239,7 @@ e_instance_enter instance_enter(map_session_data *sd, int instance_id, const cha
 
 	std::shared_ptr<s_instance_data> idata = nullptr;
 	struct party_data *pd;
-	struct guild *gd;
+	std::shared_ptr<MapGuild> gd;
 	struct clan *cd;
 	e_instance_mode mode;
 
@@ -1278,7 +1277,7 @@ e_instance_enter instance_enter(map_session_data *sd, int instance_id, const cha
 				return IE_NOMEMBER;
 			if (gd->instance_id == 0) // Guild must have an instance
 				return IE_NOINSTANCE;
-			if (idata->owner_id != gd->guild_id)
+			if (idata->owner_id != gd->guild.guild_id)
 				return IE_OTHER;
 			break;
 		case IM_CLAN:
@@ -1424,7 +1423,7 @@ void do_reload_instance(void)
 
 		if (sd && mapdata->instance_id > 0) {
 			struct party_data *pd;
-			struct guild *gd;
+			std::shared_ptr<MapGuild> gd;
 			struct clan *cd;
 			int instance_id;
 			std::shared_ptr<s_instance_data> idata = util::umap_find(instances, map[sd->bl.m].instance_id);

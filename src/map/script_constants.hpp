@@ -1365,6 +1365,7 @@
 	export_constant2("Eff_Freezing",SC_FREEZING);
 	export_constant2("Eff_Heat",SC_BURNT);
 	export_constant2("Eff_Deepsleep",SC_DEEPSLEEP);
+	export_constant2("Eff_WhiteImprison",SC_WHITEIMPRISON);
 
 	export_constant2("SC_ALL",SC_NONE);
 
@@ -7326,6 +7327,7 @@
 	export_constant(IG_CLASS_SHADOW_PD_CUBE);
 	export_constant(IG_CLASS_SHADOW_EA_CUBE);
 	export_constant(IG_ENCHANT_STONE_BOX30);
+	export_constant(IG_ENCHANT_STONE_BOX31);
 
 
 
