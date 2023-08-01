@@ -4567,6 +4567,10 @@ void pc_bonus(map_session_data *sd,int type,int val)
 			if (sd->state.lr_flag != 2)
 				sd->bonus.weapon_atk_rate += val;
 			break;
+		case SP_MELEE_RATE:
+			if (sd->state.lr_flag != 2)
+				sd->bonus.melee_rate += val;
+			break;
 		case SP_WEAPON_MATK_RATE:
 			if (sd->state.lr_flag != 2)
 				sd->bonus.weapon_matk_rate += val;

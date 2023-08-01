@@ -7354,6 +7354,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src, struct bl
 				ATK_ADDRATE(wd.damage, wd.damage2, sd->bonus.short_attack_atk_rate);
 			if(wd.flag&BF_LONG && (skill_id != RA_WUGBITE && skill_id != RA_WUGSTRIKE)) //Long damage rate addition doesn't use weapon + equip attack
 				ATK_ADDRATE(wd.damage, wd.damage2, sd->bonus.long_attack_atk_rate);
+			if (skill_id == 0)
+				ATK_ADDRATE(wd.damage, wd.damage2, sd->bonus.melee_rate);
 		}
 
 		ratio = battle_calc_attack_skill_ratio(&wd, src, target, skill_id, skill_lv); // skill level ratios
