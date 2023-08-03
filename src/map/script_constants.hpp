@@ -7329,6 +7329,8 @@
 	export_constant(IG_CLASS_SHADOW_EA_CUBE);
 	export_constant(IG_ENCHANT_STONE_BOX30);
 	export_constant(IG_ENCHANT_STONE_BOX31);
+	export_constant(IG_THE_BLESSED_KNIFE_CUBE);
+	export_constant(IG_THE_FREEDOM_STICK_CUBE);
 
 
 
