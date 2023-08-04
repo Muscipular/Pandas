@@ -34198,7 +34198,7 @@ BUILDIN_FUNC(getmapsize) {
 		* data_x = script_getdata(st, 3),
 		* data_y = script_getdata(st, 4);
 	struct block_list* bl = map_id2bl(st->rid);
-	struct map_session_data* sd = nullptr;
+	map_session_data* sd = nullptr;
 	int16 m, x = 0, y = 0;
 	int rx = -1, ry = -1, flag = 1;
 
