@@ -3367,8 +3367,8 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type, uint16 skill
 				npc_event_do(md->npc_event);
 		} else if( mvp_sd && !md->state.npc_killmonster ) {
 			pc_setparam(mvp_sd, SP_KILLEDGID, md->bl.id);
-			pc_setreg(sd, add_str("@mob_dead_x"), (int)md->bl.x);
-			pc_setreg(sd, add_str("@mob_dead_y"), (int)md->bl.y);
+			pc_setreg(mvp_sd, add_str("@mob_dead_x"), (int)md->bl.x);
+			pc_setreg(mvp_sd, add_str("@mob_dead_y"), (int)md->bl.y);
 			pc_setparam(mvp_sd, SP_KILLEDRID, md->mob_id);
 			npc_script_event(mvp_sd, NPCE_KILLNPC); // PCKillNPC [Lance]
 		}
@@ -3379,8 +3379,8 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type, uint16 skill
 		if (md->npc_event[0] && mvp_sd &&
 			!md->state.npc_killmonster && battle_config.always_trigger_npc_killevent) {
 			pc_setparam(mvp_sd, SP_KILLEDGID, md->bl.id);
-			pc_setreg(sd, add_str("@mob_dead_x"), (int)md->bl.x);
-			pc_setreg(sd, add_str("@mob_dead_y"), (int)md->bl.y);
+			pc_setreg(mvp_sd, add_str("@mob_dead_x"), (int)md->bl.x);
+			pc_setreg(mvp_sd, add_str("@mob_dead_y"), (int)md->bl.y);
 			pc_setparam(mvp_sd, SP_KILLEDRID, md->mob_id);
 			npc_script_event(mvp_sd, NPCE_KILLNPC);
 		}
