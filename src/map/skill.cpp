@@ -2398,6 +2398,10 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl, uint
 
 			int rate = (!sd->state.arrow_atk) ? it.rate : it.rate / 2;
 
+			if (sd->bonus.autospell_rate) {
+				rate += rate / 100.0 * sd->bonus.autospell_rate;
+			}
+
 			if (rnd()%1000 >= rate)
 				continue;
 

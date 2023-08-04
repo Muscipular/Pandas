@@ -4575,6 +4575,10 @@ void pc_bonus(map_session_data *sd,int type,int val)
 			if (sd->state.lr_flag != 2)
 				sd->bonus.autospell_dmg_rate += val;
 			break;
+		case SP_AUTOSPELL_RATE:
+			if (sd->state.lr_flag != 2)
+				sd->bonus.autospell_rate += val;
+			break;
 		case SP_WEAPON_MATK_RATE:
 			if (sd->state.lr_flag != 2)
 				sd->bonus.weapon_matk_rate += val;
