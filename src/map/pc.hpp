@@ -765,6 +765,7 @@ public:
 		uint8 absorb_dmg_maxhp2;
 		short critical_rangeatk;
 		int melee_rate;
+		int autospell_dmg_rate;
 		short weapon_atk_rate, weapon_matk_rate;
 #ifdef Pandas_Bonus3_bRebirthWithHeal
 		int rebirth_rate, rebirth_heal_percent_hp, rebirth_heal_percent_sp;

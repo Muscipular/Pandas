@@ -42,10 +42,11 @@ enum e_battle_flag : uint16 {
 
 	BF_SKILL	= 0x0100, /// Skill attack
 	BF_NORMAL	= 0x0200, /// Normal attack
+	BF_AUTOSPELL= 0x0400, /// AutoSpell attack
 
 	BF_WEAPONMASK	= BF_WEAPON|BF_MAGIC|BF_MISC, /// Weapon attack mask
 	BF_RANGEMASK	= BF_SHORT|BF_LONG, /// Range attack mask
-	BF_SKILLMASK	= BF_SKILL|BF_NORMAL, /// Skill attack mask
+	BF_SKILLMASK	= BF_SKILL|BF_NORMAL|BF_AUTOSPELL, /// Skill attack mask
 };
 
 /// Battle check target [Skotlex]
