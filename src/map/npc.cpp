@@ -4502,6 +4502,7 @@ static const char* npc_parse_warp(char* w1, char* w2, char* w3, char* w4, const 
  * Parses a shop/cashshop npc.
  * Line definition :
  * <map name>,<x>,<y>,<facing>%TAB%shop%TAB%<NPC Name>%TAB%<sprite id>,<itemid>:<price>{,<itemid>:<price>...}
+ * <map name>,<x>,<y>,<facing>%TAB%barter%TAB%<NPC Name>%TAB%<sprite id>,<itemid>:<price>:<stock>{!<itemid>:<qty>:<refine>...}{,<itemid>:<price>:<stock>{!<itemid>:<qty>:<refine>...}...}
  * <map name>,<x>,<y>,<facing>%TAB%cashshop%TAB%<NPC Name>%TAB%<sprite id>,<itemid>:<price>{,<itemid>:<price>...}
  * <map name>,<x>,<y>,<facing>%TAB%itemshop%TAB%<NPC Name>%TAB%<sprite id>,<costitemid>{:<discount>},<itemid>:<price>{,<itemid>:<price>...}
  * <map name>,<x>,<y>,<facing>%TAB%pointshop%TAB%<NPC Name>%TAB%<sprite id>,<costvariable>{:<discount>},<itemid>:<price>{,<itemid>:<price>...}
@@ -4560,6 +4561,8 @@ static const char* npc_parse_shop(char* w1, char* w2, char* w3, char* w4, const 
 		type = NPCTYPE_POINTSHOP;
 	else if( !strcasecmp(w2, "marketshop") )
 		type = NPCTYPE_MARKETSHOP;
+	else if( !strcasecmp(w2, "barter") )
+		type = NPCTYPE_BARTER;
 	else
 		type = NPCTYPE_SHOP;
 
@@ -4610,6 +4613,7 @@ static const char* npc_parse_shop(char* w1, char* w2, char* w3, char* w4, const 
 			p = strchr(p+1,',');
 			break;
 		}
+		case NPCTYPE_BARTER:
 		case NPCTYPE_MARKETSHOP:
 #if PACKETVER < 20131223
 			ShowError("npc_parse_shop: (MARKETSHOP) Feature is disabled, need client 20131223 or newer. Ignoring file '%s', line '%d\n * w1=%s\n * w2=%s\n * w3=%s\n * w4=%s\n", filepath, strline(buffer, start - buffer), w1, w2, w3, w4);
@@ -4638,6 +4642,22 @@ static const char* npc_parse_shop(char* w1, char* w2, char* w3, char* w4, const 
 	
 	nd = npc_create_npc(m, x, y);
 	nd->u.shop.count = 0;
+
+	struct BarterItem {
+		t_itemid nameid2;
+		int zeny;
+		int stock;
+		struct {
+			t_itemid nameid2;
+			int qty;
+			int refine;
+		} req[4];
+	};
+		
+	std::vector<BarterItem> barterItems;
+
+	struct BarterItem item = {0};
+	memset(&item, 0, sizeof(item));
 	while ( p ) {
 		t_itemid nameid2;
 		int32 qty = -1;
@@ -4646,6 +4666,66 @@ static const char* npc_parse_shop(char* w1, char* w2, char* w3, char* w4, const 
 
 		if( p == NULL )
 			break;
+		if (type == NPCTYPE_BARTER) {
+			if (sscanf(p, ",%u:%11d:%11d!%u:%11d:%11d!%u:%11d:%11d!%u:%11d:%11d!%u:%11d:%11d",
+				&item.nameid2, &item.zeny, &item.stock,
+				&item.req[0].nameid2, &item.req[0].qty, &item.req[0].refine,
+				&item.req[1].nameid2, &item.req[1].qty, &item.req[1].refine,
+				&item.req[2].nameid2, &item.req[2].qty, &item.req[2].refine,
+				&item.req[3].nameid2, &item.req[3].qty, &item.req[3].refine
+			) == 15) {
+				nd->u.shop.count++;
+				barterItems.push_back(item);
+				break;
+			}
+			if (sscanf(p, ",%u:%11d:%11d!%u:%11d:%11d!%u:%11d:%11d!%u:%11d:%11d",
+				&item.nameid2, &item.zeny, &item.stock,
+				&item.req[0].nameid2, &item.req[0].qty, &item.req[0].refine,
+				&item.req[1].nameid2, &item.req[1].qty, &item.req[1].refine,
+				&item.req[2].nameid2, &item.req[2].qty, &item.req[2].refine
+			) == 12) {
+				item.req[3].nameid2 = 0;
+				item.req[3].qty = 0;
+				item.req[3].refine = 0;
+				nd->u.shop.count++;
+				barterItems.push_back(item);
+				break;
+			}
+			if (sscanf(p, ",%u:%11d:%11d!%u:%11d:%11d!%u:%11d:%11d",
+				&item.nameid2, &item.zeny, &item.stock,
+				&item.req[0].nameid2, &item.req[0].qty, &item.req[0].refine,
+				&item.req[1].nameid2, &item.req[1].qty, &item.req[1].refine
+			) == 9) {
+				item.req[2].nameid2 = 0;
+				item.req[2].qty = 0;
+				item.req[2].refine = 0;
+				item.req[3].nameid2 = 0;
+				item.req[3].qty = 0;
+				item.req[3].refine = 0;
+				nd->u.shop.count++;
+				barterItems.push_back(item);
+				break;
+			}
+			if (sscanf(p, ",%u:%11d:%11d!%u:%11d:%11d",
+				&item.nameid2, &item.zeny, &item.stock,
+				&item.req[0].nameid2, &item.req[0].qty, &item.req[0].refine
+			) == 6) {
+				item.req[1].nameid2 = 0;
+				item.req[1].qty = 0;
+				item.req[1].refine = 0;
+				item.req[2].nameid2 = 0;
+				item.req[2].qty = 0;
+				item.req[2].refine = 0;
+				item.req[3].nameid2 = 0;
+				item.req[3].qty = 0;
+				item.req[3].refine = 0;
+				nd->u.shop.count++;
+				barterItems.push_back(item);
+				break;
+			}
+			ShowError("npc_parse_shop: (BARTER) Invalid item definition in file '%s', line '%d'. Ignoring the rest of the line...\n * w1=%s\n * w2=%s\n * w3=%s\n * w4=%s\n", filepath, strline(buffer, start - buffer), w1, w2, w3, w4);
+			break;
+		}
 		switch(type) {
 			case NPCTYPE_MARKETSHOP:
 #if PACKETVER >= 20131223
@@ -4743,6 +4823,13 @@ static const char* npc_parse_shop(char* w1, char* w2, char* w3, char* w4, const 
 	npc_parsename(nd, w3, start, buffer, filepath);
 	nd->class_ = m == -1 ? JT_FAKENPC : npc_parseview(w4, start, buffer, filepath);
 	nd->speed = 200;
+
+	if (type == NPCTYPE_BARTER) {
+		auto barter = std::make_shared<s_npc_barter>();
+		barter->name = nd->exname;
+		barter->npcid = nd->bl.id;
+		barter_db.put(nd->exname, barter);
+	}
 
 	++npc_shop;
 	nd->bl.type = BL_NPC;
@@ -6360,7 +6447,7 @@ int npc_parsesrcfile(const char* filepath)
 		// parse the data according to w2
 		if ((strncasecmp(w2, "warp", 4) == 0 || strncasecmp(w2, "warp2", 5) == 0) && count > 3)
 			p = npc_parse_warp(w1,w2,w3,w4, p, buffer, filepath);
-		else if ((!strcasecmp(w2,"shop") || !strcasecmp(w2,"cashshop") || !strcasecmp(w2,"itemshop") || !strcasecmp(w2,"pointshop") || !strcasecmp(w2,"marketshop") ) && count > 3)
+		else if ((!strcasecmp(w2,"shop") || !strcasecmp(w2,"cashshop") || !strcasecmp(w2,"itemshop") || !strcasecmp(w2,"barter") || !strcasecmp(w2,"pointshop") || !strcasecmp(w2,"marketshop") ) && count > 3)
 			p = npc_parse_shop(w1,w2,w3,w4, p, buffer, filepath);
 		else if (has_script) {
 			if (strcasecmp(w1,"function") == 0) {
