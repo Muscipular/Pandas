@@ -1041,6 +1041,10 @@ void BarterDatabase::loadingFinished(){
 			return;
 		}
 
+		if (pair.second->scripted) {
+			continue;
+		}
+
 		std::shared_ptr<s_npc_barter> barter = pair.second;
 
 		bool extended = false;
@@ -4838,10 +4842,30 @@ static const char* npc_parse_shop(char* w1, char* w2, char* w3, char* w4, const 
 	nd->speed = 200;
 
 	if (type == NPCTYPE_BARTER) {
+		nd->u.barter.extended = true;
 		auto barter = std::make_shared<s_npc_barter>();
 		barter->name = nd->exname;
 		barter->npcid = nd->bl.id;
 		barter->scripted = true;
+		for (size_t i = 0; i < barterItems.size(); i++) {
+			auto it = std::make_shared<s_npc_barter_item>();
+			it->index = i;
+			it->nameid = barterItems[i].nameid2;
+			it->price = barterItems[i].zeny;
+			it->stock = barterItems[i].stock;
+			it->stockLimited = barterItems[i].stock > 0;
+			for (size_t j = 0; j < 4; j++) {
+				if (barterItems[i].req[j].nameid2 > 0) {
+					auto req = std::make_shared<s_npc_barter_requirement>();
+					req->nameid = barterItems[i].req[j].nameid2;
+					req->amount = barterItems[i].req[j].qty;
+					req->refine = barterItems[i].req[j].refine;
+					req->index = j;
+					it->requirements[j] = req;
+				}
+			}
+			barter->items[i] = it;
+		}
 		barter_db.put(nd->exname, barter);
 	}
 

@@ -20195,7 +20195,7 @@ BUILDIN_FUNC(npcbarteradditem)
 	}
 	t_itemid nameid = script_getnum(st, 3);
 	if (!item_db.exists(nameid)) {
-		ShowError("builtin_npcshopadditem: Item ID %u does not exist.\n", nameid);
+		ShowError("builtin_npcbarteradditem: Item ID %u does not exist.\n", nameid);
 		script_pushint(st, 0);
 		return SCRIPT_CMD_FAILURE;
 	}
@@ -20217,55 +20217,60 @@ BUILDIN_FUNC(npcbarteradditem)
 	for (int i = 6, j = 0; j < amount; i+=offs, j++)
 	{
 		t_itemid nameid2 = script_getnum( st, i );
+		if (nameid2 == 0) {
+			continue;
+		}
 
 		if( !item_db.exists( nameid2 ) ){
-			ShowError( "builtin_npcshopadditem: Item ID %u does not exist.\n", nameid2 );
+			ShowError( "builtin_npcbarteradditem: Item ID %u does not exist.\n", nameid2 );
 			script_pushint( st, 0 );
 			return SCRIPT_CMD_FAILURE;
 		}
 
-		nd->u.shop.shop_item[n].nameid = nameid2;
-		nd->u.shop.shop_item[n].value = script_getnum(st,i+1);
-		nd->u.shop.count++;
-	}
+		auto req = std::make_shared<s_npc_barter_requirement>();
 
+		req->nameid = nameid2;
+		req->amount = script_getnum(st, i + 1);
+		req->refine = script_getnum(st, i + 2);
+		item->requirements[j] = req;
+	}
+	barter->items[id] = item;
 	script_pushint(st,1);
 	return SCRIPT_CMD_SUCCESS;
 }
 
-BUILDIN_FUNC(npcshopdelitem)
+BUILDIN_FUNC(npcbarterdelitem)
 {
 	const char* npcname = script_getstr(st,2);
 	struct npc_data* nd = npc_name2id(npcname);
 	int n, i, size;
 	unsigned short amount;
 
-	if (!nd || ( nd->subtype != NPCTYPE_SHOP && nd->subtype != NPCTYPE_CASHSHOP && nd->subtype != NPCTYPE_ITEMSHOP && nd->subtype != NPCTYPE_POINTSHOP && nd->subtype != NPCTYPE_MARKETSHOP)) { // Not found.
+	if (!nd || ( nd->subtype != NPCTYPE_BARTER)) { // Not found.
 		script_pushint(st,0);
+		return SCRIPT_CMD_SUCCESS;
+	}
+	auto barter = barter_db.find(nd->exname);
+	if (barter == nullptr) {
+		script_pushint(st, 0);
 		return SCRIPT_CMD_SUCCESS;
 	}
 
 	amount = script_lastdata(st)-2;
-	size = nd->u.shop.count;
 
 	// remove specified items from the shop item list
 	for( i = 3; i < 3 + amount; i++ ) {
 		t_itemid nameid = script_getnum(st,i);
-
-		ARR_FIND( 0, size, n, nd->u.shop.shop_item[n].nameid == nameid );
-		if( n < size ) {
-			if (n+1 != size)
-				memmove(&nd->u.shop.shop_item[n], &nd->u.shop.shop_item[n+1], sizeof(nd->u.shop.shop_item[0])*(size-(n + 1)));
-#if PACKETVER >= 20131223
-			if (nd->subtype == NPCTYPE_MARKETSHOP)
-				npc_market_delfromsql_(nd->exname, nameid, false);
-#endif
-			size--;
+		std::vector<uint16> list;
+		for (auto& p : barter->items) {
+			if (p.second->nameid == nameid) {
+				list.push_back(p.first);
+			}
+		}
+		for (auto p : list) {
+			barter->items.erase(p);
 		}
 	}
-
-	RECREATE(nd->u.shop.shop_item, struct npc_item_list, size);
-	nd->u.shop.count = size;
 
 	script_pushint(st,1);
 	return SCRIPT_CMD_SUCCESS;
@@ -34744,6 +34749,8 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(npcshopitem,"sii*"), // [Lance]
 	BUILDIN_DEF(npcshopadditem,"sii*"),
 	BUILDIN_DEF(npcshopdelitem,"si*"),
+	BUILDIN_DEF(npcbarteradditem,"siii*"),
+	BUILDIN_DEF(npcbarterdelitem,"si*"),
 	BUILDIN_DEF(npcshopattach,"s?"),
 	BUILDIN_DEF(equip,"i?"),
 	BUILDIN_DEF(autoequip,"ii"),
