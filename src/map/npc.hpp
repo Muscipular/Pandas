@@ -105,6 +105,7 @@ struct s_npc_barter{
 	int16 sprite;
 	std::map<uint16, std::shared_ptr<s_npc_barter_item>> items;
 	int32 npcid;
+	bool scripted;
 
 	~s_npc_barter();
 };
@@ -118,6 +119,7 @@ public:
 	const std::string getDefaultLocation();
 	uint64 parseBodyNode( const ryml::NodeRef& node );
 	void loadingFinished();
+	void clear();
 };
 
 extern BarterDatabase barter_db;

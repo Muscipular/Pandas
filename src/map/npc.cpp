@@ -1159,6 +1159,19 @@ void BarterDatabase::loadingFinished(){
 	TypesafeYamlDatabase::loadingFinished();
 }
 
+void BarterDatabase::clear() {
+	std::unordered_map<std::string, std::shared_ptr<s_npc_barter>> old;
+	for (auto& r : this->data) {
+		if (r.second->scripted)		{
+			old[r.first] = r.second;
+		}
+	}
+	this->data.clear();
+	for (auto& r : old) {
+		this->data[r.first] = r.second;
+	}
+}
+
 s_npc_barter::~s_npc_barter(){
 	if( this->npcid != 0 ){
 		struct npc_data* nd = map_id2nd( this->npcid );
@@ -4828,6 +4841,7 @@ static const char* npc_parse_shop(char* w1, char* w2, char* w3, char* w4, const 
 		auto barter = std::make_shared<s_npc_barter>();
 		barter->name = nd->exname;
 		barter->npcid = nd->bl.id;
+		barter->scripted = true;
 		barter_db.put(nd->exname, barter);
 	}
 
