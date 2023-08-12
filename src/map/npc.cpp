@@ -4668,7 +4668,7 @@ static const char* npc_parse_shop(char* w1, char* w2, char* w3, char* w4, const 
 			t_itemid nameid2;
 			int qty;
 			int refine;
-		} req[4];
+		} req[5];
 	};
 		
 	std::vector<BarterItem> barterItems;
@@ -4684,6 +4684,18 @@ static const char* npc_parse_shop(char* w1, char* w2, char* w3, char* w4, const 
 		if( p == NULL )
 			break;
 		if (type == NPCTYPE_BARTER) {
+			if (sscanf(p, ",%u:%11d:%11d!%u:%11d:%11d!%u:%11d:%11d!%u:%11d:%11d!%u:%11d:%11d!%u:%11d:%11d",
+				&item.nameid2, &item.zeny, &item.stock,
+				&item.req[0].nameid2, &item.req[0].qty, &item.req[0].refine,
+				&item.req[1].nameid2, &item.req[1].qty, &item.req[1].refine,
+				&item.req[2].nameid2, &item.req[2].qty, &item.req[2].refine,
+				&item.req[3].nameid2, &item.req[3].qty, &item.req[3].refine,
+				&item.req[4].nameid2, &item.req[4].qty, &item.req[4].refine
+			) == 18) {
+				nd->u.shop.count++;
+				barterItems.push_back(item);
+				break;
+			}
 			if (sscanf(p, ",%u:%11d:%11d!%u:%11d:%11d!%u:%11d:%11d!%u:%11d:%11d!%u:%11d:%11d",
 				&item.nameid2, &item.zeny, &item.stock,
 				&item.req[0].nameid2, &item.req[0].qty, &item.req[0].refine,
@@ -4854,7 +4866,7 @@ static const char* npc_parse_shop(char* w1, char* w2, char* w3, char* w4, const 
 			it->price = barterItems[i].zeny;
 			it->stock = barterItems[i].stock;
 			it->stockLimited = barterItems[i].stock > 0;
-			for (size_t j = 0; j < 4; j++) {
+			for (size_t j = 0; j < 5; j++) {
 				if (barterItems[i].req[j].nameid2 > 0) {
 					auto req = std::make_shared<s_npc_barter_requirement>();
 					req->nameid = barterItems[i].req[j].nameid2;
