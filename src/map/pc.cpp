@@ -3674,7 +3674,7 @@ static void pc_bonus_subele(map_session_data* sd, unsigned char ele, short rate,
 
 	for (auto &it : sd->subele2) {
 		if (it.ele == ele && it.flag == flag) {
-			it.rate = util::safe_addition_cap(it.rate, rate, (short)9500);
+			it.rate = util::safe_addition_cap(it.rate, rate, (short)10000);
 			return;
 		}
 	}
@@ -3682,7 +3682,7 @@ static void pc_bonus_subele(map_session_data* sd, unsigned char ele, short rate,
 	struct s_addele2 entry = {};
 
 	entry.ele = ele;
-	entry.rate = cap_value(rate, -10000, 9500);
+	entry.rate = cap_value(rate, -10000, 10000);
 	entry.flag = flag;
 
 	sd->subele2.push_back(entry);
@@ -3715,7 +3715,7 @@ static void pc_bonus_subrace(map_session_data* sd, unsigned char race, short rat
 
 	for (auto &it : sd->subrace3) {
 		if (it.race == race && it.flag == flag) {
-			it.rate = util::safe_addition_cap(it.rate, rate, (short)9500);
+			it.rate = util::safe_addition_cap(it.rate, rate, (short)10000);
 			return;
 		}
 	}
@@ -3723,7 +3723,7 @@ static void pc_bonus_subrace(map_session_data* sd, unsigned char race, short rat
 	struct s_addrace2 entry = {};
 
 	entry.race = race;
-	entry.rate = cap_value(rate, -10000, 9500);
+	entry.rate = cap_value(rate, -10000, 10000);
 	entry.flag = flag;
 
 	sd->subrace3.push_back(entry);

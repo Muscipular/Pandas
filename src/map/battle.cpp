@@ -757,10 +757,10 @@ int battle_calc_cardfix(int attack_type, struct block_list *src, struct block_li
 					}
 					if (s_defele != ELE_NONE)
 						ele_fix += tsd->indexed_bonus.magic_subdefele[s_defele] + tsd->indexed_bonus.magic_subdefele[ELE_ALL];
-					cardfix = cardfix * (100 - ele_fix) / 100;
+					cardfix = cardfix * (100 - min(ele_fix, 95)) / 100;
 				}
-				cardfix = cardfix * (100 - tsd->indexed_bonus.subsize[sstatus->size] - tsd->indexed_bonus.subsize[SZ_ALL]) / 100;
-				cardfix = cardfix * (100 - tsd->indexed_bonus.magic_subsize[sstatus->size] - tsd->indexed_bonus.magic_subsize[SZ_ALL]) / 100;
+				cardfix = cardfix * (100 - min(tsd->indexed_bonus.subsize[sstatus->size] - tsd->indexed_bonus.subsize[SZ_ALL], 95)) / 100;
+				cardfix = cardfix * (100 - min(tsd->indexed_bonus.magic_subsize[sstatus->size] - tsd->indexed_bonus.magic_subsize[SZ_ALL], 95)) / 100;
 
 				int32 race_fix = 0;
 
@@ -777,12 +777,12 @@ int battle_calc_cardfix(int attack_type, struct block_list *src, struct block_li
 						continue;
 					race_fix += it.rate;
 				}
-				cardfix = cardfix * (100 - race_fix) / 100;
-				cardfix = cardfix * (100 - tsd->indexed_bonus.subclass[sstatus->class_] - tsd->indexed_bonus.subclass[CLASS_ALL]) / 100;
+				cardfix = cardfix * (100 - min(race_fix, 95)) / 100;
+				cardfix = cardfix * (100 - min(tsd->indexed_bonus.subclass[sstatus->class_] - tsd->indexed_bonus.subclass[CLASS_ALL], 95)) / 100;
 
 				for (const auto &it : tsd->add_mdef) {
 					if (it.id == s_class) {
-						cardfix = cardfix * (100 - it.val) / 100;
+						cardfix = cardfix * (100 - min(it.val, 95)) / 100;
 						break;
 					}
 				}
@@ -793,10 +793,10 @@ int battle_calc_cardfix(int attack_type, struct block_list *src, struct block_li
 				else if (!nk[NK_IGNORELONGCARD])
 					cardfix = cardfix * (100 - tsd->bonus.long_attack_def_rate) / 100;
 #endif
-				cardfix = cardfix * (100 - tsd->bonus.magic_def_rate) / 100;
+				cardfix = cardfix * (100 - min(tsd->bonus.magic_def_rate, 95)) / 100;
 
 				if( tsd->sc.getSCE(SC_MDEF_RATE) )
-					cardfix = cardfix * (100 - tsd->sc.getSCE(SC_MDEF_RATE)->val1) / 100;
+					cardfix = cardfix * (100 - min(tsd->sc.getSCE(SC_MDEF_RATE)->val1, 95)) / 100;
 				APPLY_CARDFIX(damage, cardfix);
 			}
 			break;
@@ -979,7 +979,7 @@ int battle_calc_cardfix(int attack_type, struct block_list *src, struct block_li
 							continue;
 						ele_fix += it.rate;
 					}
-					cardfix = cardfix * (100 - ele_fix) / 100;
+					cardfix = cardfix * (100 - min(ele_fix, 95)) / 100;
 
 					if( left&1 && lh_ele != rh_ele ) {
 						int ele_fix_lh = tsd->indexed_bonus.subele[lh_ele] + tsd->indexed_bonus.subele[ELE_ALL] + tsd->indexed_bonus.subele_script[lh_ele] + tsd->indexed_bonus.subele_script[ELE_ALL];
@@ -993,19 +993,19 @@ int battle_calc_cardfix(int attack_type, struct block_list *src, struct block_li
 								continue;
 							ele_fix_lh += it.rate;
 						}
-						cardfix = cardfix * (100 - ele_fix_lh) / 100;
+						cardfix = cardfix * (100 - min(ele_fix_lh, 95)) / 100;
 					}
 
-					cardfix = cardfix * (100 - tsd->indexed_bonus.subdefele[s_defele] - tsd->indexed_bonus.subdefele[ELE_ALL]) / 100;
+					cardfix = cardfix * (100 - min(tsd->indexed_bonus.subdefele[s_defele] - tsd->indexed_bonus.subdefele[ELE_ALL], 95)) / 100;
 				}
 
 				int32 race_fix = 0;
 
-				cardfix = cardfix * (100 - tsd->indexed_bonus.subsize[sstatus->size] - tsd->indexed_bonus.subsize[SZ_ALL]) / 100;
-				cardfix = cardfix * (100 - tsd->indexed_bonus.weapon_subsize[sstatus->size] - tsd->indexed_bonus.weapon_subsize[SZ_ALL]) / 100;
+				cardfix = cardfix * (100 - min(tsd->indexed_bonus.subsize[sstatus->size] - tsd->indexed_bonus.subsize[SZ_ALL], 95)) / 100;
+				cardfix = cardfix * (100 - min(tsd->indexed_bonus.weapon_subsize[sstatus->size] - tsd->indexed_bonus.weapon_subsize[SZ_ALL], 95)) / 100;
 				for (const auto &raceit : s_race2)
 					race_fix += tsd->indexed_bonus.subrace2[raceit];
-				cardfix = cardfix * (100 - race_fix) / 100;
+				cardfix = cardfix * (100 - min(race_fix, 95)) / 100;
 				race_fix = tsd->indexed_bonus.subrace[sstatus->race] + tsd->indexed_bonus.subrace[RC_ALL];
 				for (const auto &it : tsd->subrace3) {
 					if (it.race != RC_ALL && it.race != sstatus->race)
@@ -1016,20 +1016,20 @@ int battle_calc_cardfix(int attack_type, struct block_list *src, struct block_li
 						continue;
 					race_fix += it.rate;
 				}
-				cardfix = cardfix * (100 - race_fix) / 100;
-				cardfix = cardfix * (100 - tsd->indexed_bonus.subclass[sstatus->class_] - tsd->indexed_bonus.subclass[CLASS_ALL]) / 100;
+				cardfix = cardfix * (100 - min(race_fix, 95)) / 100;
+				cardfix = cardfix * (100 - min(tsd->indexed_bonus.subclass[sstatus->class_] - tsd->indexed_bonus.subclass[CLASS_ALL], 95)) / 100;
 				for (const auto &it : tsd->add_def) {
 					if (it.id == s_class) {
-						cardfix = cardfix * (100 - it.val) / 100;
+						cardfix = cardfix * (100 - min(it.val, 95)) / 100;
 						break;
 					}
 				}
 				if( flag&BF_SHORT )
-					cardfix = cardfix * (100 - tsd->bonus.near_attack_def_rate) / 100;
+					cardfix = cardfix * (100 - min(tsd->bonus.near_attack_def_rate, 95)) / 100;
 				else if (!nk[NK_IGNORELONGCARD])	// BF_LONG (there's no other choice)
-					cardfix = cardfix * (100 - tsd->bonus.long_attack_def_rate) / 100;
+					cardfix = cardfix * (100 - min(tsd->bonus.long_attack_def_rate, 95)) / 100;
 				if( tsd->sc.getSCE(SC_DEF_RATE) )
-					cardfix = cardfix * (100 - tsd->sc.getSCE(SC_DEF_RATE)->val1) / 100;
+					cardfix = cardfix * (100 - min(tsd->sc.getSCE(SC_DEF_RATE)->val1, 95)) / 100;
 				APPLY_CARDFIX(damage, cardfix);
 			}
 			break;
@@ -1051,7 +1051,7 @@ int battle_calc_cardfix(int attack_type, struct block_list *src, struct block_li
 					}
 					if (s_defele != ELE_NONE)
 						ele_fix += tsd->indexed_bonus.subdefele[s_defele] + tsd->indexed_bonus.subdefele[ELE_ALL];
-					cardfix = cardfix * (100 - ele_fix) / 100;
+					cardfix = cardfix * (100 - min(ele_fix, 95)) / 100;
 				}
 				int race_fix = tsd->indexed_bonus.subrace[sstatus->race] + tsd->indexed_bonus.subrace[RC_ALL];
 				for (const auto &it : tsd->subrace3) {
@@ -1063,18 +1063,18 @@ int battle_calc_cardfix(int attack_type, struct block_list *src, struct block_li
 						continue;
 					race_fix += it.rate;
 				}
-				cardfix = cardfix * (100 - race_fix) / 100;
-				cardfix = cardfix * (100 - tsd->indexed_bonus.subsize[sstatus->size] - tsd->indexed_bonus.subsize[SZ_ALL]) / 100;
+				cardfix = cardfix * (100 - min(race_fix, 95)) / 100;
+				cardfix = cardfix * (100 - min(tsd->indexed_bonus.subsize[sstatus->size] - tsd->indexed_bonus.subsize[SZ_ALL], 95)) / 100;
 				race_fix = 0;
 				for (const auto &raceit : s_race2)
 					race_fix += tsd->indexed_bonus.subrace2[raceit];
-				cardfix = cardfix * (100 - race_fix) / 100;
-				cardfix = cardfix * (100 - tsd->indexed_bonus.subclass[sstatus->class_] - tsd->indexed_bonus.subclass[CLASS_ALL]) / 100;
-				cardfix = cardfix * (100 - tsd->bonus.misc_def_rate) / 100;
+				cardfix = cardfix * (100 - min(race_fix, 95)) / 100;
+				cardfix = cardfix * (100 - min(tsd->indexed_bonus.subclass[sstatus->class_] - tsd->indexed_bonus.subclass[CLASS_ALL], 95)) / 100;
+				cardfix = cardfix * (100 - min(tsd->bonus.misc_def_rate, 95)) / 100;
 				if( flag&BF_SHORT )
-					cardfix = cardfix * (100 - tsd->bonus.near_attack_def_rate) / 100;
+					cardfix = cardfix * (100 - min(tsd->bonus.near_attack_def_rate, 95)) / 100;
 				else if (!nk[NK_IGNORELONGCARD])	// BF_LONG (there's no other choice)
-					cardfix = cardfix * (100 - tsd->bonus.long_attack_def_rate) / 100;
+					cardfix = cardfix * (100 - min(tsd->bonus.long_attack_def_rate, 95)) / 100;
 				APPLY_CARDFIX(damage, cardfix);
 			}
 			break;
