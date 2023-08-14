@@ -1228,6 +1228,7 @@
 #ifdef Pandas_Bonus2_bAddSkillRange
 	// 增加 sk 技能 n 格攻击距离
 	export_constant2("bAddSkillRange", SP_PANDAS_ADDSKILLRANGE);
+	export_constant2("bAddSkillRangeAll", SP_PANDAS_ADDSKILLRANGE_ALL);
 #endif // Pandas_Bonus2_bAddSkillRange
 #ifdef Pandas_Bonus2_bSkillNoRequire
 	// 解除 sk 技能中由 n 指定的前置施法条件限制

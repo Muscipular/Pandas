@@ -4571,6 +4571,10 @@ void pc_bonus(map_session_data *sd,int type,int val)
 			if (sd->state.lr_flag != 2)
 				sd->bonus.melee_rate += val;
 			break;
+		case SP_PANDAS_ADDSKILLRANGE_ALL:
+			if (sd->state.lr_flag != 2)
+				sd->bonus.skillrange += val;
+			break;
 		case SP_AUTOSPELL_DMG_RATE:
 			if (sd->state.lr_flag != 2)
 				sd->bonus.autospell_dmg_rate += val;
@@ -10084,7 +10088,7 @@ int pc_addskillrange_bonus(map_session_data* sd, uint16 skill_id) {
 
 	skill_id = skill_dummy2skill_id(skill_id);
 
-	int bonus = 0;
+	int bonus = sd->bonus.skillrange;
 	for (auto& it : sd->addskillrange) {
 		if (it.id == skill_id) {
 			bonus += it.val;

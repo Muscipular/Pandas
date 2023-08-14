@@ -603,6 +603,7 @@ enum _sp {
 		SP_PANDAS_REBIRTHWITHHEAL,	// 调整器名称: bRebirthWithHeal / 说明: 当玩家死亡时有 r/100% 的机率复活并恢复 h% 的 HP 和 s% 的 SP
 	#endif // Pandas_Bonus3_bRebirthWithHeal
 	#ifdef Pandas_Bonus2_bAddSkillRange
+		SP_PANDAS_ADDSKILLRANGE_ALL,
 		SP_PANDAS_ADDSKILLRANGE,	// 调整器名称: bAddSkillRange / 说明: 增加 sk 技能 n 格攻击距离
 	#endif // Pandas_Bonus2_bAddSkillRange
 	#ifdef Pandas_Bonus2_bSkillNoRequire
