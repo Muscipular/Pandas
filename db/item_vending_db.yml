@@ -1,0 +1,16 @@
+# Easycore's Works
+#   - - -
+###########################################################################
+# Item Vending Database
+###########################################################################
+# - Item              Item Aegis Name.
+###########################################################################
+
+Header:
+  Type: ITEM_VENDING_DB
+  Version: 1
+
+Body:
+ - Item: Mithril_Coin
+ - Item: Silver_Coin
+ - Item: Copper_Coin

@@ -2519,6 +2519,25 @@ public:
 
 extern ItemPackageDatabase item_package_db;
 
+/**
+* Extended Vending system [Lilith] update version by ex0ample
+**/
+struct s_item_vend_db {
+	t_itemid nameid;
+};
+
+class ItemVendingDatabase : public TypesafeCachedYamlDatabase<t_itemid, s_item_vend_db> {
+public:
+	ItemVendingDatabase() : TypesafeCachedYamlDatabase("ITEM_VENDING_DB", 1) {
+
+	}
+
+	const std::string getDefaultLocation();
+	uint64 parseBodyNode(const ryml::NodeRef& node);
+};
+
+extern ItemVendingDatabase itemdb_vending;
+
 uint16 itemdb_searchname_array(std::map<t_itemid, std::shared_ptr<item_data>> &data, uint16 size, const char *str);
 struct item_data* itemdb_search(t_itemid nameid);
 
@@ -2586,5 +2605,8 @@ void itemdb_reload(void);
 
 void do_final_itemdb(void);
 void do_init_itemdb(void);
+
+#define ITEMID_ZENY battle_config.item_zeny
+#define ITEMID_CASH battle_config.item_cash
 
 #endif /* ITEMDB_HPP */

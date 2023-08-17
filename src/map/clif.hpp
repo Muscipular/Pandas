@@ -1300,6 +1300,9 @@ void clif_macro_reporter_status(map_session_data &sd, e_macro_report_status styp
 
 void clif_dynamicnpc_result( map_session_data& sd, e_dynamicnpc_result result );
 
+/// Extended Vending [Lilith] update version by ex0ample
+int clif_vend(map_session_data* sd, int skill_lv);
+
 #ifdef Pandas_Character_Title_Controller
 // 将 rAthena 官方编写的 clif_change_title_ack 暴露出来, 以便 npc.cpp 中的函数调用
 void clif_change_title_ack(map_session_data* sd, unsigned char result, unsigned long title_id);
