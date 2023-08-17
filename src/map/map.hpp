@@ -74,10 +74,10 @@ void map_msg_reload(void);
 #define AREA_DEAD_SIZE battle_config.dead_area_size
 #endif // Pandas_BattleConfig_Dead_Area_Size
 #define DAMAGELOG_SIZE 30
-#define LOOTITEM_SIZE 10
+#define LOOTITEM_SIZE 15
 #define MAX_MOBSKILL 50		//Max 128, see mob skill_idx type if need this higher
 #define MAX_MOB_LIST_PER_MAP 128
-#define MAX_EVENTQUEUE 2
+#define MAX_EVENTQUEUE 5
 #define MAX_EVENTTIMER 32
 #define NATURAL_HEAL_INTERVAL 500
 #define MIN_FLOORITEM 2
