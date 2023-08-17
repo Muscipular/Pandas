@@ -880,6 +880,7 @@
 #ifdef Pandas_MapFlag_NoAttack2
 	export_constant(MF_NOATTACK2);
 #endif // Pandas_MapFlag_NoAttack2
+	export_constant(MF_NOMOBLEVELUP);
 
 	// PYHELP - MAPFLAG - INSERT POINT - <Section 3>
 

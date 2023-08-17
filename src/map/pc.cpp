@@ -10463,7 +10463,8 @@ int pc_dead(map_session_data *sd,struct block_list *src, uint16 skill_id)
 			if(battle_config.mobs_level_up && md->status.hp &&
 				(unsigned int)md->level < pc_maxbaselv(sd) &&
 				!md->guardian_data && !md->special_state.ai// Guardians/summons should not level. [Skotlex]
-			) { 	// monster level up [Valaris]
+				&& !mapdata->getMapFlag(MF_NOMOBLEVELUP)
+			) { 	// monster level up [Valaris]				
 				clif_misceffect(&md->bl,0);
 				md->level++;
 				status_calc_mob(md, SCO_NONE);
