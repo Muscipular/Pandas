@@ -2482,6 +2482,28 @@ void clif_selllist(map_session_data *sd)
 	fd=sd->fd;
 	WFIFOHEAD(fd, MAX_INVENTORY * 10 + 4);
 	WFIFOW(fd,0)=0xc7;
+	if (!sd->dyn_sell_list.empty())
+	{
+		int j;
+		for (j = 0; j < MAX_INVENTORY; j++) {
+			for (i = 0; i < sd->dyn_sell_list.size(); i++)
+			{
+				bool find = false;
+				if (sd->inventory.u.items_inventory[j].nameid == sd->dyn_sell_list[i].id) {
+					find = true;
+					break;
+				}
+				if (!find) {
+					continue;
+				}
+				WFIFOW(fd, 4 + c * 10) = c + 2;
+				WFIFOL(fd, 6 + c * 10) = sd->dyn_sell_list[i].id;
+				WFIFOL(fd, 10 + c * 10) = sd->dyn_sell_list[i].price < 0 ? pc_modifysellvalue(sd, sd->dyn_sell_list[i].price) : sd->dyn_sell_list[i].price;
+				c++;
+			}
+		}
+		sd->dyn_sell_list.clear();
+	} else {
 	for( i = 0; i < MAX_INVENTORY; i++ )
 	{
 		if( sd->inventory.u.items_inventory[i].nameid > 0 && sd->inventory_data[i] )
@@ -2501,6 +2523,7 @@ void clif_selllist(map_session_data *sd)
 			WFIFOL(fd,10+c*10)=pc_modifysellvalue(sd,val);
 			c++;
 		}
+	}
 	}
 	WFIFOW(fd,2)=c*10+4;
 	WFIFOSET(fd,WFIFOW(fd,2));

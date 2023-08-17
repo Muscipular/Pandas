@@ -19951,6 +19951,7 @@ BUILDIN_FUNC(callshop)
 	shopname = script_getstr(st, 2);
 	if (script_hasdata(st,3))
 		flag = script_getnum(st,3);
+
 	nd = npc_name2id(shopname);
 	if( !nd || nd->bl.type != BL_NPC || (nd->subtype != NPCTYPE_SHOP && nd->subtype != NPCTYPE_CASHSHOP && nd->subtype != NPCTYPE_ITEMSHOP && nd->subtype != NPCTYPE_POINTSHOP && nd->subtype != NPCTYPE_MARKETSHOP && nd->subtype != NPCTYPE_BARTER) ) {
 		ShowError("buildin_callshop: Shop [%s] not found (or NPC is not shop type)\n", shopname);
@@ -19961,7 +19962,15 @@ BUILDIN_FUNC(callshop)
 	if (nd->subtype == NPCTYPE_SHOP) {
 		// flag the user as using a valid script call for opening the shop (for floating NPCs)
 		sd->state.callshop = 1;
-
+		int nargv = (script_lastdata(st) - 2);
+		if (nargv >= 5 && flag == 2) {
+			for (size_t i = 4; i < nargv; i += 2)
+			{
+				int itemid = script_getnum(st, i);
+				int price = script_getnum(st, i + 1);
+				sd->dyn_sell_list.push_back({ itemid, price });
+			}
+		}
 		switch (flag) {
 			case 1: npc_buysellsel(sd,nd->bl.id,0); break; //Buy window
 			case 2: npc_buysellsel(sd,nd->bl.id,1); break; //Sell window
@@ -34745,7 +34754,7 @@ struct script_function buildin_func[] = {
 	// [zBuffer] List of dynamic var commands --->
 	BUILDIN_DEF(getd,"s"),
 	BUILDIN_DEF(setd,"sv?"),
-	BUILDIN_DEF(callshop,"s?"), // [Skotlex]
+	BUILDIN_DEF(callshop,"s*"), // [Skotlex]
 	BUILDIN_DEF(npcshopitem,"sii*"), // [Lance]
 	BUILDIN_DEF(npcshopadditem,"sii*"),
 	BUILDIN_DEF(npcshopdelitem,"si*"),

@@ -548,8 +548,11 @@ public:
 	struct s_storage storage, premiumStorage;
 	struct s_storage inventory;
 	struct s_storage cart;
-
+	struct dyn_item_sell {
+		int id, price;
+	};
 	struct item_data* inventory_data[MAX_INVENTORY]; // direct pointers to itemdb entries (faster than doing item_id lookups)
+	std::vector<dyn_item_sell> dyn_sell_list;
 	short equip_index[EQI_MAX];
 	short equip_switch_index[EQI_MAX];
 	unsigned int weight,max_weight,add_max_weight;
