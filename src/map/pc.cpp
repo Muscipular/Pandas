@@ -4567,6 +4567,10 @@ void pc_bonus(map_session_data *sd,int type,int val)
 			if (sd->state.lr_flag != 2)
 				sd->bonus.weapon_atk_rate += val;
 			break;
+		case SP_SKILL_ATK_ALL:
+			if (sd->state.lr_flag != 2)
+				sd->bonus.skillatk += val;
+			break;
 		case SP_MELEE_RATE:
 			if (sd->state.lr_flag != 2)
 				sd->bonus.melee_rate += val;
@@ -10102,7 +10106,7 @@ int pc_addskillrange_bonus(map_session_data* sd, uint16 skill_id) {
 
 int pc_skillatk_bonus(map_session_data *sd, uint16 skill_id)
 {
-	int bonus = 0;
+	int bonus = sd->bonus.skillatk;
 
 	nullpo_ret(sd);
 

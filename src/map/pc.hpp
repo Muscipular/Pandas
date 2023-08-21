@@ -771,6 +771,7 @@ public:
 		int autospell_dmg_rate;
 		int autospell_rate;
 		int skillrange;
+		int skillatk;
 		short weapon_atk_rate, weapon_matk_rate;
 #ifdef Pandas_Bonus3_bRebirthWithHeal
 		int rebirth_rate, rebirth_heal_percent_hp, rebirth_heal_percent_sp;
