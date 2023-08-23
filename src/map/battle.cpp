@@ -2043,12 +2043,11 @@ int64 battle_calc_damage(struct block_list *src,struct block_list *bl,struct Dam
 #ifdef Pandas_ScriptParams_DamageTaken_Extend
 		if (md && md->damagetaken < 0) {
 			md->damagetaken = md->db->damagetaken;
-			if (md->pandas.dmg_rate != 1 && md->pandas.dmg_rate >= 0) {
-				damage = i64max((int64)(damage * (double)md->pandas.dmg_rate), 1);
-			}
 		}
-#endif // Pandas_ScriptParams_DamageTaken_Extend
-		
+#endif // Pandas_ScriptParams_DamageTaken_Extend		
+		if (md->pandas.dmg_rate != 1 && md->pandas.dmg_rate >= 0) {
+			damage = i64max((int64)(damage * (double)md->pandas.dmg_rate), 1);
+		}
 		if (md && md->damagetaken != 100)
 			damage = i64max(damage * md->damagetaken / 100, 1);
 	}
