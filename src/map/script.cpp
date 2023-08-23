@@ -19963,18 +19963,58 @@ BUILDIN_FUNC(callshop)
 		// flag the user as using a valid script call for opening the shop (for floating NPCs)
 		sd->state.callshop = 1;
 		int nargv = (script_lastdata(st) - 2);
-		if (nargv >= 5 && flag == 2) {
-			for (size_t i = 4; i < nargv; i += 2)
-			{
-				int itemid = script_getnum(st, i);
-				int price = script_getnum(st, i + 1);
-				sd->dyn_sell_list.push_back({ itemid, price });
+
+		if (flag == 2) {
+			script_data* data = get_val(st, script_getdata(st, 4));
+			if (data_isstring(data)) {
+				auto op = conv_str(st, data);
+				if (strcmpi(op, "lua") == 0) {
+					for (size_t e = 0; e < sd->inventory.amount; e++) {
+						lua_getglobal(lua, script_getstr(st, 5));
+						lua_pushlightuserdata(lua, st);
+						lua_pushinteger(lua, sd->inventory.u.items_inventory[e].nameid);
+						if (lua_pcall(lua, 3, 1, 0) == 0) {
+							if (lua_isboolean(lua, -1)) {
+								int ret = lua_toboolean(lua, -1);
+								if (ret) {
+									sd->dyn_sell_list.push_back({ (int)sd->inventory.u.items_inventory[e].nameid,  -1 });
+								}
+							}
+							else if (lua_isnumber(lua, -1)) {
+								int ret = lua_tonumber(lua, -1);
+								sd->dyn_sell_list.push_back({ (int)sd->inventory.u.items_inventory[e].nameid, ret >= 0 ? ret : -1 });
+							}
+							lua_pop(lua, 1);
+						}
+						else {
+							ShowError("buildin_callshop: call lua error %s:%s\n", lua_tostring(lua, -1), lua_tostring(lua, -2));
+							script_pushint(st, 0);
+							lua_pop(lua, 2);
+							return SCRIPT_CMD_FAILURE;
+						}
+					}
+				}
+				else if (strcmpi(op, "script") == 0) {
+					/*	for (size_t e = 0; e < sd->inventory.amount; e++) {
+
+						}*/
+				}
 			}
-		}
-		switch (flag) {
-			case 1: npc_buysellsel(sd,nd->bl.id,0); break; //Buy window
-			case 2: npc_buysellsel(sd,nd->bl.id,1); break; //Sell window
-			default: clif_npcbuysell(sd,nd->bl.id); break; //Show menu
+			else {
+				if (nargv >= 5) {
+					for (size_t i = 4; i < nargv; i += 2)
+					{
+						int itemid = script_getnum(st, i);
+						int price = script_getnum(st, i + 1);
+						sd->dyn_sell_list.push_back({ itemid, price });
+					}
+				}
+				switch (flag) {
+				case 1: npc_buysellsel(sd, nd->bl.id, 0); break; //Buy window
+				case 2: npc_buysellsel(sd, nd->bl.id, 1); break; //Sell window
+				default: clif_npcbuysell(sd, nd->bl.id); break; //Show menu
+				}
+			}
 		}
 	}
 #if PACKETVER >= 20131223
