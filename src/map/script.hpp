@@ -546,6 +546,7 @@ struct script_state {
 		lua_State* thread;
 		const char* lastCmd;
 	} lua_state;
+	unsigned int refCount;
 };
 
 #ifdef Pandas_ScriptEngine_MutliStackBackup

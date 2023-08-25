@@ -110,7 +110,6 @@ lua_State* lua;
 
 static bool init_lua();
 
-
 /**
  * Get `sd` from a account id in `loc` param instead of attached rid
  * @param st Script
@@ -4032,6 +4031,7 @@ struct script_state* script_alloc_state(struct script_code* rootscript, int pos,
 	st->sleep.timer = INVALID_TIMER;
 	st->npc_item_flag = battle_config.item_enabled_npc;
 	st->asyncSleep = false;
+	st->refCount = 0;
 
 #ifdef Pandas_ScriptCommand_UnlockCmd
 	// 确保创建 script_state 的时候 unlockcmd 的值为 0
@@ -4067,6 +4067,10 @@ struct script_state* script_alloc_state(struct script_code* rootscript, int pos,
 /// @param st Script state
 void script_free_state(struct script_state* st)
 {
+	if (st->refCount > 0) {
+		st->refCount--;
+		return;
+	}
 	if (idb_exists(st_db, st->id)) {
 		map_session_data *sd = st->rid ? map_id2sd(st->rid) : NULL;
 
@@ -5966,6 +5970,82 @@ bool checkSupport(const char* fn) {
 	return true;
 }
 
+
+#include <variant>;
+
+typedef struct { int code; } ERROR_RET;
+
+typedef std::variant<const char*, int64_t, ERROR_RET> ARG_TYPE;
+
+ARG_TYPE callScriptFn(script_state* st, const char* fn, std::vector<ARG_TYPE> n) {
+	int i, j;
+	struct script_retinfo* ri;
+	struct script_code* scr;
+	const char* str = fn;
+	struct reg_db* ref = NULL;
+	ARG_TYPE ret = ERROR_RET({ 0 });
+
+	int stEnd = st->end;
+	scr = (struct script_code*)strdb_get(userfunc_db, str);
+	if (!scr) {
+		ShowError("callScriptFn: Function not found! [%s]\n", str);
+		st->state = END;
+		return ret;
+	}
+	
+	parse_script("{callfunc .@fn$;}", "tmp", 0, 0);
+	auto subSt = script_alloc_state(scr, 0, st->rid, st->oid);
+	subSt->refCount++;
+	script_pushnil(subSt);
+	//push_val(st->stack, c_op::C_NAME, fn);
+	//push_str(st->stack, c_op::C_STR, aStrdup(funcname));
+	push_val(subSt->stack, c_op::C_ARG, 0);
+	
+	for (i = 0, j = 0; i < n.size(); i++, j++) {
+		if (n[i].index() == 0) {
+			script_pushint64(subSt, std::get<int64_t>(n[i]));
+		} else {
+			script_pushconststr(subSt, std::get<const char*>(n[i]));
+		}
+	}
+
+
+	CREATE(ri, struct script_retinfo, 1);
+	ri->script = nullptr;              // script code
+	ri->scope.vars = st->stack->scope.vars;   // scope variables
+	ri->scope.arrays = st->stack->scope.arrays; // scope arrays
+	ri->pos = st->pos;                 // script location
+	ri->nargs = j;                       // argument count
+	ri->defsp = st->stack->defsp;        // default stack pointer
+	push_retinfo(st->stack, ri, ref);
+
+	st->pos = 0;
+	st->script = scr;
+	st->stack->defsp = st->stack->sp;
+	st->state = RUN;
+	st->stack->scope.vars = i64db_alloc(DB_OPT_RELEASE_DATA);
+	st->stack->scope.arrays = idb_alloc(DB_OPT_BASE);
+
+	if (!st->script->local.vars)
+		st->script->local.vars = i64db_alloc(DB_OPT_RELEASE_DATA);
+	st->start = 0;
+	run_script_main(st);
+	if (st->end > stEnd) {
+		auto retData = script_getdatatop(st, -1);
+		if (data_isstring(retData)) {
+			ret = conv_str(st, retData);
+		}
+		else if (data_isint(retData)) {
+			ret = conv_num64(st, retData);
+		}
+		pop_stack(st, stEnd + 1, st->end);
+	}
+	else {
+		return 0;
+	}
+	return ret;
+}
+
 LUA_FUNC(callScript) {
 	int argN = lua_gettop(L);
 	if (argN < 2) {
@@ -6064,7 +6144,7 @@ LUA_FUNC(callScript) {
 	st->start = end0;
 	st->end = st->stack->sp;
 	int ret = buildin_func[fn].func(st);
-	auto retData = &st->stack->stack_data[st->stack->sp - 1];
+	auto retData = script_getdatatop(st, -1);
 	script_data data;
 	memcpy(&data, retData, sizeof(script_data));
 	auto retDataActual = get_val(st, retData);
@@ -19982,7 +20062,9 @@ BUILDIN_FUNC(callshop)
 							}
 							else if (lua_isnumber(lua, -1)) {
 								int ret = lua_tonumber(lua, -1);
-								sd->dyn_sell_list.push_back({ (int)sd->inventory.u.items_inventory[e].nameid, ret >= 0 ? ret : -1 });
+								if (ret >= -1) {
+									sd->dyn_sell_list.push_back({ (int)sd->inventory.u.items_inventory[e].nameid, ret >= 0 ? ret : -1 });
+								}
 							}
 							lua_pop(lua, 1);
 						}
@@ -19995,9 +20077,31 @@ BUILDIN_FUNC(callshop)
 					}
 				}
 				else if (strcmpi(op, "script") == 0) {
-					/*	for (size_t e = 0; e < sd->inventory.amount; e++) {
-
-						}*/
+					for (size_t e = 0; e < sd->inventory.amount; e++) {
+						/*
+						auto ret = callScriptFn(st, script_getstr(st, 5), { ARG_TYPE(sd->inventory.u.items_inventory[e].nameid) });
+						if (ret.index() == 2) {
+							ShowError("buildin_callshop: call script error %s:%s\n", lua_tostring(lua, -1), lua_tostring(lua, -2));
+							script_pushint(st, 0);
+							return SCRIPT_CMD_FAILURE;
+						}
+						int64_t n = -1;
+						if (ret.index() == 1) {
+							n = std::get<int64_t>(ret);
+						}
+						if (ret.index() == 0) {
+							auto sr = std::get<const char*>(ret);
+							char* p = nullptr;
+							n = strtoll(sr, &p, 10);
+							if (p <= sr) {
+								n = -1;
+							}
+						}
+						if (n >= -1) {
+							sd->dyn_sell_list.push_back({ (int)sd->inventory.u.items_inventory[e].nameid,  (int)n });
+						}
+						*/
+					}
 				}
 			}
 			else {
@@ -20009,12 +20113,12 @@ BUILDIN_FUNC(callshop)
 						sd->dyn_sell_list.push_back({ itemid, price });
 					}
 				}
-				switch (flag) {
-				case 1: npc_buysellsel(sd, nd->bl.id, 0); break; //Buy window
-				case 2: npc_buysellsel(sd, nd->bl.id, 1); break; //Sell window
-				default: clif_npcbuysell(sd, nd->bl.id); break; //Show menu
-				}
 			}
+		}
+		switch (flag) {
+		case 1: npc_buysellsel(sd, nd->bl.id, 0); break; //Buy window
+		case 2: npc_buysellsel(sd, nd->bl.id, 1); break; //Sell window
+		default: clif_npcbuysell(sd, nd->bl.id); break; //Show menu
 		}
 	}
 #if PACKETVER >= 20131223
