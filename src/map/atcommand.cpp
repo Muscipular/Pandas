@@ -8606,6 +8606,174 @@ ACMD_FUNC(whereis)
 	return 0;
 }
 
+#define clif_print_bonus(s, e) if(e!=0) {\
+	snprintf(atcmd_output, sizeof atcmd_output, "%s: %d", #s, e);\
+    clif_displaymessage(fd, atcmd_output);\
+}
+#define clif_print_bonus2(x, s, e) if(e!=0) {\
+	snprintf(atcmd_output, sizeof atcmd_output, "%s(%s): %d", #x, s, e);\
+    clif_displaymessage(fd, atcmd_output);\
+}
+
+static std::unordered_map<std::string, e_aegis_monsterclass> um_class2classname{
+	{ "Normal", CLASS_NORMAL },
+	{ "Boss", CLASS_BOSS },
+	{ "Guardian", CLASS_GUARDIAN },
+	{ "Battlefield", CLASS_BATTLEFIELD },
+	{ "Event", CLASS_EVENT },
+};
+static std::unordered_map<std::string, e_size> um_size2sizename{
+	{ "Small", SZ_SMALL },
+	{ "Medium", SZ_MEDIUM },
+	{ "Big", SZ_BIG },
+};
+
+
+ACMD_FUNC(bonuslist) {
+	nullpo_retr(-1, sd);
+
+	int flag = -1;
+	if (message && *message) {
+		flag = atoi(message);
+	}
+	clif_displaymessage(fd, "BonusList: ");
+	if (flag & (1 << 0)) {
+		clif_print_bonus(bMaxHP, sd->bonus.hp);
+		clif_print_bonus(bMaxHPRate, sd->hprate);
+		clif_print_bonus(bMaxSP, sd->bonus.sp);
+		clif_print_bonus(bMaxSPRate, sd->sprate);
+		clif_print_bonus(bUseSPrate, sd->dsprate);
+		clif_print_bonus(bMaxAP, sd->bonus.ap);
+		clif_print_bonus(bMaxAPRate, sd->aprate);
+		clif_print_bonus(bUseAPrate, sd->daprate);
+		clif_print_bonus(bUseAPrate, sd->daprate);
+	}
+	if (flag & (1 << 1)) {
+		clif_print_bonus(bAtkRate, sd->bonus.atk_rate);
+		clif_print_bonus(bLongAtkRate, sd->bonus.long_attack_atk_rate);
+		clif_print_bonus(bShortAtkRate, sd->bonus.short_attack_atk_rate);
+		clif_print_bonus(bCritAtkRate, sd->bonus.crit_atk_rate);
+		clif_print_bonus(bWeaponAtkRate, sd->bonus.weapon_atk_rate);
+		clif_print_bonus(bMeleeRate, sd->bonus.melee_rate);
+	}
+	if (flag & (1 << 2)) {
+		clif_print_bonus(bMatkRate, sd->matk_rate);
+		clif_print_bonus(bLongAtkRate, sd->bonus.long_attack_atk_rate);
+		clif_print_bonus(bShortAtkRate, sd->bonus.short_attack_atk_rate);
+		clif_print_bonus(bCritAtkRate, sd->bonus.crit_atk_rate);
+		clif_print_bonus(bWeaponAtkRate, sd->bonus.weapon_atk_rate);
+		clif_print_bonus(bMeleeRate, sd->bonus.melee_rate);
+	}
+	if (flag & (1 << 3)) {
+		clif_print_bonus(bFixedCastrate, sd->bonus.fixcastrate);
+		clif_print_bonus(bFixedCast, sd->bonus.add_fixcast);
+		clif_print_bonus(bVariableCastrate, sd->bonus.varcastrate);
+		clif_print_bonus(bDelayrate, sd->bonus.delayrate);
+	}
+	if (flag & (1 << 4)) {
+		int count = 0;
+		clif_print_bonus2(bAddEle, "All", sd->right_weapon.addele[ELE_ALL] + (sd->state.arrow_atk > 0 ? sd->indexed_bonus.arrow_addele[ELE_ALL] : 0));
+		for (auto& p : um_eleid2elename) {
+			clif_print_bonus2(bAddEle, p.first.c_str(), sd->right_weapon.addele[p.second] + (sd->state.arrow_atk > 0 ? sd->indexed_bonus.arrow_addele[p.second] : 0));
+		}
+		clif_print_bonus2(bAddRace, "All", sd->right_weapon.addrace[RC_ALL] + (sd->state.arrow_atk > 0 ? sd->indexed_bonus.arrow_addrace[RC_ALL] : 0));
+		for (auto& p : um_raceid2racename) {
+			clif_print_bonus2(bAddRace, p.first.c_str(), sd->right_weapon.addrace[p.second] + (sd->state.arrow_atk > 0 ? sd->indexed_bonus.arrow_addrace[p.second] : 0));
+		}
+		clif_print_bonus2(bAddClass, "All", sd->right_weapon.addclass[CLASS_ALL] + (sd->state.arrow_atk > 0 ? sd->indexed_bonus.arrow_addclass[CLASS_ALL] : 0));
+		for (auto& p : um_class2classname) {
+			clif_print_bonus2(bAddClass, p.first.c_str(), sd->right_weapon.addclass[p.second] + (sd->state.arrow_atk > 0 ? sd->indexed_bonus.arrow_addclass[p.second] : 0));
+		}
+		clif_print_bonus2(bAddSize, "All", sd->right_weapon.addsize[SZ_ALL] + (sd->state.arrow_atk > 0 ? sd->indexed_bonus.arrow_addsize[SZ_ALL] : 0));
+		for (auto& p : um_size2sizename) {
+			clif_print_bonus2(bAddSize, p.first.c_str(), sd->right_weapon.addsize[p.second] + (sd->state.arrow_atk > 0 ? sd->indexed_bonus.arrow_addsize[p.second] : 0));
+		}
+	}
+	if (flag & (1 << 5)) {
+		clif_print_bonus2(bMagicAddEle, "All", sd->indexed_bonus.magic_addele[ELE_ALL]);
+		for (auto& p : um_eleid2elename) {
+			clif_print_bonus2(bMagicAddEle, p.first.c_str(), sd->indexed_bonus.magic_addele[p.second]);
+		}
+		clif_print_bonus2(bMagicAddRace, "All", sd->indexed_bonus.magic_addrace[RC_ALL]);
+		for (auto& p : um_raceid2racename) {
+			clif_print_bonus2(bMagicAddRace, p.first.c_str(), sd->indexed_bonus.magic_addrace[p.second]);
+		}
+		clif_print_bonus2(bMagicAddClass, "All", sd->indexed_bonus.magic_addclass[CLASS_ALL]);
+		for (auto& p : um_class2classname) {
+			clif_print_bonus2(bMagicAddClass, p.first.c_str(), sd->indexed_bonus.magic_addclass[p.second]);
+		}
+		clif_print_bonus2(bMagicAddSize, "All", sd->indexed_bonus.magic_addsize[SZ_ALL]);
+		for (auto& p : um_size2sizename) {
+			clif_print_bonus2(bMagicAddSize, p.first.c_str(), sd->indexed_bonus.magic_addsize[p.second]);
+		}
+	}
+	if (flag & (1 << 6)) {
+		clif_print_bonus2(bIgnoreDefRaceRate, "All", sd->indexed_bonus.ignore_def_by_race[RC_ALL]);
+		for (auto& p : um_raceid2racename) {
+			clif_print_bonus2(bIgnoreDefRaceRate, p.first.c_str(), sd->indexed_bonus.ignore_def_by_race[p.second]);
+		}
+		clif_print_bonus2(bIgnoreDefClassRate, "All", sd->indexed_bonus.ignore_def_by_class[CLASS_ALL]);
+		for (auto& p : um_class2classname) {
+			clif_print_bonus2(bIgnoreDefClassRate, p.first.c_str(), sd->indexed_bonus.ignore_def_by_class[p.second]);
+		}
+		clif_print_bonus2(bIgnoreDefClassRate, "All", sd->indexed_bonus.ignore_res_by_race[RC_ALL]);
+		for (auto& p : um_raceid2racename) {
+			clif_print_bonus2(bIgnoreResRaceRate, p.first.c_str(), sd->indexed_bonus.ignore_res_by_race[p.second]);
+		}
+	}
+	if (flag & (1 << 7)) {
+		clif_print_bonus2(bIgnoreMDefRaceRate, "All", sd->indexed_bonus.ignore_mdef_by_race[RC_ALL]);
+		for (auto& p : um_raceid2racename) {
+			clif_print_bonus2(bIgnoreMDefRaceRate, p.first.c_str(), sd->indexed_bonus.ignore_mdef_by_race[p.second]);
+		}
+		clif_print_bonus2(bIgnoreMDefClassRate, "All", sd->indexed_bonus.ignore_mdef_by_class[CLASS_ALL]);
+		for (auto& p : um_class2classname) {
+			clif_print_bonus2(bIgnoreMDefClassRate, p.first.c_str(), sd->indexed_bonus.ignore_mdef_by_class[p.second]);
+		}
+		clif_print_bonus2(bIgnoreMResRaceRate, "All", sd->indexed_bonus.ignore_mres_by_race[RC_ALL]);
+		for (auto& p : um_raceid2racename) {
+			clif_print_bonus2(bIgnoreMResRaceRate, p.first.c_str(), sd->indexed_bonus.ignore_mres_by_race[p.second]);
+		}
+	}
+	if (flag & (1 << 8)) {
+		clif_print_bonus2(bSubDefEle, "All", sd->indexed_bonus.subdefele[ELE_ALL]);
+		for (auto& p : um_eleid2elename) {
+			clif_print_bonus2(bSubDefEle, p.first.c_str(), sd->indexed_bonus.subdefele[p.second]);
+		}
+		clif_print_bonus2(bSubEle, "All", sd->indexed_bonus.subele[ELE_ALL]);
+		for (auto& p : um_eleid2elename) {
+			clif_print_bonus2(bSubEle, p.first.c_str(), sd->indexed_bonus.subele[p.second]);
+		}
+		clif_print_bonus2(bSubRace, "All", sd->indexed_bonus.subrace[RC_ALL]);
+		for (auto& p : um_raceid2racename) {
+			clif_print_bonus2(bSubRace, p.first.c_str(), sd->indexed_bonus.subrace[p.second]);
+		}
+		clif_print_bonus2(bSubClass, "All", sd->indexed_bonus.subclass[CLASS_ALL]);
+		for (auto& p : um_class2classname) {
+			clif_print_bonus2(bSubClass, p.first.c_str(), sd->indexed_bonus.subclass[p.second]);
+		}
+	}
+	if (flag & (1 << 9)) {
+		clif_print_bonus2(bWeaponSubSize, "All", sd->indexed_bonus.weapon_subsize[SZ_ALL]);
+		for (auto& p : um_size2sizename) {
+			clif_print_bonus2(bWeaponSubSize, p.first.c_str(), sd->indexed_bonus.weapon_subsize[p.second]);
+		}
+		clif_print_bonus2(bMagicSubSize, "All", sd->indexed_bonus.magic_subdefele[ELE_ALL]);
+		for (auto& p : um_eleid2elename) {
+			clif_print_bonus2(bMagicSubSize, p.first.c_str(), sd->indexed_bonus.magic_subdefele[p.second]);
+		}
+		clif_print_bonus2(bMagicSubDefEle, "All", sd->indexed_bonus.magic_subsize[SZ_ALL]);
+		for (auto& p : um_size2sizename) {
+			clif_print_bonus2(bMagicSubDefEle, p.first.c_str(), sd->indexed_bonus.magic_subsize[p.second]);
+		}
+		clif_print_bonus2(bSubSize, "All", sd->indexed_bonus.subsize[SZ_ALL]);
+		for (auto& p : um_size2sizename) {
+			clif_print_bonus2(bSubSize, p.first.c_str(), sd->indexed_bonus.subsize[p.second]);
+		}
+	}
+	return 0;
+}
+
 ACMD_FUNC(version)
 {
 	pc_show_version(sd);
@@ -11689,6 +11857,7 @@ void atcommand_basecommands(void) {
 		ACMD_DEF(cart),
 		ACMD_DEF(mount2),
 		ACMD_DEF(join),
+		ACMD_DEF(bonuslist),
 		ACMD_DEFR(channel,ATCMD_NOSCRIPT),
 		ACMD_DEF(fontcolor),
 #ifndef Pandas_Message_Reorganize

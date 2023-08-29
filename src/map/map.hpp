@@ -402,6 +402,21 @@ enum e_element : int8{
 	ELE_RANDOM,
 };
 
+static std::unordered_map<std::string, e_race> um_raceid2racename{
+	{ "Formless", RC_FORMLESS },
+	{ "Undead", RC_UNDEAD },
+	{ "Brute", RC_BRUTE },
+	{ "Plant", RC_PLANT },
+	{ "Insect", RC_INSECT },
+	{ "Fish", RC_FISH },
+	{ "Demon", RC_DEMON },
+	{ "Demihuman", RC_DEMIHUMAN },
+	{ "Angel", RC_ANGEL },
+	{ "Dragon", RC_DRAGON },
+	{ "Player_human", RC_PLAYER_HUMAN },
+	{ "Player_doram", RC_PLAYER_DORAM },
+};
+
 static std::unordered_map<std::string, e_element> um_eleid2elename {
 	{ "Neutral", ELE_NEUTRAL },
 	{ "Water", ELE_WATER },
