@@ -6815,6 +6815,76 @@ ACMD_FUNC(autoloot)
 	return 0;
 }
 
+#define LootItemMsg(id, buff, message)  sprintf(buff, "%s: %s", msg_txt(sd, id), message);clif_displaymessage(fd, buff);
+
+void setLootItem(const int fd, map_session_data* sd, int action, const char* message) {
+	auto item_data = item_db.find(strtoul(message, nullptr, 10));
+	char buff[2048];
+	if (item_data == nullptr) {
+		item_data = item_db.searchname(message);
+	}
+
+	if (item_data == nullptr) {
+		LootItemMsg(1189, buff, message);
+		//sprintf(buff, "%s: %s", msg_txt(sd, 1189), message);
+		// No items founds in the DB with Id or Name
+		//clif_displaymessage(fd, buff); // Item not found.
+		return;
+	}
+	int i;
+	switch (action) {
+	case 5:
+		ARR_FIND(0, AUTOLOOTITEM_SIZE, i, sd->state.autolootid[i] == item_data->nameid);
+		if (i != AUTOLOOTITEM_SIZE) {
+			return;
+		}
+		ARR_FIND(0, AUTOLOOTITEM_SIZE, i, sd->state.autolootid[i] == 0);
+		if (i == AUTOLOOTITEM_SIZE) {
+			LootItemMsg(1191, buff, message); // Your autolootitem list is full. Remove some items first with @autolootid -<item name or ID>.
+			return;
+		}
+		sd->state.autolootid[i] = item_data->nameid; // Autoloot Activated
+		sprintf(atcmd_output, msg_txt(sd, 1192), item_data->name.c_str(), item_db.create_item_link(item_data).c_str(), item_data->nameid); // Autolooting item: '%s'/'%s' {%u}
+		clif_displaymessage(fd, atcmd_output);
+		sd->state.autolooting = 1;
+		break;
+	case 6:
+		ARR_FIND(0, AUTOLOOTITEM_SIZE, i, sd->state.autolootid[i] == item_data->nameid);
+		if (i == AUTOLOOTITEM_SIZE) {
+			LootItemMsg(1193, buff, message); // You're currently not autolooting this item.
+			return;
+		}
+		sd->state.autolootid[i] = 0;
+		sprintf(atcmd_output, msg_txt(sd, 1194), item_data->name.c_str(), item_db.create_item_link(item_data).c_str(), item_data->nameid); // Removed item: '%s'/'%s' {%u} from your autolootitem list.
+		clif_displaymessage(fd, atcmd_output);
+		ARR_FIND(0, AUTOLOOTITEM_SIZE, i, sd->state.autolootid[i] != 0);
+		if (i == AUTOLOOTITEM_SIZE) {
+			sd->state.autolooting = 0;
+		}
+		break;
+	}
+}
+
+void batchLootItem(const int fd, map_session_data* sd, int mode, const char* message) {
+	char buf[100] = { 0 };
+	int len = strlen(message);
+	for (size_t i = 0, n = 0; i < len && n < sizeof(buf) - 1; i++) {
+		if (message[i] == ',') {
+			buf[n] = 0;
+			setLootItem(fd, sd, mode, buf);
+			n = 0;
+			buf[0] = 0;
+		}
+		else {
+			buf[n] = message[i];
+			n++;
+		}
+	}
+	if (buf[0]) {
+		setLootItem(fd, sd, mode, buf);
+	}
+}
+
 /*==========================================
  * @alootid
  *------------------------------------------*/
@@ -6830,10 +6900,18 @@ ACMD_FUNC(autolootitem)
 		if (message[0] == '+') {
 			message++;
 			action = 1;
+			if (message[0] == '+') {
+				message++;
+				action = 5;
+			}
 		}
 		else if (message[0] == '-') {
 			message++;
 			action = 2;
+			if (message[0] == '-') {
+				message++;
+				action = 5;
+			}
 		}
 		else if (!strcmp(message,"reset"))
 			action = 4;
@@ -6884,6 +6962,10 @@ ACMD_FUNC(autolootitem)
 		if (i == AUTOLOOTITEM_SIZE) {
 			sd->state.autolooting = 0;
 		}
+		break;
+	case 5:
+	case 6:
+		batchLootItem(fd, sd, action, message);
 		break;
 	case 3:
 		sprintf(atcmd_output, msg_txt(sd,1195), AUTOLOOTITEM_SIZE); // You can have %d items on your autolootitem list.
@@ -8693,6 +8775,10 @@ ACMD_FUNC(bonuslist) {
 		clif_print_bonus2(bMagicAddEle, "All", sd->indexed_bonus.magic_addele[ELE_ALL]);
 		for (auto& p : um_eleid2elename) {
 			clif_print_bonus2(bMagicAddEle, p.first.c_str(), sd->indexed_bonus.magic_addele[p.second]);
+		}
+		clif_print_bonus2(bMagicAddAtkEle, "All", sd->indexed_bonus.magic_atk_ele[ELE_ALL]);
+		for (auto& p : um_eleid2elename) {
+			clif_print_bonus2(bMagicAddAtkEle, p.first.c_str(), sd->indexed_bonus.magic_atk_ele[p.second]);
 		}
 		clif_print_bonus2(bMagicAddRace, "All", sd->indexed_bonus.magic_addrace[RC_ALL]);
 		for (auto& p : um_raceid2racename) {
