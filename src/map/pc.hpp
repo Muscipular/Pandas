@@ -311,7 +311,7 @@ struct weapon_data {
 	struct drain_data {
 		short rate; ///< Success rate 10000 = 100%
 		short per;  ///< Drain value/rate per attack
-	} hp_drain_rate, sp_drain_rate;
+	} hp_drain_rate, sp_drain_rate, ap_drain_rate;
 
 	std::vector<s_item_bonus> add_dmg;
 	std::vector<s_addele2> addele2;
@@ -680,7 +680,7 @@ public:
 	std::vector<s_autospell> autospell, autospell2, autospell3;
 	std::vector<s_addeffect> addeff, addeff_atked;
 	std::vector<s_addeffectonskill> addeff_onskill;
-	std::vector<s_item_bonus> skillatk, skillusesprate, skillusesp, skillheal, skillheal2, skillblown, skillcastrate, skillfixcastrate, subskill, skillcooldown, skillfixcast,
+	std::vector<s_item_bonus> skillatk, skillusesprate, skillusesp, skillheal, skillheal2, skillblown, skillcastrate, skillfixcastrate, subskill, skillcooldown, skillfixcast, skillcooldownrate,
 		skillvarcast, skilldelay, itemhealrate, add_def, add_mdef, add_mdmg, reseff, itemgrouphealrate, itemsphealrate, itemgroupsphealrate;
 #ifdef Pandas_Bonus2_bAddSkillRange
 	std::vector<s_item_bonus> addskillrange;
@@ -772,6 +772,8 @@ public:
 		int autospell_rate;
 		int skillrange;
 		int skillatk;
+		int skill_cooldown;
+		int skill_cooldown_rate;
 		short weapon_atk_rate, weapon_matk_rate;
 #ifdef Pandas_Bonus3_bRebirthWithHeal
 		int rebirth_rate, rebirth_heal_percent_hp, rebirth_heal_percent_sp;

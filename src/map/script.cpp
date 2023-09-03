@@ -11522,6 +11522,7 @@ BUILDIN_FUNC(bonus)
 		case SP_ADDEFF_ONSKILL:
 		case SP_SKILL_USE_SP_RATE:
 		case SP_SKILL_COOLDOWN:
+		case SP_SKILL_COOLDOWN_RATE:
 		case SP_SKILL_FIXEDCAST:
 		case SP_SKILL_VARIABLECAST:
 		case SP_VARCASTRATE:
@@ -11535,6 +11536,11 @@ BUILDIN_FUNC(bonus)
 #ifdef Pandas_Bonus2_bSkillNoRequire
 		case SP_PANDAS_SKILLNOREQUIRE:
 #endif // Pandas_Bonus2_bSkillNoRequire
+			if (script_lastdata(st) - 2 == 1 && (type == SP_SKILL_COOLDOWN || type == SP_SKILL_COOLDOWN_RATE)) {
+				val1 = script_getnum(st, 3);
+				pc_bonus(sd, type, val1);
+				return SCRIPT_CMD_SUCCESS;
+			}
 			// these bonuses support skill names
 			if (script_isstring(st, 3)) {
 				const char *name = script_getstr(st, 3);

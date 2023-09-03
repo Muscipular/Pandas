@@ -4019,6 +4019,14 @@ void pc_bonus(map_session_data *sd,int type,int val)
 				break;
 			}
 			break;
+		case SP_SKILL_COOLDOWN:
+			if(sd->state.lr_flag != 2)
+				sd->bonus.skill_cooldown -= val;
+			break;
+		case SP_SKILL_COOLDOWN_RATE:
+			if(sd->state.lr_flag != 2)
+				sd->bonus.skill_cooldown_rate = min(sd->bonus.skill_cooldown_rate, val);
+			break;
 		case SP_DEFELE:
 			PC_BONUS_CHK_ELEMENT(val,SP_DEFELE);
 			if(sd->state.lr_flag != 2)
@@ -4804,6 +4812,16 @@ void pc_bonus2(map_session_data *sd,int type,int type2,int val)
 			sd->left_weapon.sp_drain_rate.per += val;
 		}
 		break;
+	case SP_AP_DRAIN_RATE: // bonus2 bAPDrainRate,x,n;
+		if(!sd->state.lr_flag) {
+			sd->right_weapon.ap_drain_rate.rate += type2;
+			sd->right_weapon.ap_drain_rate.per += val;
+		}
+		else if(sd->state.lr_flag == 1) {
+			sd->left_weapon.ap_drain_rate.rate += type2;
+			sd->left_weapon.ap_drain_rate.per += val;
+		}
+		break;
 	case SP_SP_VANISH_RATE: // bonus2 bSPVanishRate,x,n;
 		if(sd->state.lr_flag != 2) {
 			pc_bonus_addvanish(sd->sp_vanish, type2, val, BF_NORMAL);
@@ -5114,6 +5132,16 @@ void pc_bonus2(map_session_data *sd,int type,int type2,int val)
 		}
 
 		pc_bonus_itembonus(sd->skillcooldown, type2, val, false);
+		break;
+	case SP_SKILL_COOLDOWN_RATE: // bonus2 bSkillCooldown,sk,t;
+		if(sd->state.lr_flag == 2)
+			break;
+		if (sd->skillcooldownrate.size() == MAX_PC_BONUS) {
+			ShowWarning("pc_bonus2: SP_SKILL_COOLDOWN: Reached max (%d) number of skills per character, bonus skill %d (%d) lost.\n", MAX_PC_BONUS, type2, val);
+			break;
+		}
+
+		pc_bonus_itembonus(sd->skillcooldownrate, type2, val, false);
 		break;
 	case SP_SKILL_VARIABLECAST: // bonus2 bSkillVariableCast,sk,t;
 		if (sd->state.lr_flag == 2)
@@ -7822,7 +7850,7 @@ int pc_get_skillcooldown(map_session_data *sd, uint16 skill_id, uint16 skill_lv)
 			return 0;
 	}
 
-	int cooldown = skill_get_cooldown(skill_id, skill_lv);
+	int cooldown = skill_get_cooldown(skill_id, skill_lv) + sd->bonus.skill_cooldown;
 
 	if (skill_id == SU_TUNABELLY && pc_checkskill(sd, SU_SPIRITOFSEA) > 0)
 		cooldown -= skill_get_time(SU_TUNABELLY, skill_lv);
@@ -7833,6 +7861,17 @@ int pc_get_skillcooldown(map_session_data *sd, uint16 skill_id, uint16 skill_lv)
 			break;
 		}
 	}
+
+	int rate = sd->bonus.skill_cooldown_rate;
+
+	for (auto& it : sd->skillcooldownrate) {
+		if (it.id == skill_id) {
+			rate = min(rate, it.val);
+			break;
+		}
+	}
+
+	cooldown = cooldown * (100 + rate) / 100;
 
 	return max(0, cooldown);
 }

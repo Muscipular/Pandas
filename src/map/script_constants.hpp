@@ -1079,6 +1079,7 @@
 	export_constant2("bAutoSpell",SP_AUTOSPELL);
 	export_constant2("bHPDrainRate",SP_HP_DRAIN_RATE);
 	export_constant2("bSPDrainRate",SP_SP_DRAIN_RATE);
+	export_constant2("bAPDrainRate",SP_AP_DRAIN_RATE);
 	export_constant2("bShortWeaponDamageReturn",SP_SHORT_WEAPON_DAMAGE_RETURN);
 	export_constant2("bLongWeaponDamageReturn",SP_LONG_WEAPON_DAMAGE_RETURN);
 	export_constant2("bWeaponComaEle",SP_WEAPON_COMA_ELE);
@@ -1166,6 +1167,7 @@
 	export_constant2("bComaRace",SP_COMA_RACE);
 	export_constant2("bSkillUseSPrate",SP_SKILL_USE_SP_RATE);
 	export_constant2("bSkillCooldown",SP_SKILL_COOLDOWN);
+	export_constant2("bSkillCooldownRate",SP_SKILL_COOLDOWN_RATE);
 	export_constant2("bSkillFixedCast",SP_SKILL_FIXEDCAST);
 	export_constant2("bSkillVariableCast",SP_SKILL_VARIABLECAST);
 	export_constant2("bFixedCastrate",SP_FIXCASTRATE);

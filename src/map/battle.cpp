@@ -2272,6 +2272,29 @@ static int battle_calc_drain(int64 damage, int rate, int per)
 }
 
 /**
+ * HP/SP drain calculation
+ * @param damage Damage inflicted to the enemy
+ * @param rate Success chance 1000 = 100%
+ * @param per HP/SP drained
+ * @return diff
+ */
+static int battle_calc_drain_fixed(int64 damage, int rate, int val)
+{
+	int64 diff = 0;
+
+	if (val && (rate > 1000 || rnd()%1000 < rate)) {
+		diff = val;
+		if (diff == 0) {
+			if (val > 0)
+				diff = 1;
+			else
+				diff = -1;
+		}
+	}
+	return (int)cap_value(diff, INT_MIN, INT_MAX);
+}
+
+/**
  * Passive skill damage increases
  * @param sd
  * @param target
@@ -9546,9 +9569,10 @@ void battle_drain(map_session_data *sd, struct block_list *tbl, int64 rdamage, i
 	int64 *damage;
 	int thp = 0, // HP gained
 		tsp = 0, // SP gained
+		tap = 0, // AP gained
 		//rhp = 0, // HP reduced from target
 		//rsp = 0, // SP reduced from target
-		hp = 0, sp = 0;
+		hp = 0, sp = 0, ap = 0;
 
 	if (!CHK_RACE(race) && !CHK_CLASS(class_))
 		return;
@@ -9572,6 +9596,7 @@ void battle_drain(map_session_data *sd, struct block_list *tbl, int64 rdamage, i
 
 			sp = wd->sp_drain_class[class_] + wd->sp_drain_class[CLASS_ALL];
 			sp += battle_calc_drain(*damage, wd->sp_drain_rate.rate, wd->sp_drain_rate.per);
+			ap += battle_calc_drain_fixed(*damage, wd->ap_drain_rate.rate, wd->ap_drain_rate.per);
 
 			if( hp ) {
 				//rhp += hp;
@@ -9582,6 +9607,11 @@ void battle_drain(map_session_data *sd, struct block_list *tbl, int64 rdamage, i
 				//rsp += sp;
 				tsp += sp;
 			}
+
+			if (ap) {
+				tap += ap;
+			}
+
 		} else {
 			hp = wd->hp_drain_race[race] + wd->hp_drain_race[RC_ALL];
 			sp = wd->sp_drain_race[race] + wd->sp_drain_race[RC_ALL];
@@ -9598,10 +9628,10 @@ void battle_drain(map_session_data *sd, struct block_list *tbl, int64 rdamage, i
 		}
 	}
 
-	if (!thp && !tsp)
+	if (!thp && !tsp && !tap)
 		return;
 
-	status_heal(&sd->bl, thp, tsp, battle_config.show_hp_sp_drain?3:1);
+	status_heal(&sd->bl, thp, tsp, tap, battle_config.show_hp_sp_drain?3:1);
 
 	//if (rhp || rsp)
 	//	status_zap(tbl, rhp, rsp);
