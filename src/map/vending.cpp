@@ -222,6 +222,7 @@ void vending_purchasereq(map_session_data* sd, int aid, int uid, const uint8* da
 		* Extended Vending system [Lilith] update version by ex0ample
 		**/
 		if (battle_config.extended_vending) {
+			int k, loot_count = 0, vsd_w = 0;
 			if (vsd->vend_item == battle_config.item_zeny || !vsd->vend_item) {
 				if (z > (double)sd->status.zeny || z < 0. || z >(double)MAX_ZENY)
 				{
@@ -241,7 +242,6 @@ void vending_purchasereq(map_session_data* sd, int aid, int uid, const uint8* da
 				}
 			}
 			else {
-				int k, loot_count = 0, vsd_w = 0;
 				for (k = 0; k < MAX_INVENTORY; k++) {
 					if (sd->inventory.u.items_inventory[k].nameid == vsd->vend_item) {
 						if (battle_config.ex_buying_bound) {
@@ -259,23 +259,23 @@ void vending_purchasereq(map_session_data* sd, int aid, int uid, const uint8* da
 					clif_messagecolor(&sd->bl, color_table[COLOR_CYAN], msg_txt(sd, 1591), false, SELF);
 					return;
 				}
-				if (pc_inventoryblank(vsd) <= 0)
-				{
-					clif_messagecolor(&sd->bl, color_table[COLOR_CYAN], msg_txt(sd, 1592), false, SELF);
-					return;
-				}
-				vsd_w += itemdb_weight(vsd->vend_item) * (int)z;
-				if (vsd_w + vsd->weight > vsd->max_weight)
-				{
-					clif_messagecolor(&sd->bl, color_table[COLOR_CYAN], msg_txt(sd, 1593), false, SELF);
-					return;
-				}
-				for (k = 0; k < MAX_INVENTORY; k++) {
-					if (vsd->inventory.u.items_inventory[k].nameid == vsd->vend_item) {
-						if ((vsd->inventory.u.items_inventory[k].amount + loot_count) > MAX_AMOUNT) {
-							clif_displaymessage(sd->fd, msg_txt(sd, 1605));
-							return;
-						}
+			}
+			if (pc_inventoryblank(vsd) <= 0)
+			{
+				clif_messagecolor(&sd->bl, color_table[COLOR_CYAN], msg_txt(sd, 1592), false, SELF);
+				return;
+			}
+			vsd_w += itemdb_weight(vsd->vend_item) * (int)z;
+			if (vsd_w + vsd->weight > vsd->max_weight)
+			{
+				clif_messagecolor(&sd->bl, color_table[COLOR_CYAN], msg_txt(sd, 1593), false, SELF);
+				return;
+			}
+			for (k = 0; k < MAX_INVENTORY; k++) {
+				if (vsd->inventory.u.items_inventory[k].nameid == vsd->vend_item) {
+					if ((vsd->inventory.u.items_inventory[k].amount + loot_count) > MAX_AMOUNT) {
+						clif_displaymessage(sd->fd, msg_txt(sd, 1605));
+						return;
 					}
 				}
 			}
