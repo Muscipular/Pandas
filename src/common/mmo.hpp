@@ -83,7 +83,7 @@ typedef uint32 t_itemid;
 /** Number of slots carded equipment can have. Never set to less than 4 as they are also used to keep the data of forged items/equipment. [Skotlex]
 * Note: The client seems unable to receive data for more than 4 slots due to all related packets having a fixed size. */
 #define MAX_SLOTS 4
-#define MAX_AMOUNT UINT16_MAX ////Max amount of a single stacked item
+#define MAX_AMOUNT INT16_MAX ////Max amount of a single stacked item
 #define MAX_ZENY INT_MAX ///Max zeny
 #define MAX_BANK_ZENY SINT32_MAX ///Max zeny in Bank
 #ifndef MAX_CASHPOINT
