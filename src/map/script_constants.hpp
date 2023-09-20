@@ -1,4 +1,4 @@
-ï»¿// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
+// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
 #ifndef SCRIPT_CONSTANTS_HPP
@@ -25,201 +25,201 @@
 	export_constant(NPCE_MAX);
 
 	/************************************************************************/
-	/* Filter ç±»å‹çš„è¿‡æ»¤äº‹ä»¶ï¼Œè¿™äº›äº‹ä»¶å¯ä»¥è¢« processhalt ä¸­æ–­                    */
+	/* Filter ÀàĞÍµÄ¹ıÂËÊÂ¼ş£¬ÕâĞ©ÊÂ¼ş¿ÉÒÔ±» processhalt ÖĞ¶Ï                    */
 	/************************************************************************/
 
 #ifdef Pandas_NpcFilter_IDENTIFY
-	export_constant(NPCF_IDENTIFY);	// identify_filter_name	// OnPCIdentifyFilter		// å½“ç©å®¶åœ¨è£…å¤‡é‰´å®šåˆ—è¡¨ä¸­é€‰æ‹©å¥½è£…å¤‡, å¹¶ç‚¹å‡»â€œç¡®å®šâ€æŒ‰é’®æ—¶è§¦å‘è¿‡æ»¤å™¨
+	export_constant(NPCF_IDENTIFY);	// identify_filter_name	// OnPCIdentifyFilter		// µ±Íæ¼ÒÔÚ×°±¸¼ø¶¨ÁĞ±íÖĞÑ¡ÔñºÃ×°±¸, ²¢µã»÷¡°È·¶¨¡±°´Å¥Ê±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_IDENTIFY
 
 #ifdef Pandas_NpcFilter_ENTERCHAT
-	export_constant(NPCF_ENTERCHAT);	// enterchat_filter_name	// OnPCInChatroomFilter		// å½“ç©å®¶è¿›å…¥ NPC å¼€å¯çš„èŠå¤©å®¤æ—¶è§¦å‘è¿‡æ»¤å™¨
+	export_constant(NPCF_ENTERCHAT);	// enterchat_filter_name	// OnPCInChatroomFilter		// µ±Íæ¼Ò½øÈë NPC ¿ªÆôµÄÁÄÌìÊÒÊ±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_ENTERCHAT
 
 #ifdef Pandas_NpcFilter_INSERT_CARD
-	export_constant(NPCF_INSERT_CARD);	// insert_card_filter_name	// OnPCInsertCardFilter		// å½“ç©å®¶å‡†å¤‡æ’å…¥å¡ç‰‡æ—¶è§¦å‘è¿‡æ»¤å™¨
+	export_constant(NPCF_INSERT_CARD);	// insert_card_filter_name	// OnPCInsertCardFilter		// µ±Íæ¼Ò×¼±¸²åÈë¿¨Æ¬Ê±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_INSERT_CARD
 
 #ifdef Pandas_NpcFilter_USE_ITEM
-	export_constant(NPCF_USE_ITEM);	// use_item_filter_name	// OnPCUseItemFilter		// å½“ç©å®¶å‡†å¤‡ä½¿ç”¨éè£…å¤‡ç±»é“å…·æ—¶è§¦å‘è¿‡æ»¤å™¨
+	export_constant(NPCF_USE_ITEM);	// use_item_filter_name	// OnPCUseItemFilter		// µ±Íæ¼Ò×¼±¸Ê¹ÓÃ·Ç×°±¸ÀàµÀ¾ßÊ±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_USE_ITEM
 
 #ifdef Pandas_NpcFilter_USE_SKILL
-	export_constant(NPCF_USE_SKILL);	// use_skill_filter_name	// OnPCUseSkillFilter		// å½“ç©å®¶å‡†å¤‡ä½¿ç”¨æŠ€èƒ½æ—¶è§¦å‘è¿‡æ»¤å™¨
+	export_constant(NPCF_USE_SKILL);	// use_skill_filter_name	// OnPCUseSkillFilter		// µ±Íæ¼Ò×¼±¸Ê¹ÓÃ¼¼ÄÜÊ±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_USE_SKILL
 
 #ifdef Pandas_NpcFilter_ROULETTE_OPEN
-	export_constant(NPCF_ROULETTE_OPEN);	// roulette_open_filter_name	// OnPCOpenRouletteFilter		// å½“ç©å®¶å‡†å¤‡æ‰“å¼€ä¹é€å¤§è½¬ç›˜çš„æ—¶å€™è§¦å‘è¿‡æ»¤å™¨
+	export_constant(NPCF_ROULETTE_OPEN);	// roulette_open_filter_name	// OnPCOpenRouletteFilter		// µ±Íæ¼Ò×¼±¸´ò¿ªÀÖÍ¸´ó×ªÅÌµÄÊ±ºò´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_ROULETTE_OPEN
 
 #ifdef Pandas_NpcFilter_VIEW_EQUIP
-	export_constant(NPCF_VIEW_EQUIP);	// view_equip_filter_name	// OnPCViewEquipFilter		// å½“ç©å®¶å‡†å¤‡æŸ¥çœ‹æŸä¸ªè§’è‰²çš„è£…å¤‡æ—¶è§¦å‘è¿‡æ»¤å™¨
+	export_constant(NPCF_VIEW_EQUIP);	// view_equip_filter_name	// OnPCViewEquipFilter		// µ±Íæ¼Ò×¼±¸²é¿´Ä³¸ö½ÇÉ«µÄ×°±¸Ê±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_VIEW_EQUIP
 
 #ifdef Pandas_NpcFilter_EQUIP
-	export_constant(NPCF_EQUIP);	// equip_filter_name	// OnPCEquipFilter		// å½“ç©å®¶å‡†å¤‡ç©¿æˆ´è£…å¤‡æ—¶è§¦å‘è¿‡æ»¤å™¨
+	export_constant(NPCF_EQUIP);	// equip_filter_name	// OnPCEquipFilter		// µ±Íæ¼Ò×¼±¸´©´÷×°±¸Ê±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_EQUIP
 
 #ifdef Pandas_NpcFilter_UNEQUIP
-	export_constant(NPCF_UNEQUIP);	// unequip_filter_name	// OnPCUnequipFilter		// å½“ç©å®¶å‡†å¤‡è„±ä¸‹è£…å¤‡æ—¶è§¦å‘è¿‡æ»¤å™¨
+	export_constant(NPCF_UNEQUIP);	// unequip_filter_name	// OnPCUnequipFilter		// µ±Íæ¼Ò×¼±¸ÍÑÏÂ×°±¸Ê±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_UNEQUIP
 
 #ifdef Pandas_NpcFilter_CHANGETITLE
-	export_constant(NPCF_CHANGETITLE);	// changetitle_filter_name	// OnPCChangeTitleFilter		// å½“ç©å®¶è¯•å›¾å˜æ›´ç§°å·æ—¶å°†è§¦å‘è¿‡æ»¤å™¨
+	export_constant(NPCF_CHANGETITLE);	// changetitle_filter_name	// OnPCChangeTitleFilter		// µ±Íæ¼ÒÊÔÍ¼±ä¸ü³ÆºÅÊ±½«´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_CHANGETITLE
 
 #ifdef Pandas_NpcFilter_SC_START
-	export_constant(NPCF_SC_START);	// sc_start_filter_name	// OnPCBuffStartFilter		// å½“ç©å®¶å‡†å¤‡è·å¾—ä¸€ä¸ªçŠ¶æ€(Buff)æ—¶è§¦å‘è¿‡æ»¤å™¨
+	export_constant(NPCF_SC_START);	// sc_start_filter_name	// OnPCBuffStartFilter		// µ±Íæ¼Ò×¼±¸»ñµÃÒ»¸ö×´Ì¬(Buff)Ê±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_SC_START
 
 #ifdef Pandas_NpcFilter_USE_REVIVE_TOKEN
-	export_constant(NPCF_USE_REVIVE_TOKEN);	// use_revive_token_filter_name	// OnPCUseReviveTokenFilter		// å½“ç©å®¶ä½¿ç”¨èœå•ä¸­çš„åŸåœ°å¤æ´»ä¹‹è¯æ—¶è§¦å‘è¿‡æ»¤å™¨
+	export_constant(NPCF_USE_REVIVE_TOKEN);	// use_revive_token_filter_name	// OnPCUseReviveTokenFilter		// µ±Íæ¼ÒÊ¹ÓÃ²Ëµ¥ÖĞµÄÔ­µØ¸´»îÖ®Ö¤Ê±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_USE_REVIVE_TOKEN
 
 #ifdef Pandas_NpcFilter_ONECLICK_IDENTIFY
-	export_constant(NPCF_ONECLICK_IDENTIFY);	// oneclick_identify_filter_name	// OnPCUseOCIdentifyFilter		// å½“ç©å®¶ä½¿ç”¨ä¸€é”®é‰´å®šé“å…·æ—¶è§¦å‘è¿‡æ»¤å™¨
+	export_constant(NPCF_ONECLICK_IDENTIFY);	// oneclick_identify_filter_name	// OnPCUseOCIdentifyFilter		// µ±Íæ¼ÒÊ¹ÓÃÒ»¼ü¼ø¶¨µÀ¾ßÊ±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_ONECLICK_IDENTIFY
 
 #ifdef Pandas_NpcFilter_GUILDCREATE
-	export_constant(NPCF_GUILDCREATE);	// guildcreate_filter_name	// OnPCGuildCreateFilter		// å½“ç©å®¶å‡†å¤‡åˆ›å»ºå…¬ä¼šæ—¶è§¦å‘è¿‡æ»¤å™¨
+	export_constant(NPCF_GUILDCREATE);	// guildcreate_filter_name	// OnPCGuildCreateFilter		// µ±Íæ¼Ò×¼±¸´´½¨¹«»áÊ±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_GUILDCREATE
 
 #ifdef Pandas_NpcFilter_GUILDJOIN
-	export_constant(NPCF_GUILDJOIN);	// guildjoin_filter_name	// OnPCGuildJoinFilter		// å½“ç©å®¶å³å°†åŠ å…¥å…¬ä¼šæ—¶è§¦å‘è¿‡æ»¤å™¨
+	export_constant(NPCF_GUILDJOIN);	// guildjoin_filter_name	// OnPCGuildJoinFilter		// µ±Íæ¼Ò¼´½«¼ÓÈë¹«»áÊ±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_GUILDJOIN
 
 #ifdef Pandas_NpcFilter_GUILDLEAVE
-	export_constant(NPCF_GUILDLEAVE);	// guildleave_filter_name	// OnPCGuildLeaveFilter		// å½“ç©å®¶å‡†å¤‡ç¦»å¼€å…¬ä¼šæ—¶è§¦å‘è¿‡æ»¤å™¨
+	export_constant(NPCF_GUILDLEAVE);	// guildleave_filter_name	// OnPCGuildLeaveFilter		// µ±Íæ¼Ò×¼±¸Àë¿ª¹«»áÊ±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_GUILDLEAVE
 
 #ifdef Pandas_NpcFilter_PARTYCREATE
-	export_constant(NPCF_PARTYCREATE);	// partycreate_filter_name	// OnPCPartyCreateFilter		// å½“ç©å®¶å‡†å¤‡åˆ›å»ºé˜Ÿä¼æ—¶è§¦å‘è¿‡æ»¤å™¨
+	export_constant(NPCF_PARTYCREATE);	// partycreate_filter_name	// OnPCPartyCreateFilter		// µ±Íæ¼Ò×¼±¸´´½¨¶ÓÎéÊ±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_PARTYCREATE
 
 #ifdef Pandas_NpcFilter_PARTYJOIN
-	export_constant(NPCF_PARTYJOIN);	// partyjoin_filter_name	// OnPCPartyJoinFilter		// å½“ç©å®¶å³å°†åŠ å…¥é˜Ÿä¼æ—¶è§¦å‘è¿‡æ»¤å™¨
+	export_constant(NPCF_PARTYJOIN);	// partyjoin_filter_name	// OnPCPartyJoinFilter		// µ±Íæ¼Ò¼´½«¼ÓÈë¶ÓÎéÊ±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_PARTYJOIN
 
 #ifdef Pandas_NpcFilter_PARTYLEAVE
-	export_constant(NPCF_PARTYLEAVE);	// partyleave_filter_name	// OnPCPartyLeaveFilter		// å½“ç©å®¶å‡†å¤‡ç¦»å¼€é˜Ÿä¼æ—¶è§¦å‘è¿‡æ»¤å™¨
+	export_constant(NPCF_PARTYLEAVE);	// partyleave_filter_name	// OnPCPartyLeaveFilter		// µ±Íæ¼Ò×¼±¸Àë¿ª¶ÓÎéÊ±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_PARTYLEAVE
 
 #ifdef Pandas_NpcFilter_DROPITEM
-	export_constant(NPCF_DROPITEM);	// dropitem_filter_name	// OnPCDropItemFilter		// å½“ç©å®¶å‡†å¤‡ä¸¢å¼ƒæˆ–æ‰è½é“å…·æ—¶è§¦å‘è¿‡æ»¤å™¨
+	export_constant(NPCF_DROPITEM);	// dropitem_filter_name	// OnPCDropItemFilter		// µ±Íæ¼Ò×¼±¸¶ªÆú»òµôÂäµÀ¾ßÊ±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_DROPITEM
 
 #ifdef Pandas_NpcFilter_CLICKTOMB
-	export_constant(NPCF_CLICKTOMB);	// clicktomb_filter_name	// OnPCClickTombFilter		// å½“ç©å®¶ç‚¹å‡»é­”ç‰©å¢“ç¢‘æ—¶è§¦å‘è¿‡æ»¤å™¨
+	export_constant(NPCF_CLICKTOMB);	// clicktomb_filter_name	// OnPCClickTombFilter		// µ±Íæ¼Òµã»÷Ä§ÎïÄ¹±®Ê±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_CLICKTOMB
 
 #ifdef Pandas_NpcFilter_STORAGE_ADD
-	export_constant(NPCF_STORAGE_ADD);	// storage_add_filter_name	// OnPCStorageAddFilter		// å½“ç©å®¶å‡†å¤‡å°†é“å…·å­˜å…¥ä»“åº“æ—¶è§¦å‘è¿‡æ»¤å™¨
+	export_constant(NPCF_STORAGE_ADD);	// storage_add_filter_name	// OnPCStorageAddFilter		// µ±Íæ¼Ò×¼±¸½«µÀ¾ß´æÈë²Ö¿âÊ±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_STORAGE_ADD
 
 #ifdef Pandas_NpcFilter_STORAGE_DEL
-	export_constant(NPCF_STORAGE_DEL);	// storage_del_filter_name	// OnPCStorageDelFilter		// å½“ç©å®¶å‡†å¤‡å°†é“å…·å–å‡ºä»“åº“æ—¶è§¦å‘è¿‡æ»¤å™¨
+	export_constant(NPCF_STORAGE_DEL);	// storage_del_filter_name	// OnPCStorageDelFilter		// µ±Íæ¼Ò×¼±¸½«µÀ¾ßÈ¡³ö²Ö¿âÊ±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_STORAGE_DEL
 
 #ifdef Pandas_NpcFilter_CART_ADD
-	export_constant(NPCF_CART_ADD);	// cart_add_filter_name	// OnPCCartAddFilter		// å½“ç©å®¶å‡†å¤‡å°†é“å…·ä»èƒŒåŒ…å­˜å…¥æ‰‹æ¨è½¦æ—¶è§¦å‘è¿‡æ»¤å™¨
+	export_constant(NPCF_CART_ADD);	// cart_add_filter_name	// OnPCCartAddFilter		// µ±Íæ¼Ò×¼±¸½«µÀ¾ß´Ó±³°ü´æÈëÊÖÍÆ³µÊ±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_CART_ADD
 
 #ifdef Pandas_NpcFilter_CART_DEL
-	export_constant(NPCF_CART_DEL);	// cart_del_filter_name	// OnPCCartDelFilter		// å½“ç©å®¶å‡†å¤‡å°†é“å…·ä»æ‰‹æ¨è½¦å–å›èƒŒåŒ…æ—¶è§¦å‘è¿‡æ»¤å™¨
+	export_constant(NPCF_CART_DEL);	// cart_del_filter_name	// OnPCCartDelFilter		// µ±Íæ¼Ò×¼±¸½«µÀ¾ß´ÓÊÖÍÆ³µÈ¡»Ø±³°üÊ±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_CART_DEL
 
 #ifdef Pandas_NpcFilter_FAVORITE_ADD
-	export_constant(NPCF_FAVORITE_ADD);	// favorite_add_filter_name	// OnPCFavoriteAddFilter		// å½“ç©å®¶å‡†å¤‡å°†é“å…·ç§»å…¥æ”¶è—æ ä½æ—¶è§¦å‘è¿‡æ»¤å™¨ [é¦™è‰]
+	export_constant(NPCF_FAVORITE_ADD);	// favorite_add_filter_name	// OnPCFavoriteAddFilter		// µ±Íæ¼Ò×¼±¸½«µÀ¾ßÒÆÈëÊÕ²ØÀ¸Î»Ê±´¥·¢¹ıÂËÆ÷ [Ïã²İ]
 #endif // Pandas_NpcFilter_FAVORITE_ADD
 
 #ifdef Pandas_NpcFilter_FAVORITE_DEL
-	export_constant(NPCF_FAVORITE_DEL);	// favorite_del_filter_name	// OnPCFavoriteDelFilter		// å½“ç©å®¶å‡†å¤‡å°†é“å…·ä»æ”¶è—æ ä½ç§»å‡ºæ—¶è§¦å‘è¿‡æ»¤å™¨ [é¦™è‰]
+	export_constant(NPCF_FAVORITE_DEL);	// favorite_del_filter_name	// OnPCFavoriteDelFilter		// µ±Íæ¼Ò×¼±¸½«µÀ¾ß´ÓÊÕ²ØÀ¸Î»ÒÆ³öÊ±´¥·¢¹ıÂËÆ÷ [Ïã²İ]
 #endif // Pandas_NpcFilter_FAVORITE_DEL
 	// PYHELP - NPCEVENT - INSERT POINT - <Section 6>
 
 	/************************************************************************/
-	/* Event  ç±»å‹çš„æ ‡å‡†äº‹ä»¶ï¼Œè¿™äº›äº‹ä»¶ä¸èƒ½è¢« processhalt æ‰“æ–­                    */
+	/* Event  ÀàĞÍµÄ±ê×¼ÊÂ¼ş£¬ÕâĞ©ÊÂ¼ş²»ÄÜ±» processhalt ´ò¶Ï                    */
 	/************************************************************************/
 
 #ifdef Pandas_NpcEvent_KILLMVP
-	export_constant(NPCE_KILLMVP);	// killmvp_event_name	// OnPCKillMvpEvent		// å½“ç©å®¶æ€æ­» MVP é­”ç‰©åè§¦å‘äº‹ä»¶
+	export_constant(NPCE_KILLMVP);	// killmvp_event_name	// OnPCKillMvpEvent		// µ±Íæ¼ÒÉ±ËÀ MVP Ä§Îïºó´¥·¢ÊÂ¼ş
 #endif // Pandas_NpcEvent_KILLMVP
 
 #ifdef Pandas_NpcEvent_IDENTIFY
-	export_constant(NPCE_IDENTIFY);	// identify_event_name	// OnPCIdentifyEvent		// å½“ç©å®¶æˆåŠŸé‰´å®šäº†è£…å¤‡æ—¶è§¦å‘äº‹ä»¶
+	export_constant(NPCE_IDENTIFY);	// identify_event_name	// OnPCIdentifyEvent		// µ±Íæ¼Ò³É¹¦¼ø¶¨ÁË×°±¸Ê±´¥·¢ÊÂ¼ş
 #endif // Pandas_NpcEvent_IDENTIFY
 
 #ifdef Pandas_NpcEvent_INSERT_CARD
-	export_constant(NPCE_INSERT_CARD);	// insert_card_event_name	// OnPCInsertCardEvent		// å½“ç©å®¶æˆåŠŸæ’å…¥å¡ç‰‡åè§¦å‘äº‹ä»¶
+	export_constant(NPCE_INSERT_CARD);	// insert_card_event_name	// OnPCInsertCardEvent		// µ±Íæ¼Ò³É¹¦²åÈë¿¨Æ¬ºó´¥·¢ÊÂ¼ş
 #endif // Pandas_NpcEvent_INSERT_CARD
 
 #ifdef Pandas_NpcEvent_USE_ITEM
-	export_constant(NPCE_USE_ITEM);	// use_item_event_name	// OnPCUseItemEvent		// å½“ç©å®¶æˆåŠŸä½¿ç”¨éè£…å¤‡ç±»é“å…·åè§¦å‘äº‹ä»¶
+	export_constant(NPCE_USE_ITEM);	// use_item_event_name	// OnPCUseItemEvent		// µ±Íæ¼Ò³É¹¦Ê¹ÓÃ·Ç×°±¸ÀàµÀ¾ßºó´¥·¢ÊÂ¼ş
 #endif // Pandas_NpcEvent_USE_ITEM
 
 #ifdef Pandas_NpcEvent_USE_SKILL
-	export_constant(NPCE_USE_SKILL);	// use_skill_event_name	// OnPCUseSkillEvent		// å½“ç©å®¶æˆåŠŸä½¿ç”¨æŠ€èƒ½åè§¦å‘äº‹ä»¶
+	export_constant(NPCE_USE_SKILL);	// use_skill_event_name	// OnPCUseSkillEvent		// µ±Íæ¼Ò³É¹¦Ê¹ÓÃ¼¼ÄÜºó´¥·¢ÊÂ¼ş
 #endif // Pandas_NpcEvent_USE_SKILL
 
 #ifdef Pandas_NpcEvent_EQUIP
-	export_constant(NPCE_EQUIP);	// equip_event_name	// OnPCEquipEvent		// å½“ç©å®¶æˆåŠŸç©¿æˆ´ä¸€ä»¶è£…å¤‡æ—¶è§¦å‘äº‹ä»¶
+	export_constant(NPCE_EQUIP);	// equip_event_name	// OnPCEquipEvent		// µ±Íæ¼Ò³É¹¦´©´÷Ò»¼ş×°±¸Ê±´¥·¢ÊÂ¼ş
 #endif // Pandas_NpcEvent_EQUIP
 
 #ifdef Pandas_NpcEvent_UNEQUIP
-	export_constant(NPCE_UNEQUIP);	// unequip_event_name	// OnPCUnequipEvent		// å½“ç©å®¶æˆåŠŸè„±ä¸‹ä¸€ä»¶è£…å¤‡æ—¶è§¦å‘äº‹ä»¶
+	export_constant(NPCE_UNEQUIP);	// unequip_event_name	// OnPCUnequipEvent		// µ±Íæ¼Ò³É¹¦ÍÑÏÂÒ»¼ş×°±¸Ê±´¥·¢ÊÂ¼ş
 #endif // Pandas_NpcEvent_UNEQUIP
 	// PYHELP - NPCEVENT - INSERT POINT - <Section 12>
 
 	/************************************************************************/
-	/* Express ç±»å‹çš„å¿«é€Ÿäº‹ä»¶ï¼Œè¿™äº›äº‹ä»¶å°†ä¼šè¢«ç«‹åˆ»æ‰§è¡Œ, ä¸è¿›äº‹ä»¶é˜Ÿåˆ—                */
+	/* Express ÀàĞÍµÄ¿ìËÙÊÂ¼ş£¬ÕâĞ©ÊÂ¼ş½«»á±»Á¢¿ÌÖ´ĞĞ, ²»½øÊÂ¼ş¶ÓÁĞ                */
 	/************************************************************************/
 
 #ifdef Pandas_NpcExpress_STATCALC
-	export_constant(NPCE_STATCALC);	// statcalc_express_name	// OnPCStatCalcEvent		// å½“è§’è‰²èƒ½åŠ›è¢«é‡æ–°è®¡ç®—æ—¶è§¦å‘äº‹ä»¶
+	export_constant(NPCE_STATCALC);	// statcalc_express_name	// OnPCStatCalcEvent		// µ±½ÇÉ«ÄÜÁ¦±»ÖØĞÂ¼ÆËãÊ±´¥·¢ÊÂ¼ş
 #endif // Pandas_NpcExpress_STATCALC
 
 #ifdef Pandas_NpcExpress_SC_END
-	export_constant(NPCX_SC_END);	// sc_end_express_name	// OnPCBuffEndExpress		// å½“ç©å®¶æˆåŠŸè§£é™¤ä¸€ä¸ªçŠ¶æ€(Buff)åè§¦å‘å®æ—¶äº‹ä»¶
+	export_constant(NPCX_SC_END);	// sc_end_express_name	// OnPCBuffEndExpress		// µ±Íæ¼Ò³É¹¦½â³ıÒ»¸ö×´Ì¬(Buff)ºó´¥·¢ÊµÊ±ÊÂ¼ş
 #endif // Pandas_NpcExpress_SC_END
 
 #ifdef Pandas_NpcExpress_SC_START
-	export_constant(NPCX_SC_START);	// sc_start_express_name	// OnPCBuffStartExpress		// å½“ç©å®¶æˆåŠŸè·å¾—ä¸€ä¸ªçŠ¶æ€(Buff)åè§¦å‘å®æ—¶äº‹ä»¶
+	export_constant(NPCX_SC_START);	// sc_start_express_name	// OnPCBuffStartExpress		// µ±Íæ¼Ò³É¹¦»ñµÃÒ»¸ö×´Ì¬(Buff)ºó´¥·¢ÊµÊ±ÊÂ¼ş
 #endif // Pandas_NpcExpress_SC_START
 
 #ifdef Pandas_NpcExpress_ENTERMAP
-	export_constant(NPCX_ENTERMAP);	// entermap_express_name	// OnPCEnterMapExpress		// å½“ç©å®¶è¿›å…¥æˆ–è€…æ”¹å˜åœ°å›¾æ—¶è§¦å‘å®æ—¶äº‹ä»¶
+	export_constant(NPCX_ENTERMAP);	// entermap_express_name	// OnPCEnterMapExpress		// µ±Íæ¼Ò½øÈë»òÕß¸Ä±äµØÍ¼Ê±´¥·¢ÊµÊ±ÊÂ¼ş
 #endif // Pandas_NpcExpress_ENTERMAP
 
 #ifdef Pandas_NpcExpress_PROGRESSABORT
-	export_constant(NPCX_PROGRESSABORT);	// progressabort_express_name	// OnPCProgressAbortExpress		// å½“ progressbar è¿›åº¦æ¡è¢«æ‰“æ–­æ—¶è§¦å‘å®æ—¶äº‹ä»¶
+	export_constant(NPCX_PROGRESSABORT);	// progressabort_express_name	// OnPCProgressAbortExpress		// µ± progressbar ½ø¶ÈÌõ±»´ò¶ÏÊ±´¥·¢ÊµÊ±ÊÂ¼ş
 #endif // Pandas_NpcExpress_PROGRESSABORT
 
 #ifdef Pandas_NpcExpress_UNIT_KILL
-	export_constant(NPCX_UNIT_KILL);	// unit_kill_express_name	// OnUnitKillExpress		// å½“æŸä¸ªå•ä½è¢«å‡»æ€æ—¶è§¦å‘å®æ—¶äº‹ä»¶
+	export_constant(NPCX_UNIT_KILL);	// unit_kill_express_name	// OnUnitKillExpress		// µ±Ä³¸öµ¥Î»±»»÷É±Ê±´¥·¢ÊµÊ±ÊÂ¼ş
 #endif // Pandas_NpcExpress_UNIT_KILL
 
 #ifdef Pandas_NpcExpress_MOBDROPITEM
-	export_constant(NPCX_MOBDROPITEM);	// mobdropitem_express_name	// OnMobDropItemExpress		// å½“é­”ç‰©å³å°†æ‰è½é“å…·æ—¶è§¦å‘å®æ—¶äº‹ä»¶
+	export_constant(NPCX_MOBDROPITEM);	// mobdropitem_express_name	// OnMobDropItemExpress		// µ±Ä§Îï¼´½«µôÂäµÀ¾ßÊ±´¥·¢ÊµÊ±ÊÂ¼ş
 #endif // Pandas_NpcExpress_MOBDROPITEM
 
 #ifdef Pandas_NpcExpress_PCATTACK
-	export_constant(NPCX_PCATTACK);	// pcattack_express_name	// OnPCAttackExpress		// å½“ç©å®¶å‘èµ·æ”»å‡»å¹¶å³å°†è¿›è¡Œç»“ç®—æ—¶è§¦å‘å®æ—¶äº‹ä»¶ [è½é¢¨]
+	export_constant(NPCX_PCATTACK);	// pcattack_express_name	// OnPCAttackExpress		// µ±Íæ¼Ò·¢Æğ¹¥»÷²¢¼´½«½øĞĞ½áËãÊ±´¥·¢ÊµÊ±ÊÂ¼ş [Â ïL]
 #endif // Pandas_NpcExpress_PCATTACK
 
 #ifdef Pandas_NpcExpress_MER_CALL
-	export_constant(NPCX_MER_CALL);	// mer_call_express_name	// OnPCMerCallExpress		// å½“ç©å®¶æˆåŠŸå¬å”¤å‡ºä½£å…µæ—¶è§¦å‘å®æ—¶äº‹ä»¶
+	export_constant(NPCX_MER_CALL);	// mer_call_express_name	// OnPCMerCallExpress		// µ±Íæ¼Ò³É¹¦ÕÙ»½³öÓ¶±øÊ±´¥·¢ÊµÊ±ÊÂ¼ş
 #endif // Pandas_NpcExpress_MER_CALL
 
 #ifdef Pandas_NpcExpress_MER_LEAVE
-	export_constant(NPCX_MER_LEAVE);	// mer_leave_express_name	// OnPCMerLeaveExpress		// å½“ä½£å…µç¦»å¼€ç©å®¶æ—¶è§¦å‘å®æ—¶äº‹ä»¶
+	export_constant(NPCX_MER_LEAVE);	// mer_leave_express_name	// OnPCMerLeaveExpress		// µ±Ó¶±øÀë¿ªÍæ¼ÒÊ±´¥·¢ÊµÊ±ÊÂ¼ş
 #endif // Pandas_NpcExpress_MER_LEAVE
 
 #ifdef Pandas_NpcExpress_PC_TALK
-	export_constant(NPCX_PC_TALK);	// pc_talk_express_name	// OnPCTalkExpress		// å½“ç©å®¶å¾€èŠå¤©æ¡†å‘é€ä¿¡æ¯æ—¶è§¦å‘å®æ—¶äº‹ä»¶ [äººé±¼å§¬çš„æ€å¿µ]
+	export_constant(NPCX_PC_TALK);	// pc_talk_express_name	// OnPCTalkExpress		// µ±Íæ¼ÒÍùÁÄÌì¿ò·¢ËÍĞÅÏ¢Ê±´¥·¢ÊµÊ±ÊÂ¼ş [ÈËÓã¼§µÄË¼Äî]
 #endif // Pandas_NpcExpress_PC_TALK
 
 #ifdef Pandas_NpcExpress_PCHARMED
-	export_constant(NPCX_PCHARMED);	// pcharmed_express_name	// OnPCHarmedExpress		// å½“ç©å®¶å—åˆ°ä¼¤å®³å¹¶å³å°†è¿›è¡Œç»“ç®—æ—¶è§¦å‘å®æ—¶äº‹ä»¶ [äººé±¼å§¬çš„æ€å¿µ]
+	export_constant(NPCX_PCHARMED);	// pcharmed_express_name	// OnPCHarmedExpress		// µ±Íæ¼ÒÊÜµ½ÉËº¦²¢¼´½«½øĞĞ½áËãÊ±´¥·¢ÊµÊ±ÊÂ¼ş [ÈËÓã¼§µÄË¼Äî]
 #endif // Pandas_NpcExpress_PCHARMED
 	// PYHELP - NPCEVENT - INSERT POINT - <Section 18>
 #endif // Pandas_ScriptCommands
@@ -1223,36 +1223,36 @@
 #ifdef Pandas_Bonuses
 
 #ifdef Pandas_Bonus_bNoFieldGemStone
-	// ä½¿ç«, æ°´, é£, åœ°å››å¤§å…ƒç´ é¢†åŸŸæŠ€èƒ½æ— éœ€æ¶ˆè€—é­”åŠ›çŸ¿çŸ³
+	// Ê¹»ğ, Ë®, ·ç, µØËÄ´óÔªËØÁìÓò¼¼ÄÜÎŞĞèÏûºÄÄ§Á¦¿óÊ¯
 	export_constant2("bNoFieldGemStone", SP_PANDAS_NOFIELDGEMSTONE);
 #endif // Pandas_Bonus_bNoFieldGemStone
 #ifdef Pandas_Bonus3_bRebirthWithHeal
-	// å½“ç©å®¶æ­»äº¡æ—¶æœ‰ r/100% çš„æœºç‡å¤æ´»å¹¶æ¢å¤ h% çš„ HP å’Œ s% çš„ SP
+	// µ±Íæ¼ÒËÀÍöÊ±ÓĞ r/100% µÄ»úÂÊ¸´»î²¢»Ö¸´ h% µÄ HP ºÍ s% µÄ SP
 	export_constant2("bRebirthWithHeal", SP_PANDAS_REBIRTHWITHHEAL);
 #endif // Pandas_Bonus3_bRebirthWithHeal
 #ifdef Pandas_Bonus2_bAddSkillRange
-	// å¢åŠ  sk æŠ€èƒ½ n æ ¼æ”»å‡»è·ç¦»
+	// Ôö¼Ó sk ¼¼ÄÜ n ¸ñ¹¥»÷¾àÀë
 	export_constant2("bAddSkillRange", SP_PANDAS_ADDSKILLRANGE);
 	export_constant2("bAddSkillRangeAll", SP_PANDAS_ADDSKILLRANGE_ALL);
 #endif // Pandas_Bonus2_bAddSkillRange
 #ifdef Pandas_Bonus2_bSkillNoRequire
-	// è§£é™¤ sk æŠ€èƒ½ä¸­ç”± n æŒ‡å®šçš„å‰ç½®æ–½æ³•æ¡ä»¶é™åˆ¶
+	// ½â³ı sk ¼¼ÄÜÖĞÓÉ n Ö¸¶¨µÄÇ°ÖÃÊ©·¨Ìõ¼şÏŞÖÆ
 	export_constant2("bSkillNoRequire", SP_PANDAS_SKILLNOREQUIRE);
 #endif // Pandas_Bonus2_bSkillNoRequire
 #ifdef Pandas_Bonus4_bStatusAddDamage
-	// æ”»å‡»æ‹¥æœ‰ sc çŠ¶æ€çš„ç›®æ ‡æ—¶, ä½¿ç”¨ bf æ”»å‡»æœ‰ r/100% çš„æ¦‚ç‡ä½¿ä¼¤å®³å¢åŠ  n
+	// ¹¥»÷ÓµÓĞ sc ×´Ì¬µÄÄ¿±êÊ±, Ê¹ÓÃ bf ¹¥»÷ÓĞ r/100% µÄ¸ÅÂÊÊ¹ÉËº¦Ôö¼Ó n
 	export_constant2("bStatusAddDamage", SP_PANDAS_STATUSADDDAMAGE);
 #endif // Pandas_Bonus4_bStatusAddDamage
 #ifdef Pandas_Bonus4_bStatusAddDamageRate
-	// æ”»å‡»æ‹¥æœ‰ sc çŠ¶æ€çš„ç›®æ ‡æ—¶, ä½¿ç”¨ bf æ”»å‡»æœ‰ r/100% çš„æ¦‚ç‡ä½¿ä¼¤å®³å¢åŠ  n%
+	// ¹¥»÷ÓµÓĞ sc ×´Ì¬µÄÄ¿±êÊ±, Ê¹ÓÃ bf ¹¥»÷ÓĞ r/100% µÄ¸ÅÂÊÊ¹ÉËº¦Ôö¼Ó n%
 	export_constant2("bStatusAddDamageRate", SP_PANDAS_STATUSADDDAMAGERATE);
 #endif // Pandas_Bonus4_bStatusAddDamageRate
 #ifdef Pandas_Bonus3_bFinalAddRace
-	// ä½¿ç”¨ bf æ”»å‡» r ç§æ—çš„ç›®æ ‡æ—¶å¢åŠ  x% çš„ä¼¤å®³ (åœ¨æœ€ç»ˆä¼¤å®³ä¸Šå…¨æ®µä¿®æ­£)
+	// Ê¹ÓÃ bf ¹¥»÷ r ÖÖ×åµÄÄ¿±êÊ±Ôö¼Ó x% µÄÉËº¦ (ÔÚ×îÖÕÉËº¦ÉÏÈ«¶ÎĞŞÕı)
 	export_constant2("bFinalAddRace", SP_PANDAS_FINALADDRACE);
 #endif // Pandas_Bonus3_bFinalAddRace
 #ifdef Pandas_Bonus3_bFinalAddClass
-	// ä½¿ç”¨ bf æ”»å‡»æ—¶ c ç±»å‹ç›®æ ‡æ—¶å¢åŠ  x% çš„ä¼¤å®³ (åœ¨æœ€ç»ˆä¼¤å®³ä¸Šå…¨æ®µä¿®æ­£)
+	// Ê¹ÓÃ bf ¹¥»÷Ê± c ÀàĞÍÄ¿±êÊ±Ôö¼Ó x% µÄÉËº¦ (ÔÚ×îÖÕÉËº¦ÉÏÈ«¶ÎĞŞÕı)
 	export_constant2("bFinalAddClass", SP_PANDAS_FINALADDCLASS);
 #endif // Pandas_Bonus3_bFinalAddClass
 	// PYHELP - BONUS - INSERT POINT - <Section 3>
@@ -2303,6 +2303,7 @@
 	export_constant(SC_RELIEVE_OFF);
 	export_constant(SC_RUSH_QUAKE1);
 	export_constant(SC_RUSH_QUAKE2);
+
 
 	// Hyper Novice
 	export_constant(SC_SHIELDCHAINRUSH);
@@ -10833,6 +10834,13 @@
 	export_constant(HAT_EF_SUBJECT_AURA_NAVY);
 	export_constant(HAT_EF_20TH_SCARF_J);
 	export_constant(HAT_EF_GHOST_FIRE);
+	export_constant(HAT_EF_SERPENT_SHADOW);
+	export_constant(HAT_EF_C_1ST_EVT_HAT_MSP);
+	export_constant(HAT_EF_C_1ST_EVT_BALLOON_MSP);
+	export_constant(HAT_EF_RABBIT_AURA);
+	export_constant(HAT_EF_ALICE_TEA);
+	export_constant(HAT_EF_C_DARK_LORD_CLOAK);
+	export_constant(HAT_EF_C_SAKURA_FUBUKI);
 
 	/* pet catch */
 	export_constant(PET_CATCH_UNIVERSAL);

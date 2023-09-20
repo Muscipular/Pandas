@@ -1,4 +1,4 @@
-ï»¿// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
+// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
 #include "battle.hpp"
@@ -5642,7 +5642,7 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 				skillratio += skillratio * sc->getSCE(SC_LIGHTOFSTAR)->val2 / 100;
 			break;
 		case DK_SERVANTWEAPON_ATK:
-			skillratio += -100 + 200 + 300 * skill_lv + 5 * sstatus->pow;
+			skillratio += -100 + 500 + 400 * skill_lv + 5 * sstatus->pow;
 			RE_LVL_DMOD(100);
 			break;
 		case DK_SERVANT_W_PHANTOM:
@@ -5681,7 +5681,7 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 		case DK_STORMSLASH:
 			skillratio += -100 + 100 + 170 * skill_lv + 5 * sstatus->pow;
 			RE_LVL_DMOD(100);
-			if (sc && sc->getSCE(SC_GIANTGROWTH) && rand() % 100 < 30)
+			if (sc && sc->getSCE(SC_GIANTGROWTH) && rnd()%100 < 30)
 				skillratio *= 2;
 			break;
 		case DK_DRAGONIC_BREATH:
@@ -5697,9 +5697,9 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			RE_LVL_DMOD(100);
 			break;
 		case IQ_MASSIVE_F_BLASTER:
-			skillratio += -100 + 2800 * skill_lv + 15 * sstatus->pow;
+			skillratio += -100 + 2150 * skill_lv + 15 * sstatus->pow;
 			if (tstatus->race == RC_BRUTE || tstatus->race == RC_DEMON)
-				skillratio += 400 * skill_lv;
+				skillratio += 150 * skill_lv;
 			RE_LVL_DMOD(100);
 			break;
 		case IQ_EXPOSION_BLASTER:
@@ -5732,7 +5732,7 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			RE_LVL_DMOD(100);
 			break;
 		case IQ_THIRD_FLAME_BOMB:
-			skillratio += -100 + 650 * skill_lv + 10 * sstatus->pow + sstatus->max_hp / 5;
+			skillratio += -100 + 650 * skill_lv + 10 * sstatus->pow;
 			skillratio += sstatus->max_hp * 20 / 100;
 			RE_LVL_DMOD(100);
 			break;
@@ -5749,12 +5749,15 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 				skillratio += skillratio * i / 100;
 			break;
 		case IG_SHIELD_SHOOTING:
-			skillratio += -100 + 1400 + 1300 * skill_lv + 5 * sstatus->pow;
+			skillratio += -100 + 1400 + 2100 * skill_lv + 5 * sstatus->pow;
 			skillratio += skill_lv * 15 * pc_checkskill( sd, IG_SHIELD_MASTERY );
 			if (sd) { // Damage affected by the shield's weight and refine. Need official formula. [Rytech]
 				short index = sd->equip_index[EQI_HAND_L];
-				if (index >= 0 && sd->inventory_data[index] && sd->inventory_data[index]->type == IT_ARMOR)
-					skillratio += sd->inventory_data[index]->weight / 10 + sd->inventory.u.items_inventory[index].refine * 4;
+
+				if (index >= 0 && sd->inventory_data[index] && sd->inventory_data[index]->type == IT_ARMOR) {
+					skillratio += (sd->inventory_data[index]->weight * 7 / 6) / 10;
+					skillratio += sd->inventory.u.items_inventory[index].refine * 4;
+				}
 			}
 			RE_LVL_DMOD(100);
 			break;
@@ -5766,8 +5769,11 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			break;
 		case CD_EFFLIGO:
 			skillratio += -100 + 1650 * skill_lv + 7 * sstatus->pow;
-			if (tstatus->race == RC_UNDEAD || tstatus->race == RC_DEMON)
+			skillratio += 8 * pc_checkskill( sd, CD_MACE_BOOK_M );
+			if (tstatus->race == RC_UNDEAD || tstatus->race == RC_DEMON) {
 				skillratio += 150 * skill_lv;
+				skillratio += 7 * pc_checkskill( sd, CD_MACE_BOOK_M );
+			}
 			RE_LVL_DMOD(100);
 			break;
 		case CD_PETITIO:
@@ -5782,15 +5788,18 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			skillratio += -100 + 90 * skill_lv + 5 * sstatus->pow;
 
 			if( sc != nullptr && sc->getSCE( SC_SHADOW_EXCEED ) ){
-				skillratio += 20 * skill_lv;
+				skillratio += 20 * skill_lv + 3 * sstatus->pow;	// !TODO: check POW ratio
 			}
 
 			RE_LVL_DMOD(100);
 			break;
 		case SHC_ETERNAL_SLASH:
 			skillratio += -100 + 265 * skill_lv + 2 * sstatus->pow;
-			if (sc && sc->getSCE(SC_SHADOW_EXCEED))
+
+			if( sc != nullptr && sc->getSCE( SC_SHADOW_EXCEED ) ){
 				skillratio += 100 * skill_lv + sstatus->pow;
+			}
+
 			RE_LVL_DMOD(100);
 			break;
 		case SHC_SHADOW_STAB:
@@ -5866,17 +5875,17 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 		case WH_HAWKBOOMERANG:
 			skillratio += -100 + 600 * skill_lv + 10 * sstatus->con;
 			if (tstatus->race == RC_BRUTE || tstatus->race == RC_FISH)
-				skillratio += 250 * skill_lv;
+				skillratio += skillratio * 50 / 100;
 			RE_LVL_DMOD(100);
 			break;
 		case WH_GALESTORM:
 			skillratio += -100 + 950 * skill_lv + 10 * sstatus->con;
 			RE_LVL_DMOD(100);
 			if (sc && sc->getSCE(SC_CALAMITYGALE) && (tstatus->race == RC_BRUTE || tstatus->race == RC_FISH))
-					skillratio += skillratio * 50 / 100;
+				skillratio += skillratio * 50 / 100;
 			break;
 		case WH_CRESCIVE_BOLT:
-			skillratio += -100 + 300 * skill_lv + 5 * sstatus->con;
+			skillratio += -100 + 340 * skill_lv + 5 * sstatus->con;
 			RE_LVL_DMOD(100);
 			if (sc) {
 				if (sc->getSCE(SC_CRESCIVEBOLT))
@@ -5941,7 +5950,10 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			RE_LVL_DMOD(100);
 			break;
 		case TR_ROSEBLOSSOM:
-			skillratio += -100 + 200 + 2000 * skill_lv + (sd ? pc_checkskill(sd, TR_STAGE_MANNER) : 3) * sstatus->con;
+			skillratio += -100 + 200 + 2000 * skill_lv;
+
+			if (sd && pc_checkskill(sd, TR_STAGE_MANNER) > 0)
+				skillratio += 3 * sstatus->con;
 
 			if( tsc != nullptr && tsc->getSCE( SC_SOUNDBLEND ) ){
 				skillratio += 200 * skill_lv;
@@ -5956,7 +5968,10 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			}
 			break;
 		case TR_ROSEBLOSSOM_ATK:
-			skillratio += -100 + 250 + 2800 * skill_lv + (sd ? pc_checkskill(sd, TR_STAGE_MANNER) : 3) * sstatus->con;
+			skillratio += -100 + 250 + 2800 * skill_lv;
+
+			if (sd && pc_checkskill(sd, TR_STAGE_MANNER) > 0)
+				skillratio += 3 * sstatus->con;
 
 			if( tsc != nullptr && tsc->getSCE( SC_SOUNDBLEND ) ){
 				skillratio += 200 * skill_lv;
@@ -5971,9 +5986,14 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			}
 			break;
 		case TR_RHYTHMSHOOTING:
-			skillratio += -100 + 200 + 120 * skill_lv + (sd ? pc_checkskill(sd, TR_STAGE_MANNER) : 3) * sstatus->con;
+			skillratio += -100 + 200 + 120 * skill_lv;
+
+			if (sd && pc_checkskill(sd, TR_STAGE_MANNER) > 0)
+				skillratio += 3 * sstatus->con;
+
 			if (tsc && tsc->getSCE(SC_SOUNDBLEND))
 				skillratio += 100 + 100 * skill_lv;
+
 			RE_LVL_DMOD(100);
 			if (sc && sc->getSCE(SC_MYSTIC_SYMPHONY)) {
 				skillratio *= 2;
@@ -7694,9 +7714,6 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 			if (mflag == 2)
 				ad.div_ = 2;
 			break;
-		case TR_METALIC_FURY:// Deals up to 5 additional hits. But what affects the number of hits? [Rytech]
-			ad.div_ = min(ad.div_ + mflag, 5); // Number of hits doesn't go above 5.
-			break;
 		case AG_CRIMSON_ARROW_ATK:
 			if( sc != nullptr && sc->getSCE( SC_CLIMAX ) ){
 				ad.div_ = 2;
@@ -8452,7 +8469,7 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 							if (sc->getSCE(SC_CLIMAX)->val1 == 1)
 								skillratio /= 2;
 							else if (sc->getSCE(SC_CLIMAX)->val1 == 3)
-								skillratio *= 2;
+								skillratio *= 3;
 						}
 						break;
 					case AG_SOUL_VC_STRIKE:
@@ -8464,7 +8481,7 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 						RE_LVL_DMOD(100);
 						break;
 					case AG_ALL_BLOOM_ATK:
-						skillratio += -100 + 600 + 800 * skill_lv + 5 * sstatus->spl;
+						skillratio += -100 + 200 + 1200 * skill_lv + 5 * sstatus->spl;
 						RE_LVL_DMOD(100);
 						if (sc && sc->getSCE(SC_CLIMAX)) {
 							if (sc->getSCE(SC_CLIMAX)->val1 == 3)
@@ -8500,9 +8517,9 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 						RE_LVL_DMOD(100);
 						break;
 					case AG_ASTRAL_STRIKE:
-						skillratio += -100 + 400 + 1700 * skill_lv + 10 * sstatus->spl;
+						skillratio += -100 + 1800 * skill_lv + 10 * sstatus->spl;
 						if (tstatus->race == RC_UNDEAD || tstatus->race == RC_DRAGON)
-							skillratio += 100 + 300 * skill_lv;
+							skillratio += 340 * skill_lv;
 						RE_LVL_DMOD(100);
 						break;
 					case AG_ASTRAL_STRIKE_ATK:
@@ -8520,11 +8537,9 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 						break;
 					case AG_STORM_CANNON:
 						skillratio += -100 + 950 * skill_lv + 5 * sstatus->spl;
-						if (sc && sc->getSCE(SC_CLIMAX))
-							skillratio += 300 * skill_lv;
 
 						if( sc != nullptr && sc->getSCE( SC_CLIMAX ) ){
-							skillratio += 250 * skill_lv;
+							skillratio += 300 * skill_lv;
 						}
 
 						RE_LVL_DMOD(100);
@@ -8564,23 +8579,26 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 						RE_LVL_DMOD(100);
 						break;
 					case CD_ARBITRIUM:
-						skillratio += -100 + 1000 * skill_lv + 5 * sstatus->spl;
+						skillratio += -100 + 1000 * skill_lv + 7 * sstatus->spl;
 						skillratio += 10 * pc_checkskill( sd, CD_FIDUS_ANIMUS ) * skill_lv;
 						RE_LVL_DMOD(100);
 						break;
 					case CD_ARBITRIUM_ATK:
-						skillratio += -100 + 1250 * skill_lv + 5 * sstatus->spl;
+						skillratio += -100 + 1250 * skill_lv + 7 * sstatus->spl;
 						skillratio += 10 * pc_checkskill( sd, CD_FIDUS_ANIMUS ) * skill_lv;
 						RE_LVL_DMOD(100);
 						break;
 					case CD_PNEUMATICUS_PROCELLA:
 						skillratio += -100 + 150 + 2100 * skill_lv + 10 * sstatus->spl;
-						if (tstatus->race == RC_UNDEAD || tstatus->race == RC_DEMON)
+						skillratio += 3 * pc_checkskill( sd, CD_FIDUS_ANIMUS );
+						if (tstatus->race == RC_UNDEAD || tstatus->race == RC_DEMON) {
 							skillratio += 50 + 150 * skill_lv;
+							skillratio += 2 * pc_checkskill( sd, CD_FIDUS_ANIMUS );
+						}
 						RE_LVL_DMOD(100);
 						break;
 					case CD_FRAMEN:
-						skillratio += -100 + (800 + 5* pc_checkskill(sd,CD_FIDUS_ANIMUS)) * skill_lv +  5 * sstatus->spl;
+						skillratio += -100 + (800 + 5 * pc_checkskill(sd,CD_FIDUS_ANIMUS)) * skill_lv + 5 * sstatus->spl;
 						if (tstatus->race == RC_UNDEAD || tstatus->race == RC_DEMON)
 							skillratio += 100 * skill_lv;
 						RE_LVL_DMOD(100);
@@ -8600,10 +8618,10 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 						RE_LVL_DMOD(100);
 						break;
 					case TR_METALIC_FURY: {
-						int area = skill_get_splash(skill_id, skill_lv);
-						int count = map_forcountinarea(skill_check_bl_sc,target->m,target->x - area,target->y - area,target->x + area,target->y + area,5,BL_MOB,SC_SOUNDBLEND);
-						skillratio += -100 + (2200 + 300 * count) * skill_lv + 5 * sstatus->spl;
-						RE_LVL_DMOD(100);
+							int area = skill_get_splash(skill_id, skill_lv);
+							int count = map_forcountinarea(skill_check_bl_sc,target->m,target->x - area,target->y - area,target->x + area,target->y + area,5,BL_MOB,SC_SOUNDBLEND);
+							skillratio += -100 + (2200 + 300 * count) * skill_lv + 5 * sstatus->spl;
+							RE_LVL_DMOD(100);
 						}
 						break;
 					case TR_SOUNDBLEND:
@@ -9368,16 +9386,16 @@ struct Damage battle_calc_attack(int attack_type,struct block_list *bl,struct bl
 	if (skill_id && bl && map_getmapflag(bl->m, MF_MAXDMG_SKILL)) {
 		int val = map_getmapflag_param(bl->m, MF_MAXDMG_SKILL, 1);
 		if (val > 0 && d.damage + d.damage2 > val) {
-			int64 overval = (d.damage + d.damage2) - val;	// è¶…äº†å¤šå°‘
+			int64 overval = (d.damage + d.damage2) - val;	// ³¬ÁË¶àÉÙ
 			if (d.damage2 >= overval) {
-				// å¦‚æœ damage2 è¶³å¤Ÿè¢«æ‰£å‡, é‚£ä¹ˆä¼˜å…ˆæ‰£å‡ damage2
+				// Èç¹û damage2 ×ã¹»±»¿Û¼õ, ÄÇÃ´ÓÅÏÈ¿Û¼õ damage2
 				d.damage2 -= overval;
 			}
 			else {
-				// å¦‚æœ damage2 ä¸è¶³ä»¥è¢«æ‰£å‡, é‚£ä¹ˆå…ˆæŠŠ damage2 è°ƒä¸º 0
-				overval -= d.damage2;	// æ›´æ–°è¶…å‡ºçš„ä¼¤å®³æ•°
+				// Èç¹û damage2 ²»×ãÒÔ±»¿Û¼õ, ÄÇÃ´ÏÈ°Ñ damage2 µ÷Îª 0
+				overval -= d.damage2;	// ¸üĞÂ³¬³öµÄÉËº¦Êı
 				d.damage2 = 0;
-				d.damage = cap_value(d.damage - overval, 0, val);	// æœ€åå†æ‰£å‡ damage ä¸­çš„ä¼¤å®³
+				d.damage = cap_value(d.damage - overval, 0, val);	// ×îºóÔÙ¿Û¼õ damage ÖĞµÄÉËº¦
 			}
 		}
 	}
@@ -9387,16 +9405,16 @@ struct Damage battle_calc_attack(int attack_type,struct block_list *bl,struct bl
 	if (!skill_id && bl && map_getmapflag(bl->m, MF_MAXDMG_NORMAL)) {
 		int val = map_getmapflag_param(bl->m, MF_MAXDMG_NORMAL, 1);
 		if (val > 0 && d.damage + d.damage2 > val) {
-			int64 overval = (d.damage + d.damage2) - val;	// è¶…äº†å¤šå°‘
+			int64 overval = (d.damage + d.damage2) - val;	// ³¬ÁË¶àÉÙ
 			if (d.damage2 >= overval) {
-				// å¦‚æœ damage2 è¶³å¤Ÿè¢«æ‰£å‡, é‚£ä¹ˆä¼˜å…ˆæ‰£å‡ damage2
+				// Èç¹û damage2 ×ã¹»±»¿Û¼õ, ÄÇÃ´ÓÅÏÈ¿Û¼õ damage2
 				d.damage2 -= overval;
 			}
 			else {
-				// å¦‚æœ damage2 ä¸è¶³ä»¥è¢«æ‰£å‡, é‚£ä¹ˆå…ˆæŠŠ damage2 è°ƒä¸º 0
-				overval -= d.damage2;	// æ›´æ–°è¶…å‡ºçš„ä¼¤å®³æ•°
+				// Èç¹û damage2 ²»×ãÒÔ±»¿Û¼õ, ÄÇÃ´ÏÈ°Ñ damage2 µ÷Îª 0
+				overval -= d.damage2;	// ¸üĞÂ³¬³öµÄÉËº¦Êı
 				d.damage2 = 0;
-				d.damage = cap_value(d.damage - overval, 0, val);	// æœ€åå†æ‰£å‡ damage ä¸­çš„ä¼¤å®³
+				d.damage = cap_value(d.damage - overval, 0, val);	// ×îºóÔÙ¿Û¼õ damage ÖĞµÄÉËº¦
 			}
 		}
 	}
@@ -10099,10 +10117,10 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 
 #ifdef Pandas_NpcExpress_PCHARMED
 	if (src && target && damage > 0) {
-		// è´Ÿè´£æ‰§è¡Œäº‹ä»¶çš„ç©å®¶å¯¹è±¡ (äº‹ä»¶æ‰§è¡Œè€…)
+		// ¸ºÔğÖ´ĞĞÊÂ¼şµÄÍæ¼Ò¶ÔÏó (ÊÂ¼şÖ´ĞĞÕß)
 		map_session_data* esd = nullptr;
 
-		// è‹¥å—ä¼¤å®³è€…ä¸æ˜¯ç©å®¶å•ä½, é‚£ä¹ˆè¯•å›¾è·å–å—ä¼¤å®³è€…çš„ä¸»äºº
+		// ÈôÊÜÉËº¦Õß²»ÊÇÍæ¼Òµ¥Î», ÄÇÃ´ÊÔÍ¼»ñÈ¡ÊÜÉËº¦ÕßµÄÖ÷ÈË
 		if (target->type != BL_PC) {
 			struct block_list* mbl = nullptr;
 			mbl = battle_get_master(target);
@@ -10111,13 +10129,13 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 			}
 		}
 		
-		// è‹¥è´Ÿè´£æ‰§è¡Œäº‹ä»¶çš„ç©å®¶å¯¹è±¡ä¾ç„¶æ²¡è¢«æŒ‡å®š
-		// ä¸”å—ä¼¤å®³è€…æ˜¯ä¸€ä¸ªç©å®¶å•ä½, é‚£ä¹ˆå°†å—ä¼¤å®³è€…ç›´æ¥æŒ‡å®šæˆè´Ÿè´£æ‰§è¡Œäº‹ä»¶çš„ç©å®¶
+		// Èô¸ºÔğÖ´ĞĞÊÂ¼şµÄÍæ¼Ò¶ÔÏóÒÀÈ»Ã»±»Ö¸¶¨
+		// ÇÒÊÜÉËº¦ÕßÊÇÒ»¸öÍæ¼Òµ¥Î», ÄÇÃ´½«ÊÜÉËº¦ÕßÖ±½ÓÖ¸¶¨³É¸ºÔğÖ´ĞĞÊÂ¼şµÄÍæ¼Ò
 		if (!esd && target->type == BL_PC) {
 			esd = (TBL_PC*)target;
 		}
 
-		// è‹¥åˆ°è¿™é‡Œè¿˜æ²¡æœ‰ä¸€ä¸ªåˆé€‚çš„äº‹ä»¶æ‰§è¡Œè€…åˆ™ä¸éœ€è¦è§¦å‘äº‹ä»¶
+		// Èôµ½ÕâÀï»¹Ã»ÓĞÒ»¸öºÏÊÊµÄÊÂ¼şÖ´ĞĞÕßÔò²»ĞèÒª´¥·¢ÊÂ¼ş
 		if (esd) {
 			pc_setreg(esd, add_str("@harmed_target_type"), target->type);
 			pc_setreg(esd, add_str("@harmed_target_gid"), target->id);
@@ -10141,10 +10159,10 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 
 #ifdef Pandas_NpcExpress_PCATTACK
 	if (src && target && damage > 0) {
-		// è´Ÿè´£æ‰§è¡Œäº‹ä»¶çš„ç©å®¶å¯¹è±¡ (äº‹ä»¶æ‰§è¡Œè€…)
+		// ¸ºÔğÖ´ĞĞÊÂ¼şµÄÍæ¼Ò¶ÔÏó (ÊÂ¼şÖ´ĞĞÕß)
 		map_session_data* esd = nullptr;
 
-		// è‹¥æ”»å‡»è€…ä¸æ˜¯ç©å®¶å•ä½, é‚£ä¹ˆè¯•å›¾è·å–æ”»å‡»è€…çš„ä¸»äºº
+		// Èô¹¥»÷Õß²»ÊÇÍæ¼Òµ¥Î», ÄÇÃ´ÊÔÍ¼»ñÈ¡¹¥»÷ÕßµÄÖ÷ÈË
 		if (src->type != BL_PC) {
 			struct block_list* mbl = nullptr;
 			mbl = battle_get_master(src);
@@ -10153,14 +10171,14 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 			}
 		}
 
-		// è‹¥è´Ÿè´£æ‰§è¡Œäº‹ä»¶çš„ç©å®¶å¯¹è±¡ä¾ç„¶æ²¡è¢«æŒ‡å®š
-		// ä¸”æ”»å‡»è€…æ˜¯ä¸€ä¸ªç©å®¶å•ä½, é‚£ä¹ˆå°†æ”»å‡»è€…ç›´æ¥æŒ‡å®šæˆè´Ÿè´£æ‰§è¡Œäº‹ä»¶çš„ç©å®¶
+		// Èô¸ºÔğÖ´ĞĞÊÂ¼şµÄÍæ¼Ò¶ÔÏóÒÀÈ»Ã»±»Ö¸¶¨
+		// ÇÒ¹¥»÷ÕßÊÇÒ»¸öÍæ¼Òµ¥Î», ÄÇÃ´½«¹¥»÷ÕßÖ±½ÓÖ¸¶¨³É¸ºÔğÖ´ĞĞÊÂ¼şµÄÍæ¼Ò
 		if (!esd && src->type == BL_PC) {
 			esd = (TBL_PC*)src;
 		}
 
 
-		// è‹¥åˆ°è¿™é‡Œè¿˜æ²¡æœ‰ä¸€ä¸ªåˆé€‚çš„äº‹ä»¶æ‰§è¡Œè€…åˆ™ä¸éœ€è¦è§¦å‘äº‹ä»¶
+		// Èôµ½ÕâÀï»¹Ã»ÓĞÒ»¸öºÏÊÊµÄÊÂ¼şÖ´ĞĞÕßÔò²»ĞèÒª´¥·¢ÊÂ¼ş
 		if (esd) {
 			pc_setreg(esd, add_str("@attack_src_type"), src->type);
 			pc_setreg(esd, add_str("@attack_src_gid"), src->id);
@@ -11423,7 +11441,7 @@ static const struct _battle_data {
 	{ "fame_taekwon_mission",               &battle_config.fame_taekwon_mission,            1,      0,      INT_MAX,        },
 	{ "fame_refine_lv1",                    &battle_config.fame_refine_lv1,                 1,      0,      INT_MAX,        },
 #ifndef Pandas_BattleConfig_Verification
-	// å‡ºç°äº†é‡å¤å®šä¹‰, è¿™é‡Œå…ˆç®€å•æ³¨é‡Šæ‰, å¦‚æœ rAthena å®˜æ–¹å¾ˆä¹…ä¸æ”¹çš„è¯, æ‰¾ä¸ªæ—¶é—´å†æäº¤ä¸ª PullRequest ä¿®æ­£ä¸‹ [Solaä¸¶å°å…‹]
+	// ³öÏÖÁËÖØ¸´¶¨Òå, ÕâÀïÏÈ¼òµ¥×¢ÊÍµô, Èç¹û rAthena ¹Ù·½ºÜ¾Ã²»¸ÄµÄ»°, ÕÒ¸öÊ±¼äÔÙÌá½»¸ö PullRequest ĞŞÕıÏÂ [SolaØ¼Ğ¡¿Ë]
 	{ "fame_refine_lv1",                    &battle_config.fame_refine_lv1,                 1,      0,      INT_MAX,        },
 #endif // Pandas_BattleConfig_Verification
 	{ "fame_refine_lv2",                    &battle_config.fame_refine_lv2,                 25,     0,      INT_MAX,        },
@@ -11739,25 +11757,25 @@ void battle_adjust_conf()
 	battle_config.max_cart_weight *= 10;
 
 #ifdef Pandas_BattleConfig_MaxAspdForPVP
-	// æ ¹æ® max_aspd_for_pvp çº¦æŸç©å®¶çš„æœ€å¤§æ”»é€Ÿ [Solaä¸¶å°å…‹]
-	// è¿™é‡Œå¯¹é…ç½®çš„ ASPD æ•°å€¼ (ä¾‹å¦‚: 193, 197) è½¬æ¢æˆç¨‹åºåˆ¤æ–­ç”¨çš„æ”»å‡»é—´éš”æ—¶é—´
+	// ¸ù¾İ max_aspd_for_pvp Ô¼ÊøÍæ¼ÒµÄ×î´ó¹¥ËÙ [SolaØ¼Ğ¡¿Ë]
+	// ÕâÀï¶ÔÅäÖÃµÄ ASPD ÊıÖµ (ÀıÈç: 193, 197) ×ª»»³É³ÌĞòÅĞ¶ÏÓÃµÄ¹¥»÷¼ä¸ôÊ±¼ä
 	// 
-	// æ”»å‡»é—´éš” = 2000 - æ”»é€Ÿçš„ Aspd æ•°å€¼ * 10
-	// æ”»å‡»é—´éš” = 2000 - 193 * 10
-	// æ”»å‡»é—´éš” = 2000 - 1930
-	// æ”»å‡»é—´éš” = 70 æ¯«ç§’
+	// ¹¥»÷¼ä¸ô = 2000 - ¹¥ËÙµÄ Aspd ÊıÖµ * 10
+	// ¹¥»÷¼ä¸ô = 2000 - 193 * 10
+	// ¹¥»÷¼ä¸ô = 2000 - 1930
+	// ¹¥»÷¼ä¸ô = 70 ºÁÃë
 	if (battle_config.max_aspd_for_pvp > 0)
 		battle_config.max_aspd_for_pvp = 2000 - battle_config.max_aspd_for_pvp * 10;
 #endif // Pandas_BattleConfig_MaxAspdForPVP
 
 #ifdef Pandas_BattleConfig_MaxAspdForGVG
-	// æ ¹æ® max_aspd_for_gvg çº¦æŸç©å®¶çš„æœ€å¤§æ”»é€Ÿ [Solaä¸¶å°å…‹]
-	// è¿™é‡Œå¯¹é…ç½®çš„ ASPD æ•°å€¼ (ä¾‹å¦‚: 193, 197) è½¬æ¢æˆç¨‹åºåˆ¤æ–­ç”¨çš„æ”»å‡»é—´éš”æ—¶é—´
+	// ¸ù¾İ max_aspd_for_gvg Ô¼ÊøÍæ¼ÒµÄ×î´ó¹¥ËÙ [SolaØ¼Ğ¡¿Ë]
+	// ÕâÀï¶ÔÅäÖÃµÄ ASPD ÊıÖµ (ÀıÈç: 193, 197) ×ª»»³É³ÌĞòÅĞ¶ÏÓÃµÄ¹¥»÷¼ä¸ôÊ±¼ä
 	// 
-	// æ”»å‡»é—´éš” = 2000 - æ”»é€Ÿçš„ Aspd æ•°å€¼ * 10
-	// æ”»å‡»é—´éš” = 2000 - 193 * 10
-	// æ”»å‡»é—´éš” = 2000 - 1930
-	// æ”»å‡»é—´éš” = 70 æ¯«ç§’
+	// ¹¥»÷¼ä¸ô = 2000 - ¹¥ËÙµÄ Aspd ÊıÖµ * 10
+	// ¹¥»÷¼ä¸ô = 2000 - 193 * 10
+	// ¹¥»÷¼ä¸ô = 2000 - 1930
+	// ¹¥»÷¼ä¸ô = 70 ºÁÃë
 	if (battle_config.max_aspd_for_gvg > 0)
 		battle_config.max_aspd_for_gvg = 2000 - battle_config.max_aspd_for_gvg * 10;
 #endif // Pandas_BattleConfig_MaxAspdForGVG
@@ -12038,9 +12056,9 @@ int battle_config_read(const char* cfgName)
 		} bc_whitelist[] = {
 			{ "traps_setting" },
 			{ "item_enabled_npc" },
-			{ "guild_skill_relog_type" },				// ä¸åŒå·¥ä½œæ¨¡å¼ä¸‹æ‹¥æœ‰ä¸åŒçš„é»˜è®¤å€¼, é€‰é¡¹é»˜è®¤å¤„äºæ³¨é‡ŠçŠ¶æ€
-			{ "feature.instance_allow_reconnect" },		// ä¸åŒå·¥ä½œæ¨¡å¼ä¸‹æ‹¥æœ‰ä¸åŒçš„é»˜è®¤å€¼, é€‰é¡¹é»˜è®¤å¤„äºæ³¨é‡ŠçŠ¶æ€
-			{ "pet_hungry_friendly_decrease" }	// rAthena å¯¹æ˜¯å¦å¼ƒç”¨æ­¤é€‰é¡¹ä¸æ˜ç¡®, å…ˆå¿½ç•¥æ£€æµ‹
+			{ "guild_skill_relog_type" },				// ²»Í¬¹¤×÷Ä£Ê½ÏÂÓµÓĞ²»Í¬µÄÄ¬ÈÏÖµ, Ñ¡ÏîÄ¬ÈÏ´¦ÓÚ×¢ÊÍ×´Ì¬
+			{ "feature.instance_allow_reconnect" },		// ²»Í¬¹¤×÷Ä£Ê½ÏÂÓµÓĞ²»Í¬µÄÄ¬ÈÏÖµ, Ñ¡ÏîÄ¬ÈÏ´¦ÓÚ×¢ÊÍ×´Ì¬
+			{ "pet_hungry_friendly_decrease" }	// rAthena ¶ÔÊÇ·ñÆúÓÃ´ËÑ¡Ïî²»Ã÷È·, ÏÈºöÂÔ¼ì²â
 		};
 
 		for (i = 0; i < ARRAYLENGTH(battle_data); i++) {

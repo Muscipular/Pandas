@@ -1,4 +1,4 @@
-ï»¿// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
+// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
 #include "pc.hpp"
@@ -2215,7 +2215,7 @@ bool pc_authok(map_session_data *sd, uint32 login_id2, time_t expiration_time, i
 	sd->pandas.bonus_script_counter = 0;
 #endif // Pandas_BonusScript_Unique_ID
 
-	// ä»¥ä¸‹è¿™è¡Œæ³¨é‡Šæ˜¯ä¸ºäº†æ–¹ä¾¿ pyhelp_extracter.py æå–ç¿»è¯‘æ–‡æœ¬ä½¿ç”¨çš„
+	// ÒÔÏÂÕâĞĞ×¢ÊÍÊÇÎªÁË·½±ã pyhelp_extracter.py ÌáÈ¡·­ÒëÎÄ±¾Ê¹ÓÃµÄ
 	// ShowInfo("'" CL_WHITE "%s" CL_RESET "' logged in. (AID/CID: '" CL_WHITE "%d/%d" CL_RESET "', IP: '" CL_WHITE "%d.%d.%d.%d" CL_RESET "', Group '" CL_WHITE "%d" CL_RESET "').\n", sd->status.name, sd->status.account_id, sd->status.char_id, CONVIP(ip), sd->group_id);
 
 	//display login notice
@@ -2354,16 +2354,16 @@ void pc_reg_received(map_session_data *sd)
 	sd->kafraPoints = static_cast<int>(pc_readaccountreg(sd, add_str(KAFRAPOINT_VAR)));
 
 #ifdef Pandas_Struct_Unit_CommonData_Aura
-	// ä»è§’è‰²çš„å˜é‡ä¸­è¯»å–å½“å‰è§’è‰²è®¾ç½®å¯ç”¨çš„å…‰ç¯ç¼–å·
+	// ´Ó½ÇÉ«µÄ±äÁ¿ÖĞ¶ÁÈ¡µ±Ç°½ÇÉ«ÉèÖÃÆôÓÃµÄ¹â»·±àºÅ
 	sd->ucd.aura.id = static_cast<int32>(pc_readglobalreg(sd, add_str(AURA_VARIABLE)));
 
 	std::shared_ptr<s_aura> aura = aura_search(sd->ucd.aura.id);
 	if (aura) {
-		// è‹¥æ˜¯ä¸€ä¸ªæœ‰æ•ˆçš„å…‰ç¯ç¼–å·åˆ™å°†å…¶ç‰¹æ•ˆç»„åˆæ”¾åˆ°ç”Ÿæ•ˆåˆ—è¡¨
+		// ÈôÊÇÒ»¸öÓĞĞ§µÄ¹â»·±àºÅÔò½«ÆäÌØĞ§×éºÏ·Åµ½ÉúĞ§ÁĞ±í
 		aura_effects_refill(&sd->bl);
 	}
 	else {
-		// è‹¥ä¸æ˜¯ä¸€ä¸ªæœ‰æ•ˆçš„å…‰ç¯ç¼–å·, åˆ™å°†ç›¸å…³å˜é‡å’Œå€¼é‡ç½®ä¸º 0
+		// Èô²»ÊÇÒ»¸öÓĞĞ§µÄ¹â»·±àºÅ, Ôò½«Ïà¹Ø±äÁ¿ºÍÖµÖØÖÃÎª 0
 		sd->ucd.aura.id = 0;
 		pc_setglobalreg(sd, add_str(AURA_VARIABLE), 0);
 	}
@@ -3758,14 +3758,14 @@ static void pc_bonus_itembonus(std::vector<s_item_bonus> &bonus, uint16 id, int 
 #ifdef Pandas_Bonus2_bSkillNoRequire
 //************************************
 // Method:      pc_bonus_itembonus_swtich
-// Description: æŒ‰ä½è¿ç®—å¼€å…³ç±»å‹çš„ s_item_bonus å¤„ç†å‡½æ•°
+// Description: °´Î»ÔËËã¿ª¹ØÀàĞÍµÄ s_item_bonus ´¦Àíº¯Êı
 // Access:      public static 
 // Parameter:   std::vector<s_item_bonus> & bonus
 // Parameter:   uint16 id
 // Parameter:   int val
 // Parameter:   bool switch_on
 // Returns:     void
-// Author:      Solaä¸¶å°å…‹(CairoLee)  2021/12/05 19:42
+// Author:      SolaØ¼Ğ¡¿Ë(CairoLee)  2021/12/05 19:42
 //************************************ 
 static void pc_bonus_itembonus_swtich(std::vector<s_item_bonus>& bonus, uint16 id, int val, bool switch_on)
 {
@@ -5903,7 +5903,7 @@ int pc_insert_card(map_session_data* sd, int idx_card, int idx_equip)
 	if( item_eq->type != IT_WEAPON && item_eq->type != IT_ARMOR )
 		return 0; // only weapons and armor are allowed
 #else
-	// æ­¤å¤„è¿›è¡Œè°ƒæ•´ä½¿ä¹‹èƒ½å¤Ÿå…è®¸å½±å­è£…å¤‡æ’å¡
+	// ´Ë´¦½øĞĞµ÷ÕûÊ¹Ö®ÄÜ¹»ÔÊĞíÓ°×Ó×°±¸²å¿¨
 	if( item_eq->type != IT_WEAPON && item_eq->type != IT_ARMOR && item_eq->type != IT_SHADOWGEAR )
 		return 0; // only weapons, armor and shadowgears are allowed
 #endif // Pandas_Shadowgear_Support_Card
@@ -6438,7 +6438,7 @@ char pc_delitem(map_session_data *sd,int n,int amount,int type, short reason, e_
 		return 1;
 
 #ifdef Pandas_Item_Properties
-	// é¿å…ç‰©å“è¢«ä½œä¸ºå‘åŠ¨æŠ€èƒ½çš„å¿…è¦é“å…·è€Œæ¶ˆè€—
+	// ±ÜÃâÎïÆ·±»×÷Îª·¢¶¯¼¼ÄÜµÄ±ØÒªµÀ¾ß¶øÏûºÄ
 	if (ITEM_PROPERTIES_HASFLAG(sd->inventory_data[n], special_mask, ITEM_PRO_AVOID_CONSUME_FOR_SKILL) && reason == 1)
 		return 0;
 #endif // Pandas_Item_Properties
@@ -6455,7 +6455,7 @@ char pc_delitem(map_session_data *sd,int n,int amount,int type, short reason, e_
 		if(sd->inventory.u.items_inventory[n].equip)
 			pc_unequipitem(sd,n,2|(!(type&4) ? 1 : 0));
 #ifdef Pandas_Item_Amulet_System
-		// åœ¨è¿™é‡Œå¿…é¡»è§¦å‘ä¸€ä¸‹"å¸è£…è„šæœ¬", å†å¾€ä¸‹çš„è¯ç‰©å“æ•°æ®ä¼šè¢«æ¸…é›¶
+		// ÔÚÕâÀï±ØĞë´¥·¢Ò»ÏÂ"Ğ¶×°½Å±¾", ÔÙÍùÏÂµÄ»°ÎïÆ·Êı¾İ»á±»ÇåÁã
 		amulet_apply_delitem(sd, n, is_last_amulet);
 #endif // Pandas_Item_Amulet_System
 		memset(&sd->inventory.u.items_inventory[n],0,sizeof(sd->inventory.u.items_inventory[0]));
@@ -6463,7 +6463,7 @@ char pc_delitem(map_session_data *sd,int n,int amount,int type, short reason, e_
 	}
 #ifdef Pandas_Item_Amulet_System
 	else {
-		// åœ¨è¿™é‡ŒåŒç±»æŠ¤èº«ç¬¦è¿˜æ²¡è¢«å…¨éƒ¨æ¸…ç†å¹²å‡€, éœ€è¦è§¦å‘ä¸€ä¸‹"ä½¿ç”¨è„šæœ¬"
+		// ÔÚÕâÀïÍ¬Àà»¤Éí·û»¹Ã»±»È«²¿ÇåÀí¸É¾», ĞèÒª´¥·¢Ò»ÏÂ"Ê¹ÓÃ½Å±¾"
 		amulet_apply_delitem(sd, n, is_last_amulet);
 	}
 #endif // Pandas_Item_Amulet_System
@@ -6527,7 +6527,8 @@ bool pc_dropitem(map_session_data *sd,int n,int amount)
 	}
 
 #ifndef Pandas_Fix_Item_Trade_FloorDropable
-	if (!map_addflooritem(&sd->inventory.u.items_inventory[n], amount, sd->bl.m, sd->bl.x, sd->bl.y, 0, 0, 0, 2, 0))
+	// bypass drop restriction in map_addflooritem because we've already checked it above
+	if (!map_addflooritem(&sd->inventory.u.items_inventory[n], amount, sd->bl.m, sd->bl.x, sd->bl.y, 0, 0, 0, 2|4, 0))
 		return false;
 #else
 	if (!map_addflooritem(&sd->inventory.u.items_inventory[n], amount, sd->bl.m, sd->bl.x, sd->bl.y, 0, 0, 0, 2, 0, false, sd))
@@ -6849,8 +6850,8 @@ int pc_useitem(map_session_data *sd,int n)
 		else if( pc_issit(sd) )
 			return 0;
 #else
-		// è‹¥å¯ç”¨äº†è‡ªå®šä¹‰æ‰©å±•çš„é«˜çº§é€‰é¡¹ï¼Œé‚£ä¹ˆè¿™é‡Œåªéœ€è¦åˆ¤æ–­æ˜¯å¦åä¸‹å°±å¥½.
-		// è‡³äºæ˜¯å¦åéª‘æ—¶å€™ç¦æ­¢ä½¿ç”¨ï¼Œåœ¨ä¸‹é¢ä¼šæœ‰ cashmount_useitem_limit é€‰é¡¹è´Ÿè´£åˆ¤å®š [Solaä¸¶å°å…‹]
+		// ÈôÆôÓÃÁË×Ô¶¨ÒåÀ©Õ¹µÄ¸ß¼¶Ñ¡Ïî£¬ÄÇÃ´ÕâÀïÖ»ĞèÒªÅĞ¶ÏÊÇ·ñ×øÏÂ¾ÍºÃ.
+		// ÖÁÓÚÊÇ·ñ×øÆïÊ±ºò½ûÖ¹Ê¹ÓÃ£¬ÔÚÏÂÃæ»áÓĞ cashmount_useitem_limit Ñ¡Ïî¸ºÔğÅĞ¶¨ [SolaØ¼Ğ¡¿Ë]
 		if (pc_issit(sd))
 			return 0;
 #endif // Pandas_BattleConfig_CashMounting_UseitemLimit
@@ -6866,10 +6867,10 @@ int pc_useitem(map_session_data *sd,int n)
 		return 0;
 
 #ifdef Pandas_BattleConfig_CashMounting_UseitemLimit
-	// ä½¿ç”¨é“å…·æ—¶å…ˆåˆ¤å®šæ˜¯å¦ä¹˜åäº†â€œå•†åŸåéª‘â€,
-	// å¦‚æœæ˜¯é‚£ä¹ˆå†æ ¹æ® cashmount_useitem_limit è®¾ç½®å†³å®šæ˜¯å¦æ‹’ç» [Solaä¸¶å°å…‹]
+	// Ê¹ÓÃµÀ¾ßÊ±ÏÈÅĞ¶¨ÊÇ·ñ³Ë×øÁË¡°ÉÌ³Ç×øÆï¡±,
+	// Èç¹ûÊÇÄÇÃ´ÔÙ¸ù¾İ cashmount_useitem_limit ÉèÖÃ¾ö¶¨ÊÇ·ñ¾Ü¾ø [SolaØ¼Ğ¡¿Ë]
 	//
-	// è‹¥ä½¿ç”¨çš„æ˜¯â€œåéª‘ç”¨ç¼°ç»³â€çš„è¯, é‚£ä¹ˆæ— æ¡ä»¶å…è®¸ä½¿ç”¨
+	// ÈôÊ¹ÓÃµÄÊÇ¡°×øÆïÓÃçÖÉş¡±µÄ»°, ÄÇÃ´ÎŞÌõ¼şÔÊĞíÊ¹ÓÃ
 	if (sd && nameid != ITEMID_REINS_OF_MOUNT && sd->sc.getSCE(SC_ALL_RIDING)) {
 		bool isblocked = false;
 
@@ -6881,8 +6882,8 @@ int pc_useitem(map_session_data *sd,int n)
 			case IT_USABLE: {
 				isblocked = (battle_config.cashmount_useitem_limit & 2) == 2;
 
-				// IT_DELAYCONSUME å®é™…ä¸Šåœ¨è½½å…¥æ—¶ä¼šè¢«è®¾ç½®ä¸º IT_USABLE,
-				// æ‰€ä»¥è¿™é‡Œè¦åœ¨ IT_USABLE ä¸­è¿›è¡Œå¯¹ IT_DELAYCONSUME ç±»å‹ç‰©å“çš„åˆ¤å®š
+				// IT_DELAYCONSUME Êµ¼ÊÉÏÔÚÔØÈëÊ±»á±»ÉèÖÃÎª IT_USABLE,
+				// ËùÒÔÕâÀïÒªÔÚ IT_USABLE ÖĞ½øĞĞ¶Ô IT_DELAYCONSUME ÀàĞÍÎïÆ·µÄÅĞ¶¨
 				isblocked = id->flag.delay_consume && (battle_config.cashmount_useitem_limit & 64) == 64;
 				break;
 			}
@@ -6898,7 +6899,7 @@ int pc_useitem(map_session_data *sd,int n)
 
 		if (isblocked) {
 			char message[128] = { 0 };
-			safesnprintf(message, sizeof(message), msg_txt_cn(sd, 3), id->ename.c_str());	// å¾ˆæŠ±æ­‰, å½“æ‚¨åä¸Šâ€œå•†åŸåéª‘â€æ—¶, æ— æ³•ä½¿ç”¨: %s
+			safesnprintf(message, sizeof(message), msg_txt_cn(sd, 3), id->ename.c_str());	// ºÜ±§Ç¸, µ±Äú×øÉÏ¡°ÉÌ³Ç×øÆï¡±Ê±, ÎŞ·¨Ê¹ÓÃ: %s
 			clif_displaymessage(sd->fd, message);
 			return 0;
 		}
@@ -6906,11 +6907,11 @@ int pc_useitem(map_session_data *sd,int n)
 #endif // Pandas_BattleConfig_CashMounting_UseitemLimit
 
 #ifdef Pandas_MapFlag_NoCapture
-	// å¦‚æœç©å®¶æ‰€åœ¨åœ°å›¾è®¾ç½®äº† nocapture æ ‡è®°çš„è¯
-	// é‚£ä¹ˆåœ¨æ‰£é™¤é“å…·ä¹‹å‰ï¼Œå°±ç»™äºˆç©å®¶ç¦æ­¢ç©å®¶æ•æ‰å® ç‰©çš„æç¤º [Solaä¸¶å°å…‹]
+	// Èç¹ûÍæ¼ÒËùÔÚµØÍ¼ÉèÖÃÁË nocapture ±ê¼ÇµÄ»°
+	// ÄÇÃ´ÔÚ¿Û³ıµÀ¾ßÖ®Ç°£¬¾Í¸øÓèÍæ¼Ò½ûÖ¹Íæ¼Ò²¶×½³èÎïµÄÌáÊ¾ [SolaØ¼Ğ¡¿Ë]
 	if (sd && map_getmapflag(sd->bl.m, MF_NOCAPTURE)) {
 		if (id->pandas.taming_mobid.size()) {
-			clif_displaymessage(sd->fd, msg_txt_cn(sd, 18));	// æ­¤åœ°å›¾ç¦æ­¢æ•æ‰å® ç‰©.
+			clif_displaymessage(sd->fd, msg_txt_cn(sd, 18));	// ´ËµØÍ¼½ûÖ¹²¶×½³èÎï.
 			return 0;
 		}
 	}
@@ -6940,8 +6941,8 @@ int pc_useitem(map_session_data *sd,int n)
 	script = id->script;
 
 #ifdef Pandas_Item_Properties
-	// åˆ¤æ–­æ˜¯å¦éœ€è¦é¿å…ç‰©å“è¢«ç©å®¶ä¸»åŠ¨ä½¿ç”¨è€Œæ¶ˆè€—
-	// è‹¥å¯ä»¥è¢«ç©å®¶ä¸»åŠ¨ä½¿ç”¨è€Œæ¶ˆè€—, é‚£ä¹ˆæ‰§è¡ŒåŸæœ‰çš„é“å…·åˆ é™¤æµç¨‹
+	// ÅĞ¶ÏÊÇ·ñĞèÒª±ÜÃâÎïÆ·±»Íæ¼ÒÖ÷¶¯Ê¹ÓÃ¶øÏûºÄ
+	// Èô¿ÉÒÔ±»Íæ¼ÒÖ÷¶¯Ê¹ÓÃ¶øÏûºÄ, ÄÇÃ´Ö´ĞĞÔ­ÓĞµÄµÀ¾ßÉ¾³ıÁ÷³Ì
 	if (ITEM_PROPERTIES_HASFLAG(id, special_mask, ITEM_PRO_AVOID_CONSUME_FOR_USE)) {
 		clif_useitemack(sd, n, 0, false);
 	}
@@ -7113,9 +7114,9 @@ void pc_putitemtocart(map_session_data *sd,int idx,int amount)
 	}
 
 #ifdef Pandas_NpcFilter_CART_ADD
-	pc_setreg(sd, add_str("@storeitem_nameid"), item_data->nameid);		// å³å°†å­˜å…¥çš„é“å…·ç¼–å·
-	pc_setreg(sd, add_str("@storeitem_amount"), amount);				// å³å°†å­˜å…¥çš„é“å…·æ•°é‡
-	pc_setreg(sd, add_str("@storeitem_idx"), idx);						// å³å°†å­˜å…¥çš„é“å…·åºå· (èƒŒåŒ…åºå·)
+	pc_setreg(sd, add_str("@storeitem_nameid"), item_data->nameid);		// ¼´½«´æÈëµÄµÀ¾ß±àºÅ
+	pc_setreg(sd, add_str("@storeitem_amount"), amount);				// ¼´½«´æÈëµÄµÀ¾ßÊıÁ¿
+	pc_setreg(sd, add_str("@storeitem_idx"), idx);						// ¼´½«´æÈëµÄµÀ¾ßĞòºÅ (±³°üĞòºÅ)
 	if (npc_script_filter(sd, NPCF_CART_ADD)) {
 		clif_delitem(sd, idx, 0, 0);
 		return;
@@ -7168,9 +7169,9 @@ void pc_getitemfromcart(map_session_data *sd,int idx,int amount)
 		return;
 
 #ifdef Pandas_NpcFilter_CART_DEL
-	pc_setreg(sd, add_str("@removeitem_nameid"), item_data->nameid);	// å³å°†å–å‡ºçš„é“å…·ç¼–å·
-	pc_setreg(sd, add_str("@removeitem_amount"), amount);				// å³å°†å–å‡ºçš„é“å…·æ•°é‡
-	pc_setreg(sd, add_str("@removeitem_idx"), idx);						// å³å°†å–å‡ºçš„é“å…·åºå· (æ‰‹æ¨è½¦åºå·)
+	pc_setreg(sd, add_str("@removeitem_nameid"), item_data->nameid);	// ¼´½«È¡³öµÄµÀ¾ß±àºÅ
+	pc_setreg(sd, add_str("@removeitem_amount"), amount);				// ¼´½«È¡³öµÄµÀ¾ßÊıÁ¿
+	pc_setreg(sd, add_str("@removeitem_idx"), idx);						// ¼´½«È¡³öµÄµÀ¾ßĞòºÅ (ÊÖÍÆ³µĞòºÅ)
 	if (npc_script_filter(sd, NPCF_CART_DEL)) {
 		clif_cart_delitem(sd, idx, 0);
 		return;
@@ -7329,8 +7330,8 @@ bool pc_steal_item(map_session_data *sd,struct block_list *bl, uint16 skill_lv)
 		}
 	}
 
-	// è‹¥é“å…·å·²ç»éµå®ˆ item_properties.yml çš„é…ç½®è¢«æ‰§è¡Œäº†å…¬å‘Š
-	// é‚£ä¹ˆå°±æ— éœ€å†æ¬¡æ‰§è¡Œ battle_config.rare_drop_announce æŒ‡å®šçš„æ ¹æ®æ‰ç‡è¿›è¡Œçš„å…¬å‘Šç­–ç•¥
+	// ÈôµÀ¾ßÒÑ¾­×ñÊØ item_properties.yml µÄÅäÖÃ±»Ö´ĞĞÁË¹«¸æ
+	// ÄÇÃ´¾ÍÎŞĞèÔÙ´ÎÖ´ĞĞ battle_config.rare_drop_announce Ö¸¶¨µÄ¸ù¾İµôÂÊ½øĞĞµÄ¹«¸æ²ßÂÔ
 	if (!is_spceial_annouced)
 #endif // Pandas_Item_Special_Annouce
 
@@ -7384,11 +7385,11 @@ int pc_steal_coin(map_session_data *sd,struct block_list *target)
 #ifdef Pandas_Support_Transfer_Autotrade_Player
 //************************************
 // Method:      pc_mark_multitransfer
-// Description: æ ‡è®°æ¥ä¸‹æ¥çš„ pc_setpos è°ƒç”¨æ˜¯ä¸€æ¬¡å¤šäººä¼ é€
+// Description: ±ê¼Ç½ÓÏÂÀ´µÄ pc_setpos µ÷ÓÃÊÇÒ»´Î¶àÈË´«ËÍ
 // Access:      public 
 // Parameter:   struct block_list * bl
 // Returns:     void
-// Author:      Solaä¸¶å°å…‹(CairoLee)  2021/02/20 22:37
+// Author:      SolaØ¼Ğ¡¿Ë(CairoLee)  2021/02/20 22:37
 //************************************ 
 void pc_mark_multitransfer(struct block_list* bl) {
 	if (!bl || bl->type != BL_PC) return;
@@ -7399,11 +7400,11 @@ void pc_mark_multitransfer(struct block_list* bl) {
 
 //************************************
 // Method:      pc_mark_multitransfer
-// Description: æ ‡è®°æ¥ä¸‹æ¥çš„ pc_setpos è°ƒç”¨æ˜¯ä¸€æ¬¡å¤šäººä¼ é€
+// Description: ±ê¼Ç½ÓÏÂÀ´µÄ pc_setpos µ÷ÓÃÊÇÒ»´Î¶àÈË´«ËÍ
 // Access:      public 
 // Parameter:   map_session_data * sd
 // Returns:     void
-// Author:      Solaä¸¶å°å…‹(CairoLee)  2021/02/20 22:37
+// Author:      SolaØ¼Ğ¡¿Ë(CairoLee)  2021/02/20 22:37
 //************************************ 
 void pc_mark_multitransfer(map_session_data* sd) {
 	if (!sd) return;
@@ -7449,16 +7450,16 @@ enum e_setpos pc_setpos(map_session_data* sd, unsigned short mapindex, int x, in
 	if ( sd->state.autotrade && (sd->vender_id || sd->buyer_id) ) // Player with autotrade just causes clif glitch! @ FIXME
 		return SETPOS_AUTOTRADE;
 #else
-	// ç¦»çº¿æŒ‚åº— + å¼€è®¾äº†å‡ºå”®æˆ–é‡‡è´­æ‘Šä½ + å¤šäººå¬å”¤ = æ”¾å¼ƒè¢«å¬å”¤
+	// ÀëÏß¹Òµê + ¿ªÉèÁË³öÊÛ»ò²É¹ºÌ¯Î» + ¶àÈËÕÙ»½ = ·ÅÆú±»ÕÙ»½
 	if ( sd->state.autotrade && (sd->vender_id || sd->buyer_id) && multitransfer)
 		return SETPOS_AUTOTRADE;
 #endif // Pandas_Support_Transfer_Autotrade_Player
 
 #ifdef Pandas_BattleConfig_Multiplayer_Recall_Behavior
-	// å¼€è®¾äº†å‡ºå”®æ‘Šä½ + è®¾ä¸ºä¸èƒ½è¢«å¬å”¤ + å¤šäººå¬å”¤ = æ”¾å¼ƒè¢«å¬å”¤
+	// ¿ªÉèÁË³öÊÛÌ¯Î» + ÉèÎª²»ÄÜ±»ÕÙ»½ + ¶àÈËÕÙ»½ = ·ÅÆú±»ÕÙ»½
 	if (sd->vender_id && (battle_config.multiplayer_recall_behavior & 1) == 1 && multitransfer)
 		return SETPOS_AUTOTRADE;
-	// å¼€è®¾äº†é‡‡è´­æ‘Šä½ + è®¾ä¸ºä¸èƒ½è¢«å¬å”¤ + å¤šäººå¬å”¤ = æ”¾å¼ƒè¢«å¬å”¤
+	// ¿ªÉèÁË²É¹ºÌ¯Î» + ÉèÎª²»ÄÜ±»ÕÙ»½ + ¶àÈËÕÙ»½ = ·ÅÆú±»ÕÙ»½
 	if (sd->buyer_id && (battle_config.multiplayer_recall_behavior & 2) == 2 && multitransfer)
 		return SETPOS_AUTOTRADE;
 #endif // Pandas_BattleConfig_Multiplayer_Recall_Behavior
@@ -10316,7 +10317,7 @@ void pc_close_npc(map_session_data *sd,int flag)
 #ifndef Pandas_ScriptCommand_SelfDeletion
 			sd->st->state = ((flag==1 && sd->st->mes_active)?CLOSE:END);
 #else
-			// è‹¥å¯ç”¨äº† selfdeletion æŒ‡ä»¤åˆ™ä»¥ä½è¿ç®—æ–¹å¼åˆ¤æ–­ flag æ˜¯å¦å¸¦ 1
+			// ÈôÆôÓÃÁË selfdeletion Ö¸ÁîÔòÒÔÎ»ÔËËã·½Ê½ÅĞ¶Ï flag ÊÇ·ñ´ø 1
 			sd->st->state = (((flag & 1) == 1 && sd->st->mes_active) ? CLOSE : END);
 #endif // Pandas_ScriptCommand_SelfDeletion
 			sd->st->mes_active = 0;
@@ -10339,8 +10340,8 @@ void pc_close_npc(map_session_data *sd,int flag)
 #ifndef Pandas_ScriptCommand_SelfDeletion
 				clif_scriptclear( *sd, sd->npc_id ); // [Ind/Hercules]
 #else
-				// è‹¥å¯ç”¨äº† selfdeletion æŒ‡ä»¤åˆ™ä»¥ä½è¿ç®—æ–¹å¼åˆ¤æ–­ flag æ˜¯å¦å¸¦ 4
-				// å¦‚æœæ²¡æœ‰æºå¸¦ 4 çš„è¯, å†æ‰§è¡Œ clif_scriptclear æ¸…ç†è§’è‰²å½“å‰æ­£åœ¨è¿›è¡Œçš„å¯¹è¯æ¡†å†…å®¹
+				// ÈôÆôÓÃÁË selfdeletion Ö¸ÁîÔòÒÔÎ»ÔËËã·½Ê½ÅĞ¶Ï flag ÊÇ·ñ´ø 4
+				// Èç¹ûÃ»ÓĞĞ¯´ø 4 µÄ»°, ÔÙÖ´ĞĞ clif_scriptclear ÇåÀí½ÇÉ«µ±Ç°ÕıÔÚ½øĞĞµÄ¶Ô»°¿òÄÚÈİ
 				if ((flag & 4) != 4)
 					clif_scriptclear(*sd, sd->npc_id); // [Ind/Hercules]
 #endif // Pandas_ScriptCommand_SelfDeletion
@@ -10769,7 +10770,7 @@ bool pc_revive_item(map_session_data *sd) {
 
 #ifdef Pandas_MapFlag_NoToken
 	if (sd && sd->bl.m >= 0 && map_getmapflag(sd->bl.m, MF_NOTOKEN)) {
-		clif_displaymessage(sd->fd, msg_txt_cn(sd, 17));	// æ­¤åœ°å›¾ç¦æ­¢åŸåœ°å¤æ´»!
+		clif_displaymessage(sd->fd, msg_txt_cn(sd, 17));	// ´ËµØÍ¼½ûÖ¹Ô­µØ¸´»î!
 		return false;
 	}
 #endif // Pandas_MapFlag_NoToken
@@ -11108,7 +11109,7 @@ bool pc_setparam(map_session_data *sd,int64 type,int64 val_tmp)
 		break;
 	case SP_MAXHP:
 #ifndef Pandas_Extreme_Computing
-		// æ­¤å¤„çš„ sd->battle_status.max_hp å·²ç»åœ¨ status_calc_maxhpsp_pc å‡½æ•°ä¸­ç»Ÿä¸€é™åˆ¶åŒºé—´
+		// ´Ë´¦µÄ sd->battle_status.max_hp ÒÑ¾­ÔÚ status_calc_maxhpsp_pc º¯ÊıÖĞÍ³Ò»ÏŞÖÆÇø¼ä
 		if (sd->status.base_level < 100)
 			sd->battle_status.max_hp = cap_value(val, 1, battle_config.max_hp_lv99);
 		else if (sd->status.base_level < 151)
@@ -11128,7 +11129,7 @@ bool pc_setparam(map_session_data *sd,int64 type,int64 val_tmp)
 		break;
 	case SP_MAXSP:
 #ifndef Pandas_Extreme_Computing
-		// æ­¤å¤„çš„ sd->battle_status.max_sp å·²ç»åœ¨ status_calc_maxhpsp_pc å‡½æ•°ä¸­ç»Ÿä¸€é™åˆ¶åŒºé—´
+		// ´Ë´¦µÄ sd->battle_status.max_sp ÒÑ¾­ÔÚ status_calc_maxhpsp_pc º¯ÊıÖĞÍ³Ò»ÏŞÖÆÇø¼ä
 		sd->battle_status.max_sp = cap_value(val, 1, battle_config.max_sp);
 #endif // Pandas_Extreme_Computing
 
@@ -12716,8 +12717,8 @@ bool pc_equipitem(map_session_data *sd,short n,int req_pos,bool equipswitch, boo
 	equip_index = equipswitch ? sd->equip_switch_index : sd->equip_index;
 
 #ifdef Pandas_BattleConfig_CashMounting_UseitemLimit
-	// ä½¿ç”¨é“å…·æ—¶å…ˆåˆ¤å®šæ˜¯å¦ä¹˜åäº†â€œå•†åŸåéª‘â€,
-	// å¦‚æœæ˜¯é‚£ä¹ˆå†æ ¹æ® cashmount_useitem_limit è®¾ç½®å†³å®šæ˜¯å¦æ‹’ç» [Solaä¸¶å°å…‹]
+	// Ê¹ÓÃµÀ¾ßÊ±ÏÈÅĞ¶¨ÊÇ·ñ³Ë×øÁË¡°ÉÌ³Ç×øÆï¡±,
+	// Èç¹ûÊÇÄÇÃ´ÔÙ¸ù¾İ cashmount_useitem_limit ÉèÖÃ¾ö¶¨ÊÇ·ñ¾Ü¾ø [SolaØ¼Ğ¡¿Ë]
 	if (sd && sd->sc.count && sd->sc.getSCE(SC_ALL_RIDING)) {
 		bool isblocked = false;
 
@@ -12742,7 +12743,7 @@ bool pc_equipitem(map_session_data *sd,short n,int req_pos,bool equipswitch, boo
 
 		if (isblocked) {
 			char message[128] = { 0 };
-			safesnprintf(message, sizeof(message), msg_txt_cn(sd, 3), id->ename.c_str());	// å¾ˆæŠ±æ­‰, å½“æ‚¨åä¸Šâ€œå•†åŸåéª‘â€æ—¶, æ— æ³•ä½¿ç”¨: %s
+			safesnprintf(message, sizeof(message), msg_txt_cn(sd, 3), id->ename.c_str());	// ºÜ±§Ç¸, µ±Äú×øÉÏ¡°ÉÌ³Ç×øÆï¡±Ê±, ÎŞ·¨Ê¹ÓÃ: %s
 			clif_displaymessage(sd->fd, message);
 			return true;
 		}
@@ -12806,13 +12807,13 @@ bool pc_equipitem(map_session_data *sd,short n,int req_pos,bool equipswitch, boo
 #ifdef Pandas_NpcFilter_EQUIP
 	if (!equipswitch) {
 		pc_setreg(sd, add_str("@equip_idx"), (int)n);
-		pc_setreg(sd, add_str("@equip_pos"), (int)n);	// ä¸ºå…¼å®¹è„šæœ¬è€Œæ·»åŠ 
+		pc_setreg(sd, add_str("@equip_pos"), (int)n);	// Îª¼æÈİ½Å±¾¶øÌí¼Ó
 		pc_setreg(sd, add_str("@equip_swapping"), (swapping ? 1 : 0));
 
 		if (npc_script_filter(sd, NPCF_EQUIP) && !swapping)
 			return false;
 
-		// å¦‚æœé“å…·åœ¨è„šæœ¬è¿›è¡Œ Filter å¤„ç†æœŸé—´è¢«åˆ äº†, é‚£ä¹ˆä¹Ÿç»ˆæ­¢åç»­æµç¨‹
+		// Èç¹ûµÀ¾ßÔÚ½Å±¾½øĞĞ Filter ´¦ÀíÆÚ¼ä±»É¾ÁË, ÄÇÃ´Ò²ÖÕÖ¹ºóĞøÁ÷³Ì
 		if (sd->inventory.u.items_inventory[n].nameid == 0 || sd->inventory_data[n] == NULL)
 			return false;
 	}
@@ -12979,7 +12980,7 @@ bool pc_equipitem(map_session_data *sd,short n,int req_pos,bool equipswitch, boo
 #ifdef Pandas_NpcEvent_EQUIP
 	if (!equipswitch) {
 		pc_setreg(sd, add_str("@equip_idx"), (int)n);
-		pc_setreg(sd, add_str("@equip_pos"), (int)n);	// ä¸ºå…¼å®¹è„šæœ¬è€Œæ·»åŠ 
+		pc_setreg(sd, add_str("@equip_pos"), (int)n);	// Îª¼æÈİ½Å±¾¶øÌí¼Ó
 		pc_setreg(sd, add_str("@equip_swapping"), (swapping ? 1 : 0));
 
 		npc_script_event(sd, NPCE_EQUIP);
@@ -13122,14 +13123,14 @@ bool pc_unequipitem(map_session_data *sd, int n, int flag) {
 
 #ifdef Pandas_NpcFilter_UNEQUIP
 	pc_setreg(sd, add_str("@unequip_idx"), (int)n);
-	pc_setreg(sd, add_str("@unequip_pos"), (int)n);	// ä¸ºå…¼å®¹è„šæœ¬è€Œæ·»åŠ 
-	pc_setreg(sd, add_str("@unequip_swapping"), (flag & 16 ? 1 : 0));	// flag & 16 æ˜¯ä¸€ä¸ªè‡ªå®šä¹‰æ ‡è®°, è¡¨ç¤ºæœ¬æ¬¡è„±ä¸‹è£…å¤‡æ˜¯ç”±è£…å¤‡åˆ‡æ¢æœºåˆ¶å¼•å‘çš„
+	pc_setreg(sd, add_str("@unequip_pos"), (int)n);	// Îª¼æÈİ½Å±¾¶øÌí¼Ó
+	pc_setreg(sd, add_str("@unequip_swapping"), (flag & 16 ? 1 : 0));	// flag & 16 ÊÇÒ»¸ö×Ô¶¨Òå±ê¼Ç, ±íÊ¾±¾´ÎÍÑÏÂ×°±¸ÊÇÓÉ×°±¸ÇĞ»»»úÖÆÒı·¢µÄ
 	pc_setreg(sd, add_str("@unequip_force"), (flag & 2 ? 1 : 0));
 
 	if (npc_script_filter(sd, NPCF_UNEQUIP) && !(flag & 16))
 		return false;
 
-	// å¦‚æœé“å…·åœ¨è„šæœ¬è¿›è¡Œ Filter å¤„ç†æœŸé—´è¢«åˆ äº†, é‚£ä¹ˆä¹Ÿç»ˆæ­¢åç»­æµç¨‹
+	// Èç¹ûµÀ¾ßÔÚ½Å±¾½øĞĞ Filter ´¦ÀíÆÚ¼ä±»É¾ÁË, ÄÇÃ´Ò²ÖÕÖ¹ºóĞøÁ÷³Ì
 	if (sd->inventory.u.items_inventory[n].nameid == 0 || sd->inventory_data[n] == NULL)
 		return false;
 #endif // Pandas_NpcFilter_UNEQUIP
@@ -13220,8 +13221,8 @@ bool pc_unequipitem(map_session_data *sd, int n, int flag) {
 
 #ifdef Pandas_NpcEvent_UNEQUIP
 	pc_setreg(sd, add_str("@unequip_idx"), (int)n);
-	pc_setreg(sd, add_str("@unequip_pos"), (int)n);	// ä¸ºå…¼å®¹è„šæœ¬è€Œæ·»åŠ 
-	pc_setreg(sd, add_str("@unequip_swapping"), (flag & 16 ? 1 : 0));	// flag & 16 æ˜¯ä¸€ä¸ªè‡ªå®šä¹‰æ ‡è®°, è¡¨ç¤ºæœ¬æ¬¡è„±ä¸‹è£…å¤‡æ˜¯ç”±è£…å¤‡åˆ‡æ¢æœºåˆ¶å¼•å‘çš„
+	pc_setreg(sd, add_str("@unequip_pos"), (int)n);	// Îª¼æÈİ½Å±¾¶øÌí¼Ó
+	pc_setreg(sd, add_str("@unequip_swapping"), (flag & 16 ? 1 : 0));	// flag & 16 ÊÇÒ»¸ö×Ô¶¨Òå±ê¼Ç, ±íÊ¾±¾´ÎÍÑÏÂ×°±¸ÊÇÓÉ×°±¸ÇĞ»»»úÖÆÒı·¢µÄ
 	pc_setreg(sd, add_str("@unequip_force"), (flag & 2 ? 1 : 0));
 
 	npc_script_event(sd, NPCE_UNEQUIP);
@@ -13270,7 +13271,7 @@ int pc_equipswitch( map_session_data* sd, int index ){
 				// Unequip the item
 				pc_unequipitem( sd, unequip_index, 0 );
 #else
-				// flag & 16 æ˜¯ä¸€ä¸ªè‡ªå®šä¹‰æ ‡è®°, è¡¨ç¤ºæœ¬æ¬¡è„±ä¸‹è£…å¤‡æ˜¯ç”±è£…å¤‡åˆ‡æ¢æœºåˆ¶å¼•å‘çš„
+				// flag & 16 ÊÇÒ»¸ö×Ô¶¨Òå±ê¼Ç, ±íÊ¾±¾´ÎÍÑÏÂ×°±¸ÊÇÓÉ×°±¸ÇĞ»»»úÖÆÒı·¢µÄ
 				pc_unequipitem( sd, unequip_index, 16 );
 #endif // !defined(Pandas_NpcEvent_UNEQUIP) && !defined(Pandas_NpcFilter_UNEQUIP)
 			}
@@ -15486,8 +15487,8 @@ void pc_scdata_received(map_session_data *sd) {
 
 #ifdef Pandas_Player_Suspend_System
 	if (sd->state.pc_loaded && sd->state.autotrade) {
-		// èµ°åˆ°è¿™é‡Œè¯´æ˜å·²ç»å®Œæˆäº†èƒŒåŒ…ã€ä»“åº“ã€æ‰‹æ¨è½¦çš„é“å…·ä¿¡æ¯ä»¥åŠ sc_data æ•°æ®çš„åŠ è½½
-		// åº”è¯¥åœ¨è¿™é‡Œè§¦å‘è¢«å¬å›çš„è§’è‰²æˆåŠŸä¸Šçº¿åéœ€è¦åšçš„åç½®å¤„ç†å·¥ä½œ
+		// ×ßµ½ÕâÀïËµÃ÷ÒÑ¾­Íê³ÉÁË±³°ü¡¢²Ö¿â¡¢ÊÖÍÆ³µµÄµÀ¾ßĞÅÏ¢ÒÔ¼° sc_data Êı¾İµÄ¼ÓÔØ
+		// Ó¦¸ÃÔÚÕâÀï´¥·¢±»ÕÙ»ØµÄ½ÇÉ«³É¹¦ÉÏÏßºóĞèÒª×öµÄºóÖÃ´¦Àí¹¤×÷
 		if (pc_autotrade_suspend(sd)) {
 			clif_parse_LoadEndAck(sd->fd, sd);
 			suspend_recall_postfix(sd);
@@ -15498,8 +15499,8 @@ void pc_scdata_received(map_session_data *sd) {
 
 #ifdef Pandas_Fix_Autotrade_HeadView_Missing
 	if (sd->state.pc_loaded && sd->state.autotrade) {
-		// ä¿®æ­£ç¦»çº¿æŒ‚åº—çš„è§’è‰²åœ¨æœåŠ¡å™¨é‡å¯è‡ªåŠ¨ä¸Šçº¿å, å¤´é¥°å¤–è§‚ä¼šæš‚æ—¶ä¸¢å¤±çš„é—®é¢˜
-		// å°†åŸå…ˆä½äº intif.cpp -> intif_parse_StorageReceived å‡½æ•°ä¸­è‡ªåŠ¨å¼€åº—çš„å¤„ç†é€»è¾‘ç§»åŠ¨åˆ°è¿™é‡Œæ¥
+		// ĞŞÕıÀëÏß¹ÒµêµÄ½ÇÉ«ÔÚ·şÎñÆ÷ÖØÆô×Ô¶¯ÉÏÏßºó, Í·ÊÎÍâ¹Û»áÔİÊ±¶ªÊ§µÄÎÊÌâ
+		// ½«Ô­ÏÈÎ»ÓÚ intif.cpp -> intif_parse_StorageReceived º¯ÊıÖĞ×Ô¶¯¿ªµêµÄ´¦ÀíÂß¼­ÒÆ¶¯µ½ÕâÀïÀ´
 		if (sd->state.autotrade & AUTOTRADE_VENDING || sd->state.autotrade & AUTOTRADE_BUYINGSTORE) {
 			clif_parse_LoadEndAck(sd->fd, sd);
 			sd->autotrade_tid = add_timer(gettick() + battle_config.feature_autotrade_open_delay, pc_autotrade_timer, sd->bl.id, 0);
@@ -15553,10 +15554,10 @@ TIMER_FUNC(pc_expiration_timer){
 #ifdef Pandas_Struct_Autotrade_Extend
 //************************************
 // Method:      pc_autotrade_suspend
-// Description: åˆ¤æ–­è§’è‰²å½“å‰æ˜¯å¦å¤„äºç¦»çº¿æŒ‚æœºç›¸å…³çš„çŠ¶æ€
+// Description: ÅĞ¶Ï½ÇÉ«µ±Ç°ÊÇ·ñ´¦ÓÚÀëÏß¹Ò»úÏà¹ØµÄ×´Ì¬
 // Parameter:   map_session_data * sd
 // Returns:     bool
-// Author:      Solaä¸¶å°å…‹(CairoLee)  2020/5/13 23:23
+// Author:      SolaØ¼Ğ¡¿Ë(CairoLee)  2020/5/13 23:23
 //************************************
 bool pc_autotrade_suspend(map_session_data* sd) {
 	if (!sd || !sd->state.autotrade)
@@ -15730,35 +15731,35 @@ void pc_show_version(map_session_data *sd) {
 	char mode[CHAT_SIZE_MAX] = { 0 };
 
 #ifdef PRERE
-	strcpy(mode, msg_txt_cn(sd, 89));	// å¤å…´å‰
+	strcpy(mode, msg_txt_cn(sd, 89));	// ¸´ĞËÇ°
 #else
-	strcpy(mode, msg_txt_cn(sd, 90));	// å¤å…´å
+	strcpy(mode, msg_txt_cn(sd, 90));	// ¸´ĞËºó
 #endif // PRERE
 
 	if (appid.length())
-		strcpy(compile, msg_txt_cn(sd, 86));	// å®˜æ–¹ç¼–è¯‘
+		strcpy(compile, msg_txt_cn(sd, 86));	// ¹Ù·½±àÒë
 	else
-		strcpy(compile, msg_txt_cn(sd, 87));	// ä¸ªäººæˆ–éå®˜æ–¹ç¼–è¯‘
+		strcpy(compile, msg_txt_cn(sd, 87));	// ¸öÈË»ò·Ç¹Ù·½±àÒë
 
 	if (gitbranch.empty())
-		gitbranch = msg_txt_cn(sd, 91);			// æš‚æ— æ•°æ®
+		gitbranch = msg_txt_cn(sd, 91);			// ÔİÎŞÊı¾İ
 	if (githash.empty())
-		githash = msg_txt_cn(sd, 91);			// æš‚æ— æ•°æ®
+		githash = msg_txt_cn(sd, 91);			// ÔİÎŞÊı¾İ
 
-	// æ„å»ºå¹¶è¾“å‡ºç¬¬ä¸€è¡Œç‰ˆæœ¬ä¿¡æ¯
+	// ¹¹½¨²¢Êä³öµÚÒ»ĞĞ°æ±¾ĞÅÏ¢
 	if (isCommercialVersion()) {
-		// ç†ŠçŒ«æ¨¡æ‹Ÿå™¨ä¸“ä¸šç‰ˆ: v2022.01.28 (åŸºäºç¤¾åŒºç‰ˆ v1.1.10-dev æ„å»º | å®˜æ–¹ç¼–è¯‘)
+		// ĞÜÃ¨Ä£ÄâÆ÷×¨Òµ°æ: v2022.01.28 (»ùÓÚÉçÇø°æ v1.1.10-dev ¹¹½¨ | ¹Ù·½±àÒë)
 		std::string community_ver = formatVersion(Pandas_Version, true, true, 0);
 		sprintf(mes, msg_txt_cn(sd, 92), getPandasVersion().c_str(), community_ver.c_str(), compile);
 	}
 	else {
-		// ç†ŠçŒ«æ¨¡æ‹Ÿå™¨ç¤¾åŒºç‰ˆ: v1.0.6-dev (å®˜æ–¹ç¼–è¯‘)
+		// ĞÜÃ¨Ä£ÄâÆ÷ÉçÇø°æ: v1.0.6-dev (¹Ù·½±àÒë)
 		sprintf(mes, msg_txt_cn(sd, 85), getPandasVersion().c_str(), compile);
 	}
 	clif_displaymessage(sd->fd, mes);
 
-	// æ„å»ºå¹¶è¾“å‡ºç¬¬äºŒè¡Œç‰ˆæœ¬ä¿¡æ¯
-	// è¿è¡Œæ¨¡å¼: å¤å…´å‰ | é€‚é…çš„å®¢æˆ·ç«¯ç‰ˆæœ¬: 20180620 | åˆ†æ”¯: master | æäº¤æ•£åˆ—: 7760983
+	// ¹¹½¨²¢Êä³öµÚ¶şĞĞ°æ±¾ĞÅÏ¢
+	// ÔËĞĞÄ£Ê½: ¸´ĞËÇ° | ÊÊÅäµÄ¿Í»§¶Ë°æ±¾: 20180620 | ·ÖÖ§: master | Ìá½»É¢ÁĞ: 7760983
 	sprintf(mes, msg_txt_cn(sd, 88), mode, PACKETVER, gitbranch.c_str(), githash.c_str());
 	clif_displaymessage(sd->fd, mes);
 #endif // Pandas_UserExperience_AtCommand_Version
@@ -15861,8 +15862,8 @@ struct s_bonus_script_entry *pc_bonus_script_add(map_session_data *sd, const cha
 	entry->type = type;
 	entry->script = script;
 #ifdef Pandas_BonusScript_Unique_ID
-	// è‹¥å‚æ•°ä¸­çš„ bonus_id å­—æ®µä¸ä¸ºé›¶, åˆ™ä½¿ç”¨å‚æ•°ç»™å‡ºçš„å€¼ä½œä¸º bonus_id
-	// å¦åˆ™ä½¿ç”¨ pc_bonus_script_generate_unique_id é‡æ–°ç”Ÿæˆä¸€ä¸ªæ–°çš„ bonus_script å”¯ä¸€ç¼–å·
+	// Èô²ÎÊıÖĞµÄ bonus_id ×Ö¶Î²»ÎªÁã, ÔòÊ¹ÓÃ²ÎÊı¸ø³öµÄÖµ×÷Îª bonus_id
+	// ·ñÔòÊ¹ÓÃ pc_bonus_script_generate_unique_id ÖØĞÂÉú³ÉÒ»¸öĞÂµÄ bonus_script Î¨Ò»±àºÅ
 	entry->bonus_id = (!bonus_id ? pc_bonus_script_generate_unique_id(sd) : bonus_id);
 #endif // Pandas_BonusScript_Unique_ID
 	sd->bonus_script.count++;
@@ -15982,11 +15983,11 @@ void pc_bonus_script_clear(map_session_data *sd, uint32 flag) {
 #ifdef Pandas_BonusScript_Unique_ID
 //************************************
 // Method:      pc_bonus_script_generate_unique_id
-// Description: ç”Ÿæˆä¸å½“å‰è§’è‰²ç›¸å…³çš„ bonus_script å”¯ä¸€ç¼–å·
+// Description: Éú³ÉÓëµ±Ç°½ÇÉ«Ïà¹ØµÄ bonus_script Î¨Ò»±àºÅ
 // Access:      public 
 // Parameter:   map_session_data * sd
 // Returns:     uint64
-// Author:      Solaä¸¶å°å…‹(CairoLee)  2021/04/05 16:33
+// Author:      SolaØ¼Ğ¡¿Ë(CairoLee)  2021/04/05 16:33
 //************************************ 
 uint64 pc_bonus_script_generate_unique_id(map_session_data* sd) {
 	nullpo_ret(sd);
@@ -15999,12 +16000,12 @@ uint64 pc_bonus_script_generate_unique_id(map_session_data* sd) {
 #ifdef Pandas_ScriptCommand_BonusScriptRemove
 //************************************
 // Method:      pc_bonus_script_remove
-// Description: ç§»é™¤æŒ‡å®šçš„ bonus_script æ•ˆæœè„šæœ¬
+// Description: ÒÆ³ıÖ¸¶¨µÄ bonus_script Ğ§¹û½Å±¾
 // Access:      public 
 // Parameter:   map_session_data * sd
 // Parameter:   uint64 bonus_id
 // Returns:     bool
-// Author:      Solaä¸¶å°å…‹(CairoLee)  2021/04/05 17:37
+// Author:      SolaØ¼Ğ¡¿Ë(CairoLee)  2021/04/05 17:37
 //************************************ 
 bool pc_bonus_script_remove(map_session_data* sd, uint64 bonus_id) {
 	struct linkdb_node* node = NULL;
@@ -16040,12 +16041,12 @@ bool pc_bonus_script_remove(map_session_data* sd, uint64 bonus_id) {
 #ifdef Pandas_ScriptCommand_BonusScriptExists
 //************************************
 // Method:      pc_bonus_script_exists
-// Description: åˆ¤æ–­æŒ‡å®šçš„ bonus_script æ•ˆæœè„šæœ¬æ˜¯å¦å·²å­˜åœ¨ (æˆ–è€…è¯´: å·²æ¿€æ´»)
+// Description: ÅĞ¶ÏÖ¸¶¨µÄ bonus_script Ğ§¹û½Å±¾ÊÇ·ñÒÑ´æÔÚ (»òÕßËµ: ÒÑ¼¤»î)
 // Access:      public 
 // Parameter:   map_session_data * sd
 // Parameter:   uint64 bonus_id
 // Returns:     bool
-// Author:      Solaä¸¶å°å…‹(CairoLee)  2021/04/05 17:39
+// Author:      SolaØ¼Ğ¡¿Ë(CairoLee)  2021/04/05 17:39
 //************************************ 
 bool pc_bonus_script_exists(map_session_data* sd, uint64 bonus_id) {
 	struct linkdb_node* node = NULL;
@@ -16117,9 +16118,9 @@ short pc_maxaspd(map_session_data *sd) {
 	nullpo_ret(sd);
 
 #ifdef Pandas_BattleConfig_MaxAspdForGVG
-	// æ ¹æ® max_aspd_for_gvg çº¦æŸç©å®¶çš„æœ€å¤§æ”»é€Ÿ [Solaä¸¶å°å…‹]
+	// ¸ù¾İ max_aspd_for_gvg Ô¼ÊøÍæ¼ÒµÄ×î´ó¹¥ËÙ [SolaØ¼Ğ¡¿Ë]
 	if (map_flag_gvg(sd->bl.m) && battle_config.max_aspd_for_gvg > 0) {
-		// å…ˆæ ¹æ® rAthena é»˜è®¤çš„æ”»é€Ÿå…¬å¼, è®¡ç®—å‡ºå³å°†è¿”å›çš„æ”»é€Ÿæ•°å€¼
+		// ÏÈ¸ù¾İ rAthena Ä¬ÈÏµÄ¹¥ËÙ¹«Ê½, ¼ÆËã³ö¼´½«·µ»ØµÄ¹¥ËÙÊıÖµ
 		int aspd = ((sd->class_ & JOBL_THIRD) ? battle_config.max_third_aspd : (
 			((sd->class_ & MAPID_UPPERMASK) == MAPID_KAGEROUOBORO || (sd->class_ & MAPID_UPPERMASK) == MAPID_REBELLION) ? battle_config.max_extended_aspd : (
 				(sd->class_ & MAPID_BASEMASK) == MAPID_SUMMONER) ? battle_config.max_summoner_aspd :
@@ -16128,8 +16129,8 @@ short pc_maxaspd(map_session_data *sd) {
 		if (sd->bonus.aspd_max) {
 			aspd = max(10, aspd + sd->bonus.aspd_max);
 		}
-		// è‹¥ PVP åœ°å›¾é™åˆ¶çš„æ”»é€Ÿæ¯”åŸå…ˆ rAthena è®¡ç®—çš„æ”»é€Ÿæ›´å° (é™åˆ¶æ›´ä¸¥æ ¼, æ”»é€Ÿæ›´æ…¢), é‚£ä¹ˆä»¥æœ€å°çš„ä¸ºå‡†
-		// éœ€è¦æ³¨æ„: è¿™é‡Œè¿”å›çš„æ”»é€Ÿå€¼, å®é™…ä¸Šæ˜¯æ”»å‡»é—´éš”å»¶è¿Ÿçš„æ¯«ç§’æ•° (å€¼è¶Šå¤§, æ”»é€Ÿè¶Šæ…¢; å€¼è¶Šå°, æ”»é€Ÿè¶Šå¿«)
+		// Èô PVP µØÍ¼ÏŞÖÆµÄ¹¥ËÙ±ÈÔ­ÏÈ rAthena ¼ÆËãµÄ¹¥ËÙ¸üĞ¡ (ÏŞÖÆ¸üÑÏ¸ñ, ¹¥ËÙ¸üÂı), ÄÇÃ´ÒÔ×îĞ¡µÄÎª×¼
+		// ĞèÒª×¢Òâ: ÕâÀï·µ»ØµÄ¹¥ËÙÖµ, Êµ¼ÊÉÏÊÇ¹¥»÷¼ä¸ôÑÓ³ÙµÄºÁÃëÊı (ÖµÔ½´ó, ¹¥ËÙÔ½Âı; ÖµÔ½Ğ¡, ¹¥ËÙÔ½¿ì)
 		if (aspd < battle_config.max_aspd_for_gvg) {
 			return battle_config.max_aspd_for_gvg;
 		}
@@ -16137,9 +16138,9 @@ short pc_maxaspd(map_session_data *sd) {
 #endif // Pandas_BattleConfig_MaxAspdForGVG
 
 #ifdef Pandas_BattleConfig_MaxAspdForPVP
-	// æ ¹æ® max_aspd_for_pvp çº¦æŸç©å®¶çš„æœ€å¤§æ”»é€Ÿ [Solaä¸¶å°å…‹]
+	// ¸ù¾İ max_aspd_for_pvp Ô¼ÊøÍæ¼ÒµÄ×î´ó¹¥ËÙ [SolaØ¼Ğ¡¿Ë]
 	if (map_flag_vs(sd->bl.m) && battle_config.max_aspd_for_pvp > 0) {
-		// å…ˆæ ¹æ® rAthena é»˜è®¤çš„æ”»é€Ÿå…¬å¼, è®¡ç®—å‡ºå³å°†è¿”å›çš„æ”»é€Ÿæ•°å€¼
+		// ÏÈ¸ù¾İ rAthena Ä¬ÈÏµÄ¹¥ËÙ¹«Ê½, ¼ÆËã³ö¼´½«·µ»ØµÄ¹¥ËÙÊıÖµ
 		int aspd = ((sd->class_ & JOBL_THIRD) ? battle_config.max_third_aspd : (
 			((sd->class_ & MAPID_UPPERMASK) == MAPID_KAGEROUOBORO || (sd->class_ & MAPID_UPPERMASK) == MAPID_REBELLION) ? battle_config.max_extended_aspd : (
 				(sd->class_ & MAPID_BASEMASK) == MAPID_SUMMONER) ? battle_config.max_summoner_aspd :
@@ -16148,8 +16149,8 @@ short pc_maxaspd(map_session_data *sd) {
 		if (sd->bonus.aspd_max) {
 			aspd = max(10, aspd + sd->bonus.aspd_max);
 		}
-		// è‹¥ PVP åœ°å›¾é™åˆ¶çš„æ”»é€Ÿæ¯”åŸå…ˆ rAthena è®¡ç®—çš„æ”»é€Ÿæ›´å° (é™åˆ¶æ›´ä¸¥æ ¼, æ”»é€Ÿæ›´æ…¢), é‚£ä¹ˆä»¥æœ€å°çš„ä¸ºå‡†
-		// éœ€è¦æ³¨æ„: è¿™é‡Œè¿”å›çš„æ”»é€Ÿå€¼, å®é™…ä¸Šæ˜¯æ”»å‡»é—´éš”å»¶è¿Ÿçš„æ¯«ç§’æ•° (å€¼è¶Šå¤§, æ”»é€Ÿè¶Šæ…¢; å€¼è¶Šå°, æ”»é€Ÿè¶Šå¿«)
+		// Èô PVP µØÍ¼ÏŞÖÆµÄ¹¥ËÙ±ÈÔ­ÏÈ rAthena ¼ÆËãµÄ¹¥ËÙ¸üĞ¡ (ÏŞÖÆ¸üÑÏ¸ñ, ¹¥ËÙ¸üÂı), ÄÇÃ´ÒÔ×îĞ¡µÄÎª×¼
+		// ĞèÒª×¢Òâ: ÕâÀï·µ»ØµÄ¹¥ËÙÖµ, Êµ¼ÊÉÏÊÇ¹¥»÷¼ä¸ôÑÓ³ÙµÄºÁÃëÊı (ÖµÔ½´ó, ¹¥ËÙÔ½Âı; ÖµÔ½Ğ¡, ¹¥ËÙÔ½¿ì)
 		if (aspd < battle_config.max_aspd_for_pvp) {
 			return battle_config.max_aspd_for_pvp;
 		}
@@ -16160,7 +16161,7 @@ short pc_maxaspd(map_session_data *sd) {
 	if (map_getmapflag(sd->bl.m, MF_MAXASPD)) {
 		int val = map_getmapflag_param(sd->bl.m, MF_MAXASPD, 1);
 		if (val) {
-			// å…ˆæ ¹æ® rAthena é»˜è®¤çš„æ”»é€Ÿå…¬å¼, è®¡ç®—å‡ºå³å°†è¿”å›çš„æ”»é€Ÿæ•°å€¼
+			// ÏÈ¸ù¾İ rAthena Ä¬ÈÏµÄ¹¥ËÙ¹«Ê½, ¼ÆËã³ö¼´½«·µ»ØµÄ¹¥ËÙÊıÖµ
 			int aspd = ((sd->class_ & JOBL_THIRD) ? battle_config.max_third_aspd : (
 				((sd->class_ & MAPID_UPPERMASK) == MAPID_KAGEROUOBORO || (sd->class_ & MAPID_UPPERMASK) == MAPID_REBELLION) ? battle_config.max_extended_aspd : (
 					(sd->class_ & MAPID_SUMMONER) == MAPID_SUMMONER) ? battle_config.max_summoner_aspd :
@@ -16170,15 +16171,15 @@ short pc_maxaspd(map_session_data *sd) {
 				aspd = max(10, aspd + sd->bonus.aspd_max);
 			}
 			val = 2000 - val * 10;
-			// è‹¥ MaxAspd åœ°å›¾æ ‡è®°æ‰€é™åˆ¶çš„æ”»é€Ÿæ¯”åŸå…ˆ rAthena è®¡ç®—çš„æ”»é€Ÿæ›´å° (é™åˆ¶æ›´ä¸¥æ ¼, æ”»é€Ÿæ›´æ…¢), é‚£ä¹ˆä»¥æœ€å°çš„ä¸ºå‡†
-			// éœ€è¦æ³¨æ„: è¿™é‡Œè¿”å›çš„æ”»é€Ÿå€¼, å®é™…ä¸Šæ˜¯æ”»å‡»é—´éš”å»¶è¿Ÿçš„æ¯«ç§’æ•° (å€¼è¶Šå¤§, æ”»é€Ÿè¶Šæ…¢; å€¼è¶Šå°, æ”»é€Ÿè¶Šå¿«)
+			// Èô MaxAspd µØÍ¼±ê¼ÇËùÏŞÖÆµÄ¹¥ËÙ±ÈÔ­ÏÈ rAthena ¼ÆËãµÄ¹¥ËÙ¸üĞ¡ (ÏŞÖÆ¸üÑÏ¸ñ, ¹¥ËÙ¸üÂı), ÄÇÃ´ÒÔ×îĞ¡µÄÎª×¼
+			// ĞèÒª×¢Òâ: ÕâÀï·µ»ØµÄ¹¥ËÙÖµ, Êµ¼ÊÉÏÊÇ¹¥»÷¼ä¸ôÑÓ³ÙµÄºÁÃëÊı (ÖµÔ½´ó, ¹¥ËÙÔ½Âı; ÖµÔ½Ğ¡, ¹¥ËÙÔ½¿ì)
 			if (aspd < val) {
 				return val;
 			}
 		}
 	}
 #endif // Pandas_MapFlag_MaxASPD
-	//æ”»å‡»é—´éš” = 2000 - æ”»é€Ÿçš„ Aspd æ•°å€¼ * 10
+	//¹¥»÷¼ä¸ô = 2000 - ¹¥ËÙµÄ Aspd ÊıÖµ * 10
 	auto aspd = (( sd->class_&JOBL_THIRD) ? battle_config.max_third_aspd : (
 			((sd->class_&MAPID_UPPERMASK) == MAPID_KAGEROUOBORO || (sd->class_&MAPID_UPPERMASK) == MAPID_REBELLION) ? battle_config.max_extended_aspd : (
 			(sd->class_&MAPID_SUMMONER) == MAPID_SUMMONER) ? battle_config.max_summoner_aspd :
