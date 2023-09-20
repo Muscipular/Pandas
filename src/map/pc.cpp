@@ -4100,6 +4100,10 @@ void pc_bonus(map_session_data *sd,int type,int val)
 			if(sd->state.lr_flag != 2)
 				sd->bonus.aspd_add -= 10*val;
 			break;
+		case SP_ASPD_MAX:	//Raw increase
+			if(sd->state.lr_flag != 2)
+				sd->bonus.aspd_max += 10*val;
+			break;
 		case SP_ASPD_RATE:	//Stackable increase - Made it linear as per rodatazone
 			if(sd->state.lr_flag != 2)
 #ifndef RENEWAL_ASPD
@@ -16121,6 +16125,9 @@ short pc_maxaspd(map_session_data *sd) {
 				(sd->class_ & MAPID_BASEMASK) == MAPID_SUMMONER) ? battle_config.max_summoner_aspd :
 			battle_config.max_aspd));
 
+		if (sd->bonus.aspd_max) {
+			aspd = max(10, aspd + sd->bonus.aspd_max);
+		}
 		// 若 PVP 地图限制的攻速比原先 rAthena 计算的攻速更小 (限制更严格, 攻速更慢), 那么以最小的为准
 		// 需要注意: 这里返回的攻速值, 实际上是攻击间隔延迟的毫秒数 (值越大, 攻速越慢; 值越小, 攻速越快)
 		if (aspd < battle_config.max_aspd_for_gvg) {
@@ -16138,6 +16145,9 @@ short pc_maxaspd(map_session_data *sd) {
 				(sd->class_ & MAPID_BASEMASK) == MAPID_SUMMONER) ? battle_config.max_summoner_aspd :
 			battle_config.max_aspd));
 
+		if (sd->bonus.aspd_max) {
+			aspd = max(10, aspd + sd->bonus.aspd_max);
+		}
 		// 若 PVP 地图限制的攻速比原先 rAthena 计算的攻速更小 (限制更严格, 攻速更慢), 那么以最小的为准
 		// 需要注意: 这里返回的攻速值, 实际上是攻击间隔延迟的毫秒数 (值越大, 攻速越慢; 值越小, 攻速越快)
 		if (aspd < battle_config.max_aspd_for_pvp) {
@@ -16156,6 +16166,9 @@ short pc_maxaspd(map_session_data *sd) {
 					(sd->class_ & MAPID_SUMMONER) == MAPID_SUMMONER) ? battle_config.max_summoner_aspd :
 				battle_config.max_aspd));
 
+			if (sd->bonus.aspd_max) {
+				aspd = max(10, aspd + sd->bonus.aspd_max);
+			}
 			val = 2000 - val * 10;
 			// 若 MaxAspd 地图标记所限制的攻速比原先 rAthena 计算的攻速更小 (限制更严格, 攻速更慢), 那么以最小的为准
 			// 需要注意: 这里返回的攻速值, 实际上是攻击间隔延迟的毫秒数 (值越大, 攻速越慢; 值越小, 攻速越快)
@@ -16165,11 +16178,21 @@ short pc_maxaspd(map_session_data *sd) {
 		}
 	}
 #endif // Pandas_MapFlag_MaxASPD
-
+	//攻击间隔 = 2000 - 攻速的 Aspd 数值 * 10
+	auto aspd = (( sd->class_&JOBL_THIRD) ? battle_config.max_third_aspd : (
+			((sd->class_&MAPID_UPPERMASK) == MAPID_KAGEROUOBORO || (sd->class_&MAPID_UPPERMASK) == MAPID_REBELLION) ? battle_config.max_extended_aspd : (
+			(sd->class_&MAPID_SUMMONER) == MAPID_SUMMONER) ? battle_config.max_summoner_aspd :
+			battle_config.max_aspd ));
+	if (sd->bonus.aspd_max) {
+		aspd = max(10, aspd + sd->bonus.aspd_max);
+	}
+	return aspd;
+	/*
 	return (( sd->class_&JOBL_THIRD) ? battle_config.max_third_aspd : (
 			((sd->class_&MAPID_UPPERMASK) == MAPID_KAGEROUOBORO || (sd->class_&MAPID_UPPERMASK) == MAPID_REBELLION) ? battle_config.max_extended_aspd : (
 			(sd->class_&MAPID_SUMMONER) == MAPID_SUMMONER) ? battle_config.max_summoner_aspd :
 			battle_config.max_aspd ));
+			*/
 }
 
 /**

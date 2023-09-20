@@ -992,6 +992,7 @@
 	export_constant2("bFlee2",SP_FLEE2);
 	export_constant2("bCritical",SP_CRITICAL);
 	export_constant2("bAspd",SP_ASPD);
+	export_constant2("bAspdMax",SP_ASPD_MAX);
 	export_constant2("bFame",SP_FAME);
 	export_constant2("bUnbreakable",SP_UNBREAKABLE);
 

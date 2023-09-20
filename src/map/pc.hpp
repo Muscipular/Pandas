@@ -747,7 +747,7 @@ public:
 		int crit_atk_rate;
 		int crit_def_rate;
 		int classchange; // [Valaris]
-		int speed_rate, speed_add_rate, aspd_add;
+		int speed_rate, speed_add_rate, aspd_add, aspd_max;
 		int itemhealrate2; // [Epoque] Increase heal rate of all healing items.
 		int itemsphealrate2;
 		int shieldmdef;//royal guard's
