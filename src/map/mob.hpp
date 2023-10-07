@@ -485,6 +485,7 @@ enum e_mob_skill_condition {
 	MSC_MOBNEARBYGT,
 	MSC_GROUNDATTACKED,
 	MSC_DAMAGEDGT,
+	MSC_DAMAGEDGTRATE,
 };
 
 // The data structures for storing delayed item drops

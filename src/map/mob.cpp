@@ -4116,6 +4116,8 @@ int mobskill_use(struct mob_data *md, t_tick tick, int event, int64 damage)
 			flag = ((event & 0xffff) == MSC_SKILLUSED && skill_get_inf((event >> 16))&INF_GROUND_SKILL);
 		else if (ms[i]->cond1 == MSC_DAMAGEDGT && damage > 0 && !((event & 0xffff) == MSC_SKILLUSED)) //Avoid double check if skill has been used [datawulf]
 			flag = (damage > c2);
+		else if (ms[i]->cond1 == MSC_DAMAGEDGTRATE && damage > 0 && !((event & 0xffff) == MSC_SKILLUSED)) //Avoid double check if skill has been used [datawulf]
+			flag = (damage > md->status.max_hp * (c2 / 100.0f));
 		else if(event == -1){
 			//Avoid entering on defined events to avoid "hyper-active skill use" due to the overflow of calls to this function in battle.
 			switch (ms[i]->cond1)
@@ -6278,6 +6280,7 @@ static bool mob_parse_row_mobskilldb(char** str, int columns, int current)
 		{ "mobnearbygt",       MSC_MOBNEARBYGT       },
 		{ "groundattacked",    MSC_GROUNDATTACKED    },
 		{ "damagedgt",         MSC_DAMAGEDGT         },
+		{ "damagedgtrate",     MSC_DAMAGEDGTRATE     },
 	}, cond2[] ={
 		{	"anybad",		-1				},
 		{	"stone",		SC_STONE		},
