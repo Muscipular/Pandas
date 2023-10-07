@@ -8693,13 +8693,28 @@ ACMD_FUNC(whereis)
     clif_displaymessage(fd, atcmd_output);\
 }
 
+#define clif_print_bonus_s(s, e) if(e!=0) {\
+	snprintf(atcmd_output, sizeof atcmd_output, "%s: %d", s, e);\
+    clif_displaymessage(fd, atcmd_output);\
+}
+
 #define clif_print_bonus2(x, s, e) if(e!=0) {\
 	snprintf(atcmd_output, sizeof atcmd_output, "%s(%s): %d", #x, s, e);\
     clif_displaymessage(fd, atcmd_output);\
 }
 
+#define clif_print_bonus2_s(x, s, e) if(e!=0) {\
+	snprintf(atcmd_output, sizeof atcmd_output, "%s(%s): %d", x, s, e);\
+    clif_displaymessage(fd, atcmd_output);\
+}
+
 #define clif_print_bonus3(x, s, s2, e) if(e!=0) {\
 	snprintf(atcmd_output, sizeof atcmd_output, "%s(%s/%s): %d", #x, s, s2, e);\
+    clif_displaymessage(fd, atcmd_output);\
+}
+
+#define clif_print_bonus3_s(x, s, s2, e) if(e!=0) {\
+	snprintf(atcmd_output, sizeof atcmd_output, "%s(%s/%s): %d", x, s, s2, e);\
     clif_displaymessage(fd, atcmd_output);\
 }
 
@@ -8757,6 +8772,8 @@ ACMD_FUNC(bonuslist) {
 		clif_print_bonus(bFixedCast, sd->bonus.add_fixcast);
 		clif_print_bonus(bVariableCastrate, sd->bonus.varcastrate);
 		clif_print_bonus(bDelayrate, sd->bonus.delayrate);
+		clif_print_bonus(bSkillCooldown, sd->bonus.skill_cooldown);
+		clif_print_bonus(bSkillCooldownRate, sd->bonus.skill_cooldown_rate);
 	}
 	if (flag & (1 << 4)) {
 		int count = 0;
@@ -8864,19 +8881,25 @@ ACMD_FUNC(bonuslist) {
 		}
 	}
 	if (flag & (1 << 10)) {
+		auto fn = [&](const char* s, std::vector<s_item_bonus>& map) {
+			clif_print_bonus2_s("bSkillAtk", "All", sd->bonus.skillatk);
+			std::map<uint16, int> ids;
+			for (auto& p : map) {
+				if (ids.find(p.id) == ids.end()) {
+					ids.insert(std::make_pair(p.id, p.val));
+				}
+				else {
+					ids[p.id] = ids[p.id] + p.val;
+				}
+			}
+			for (auto& id : ids) {
+				clif_print_bonus2_s(s, skill_get_desc(id.first), id.second);
+			}
+		};
 		clif_print_bonus2(bSkillAtk, "All", sd->bonus.skillatk);
-		std::map<uint16,int> ids;
-		for (auto& p : sd->skillatk) {
-			if (ids.find(p.id) == ids.end()) {
-				ids.insert(std::make_pair(p.id, p.val));
-			}
-			else {
-				ids[p.id] = ids[p.id] + p.val;
-			}
-		}
-		for (auto& id : ids) {
-			clif_print_bonus2(bSkillAtk, skill_get_desc(id.first), id.second);
-		}
+		fn("bSkillAtk", sd->skillatk);
+		fn("bSkillCooldown", sd->skillcooldown);
+		fn("bSkillCooldownRate", sd->skillcooldownrate);
 	}
 	return 0;
 }
