@@ -4300,7 +4300,7 @@ void pc_bonus(map_session_data *sd,int type,int val)
 			if(sd->state.lr_flag == 2)
 				break;
 			val+= sd->special_state.no_magic_damage;
-			sd->special_state.no_magic_damage = cap_value(val,0,100);
+			sd->special_state.no_magic_damage = cap_value(val,0,95);
 			break;
 		case SP_NO_WEAPON_DAMAGE:
 			if(sd->state.lr_flag == 2)
