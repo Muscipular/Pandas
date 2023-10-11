@@ -2975,6 +2975,10 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type, uint16 skill
 
 			drop_rate = mob_getdroprate(src, md->db, md->db->dropitem[i].rate, drop_modifier, md);
 
+			if (battle_config.gExtRate.drop != 0) {
+				drop_rate = (double)drop_rate * (100.0 + battle_config.gExtRate.drop) / 100.0;
+			}
+
 #ifdef Pandas_Database_MobItem_FixedRatio
 			// 若严格固定掉率, 那么无视上面的等级惩罚、VIP掉率加成、地图标记掉率修正等计算
 			if (mobdrop_strict_droprate(md->db->dropitem[i].nameid, md->mob_id))

@@ -2735,6 +2735,11 @@ uint64 ConstantDatabase::parseBodyNode( const ryml::NodeRef& node ) {
 
 	return 1;
 }
+enum G_Rate_Mode {
+	G_RATE_EXP,
+	G_RATE_JOB,
+	G_RATE_DROP,
+};
 
 ConstantDatabase constant_db;
 
@@ -34514,6 +34519,27 @@ BUILDIN_FUNC(getmapsize) {
 }
 #endif // Pandas_ScriptCommand_Map_Get_Size
 
+BUILDIN_FUNC(setglobalrate) {
+	G_Rate_Mode mode = (G_Rate_Mode)script_getnum(st, 2);
+	int rate = script_getnum(st, 2);
+	switch (mode)
+	{
+	case G_RATE_EXP:
+		battle_config.gExtRate.exp = rate;
+		break;
+	case G_RATE_JOB:
+		battle_config.gExtRate.job = rate;
+		break;
+	case G_RATE_DROP:
+		battle_config.gExtRate.drop = rate;
+		break;
+	default:
+		ShowError("buildin_setglobalrate: mode is invalid. %d", mode);
+		return SCRIPT_CMD_FAILURE;
+	}
+	return SCRIPT_CMD_SUCCESS;
+}
+
 // PYHELP - SCRIPTCMD - INSERT POINT - <Section 2>
 
 /// script command definitions
@@ -35531,6 +35557,7 @@ struct script_function buildin_func[] = {
 		BUILDIN_DEF(lua_init, ""),
 		BUILDIN_DEF(lua_call_fn, "s*"),
 	BUILDIN_DEF(lua_run, "s*"),
+	BUILDIN_DEF(setglobalrate, "ii"),
 #include <custom/script_def.inc>
 
 	{NULL,NULL,NULL},

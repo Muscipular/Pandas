@@ -822,6 +822,7 @@ enum e_mapflag : int16 {
 #endif // Pandas_MapFlag_NoAttack2
 	// PYHELP - MAPFLAG - INSERT POINT - <Section 2>
 	MF_NOMOBLEVELUP,
+	MF_NOMAGICIMMUNITY,
 	MF_MAX
 };
 

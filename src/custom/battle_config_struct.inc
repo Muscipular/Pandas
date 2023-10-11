@@ -23,3 +23,7 @@ int ex_vending_report;
 int ex_buying_bound;
 int item_zeny;
 int item_cash;
+struct {
+	int job, exp, drop;
+} gExtRate;
+
