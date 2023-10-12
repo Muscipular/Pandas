@@ -206,3 +206,5 @@ __pycache__
 # Other
 /src/*/*.aps
 /db/cache
+/cmake-build-*
+/*.7z
