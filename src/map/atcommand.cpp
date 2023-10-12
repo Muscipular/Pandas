@@ -8882,7 +8882,6 @@ ACMD_FUNC(bonuslist) {
 	}
 	if (flag & (1 << 10)) {
 		auto fn = [&](const char* s, std::vector<s_item_bonus>& map) {
-			clif_print_bonus2_s("bSkillAtk", "All", sd->bonus.skillatk);
 			std::map<uint16, int> ids;
 			for (auto& p : map) {
 				if (ids.find(p.id) == ids.end()) {
