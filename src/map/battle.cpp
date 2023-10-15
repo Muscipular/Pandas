@@ -1764,7 +1764,7 @@ int64 battle_calc_damage(struct block_list *src,struct block_list *bl,struct Dam
 			damage = damage * 80 / 100; // 20% reduction to all type attacks
 
 		if (tsc->getSCE(SC_SU_STOOP))
-			damage -= damage * 90 / 100;
+			damage -= damage * 80 / 100;
 
 		// Compressed code, fixed by map.hpp [Epoque]
 		if (src->type == BL_MOB) {
