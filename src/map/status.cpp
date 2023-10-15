@@ -3120,7 +3120,7 @@ static int status_get_hpbonus(struct block_list *bl, enum e_status_bonus type) {
 			if ((skill_lv = pc_checkskill(sd,CR_TRUST)) > 0)
 				bonus += skill_lv * 200;
 			if (pc_checkskill(sd,SU_SPRITEMABLE) > 0)
-				bonus += 1000;
+				bonus += 2000;
 			if (pc_checkskill(sd, SU_POWEROFSEA) > 0) {
 				bonus += 1000;
 				if (pc_checkskill_summoner(sd, SUMMONER_POWER_SEA) >= 20)
@@ -3307,7 +3307,7 @@ static int status_get_spbonus(struct block_list *bl, enum e_status_bonus type) {
 			if ((skill_lv = pc_checkskill(sd,WM_LESSON)) > 0)
 				bonus += 30 * skill_lv;
 			if (pc_checkskill(sd,SU_SPRITEMABLE) > 0)
-				bonus += 100;
+				bonus += 200;
 			if (pc_checkskill(sd, SU_POWEROFSEA) > 0) {
 				bonus += 100;
 				if (pc_checkskill_summoner(sd, SUMMONER_POWER_SEA) >= 20)
