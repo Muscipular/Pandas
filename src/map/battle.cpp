@@ -8394,7 +8394,7 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 						skillratio += -100 + 200 * skill_lv * status_get_lv(src) / 100 + sstatus->dex; // ! TODO: Confirm DEX bonus
 						break;
 					case SU_SV_STEMSPEAR:
-						skillratio += 600;
+						skillratio += 4900;
 						break;
 					case SU_CN_METEOR:
 					case SU_CN_METEOR2:
