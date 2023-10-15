@@ -5586,7 +5586,7 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			}
 			break;
 		case SU_SCRATCH:
-			skillratio += -50 + 50 * skill_lv;
+			skillratio += 300 + 200 * skill_lv;
 			break;
 		case SU_SCAROFTAROU:
 			skillratio += -100 + 100 * skill_lv;
