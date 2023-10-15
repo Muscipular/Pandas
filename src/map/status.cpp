@@ -4324,7 +4324,7 @@ int status_calc_pc_sub(map_session_data* sd, uint8 opt)
 	if((skill = pc_checkskill(sd,RA_RESEARCHTRAP))>0)
 		base_status->int_ += skill;
 	if (pc_checkskill(sd, SU_POWEROFLAND) > 0)
-		base_status->int_ += 20;
+		base_status->int_ += 7;
 
 	// Bonuses from cards and equipment as well as base stat, remember to avoid overflows.
 	i = base_status->str + sd->status.str + sd->indexed_bonus.param_bonus[PARAM_STR] + sd->indexed_bonus.param_equip[PARAM_STR];
@@ -6240,7 +6240,7 @@ void status_calc_bl_main(struct block_list *bl, std::bitset<SCB_MAX> flag)
 					if (sd->bonus.ematk > 0)
 						status->matk_min += sd->bonus.ematk;
 					if (pc_checkskill(sd, SU_POWEROFLAND) > 0 && pc_checkskill_summoner(sd, SUMMONER_POWER_LAND) >= 20)
-						status->matk_min += status->matk_min * 20 / 100;
+						status->matk_min += status->matk_min * 10 / 100;
 					if ((skill_lv = pc_checkskill(sd, NV_TRANSCENDENCE)) > 0)
 						status->matk_min += 15 * skill_lv + (skill_lv > 4 ? 25 : 0);
 				}
