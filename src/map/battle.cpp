@@ -5580,7 +5580,10 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			skillratio += -100 + 3500 + 300 * skill_lv;
 			break;
 		case SU_BITE:
-			skillratio += 100;
+			skillratio += 900;
+			if (tstatus->hp < tstatus->max_hp * 0.7) {
+				skillratio += 500;
+			}
 			break;
 		case SU_SCRATCH:
 			skillratio += -50 + 50 * skill_lv;
