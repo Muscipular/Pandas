@@ -1586,7 +1586,7 @@ int64 battle_calc_damage(struct block_list *src,struct block_list *bl,struct Dam
 
 		if(flag&BF_MAGIC && sd->special_state.no_magic_damage) {
 			if (tsc && !tsc->getSCE(SC_DEADLY_DEFEASANCE)) //put it here because in in pc_calc_sub with CalcFlag All it'll break setunitdata of monsters, with CalcFlag Base it'll break other sc's bonuses [datawulf]
-				damage -= damage * sd->special_state.no_magic_damage / 100;
+				damage -= damage * min(map_getmapflag(bl->m, MF_NOMAGICIMMUNITY) >= 0 ? 95 : 100, sd->special_state.no_magic_damage) / 100;
 		}
 
 		if(flag&BF_MISC && sd->special_state.no_misc_damage)
