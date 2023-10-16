@@ -5589,7 +5589,7 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			skillratio += 300 + 200 * skill_lv;
 			break;
 		case SU_SCAROFTAROU:
-			skillratio += -100 + 100 * skill_lv;
+			skillratio += -100 + 4000 + 200 * skill_lv;
 			if (sd && pc_checkskill(sd, SU_SPIRITOFLIFE))
 				skillratio += skillratio * status_get_hp(src) / status_get_max_hp(src);
 			break;
