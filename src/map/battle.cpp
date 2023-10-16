@@ -5593,13 +5593,13 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			if (sd && pc_checkskill(sd, SU_SPIRITOFLIFE)) {
 				auto r = status_get_hp(src) * 100 / status_get_max_hp(src);
 				if (r >= 100) {
-					skillratio* = 2;
+					skillratio *= 2;
 				} else if (r >= 81) {
-					skillratio* = 1.5;
+					skillratio *= 1.5;
 				} else if (r >= 51) {
-					skillratio* = 1.3;
+					skillratio *= 1.3;
 				} else {
-					skillratio* = 1.1;
+					skillratio *= 1.1;
 				}
 			}
 				//skillratio += skillratio * status_get_hp(src) / status_get_max_hp(src);
@@ -5612,16 +5612,16 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			if (sd && pc_checkskill(sd, SU_SPIRITOFLIFE)) {
 				auto r = status_get_hp(src) * 100 / status_get_max_hp(src);
 				if (r >= 100) {
-					skillratio* = 2;
+					skillratio *= 2;
 				}
 				else if (r >= 81) {
-					skillratio* = 1.5;
+					skillratio *= 1.5;
 				}
 				else if (r >= 51) {
-					skillratio* = 1.3;
+					skillratio *= 1.3;
 				}
 				else {
-					skillratio* = 1.1;
+					skillratio *= 1.1;
 				}
 			}
 			//if (sd && pc_checkskill(sd, SU_SPIRITOFLIFE))
@@ -5634,16 +5634,16 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			if (sd && pc_checkskill(sd, SU_SPIRITOFLIFE)) {
 				auto r = status_get_hp(src) * 100 / status_get_max_hp(src);
 				if (r >= 100) {
-					skillratio* = 2;
+					skillratio *= 2;
 				}
 				else if (r >= 81) {
-					skillratio* = 1.5;
+					skillratio *= 1.5;
 				}
 				else if (r >= 51) {
-					skillratio* = 1.3;
+					skillratio *= 1.3;
 				}
 				else {
-					skillratio* = 1.1;
+					skillratio *= 1.1;
 				}
 			}
 			if (status_get_lv(src) > 99)
@@ -5655,16 +5655,16 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			if (sd && pc_checkskill(sd, SU_SPIRITOFLIFE)) {
 				auto r = status_get_hp(src) * 100 / status_get_max_hp(src);
 				if (r >= 100) {
-					skillratio* = 2;
+					skillratio *= 2;
 				}
 				else if (r >= 81) {
-					skillratio* = 1.5;
+					skillratio *= 1.5;
 				}
 				else if (r >= 51) {
-					skillratio* = 1.3;
+					skillratio *= 1.3;
 				}
 				else {
-					skillratio* = 1.1;
+					skillratio *= 1.1;
 				}
 			}
 			break;
