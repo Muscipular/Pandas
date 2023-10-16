@@ -6253,7 +6253,7 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 		case SH_HOWLING_OF_CHUL_HO:
 			skillratio += -100 + 600 + 1050 * skill_lv + 50 * pc_checkskill(sd, SH_MYSTICAL_CREATURE_MASTERY) + 5 * sstatus->pow;
 			if ((sd && pc_checkskill(sd, SH_COMMUNE_WITH_CHUL_HO)) || (sc && sc->getSCE(SC_TEMPORARY_COMMUNION)))
-				skillratio += 100 + 200 * skill_lv + 50 * pc_checkskill(sd, SH_MYSTICAL_CREATURE_MASTERY);
+				skillratio += 100 + 100 * skill_lv + 50 * pc_checkskill(sd, SH_MYSTICAL_CREATURE_MASTERY);
 			RE_LVL_DMOD(100);
 			break;
 		case SH_HOGOGONG_STRIKE:
@@ -8044,15 +8044,15 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 						RE_LVL_DMOD(100);
 						break;
 					case SH_HYUN_ROKS_BREEZE:
-						skillratio += -100 + 600 + 600 * skill_lv + 20 * pc_checkskill(sd, SH_MYSTICAL_CREATURE_MASTERY) + 5 * sstatus->spl;
+						skillratio += -100 + 650 + 750 * skill_lv + 20 * pc_checkskill(sd, SH_MYSTICAL_CREATURE_MASTERY) + 5 * sstatus->spl;
 						if ((sd && pc_checkskill(sd, SH_COMMUNE_WITH_HYUN_ROK)) || (sc && sc->getSCE(SC_TEMPORARY_COMMUNION)))
 							skillratio += 100 + 200 * skill_lv + 20 * pc_checkskill(sd, SH_MYSTICAL_CREATURE_MASTERY);
 						RE_LVL_DMOD(100);
 						break;
 					case SH_HYUN_ROK_CANNON:
-						skillratio += -100 + 700 + 950 * skill_lv + 50 * pc_checkskill(sd, SH_MYSTICAL_CREATURE_MASTERY) + 5 * sstatus->spl;
+						skillratio += -100 + 1050 + 1550 * skill_lv + 50 * pc_checkskill(sd, SH_MYSTICAL_CREATURE_MASTERY) + 5 * sstatus->spl;
 						if ((sd && pc_checkskill(sd, SH_COMMUNE_WITH_HYUN_ROK)) || (sc && sc->getSCE(SC_TEMPORARY_COMMUNION)))
-							skillratio += 100 + 150 * skill_lv + 25 * pc_checkskill(sd, SH_MYSTICAL_CREATURE_MASTERY);
+							skillratio += 300 * skill_lv + 25 * pc_checkskill(sd, SH_MYSTICAL_CREATURE_MASTERY);
 						RE_LVL_DMOD(100);
 						break;
 					case SOA_EXORCISM_OF_MALICIOUS_SOUL:
