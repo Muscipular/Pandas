@@ -4545,7 +4545,7 @@ int status_calc_pc_sub(map_session_data* sd, uint8 opt)
 	if((sd->status.weapon == W_MACE || sd->status.weapon == W_2HMACE) && (skill = pc_checkskill(sd,NC_TRAININGAXE)) > 0)
 		base_status->hit += skill * 2;
 	if (pc_checkskill(sd, SU_POWEROFLIFE) > 0)
-		base_status->hit += 20;
+		base_status->hit += 50;
 	if ((skill = pc_checkskill_imperial_guard(sd, 2)) > 0)// IG_SPEAR_SWORD_M
 		base_status->hit += skill * 3;
 	if ((skill = pc_checkskill(sd, SKE_WAR_BOOK_MASTERY))>0)
@@ -4562,7 +4562,7 @@ int status_calc_pc_sub(map_session_data* sd, uint8 opt)
 	if((skill=pc_checkskill(sd,MO_DODGE))>0)
 		base_status->flee += (skill*3) / 2;
 	if (pc_checkskill(sd, SU_POWEROFLIFE) > 0)
-		base_status->flee += 20;
+		base_status->flee += 50;
 	if ((skill = pc_checkskill(sd, SHC_SHADOW_SENSE)) > 0)
 		base_status->flee += skill * 10;
 
