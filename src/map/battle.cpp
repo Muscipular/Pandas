@@ -5590,31 +5590,83 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			break;
 		case SU_SCAROFTAROU:
 			skillratio += -100 + 4000 + 200 * skill_lv;
-			if (sd && pc_checkskill(sd, SU_SPIRITOFLIFE))
-				skillratio += skillratio * status_get_hp(src) / status_get_max_hp(src);
+			if (sd && pc_checkskill(sd, SU_SPIRITOFLIFE)) {
+				auto r = status_get_hp(src) * 100 / status_get_max_hp(src);
+				if (r >= 100) {
+					skillratio* = 2;
+				} else if (r >= 81) {
+					skillratio* = 1.5;
+				} else if (r >= 51) {
+					skillratio* = 1.3;
+				} else {
+					skillratio* = 1.1;
+				}
+			}
+				//skillratio += skillratio * status_get_hp(src) / status_get_max_hp(src);
 			break;
 		case SU_PICKYPECK:
 		case SU_PICKYPECK_DOUBLE_ATK:
 			skillratio += 100 + 1250 + 50 * skill_lv;
 			if (status_get_hp(target) < (status_get_max_hp(target) / 2))
 				skillratio *= 2;
-			if (sd && pc_checkskill(sd, SU_SPIRITOFLIFE))
-				skillratio += skillratio * status_get_hp(src) / status_get_max_hp(src);
+			if (sd && pc_checkskill(sd, SU_SPIRITOFLIFE)) {
+				auto r = status_get_hp(src) * 100 / status_get_max_hp(src);
+				if (r >= 100) {
+					skillratio* = 2;
+				}
+				else if (r >= 81) {
+					skillratio* = 1.5;
+				}
+				else if (r >= 51) {
+					skillratio* = 1.3;
+				}
+				else {
+					skillratio* = 1.1;
+				}
+			}
+			//if (sd && pc_checkskill(sd, SU_SPIRITOFLIFE))
+			//	skillratio += skillratio * status_get_hp(src) / status_get_max_hp(src);
 			break;
 		case SU_LUNATICCARROTBEAT:
 		case SU_LUNATICCARROTBEAT2:
-			skillratio += 100 + 100 * skill_lv;
+			skillratio += 100 + 2000 + 100 * skill_lv;
 			RE_LVL_DMOD(100);
-			if (sd && pc_checkskill(sd, SU_SPIRITOFLIFE))
-				skillratio += skillratio * status_get_hp(src) / status_get_max_hp(src);
+			if (sd && pc_checkskill(sd, SU_SPIRITOFLIFE)) {
+				auto r = status_get_hp(src) * 100 / status_get_max_hp(src);
+				if (r >= 100) {
+					skillratio* = 2;
+				}
+				else if (r >= 81) {
+					skillratio* = 1.5;
+				}
+				else if (r >= 51) {
+					skillratio* = 1.3;
+				}
+				else {
+					skillratio* = 1.1;
+				}
+			}
 			if (status_get_lv(src) > 99)
 				skillratio += sstatus->str;
 			RE_LVL_DMOD(100);
 			break;
 		case SU_SVG_SPIRIT:
 			skillratio += 150 + 150 * skill_lv;
-			if (sd && pc_checkskill(sd, SU_SPIRITOFLIFE))
-				skillratio += skillratio * status_get_hp(src) / status_get_max_hp(src);
+			if (sd && pc_checkskill(sd, SU_SPIRITOFLIFE)) {
+				auto r = status_get_hp(src) * 100 / status_get_max_hp(src);
+				if (r >= 100) {
+					skillratio* = 2;
+				}
+				else if (r >= 81) {
+					skillratio* = 1.5;
+				}
+				else if (r >= 51) {
+					skillratio* = 1.3;
+				}
+				else {
+					skillratio* = 1.1;
+				}
+			}
 			break;
 		case SJ_FULLMOONKICK:
 			skillratio += 1000 + 100 * skill_lv;

@@ -16102,10 +16102,21 @@ std::shared_ptr<s_skill_unit_group> skill_unitsetting(struct block_list *src, ui
 	case NW_GRENADES_DROPPING:
 		limit = skill_get_time2(skill_id,skill_lv);
 		break;
-	case HN_METEOR_STORM_BUSTER:
-	case WZ_METEOR:
 	case SU_CN_METEOR:
 	case SU_CN_METEOR2:
+		limit = flag;
+		flag = 0; // Flag should not influence anything else for these skills
+		switch (skill_lv)
+		{
+		case 1: range = 8; break;
+		case 2: range = 6; break;
+		case 3: range = 5; break;
+		case 4: range = 4; break;
+		case 5: range = 3; break;
+		}
+		break;
+	case HN_METEOR_STORM_BUSTER:
+	case WZ_METEOR:
 	case NPC_RAINOFMETEOR:
 		limit = flag;
 		flag = 0; // Flag should not influence anything else for these skills
