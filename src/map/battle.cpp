@@ -5595,7 +5595,7 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			break;
 		case SU_PICKYPECK:
 		case SU_PICKYPECK_DOUBLE_ATK:
-			skillratio += 100 + 100 * skill_lv;
+			skillratio += 100 + 1250 + 50 * skill_lv;
 			if (status_get_hp(target) < (status_get_max_hp(target) / 2))
 				skillratio *= 2;
 			if (sd && pc_checkskill(sd, SU_SPIRITOFLIFE))
