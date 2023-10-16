@@ -5651,7 +5651,7 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			RE_LVL_DMOD(100);
 			break;
 		case SU_SVG_SPIRIT:
-			skillratio += 150 + 150 * skill_lv;
+			skillratio += 2400 + 100 * skill_lv;
 			if (sd && pc_checkskill(sd, SU_SPIRITOFLIFE)) {
 				auto r = status_get_hp(src) * 100 / status_get_max_hp(src);
 				if (r >= 100) {
