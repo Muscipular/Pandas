@@ -6263,9 +6263,9 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			RE_LVL_DMOD(100);
 			break;
 		case SH_CHUL_HO_SONIC_CLAW:
-			skillratio += -100 + 400 + 750 * skill_lv + 50 * pc_checkskill(sd, SH_MYSTICAL_CREATURE_MASTERY) + 5 * sstatus->pow;
+			skillratio += -100 + 850 + 1650 * skill_lv + 50 * pc_checkskill(sd, SH_MYSTICAL_CREATURE_MASTERY) + 5 * sstatus->pow;
 			if ((sd && pc_checkskill(sd, SH_COMMUNE_WITH_CHUL_HO)) || (sc && sc->getSCE(SC_TEMPORARY_COMMUNION)))
-				skillratio += 100 + 100 * skill_lv + 50 * pc_checkskill(sd, SH_MYSTICAL_CREATURE_MASTERY);
+				skillratio += 400 * skill_lv + 50 * pc_checkskill(sd, SH_MYSTICAL_CREATURE_MASTERY);
 			RE_LVL_DMOD(100);
 			break;
 	}
