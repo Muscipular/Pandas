@@ -259,16 +259,16 @@ void vending_purchasereq(map_session_data* sd, int aid, int uid, const uint8* da
 					clif_messagecolor(&sd->bl, color_table[COLOR_CYAN], msg_txt(sd, 1591), false, SELF);
 					return;
 				}
+				vsd_w += itemdb_weight(vsd->vend_item) * z;
+				if (vsd_w + vsd->weight > vsd->max_weight)
+				{
+					clif_messagecolor(&sd->bl, color_table[COLOR_CYAN], msg_txt(sd, 1593), false, SELF);
+					return;
+				}
 			}
 			if (pc_inventoryblank(vsd) <= 0)
 			{
 				clif_messagecolor(&sd->bl, color_table[COLOR_CYAN], msg_txt(sd, 1592), false, SELF);
-				return;
-			}
-			vsd_w += itemdb_weight(vsd->vend_item) * (int)z;
-			if (vsd_w + vsd->weight > vsd->max_weight)
-			{
-				clif_messagecolor(&sd->bl, color_table[COLOR_CYAN], msg_txt(sd, 1593), false, SELF);
 				return;
 			}
 			for (k = 0; k < MAX_INVENTORY; k++) {
@@ -291,6 +291,11 @@ void vending_purchasereq(map_session_data* sd, int aid, int uid, const uint8* da
 				clif_buyvending(sd, idx, vsd->vending[j].amount, 4); // too much zeny = overflow
 				return;
 			}
+		}
+		w += itemdb_weight(vsd->cart.u.items_cart[idx].nameid) * amount;
+		if (w + sd->weight > sd->max_weight) {
+			clif_buyvending(sd, idx, amount, 2); // you can not buy, because overweight
+			return;
 		}
 		//Check to see if cart/vend info is in sync.
 		if( vending[j].amount > vsd->cart.u.items_cart[idx].amount )
