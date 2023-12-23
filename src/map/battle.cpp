@@ -3823,6 +3823,7 @@ static void battle_calc_element_damage(struct Damage* wd, struct block_list *src
 //Adds an absolute value to damage. 100 = +100 damage
 #define ATK_ADD(damage, damage2, a) do { int64 rate_ = (a); (damage) += rate_; if(is_attack_left_handed(src, skill_id)) (damage2) += rate_; } while(0);
 #define ATK_ADD2(damage, damage2, a , b) do { int64 rate_ = (a), rate2_ = (b); (damage) += rate_; if(is_attack_left_handed(src, skill_id)) (damage2) += rate2_; } while(0);
+#define CAP_HP1100k(hp) ((hp > 1100000) ? (((hp - 1100000)*0.3) + hp) : hp)
 
 #ifdef RENEWAL
 	#define RE_ALLATK_ADD(wd, a) do { int64 a_ = (a); ATK_ADD((wd)->statusAtk, (wd)->statusAtk2, a_); ATK_ADD((wd)->weaponAtk, (wd)->weaponAtk2, a_); ATK_ADD((wd)->equipAtk, (wd)->equipAtk2, a_); ATK_ADD((wd)->masteryAtk, (wd)->masteryAtk2, a_); } while(0);
@@ -4021,7 +4022,7 @@ static void battle_calc_skill_base_damage(struct Damage* wd, struct block_list *
 
 	switch (skill_id) {	//Calc base damage according to skill
 		case PA_SACRIFICE:
-			wd->damage = sstatus->max_hp* 9/100;
+			wd->damage = CAP_HP1100k(sstatus->max_hp) * 9/100;
 			wd->damage2 = 0;
 #ifdef RENEWAL
 			wd->weaponAtk = wd->damage;
@@ -4108,7 +4109,7 @@ static void battle_calc_skill_base_damage(struct Damage* wd, struct block_list *
 		case RK_DRAGONBREATH:
 		case RK_DRAGONBREATH_WATER:
 			{
-				int damagevalue = (sstatus->hp / 50 + status_get_max_sp(src) / 4) * skill_lv;
+				int damagevalue = (CAP_HP1100k(sstatus->hp) / 50 + status_get_max_sp(src) / 4) * skill_lv;
 
 				if(status_get_lv(src) > 100)
 					damagevalue = damagevalue * status_get_lv(src) / 100;
@@ -5211,9 +5212,9 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			break;
 		case LG_RAGEBURST:
 			if (sd && sd->spiritball_old)
-				skillratio += -100 + 200 * sd->spiritball_old + (status_get_max_hp(src) - status_get_hp(src)) / 100;
+				skillratio += -100 + 200 * sd->spiritball_old + CAP_HP1100k(status_get_max_hp(src) - status_get_hp(src)) / 100;
 			else
-				skillratio += 2900 + (status_get_max_hp(src) - status_get_hp(src));
+				skillratio += 2900 + CAP_HP1100k(status_get_max_hp(src) - status_get_hp(src));
 			RE_LVL_DMOD(100);
 			break;
 		case LG_MOONSLASHER:
@@ -5269,7 +5270,7 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
  			break;
 		case SR_TIGERCANNON:
 			{
-				unsigned int hp = sstatus->max_hp * (10 + (skill_lv * 2)) / 100,
+				unsigned int hp = CAP_HP1100k(sstatus->max_hp) * (10 + (skill_lv * 2)) / 100,
 							 sp = sstatus->max_sp * (5 + skill_lv) / 100;
 
 				if (wd->miscflag&8)
@@ -5742,9 +5743,9 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 		case DK_DRAGONIC_BREATH:
 			//TODO: needs official HP/SP scaling [Muh]
 			skillratio += -100 + 50 + 350 * skill_lv + 5 * sstatus->pow;
-			skillratio += sstatus->max_hp / 500 + status_get_max_sp(src) / 40;
+			skillratio += CAP_HP1100k(sstatus->max_hp) / 500 + status_get_max_sp(src) / 40;
 			if (sc && sc->getSCE(SC_DRAGONIC_AURA))
-				skillratio += sstatus->max_hp / 500 + status_get_max_sp(src) / 40;
+				skillratio += CAP_HP1100k(sstatus->max_hp) / 500 + status_get_max_sp(src) / 40;
 			RE_LVL_DMOD(100);
 			break;
 		case IQ_OLEUM_SANCTUM:
@@ -5788,7 +5789,7 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			break;
 		case IQ_THIRD_FLAME_BOMB:
 			skillratio += -100 + 650 * skill_lv + 10 * sstatus->pow;
-			skillratio += sstatus->max_hp * 20 / 100;
+			skillratio += CAP_HP1100k(sstatus->max_hp) * 20 / 100;
 			RE_LVL_DMOD(100);
 			break;
 		case IQ_THIRD_CONSECRATION:
@@ -7568,7 +7569,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src, struct bl
 			status_data *sstatus = status_get_status_data(src);
 			double bonus = 1 + skill_lv * 2 / 10;
 
-			ATK_ADD(wd.damage, wd.damage2, sstatus->max_hp - sstatus->hp);
+			ATK_ADD(wd.damage, wd.damage2, CAP_HP1100k(sstatus->max_hp - sstatus->hp));
 			if(sc && sc->getSCE(SC_COMBO) && sc->getSCE(SC_COMBO)->val1 == SR_FALLENEMPIRE) {
 				ATK_ADD(wd.damage, wd.damage2, static_cast<int64>(sstatus->max_sp * bonus) + 40 * status_get_lv(src));
 			} else
@@ -9168,7 +9169,7 @@ struct Damage battle_calc_misc_attack(struct block_list *src,struct block_list *
 				struct Damage atk = battle_calc_weapon_attack(src, target, skill_id, skill_lv, 0);
 				status_change *sc = status_get_sc(src);
 
-				md.damage = (int64)sstatus->hp + (atk.damage * (int64)sstatus->hp * skill_lv) / (int64)sstatus->max_hp;
+				md.damage = (int64)CAP_HP1100k(sstatus->hp) + (atk.damage * (int64)sstatus->hp * skill_lv) / (int64)sstatus->max_hp;
 
 				if (sc && sc->getSCE(SC_BUNSINJYUTSU) && (i = sc->getSCE(SC_BUNSINJYUTSU)->val2) > 0) { // mirror image bonus only occurs if active
 					md.div_ = -(i + 2); // mirror image count + 2
@@ -9185,7 +9186,7 @@ struct Damage battle_calc_misc_attack(struct block_list *src,struct block_list *
 			md.damage = (sd ? sd->status.job_level : status_get_lv(src));
 			break;
 		case HVAN_EXPLOSION: //[orn]
-			md.damage = (int64)sstatus->max_hp * (50 + 50 * skill_lv) / 100;
+			md.damage = (int64)CAP_HP1100k(sstatus->max_hp) * (50 + 50 * skill_lv) / 100;
 			break;
 		case RA_CLUSTERBOMB:
 		case RA_FIRINGTRAP:
