@@ -10335,7 +10335,7 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 			}
 		}
 	}
-	if (sc && sc->getSCE(SC_AUTOSPELL) && rnd()%100 < sc->getSCE(SC_AUTOSPELL)->val4) {
+	if (sc && sc->getSCE(SC_AUTOSPELL) && rnd()%100 < (sc->getSCE(SC_AUTOSPELL)->val4 * (sstatus->luk + 100) / 100 * (100 + sd->bonus.autospell_rate) / 100)) {
 		int sp = 0;
 		uint16 skill_id = sc->getSCE(SC_AUTOSPELL)->val2;
 		uint16 skill_lv = sc->getSCE(SC_AUTOSPELL)->val3;
@@ -10376,7 +10376,7 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 	}
 	if (sd) {
 		uint16 r_skill = 0, sk_idx = 0;
-		if( wd.flag&BF_WEAPON && sc && sc->getSCE(SC__AUTOSHADOWSPELL) && rnd()%100 < sc->getSCE(SC__AUTOSHADOWSPELL)->val3 &&
+		if( wd.flag&BF_WEAPON && sc && sc->getSCE(SC__AUTOSHADOWSPELL) && rnd()%100 < (sc->getSCE(SC__AUTOSHADOWSPELL)->val3 * (100 + sstatus->luk * 3 / 2) / 100 * (100 + sd->bonus.autospell_rate) / 100) &&
 			(r_skill = (uint16)sc->getSCE(SC__AUTOSHADOWSPELL)->val1) && (sk_idx = skill_get_index(r_skill)) &&
 			sd->status.skill[sk_idx].id != 0 && sd->status.skill[sk_idx].flag == SKILL_FLAG_PLAGIARIZED )
 		{

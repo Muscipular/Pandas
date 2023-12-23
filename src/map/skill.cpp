@@ -2404,7 +2404,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl, uint
 				rate += rate / 100.0 * sd->bonus.autospell_rate;
 			}
 
-			if (rnd()%1000 >= rate)
+			if (rnd()%1000 >= (rate * (sstatus->luk + 100) / 100))
 				continue;
 
 			block_list *tbl = (it.flag & AUTOSPELL_FORCE_TARGET) ? bl : src;
@@ -2583,7 +2583,12 @@ int skill_onskillusage(map_session_data *sd, struct block_list *bl, uint16 skill
 			for (auto &it : sd->autobonus3) {
 				if (it == nullptr)
 					continue;
-				if (rnd_value(0, 1000) >= it->rate)
+				int rate = it->rate;
+				if (sd->bonus.autospell_rate) {
+					rate = cap_value(rate * (100 + sd->bonus.autospell_rate) / 100, 0, 1000);
+				}
+				rate = rate * (100 + sd->battle_status.luk) / 100;
+				if (rnd_value(0, 1000) >= rate)
 					continue;
 				if (it->atk_type != skill_id)
 					continue;
@@ -2781,6 +2786,12 @@ int skill_counter_additional_effect (struct block_list* src, struct block_list *
 				continue;
 			}
 			dstsd->state.autocast = 0;
+
+			if (sd->bonus.autospell_rate) {
+				autospl_rate += autospl_rate * sd->bonus.autospell_rate / 100;
+			}
+
+			autospl_rate = autospl_rate * (100 + sd->battle_status.luk) / 100;
 
 			if (rnd()%1000 >= autospl_rate)
 				continue;
