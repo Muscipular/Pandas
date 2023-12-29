@@ -426,6 +426,7 @@ enum e_autotrade_mode : uint32 {
 
 bool pc_autotrade_suspend(map_session_data *sd);
 #endif // Pandas_Struct_Autotrade_Extend
+struct s_dps_dt { int64_t dmgTotal; int hit; };
 
 class map_session_data {
 public:
@@ -677,6 +678,12 @@ public:
 	} indexed_bonus;
 	// zeroed arrays end here.
 
+	struct 
+	{
+		std::unordered_map<uint16, std::shared_ptr<s_dps_dt>> map;
+		int64_t start;
+		int64_t end;
+	} dps;
 	std::vector<s_autospell> autospell, autospell2, autospell3, autospell4;
 	std::vector<s_addeffect> addeff, addeff_atked;
 	std::vector<s_addeffectonskill> addeff_onskill;

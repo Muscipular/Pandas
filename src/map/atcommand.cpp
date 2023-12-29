@@ -8732,6 +8732,44 @@ static std::unordered_map<std::string, e_size> um_size2sizename{
 };
 
 
+ACMD_FUNC(dps_log) {
+	nullpo_retr(-1, sd);
+
+	int time = 10;
+	if (message && *message) {
+		time = cap_value(atoi(message), 3, 60);
+	}
+
+	sd->dps.start = gettick();
+	sd->dps.end = sd->dps.start + time * 1000;
+	sd->dps.map.clear();
+	snprintf(atcmd_output, sizeof atcmd_output, "Log DPS for %d sec", time);
+	clif_displaymessage(fd, atcmd_output);
+}
+
+ACMD_FUNC(dps_show) {
+	nullpo_retr(-1, sd);
+
+	auto tick = gettick();
+	int64_t dmg = 0;
+	int time = cap_value(sd->dps.end - sd->dps.start / 1000, 1, 100);
+	if (sd->dps.start > 0 && sd->dps.end < tick) {
+		for (const auto& it : sd->dps.map) {
+			dmg += it.second->dmgTotal;
+		}
+		snprintf(atcmd_output, sizeof atcmd_output, "dps: %d in %d sec", dmg / time, time);
+		clif_displaymessage(fd, atcmd_output);
+		for (const auto &it : sd->dps.map) {
+			auto name = skill_get_desc(it.first);
+			snprintf(atcmd_output, sizeof atcmd_output, "> sk: %s, dmg: %lld, dps: %lld, dph: %lld", name,
+				it.second->dmgTotal, it.second->dmgTotal / time, it.second->dmgTotal / it.second->hit);
+			clif_displaymessage(fd, atcmd_output);
+		}
+	} else {
+		clif_displaymessage(fd, "no dps record");
+	}
+}
+
 ACMD_FUNC(bonuslist) {
 	nullpo_retr(-1, sd);
 
@@ -11987,6 +12025,8 @@ void atcommand_basecommands(void) {
 		ACMD_DEF(mount2),
 		ACMD_DEF(join),
 		ACMD_DEF(bonuslist),
+		ACMD_DEF(dps_log),
+		ACMD_DEF(dps_show),
 		ACMD_DEFR(channel,ATCMD_NOSCRIPT),
 		ACMD_DEF(fontcolor),
 #ifndef Pandas_Message_Reorganize

@@ -1538,7 +1538,22 @@ int status_damage(struct block_list *src,struct block_list *target,int64 dhp, in
 			pc_bonus_script_clear(BL_CAST(BL_PC,target),BSF_REM_ON_DAMAGED);
 		unit_skillcastcancel(target, 2);
 	}
-
+	if (hp > 0 && src->type == BL_PC) {
+		auto &dps = ((TBL_PC*)src)->dps;
+		auto tickVal = gettick();
+		if (tickVal >= dps.start && tickVal <= dps.end) {
+			auto it = dps.map.find(skill_id);
+			std::shared_ptr<s_dps_dt> dt;
+			if (it != dps.map.end()) {
+				dt = it->second;
+			}else			{
+				dt = std::make_shared<s_dps_dt>();
+				dps.map.insert(std::make_pair(skill_id, dt));
+			}
+			dt->dmgTotal += hp;
+			dt->hit++;
+		}
+	}
 	status->hp-= hp;
 	status->sp-= sp;
 	status->ap-= ap;
