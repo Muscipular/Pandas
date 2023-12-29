@@ -8760,7 +8760,12 @@ ACMD_FUNC(dps_show) {
 		snprintf(atcmd_output, sizeof atcmd_output, "dps: %d in %d sec", dmg / time, time);
 		clif_displaymessage(fd, atcmd_output);
 		for (const auto &it : sd->dps.map) {
-			auto name = skill_get_desc(it.first);
+			char buff[64];
+			auto name = it.first <= 0 ? "attack" : skill_get_desc(it.first);
+			if (name == nullptr) {
+				printf(buff, "%d", (int)it.first);
+				name = buff;
+			}
 			snprintf(atcmd_output, sizeof atcmd_output, "> sk: %s, dmg: %lld, dps: %lld, dph: %lld", name,
 				it.second->dmgTotal, it.second->dmgTotal / time, it.second->dmgTotal / it.second->hit);
 			clif_displaymessage(fd, atcmd_output);
