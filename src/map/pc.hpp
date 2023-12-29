@@ -677,7 +677,7 @@ public:
 	} indexed_bonus;
 	// zeroed arrays end here.
 
-	std::vector<s_autospell> autospell, autospell2, autospell3;
+	std::vector<s_autospell> autospell, autospell2, autospell3, autospell4;
 	std::vector<s_addeffect> addeff, addeff_atked;
 	std::vector<s_addeffectonskill> addeff_onskill;
 	std::vector<s_item_bonus> skillatk, skillusesprate, skillusesp, skillheal, skillheal2, skillblown, skillcastrate, skillfixcastrate, subskill, skillcooldown, skillfixcast, skillcooldownrate,

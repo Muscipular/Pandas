@@ -1142,6 +1142,7 @@
 	export_constant2("bSkillAtkAll",SP_SKILL_ATK_ALL);
 	export_constant2("bUnstripable",SP_UNSTRIPABLE);
 	export_constant2("bAutoSpellOnSkill",SP_AUTOSPELL_ONSKILL);
+	export_constant2("bAutoSpellOnSkillAlways",SP_AUTOSPELL_ONSKILL_ALWAYS);
 	export_constant2("bSPGainValue",SP_SP_GAIN_VALUE);
 	export_constant2("bHPRegenRate",SP_HP_REGEN_RATE);
 	export_constant2("bHPLossRate",SP_HP_LOSS_RATE);

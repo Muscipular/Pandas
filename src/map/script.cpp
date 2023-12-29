@@ -11519,6 +11519,7 @@ BUILDIN_FUNC(bonus)
 		case SP_AUTOSPELL:
 		case SP_AUTOSPELL_WHENHIT:
 		case SP_AUTOSPELL_ONSKILL:
+		case SP_AUTOSPELL_ONSKILL_ALWAYS:
 		case SP_SKILL_ATK:
 		case SP_SKILL_HEAL:
 		case SP_SKILL_HEAL2:
@@ -11585,7 +11586,7 @@ BUILDIN_FUNC(bonus)
 			pc_bonus3(sd, type, val1, val2, val3);
 			break;
 		case 4:
-			if( type == SP_AUTOSPELL_ONSKILL && script_isstring(st, 4) )
+			if( (type == SP_AUTOSPELL_ONSKILL || type == SP_AUTOSPELL_ONSKILL_ALWAYS) && script_isstring(st, 4) )
 				val2 = skill_name2id(script_getstr(st,4)); // 2nd value can be skill name
 			else
 				val2 = script_getnum(st,4);
@@ -11595,7 +11596,7 @@ BUILDIN_FUNC(bonus)
 			pc_bonus4(sd, type, val1, val2, val3, val4);
 			break;
 		case 5:
-			if( type == SP_AUTOSPELL_ONSKILL && script_isstring(st, 4) )
+			if( (type == SP_AUTOSPELL_ONSKILL || type == SP_AUTOSPELL_ONSKILL_ALWAYS) && script_isstring(st, 4) )
 				val2 = skill_name2id(script_getstr(st,4)); // 2nd value can be skill name
 			else
 				val2 = script_getnum(st,4);

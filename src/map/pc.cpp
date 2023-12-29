@@ -5573,6 +5573,15 @@ void pc_bonus4(map_session_data *sd,int type,int type2,int type3,int type4,int v
 			pc_bonus_autospell_onskill(sd->autospell3, type2, type3, type4, val, current_equip_card_id, target ? AUTOSPELL_FORCE_TARGET : AUTOSPELL_FORCE_SELF);
 		}
 		break;
+	case SP_AUTOSPELL_ONSKILL_ALWAYS: // bonus4 bAutoSpellOnSkill,sk,x,y,n;
+		if(sd->state.lr_flag != 2)
+		{
+			int target = skill_get_inf(type3); //Support or Self (non-auto-target) skills should pick self.
+			target = target&INF_SUPPORT_SKILL || (target&INF_SELF_SKILL && !skill_get_inf2(type3, INF2_NOTARGETSELF));
+
+			pc_bonus_autospell_onskill(sd->autospell4, type2, type3, type4, val, current_equip_card_id, target ? AUTOSPELL_FORCE_TARGET : AUTOSPELL_FORCE_SELF);
+		}
+		break;
 
 	case SP_ADDEFF: // bonus4 bAddEff,eff,n,y,t;
 		PC_BONUS_CHK_SC(type2,SP_ADDEFF);
@@ -5674,6 +5683,10 @@ void pc_bonus5(map_session_data *sd,int type,int type2,int type3,int type4,int t
 	case SP_AUTOSPELL_ONSKILL: // bonus5 bAutoSpellOnSkill,sk,x,y,n,i;
 		if(sd->state.lr_flag != 2)
 			pc_bonus_autospell_onskill(sd->autospell3, type2, type3, type4, type5, current_equip_card_id, val & AUTOSPELL_FORCE_ALL);
+		break;
+	case SP_AUTOSPELL_ONSKILL_ALWAYS: // bonus5 bAutoSpellOnSkill,sk,x,y,n,i;
+		if(sd->state.lr_flag != 2)
+			pc_bonus_autospell_onskill(sd->autospell4, type2, type3, type4, type5, current_equip_card_id, val & AUTOSPELL_FORCE_ALL);
 		break;
  
 	case SP_ADDEFF_ONSKILL: // bonus5 bAddEffOnSkill,sk,eff,n,y,t;

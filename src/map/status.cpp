@@ -3840,6 +3840,7 @@ int status_calc_pc_sub(map_session_data* sd, uint8 opt)
 	sd->autospell.clear();
 	sd->autospell2.clear();
 	sd->autospell3.clear();
+	sd->autospell4.clear();
 	sd->addeff.clear();
 	sd->addeff_atked.clear();
 	sd->addeff_onskill.clear();

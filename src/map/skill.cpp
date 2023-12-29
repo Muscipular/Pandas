@@ -2615,6 +2615,109 @@ int skill_onskillusage(map_session_data *sd, struct block_list *bl, uint16 skill
 	return 1;
 }
 
+int skill_onskillusage_always(map_session_data *sd, struct block_list *bl, uint16 skill_id, t_tick tick) {
+	if( sd == nullptr || !skill_id )
+		return 0;
+
+	for (auto &it : sd->autospell4) {
+		if (it.trigger_skill != skill_id)
+			continue;
+
+		if (it.lock)
+			continue;  // autospell already being executed
+
+		uint16 skill = it.id;
+
+		sd->state.autocast = 1; //set this to bypass sd->canskill_tick check
+
+		if( skill_isNotOk(skill, sd) ) {
+			sd->state.autocast = 0;
+			continue;
+		}
+
+		sd->state.autocast = 0;
+
+		// DANGER DANGER: here force target actually means use yourself as target!
+		block_list *tbl = (it.flag & AUTOSPELL_FORCE_TARGET) ? &sd->bl : bl;
+
+		if( tbl == nullptr ){
+			continue; // No target
+		}
+
+		if( rnd()%1000 >= it.rate )
+			continue;
+
+		uint16 skill_lv = it.lv ? it.lv : 1;
+
+		if (it.flag & AUTOSPELL_FORCE_RANDOM_LEVEL)
+			skill_lv = rnd_value( 1, skill_lv ); //random skill_lv
+
+		e_cast_type type = skill_get_casttype(skill);
+
+		if (type == CAST_GROUND && !skill_pos_maxcount_check(&sd->bl, tbl->x, tbl->y, skill_id, skill_lv, BL_PC, false))
+			continue;
+
+		if (battle_config.autospell_check_range &&
+			!battle_check_range(bl, tbl, skill_get_range2(&sd->bl, skill, skill_lv, true)))
+			continue;
+
+		sd->state.autocast = 1;
+		it.lock = true;
+		skill_consume_requirement(sd,skill,skill_lv,1);
+		switch( type ) {
+			case CAST_GROUND:
+				skill_castend_pos2(&sd->bl, tbl->x, tbl->y, skill, skill_lv, tick, 0);
+				break;
+			case CAST_NODAMAGE:
+				skill_castend_nodamage_id(&sd->bl, tbl, skill, skill_lv, tick, 0);
+				break;
+			case CAST_DAMAGE:
+				skill_castend_damage_id(&sd->bl, tbl, skill, skill_lv, tick, 0);
+				break;
+		}
+		it.lock = false;
+		sd->state.autocast = 0;
+	}
+
+	// Check for player and pet autobonuses when being attacked by skill_id
+	if (sd != nullptr) {
+		// Player
+		if (!sd->autobonus3.empty()) {
+			for (auto &it : sd->autobonus3) {
+				if (it == nullptr)
+					continue;
+				int rate = it->rate;
+				if (sd->bonus.autospell_rate) {
+					rate = cap_value(rate * (100 + sd->bonus.autospell_rate) / 100, 0, 1000);
+				}
+				rate = rate * (100 + sd->battle_status.luk) / 100;
+				if (rnd_value(0, 1000) >= rate)
+					continue;
+				if (it->atk_type != skill_id)
+					continue;
+
+				pc_exeautobonus(*sd, &sd->autobonus3, it);
+			}
+		}
+
+		// Pet
+		if (sd->pd != nullptr && !sd->pd->autobonus3.empty()) {
+			for (auto &it : sd->pd->autobonus3) {
+				if (it == nullptr)
+					continue;
+				if (rnd_value(0, 1000) >= it->rate)
+					continue;
+				if (it->atk_type != skill_id)
+					continue;
+
+				pet_exeautobonus(*sd, &sd->pd->autobonus3, it);
+			}
+		}
+	}
+
+	return 1;
+}
+
 /* Splitted off from skill_additional_effect, which is never called when the
  * attack skill kills the enemy. Place in this function counter status effects
  * when using skills (eg: Asura's sp regen penalty, or counter-status effects
@@ -4490,6 +4593,8 @@ int64 skill_attack (int attack_type, struct block_list* src, struct block_list *
 		if( sd )
 			skill_onskillusage(sd, bl, skill_id, tick);
 	}
+	if (sd)
+		skill_onskillusage_always(sd, bl, skill_id, tick);
 
 	if (!(flag&2)) {
 		switch (skill_id) {
@@ -13824,6 +13929,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 			battle_consume_ammo(sd, skill_id, skill_lv);
 		}
 		skill_onskillusage(sd, bl, skill_id, tick);
+		skill_onskillusage_always(sd, bl, skill_id, tick);
 		// perform skill requirement consumption
 		if (!(flag&SKILL_NOCONSUME_REQ))
 			skill_consume_requirement(sd,skill_id,skill_lv,2);
@@ -15791,6 +15897,7 @@ int skill_castend_pos2(struct block_list* src, int x, int y, uint16 skill_id, ui
 			battle_consume_ammo(sd, skill_id, skill_lv);
 		}
 		skill_onskillusage(sd, NULL, skill_id, tick);
+		skill_onskillusage_always(sd, NULL, skill_id, tick);
 		// perform skill requirement consumption
 		if (!(flag&SKILL_NOCONSUME_REQ))
 			skill_consume_requirement(sd,skill_id,skill_lv,2);
