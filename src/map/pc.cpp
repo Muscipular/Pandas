@@ -4900,6 +4900,16 @@ void pc_bonus2(map_session_data *sd,int type,int type2,int val)
 
 		pc_bonus_itembonus(sd->skillatk, type2, val, false);
 		break;
+	case SP_SP_DMG_RATE: // bonus2 bSkillAtk,sk,n;
+		if(sd->state.lr_flag == 2)
+			break;
+		if (sd->sp_dmg_rate.size() == MAX_PC_BONUS) {
+			ShowWarning("pc_bonus2: SP_SP_DMG_RATE: Reached max (%d) number of skills per character, bonus skill %d (+%d%%) lost.\n", MAX_PC_BONUS, type2, val);
+			break;
+		}
+
+		pc_bonus_itembonus(sd->sp_dmg_rate, type2, val, false);
+		break;
 	case SP_SKILL_HEAL: // bonus2 bSkillHeal,sk,n;
 		if(sd->state.lr_flag == 2)
 			break;
@@ -10169,6 +10179,19 @@ int pc_addskillrange_bonus(map_session_data* sd, uint16 skill_id) {
 	return bonus;
 }
 #endif // Pandas_Bonus2_bAddSkillRange
+
+int pc_sp_dmg_bonus(map_session_data* sd)
+{
+	int64_t bonus = 100;
+	for (auto& it : sd->sp_dmg_rate) {
+		if (it.val != 0) {
+			bonus = bonus * (100 + it.val) / 100;
+		}
+		break;
+	}
+	bonus -= 100;
+	return (int)cap_value(bonus, INT32_MIN, INT32_MAX);
+}
 
 int pc_skillatk_bonus(map_session_data *sd, uint16 skill_id)
 {

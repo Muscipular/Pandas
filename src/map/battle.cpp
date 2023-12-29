@@ -1596,6 +1596,14 @@ int64 battle_calc_damage(struct block_list *src,struct block_list *bl,struct Dam
 			return 0;
 	}
 
+	if (src->type == BL_PC && damage) {
+		int bonus = pc_sp_dmg_bonus(BL_CAST(BL_PC, src));
+		if (bonus) {
+			damage += damage * bonus / 100;
+		}
+		damage = i64max(damage, 1);
+	}
+
 	if( tsc && tsc->getSCE(SC_INVINCIBLE) && !tsc->getSCE(SC_INVINCIBLEOFF) )
 		return 1;
 

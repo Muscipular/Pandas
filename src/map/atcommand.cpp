@@ -8946,6 +8946,25 @@ ACMD_FUNC(bonuslist) {
 		fn("bSkillCooldown", sd->skillcooldown);
 		fn("bSkillCooldownRate", sd->skillcooldownrate);
 	}
+	if (flag & (1 << 11)) {
+		auto fn = [&](const char* s, std::vector<s_item_bonus>& map) {
+			std::map<uint16, int> ids;
+			for (auto& p : map) {
+				if (ids.find(p.id) == ids.end()) {
+					ids.insert(std::make_pair(p.id, p.val));
+				}
+				else {
+					ids[p.id] = ids[p.id] + p.val;
+				}
+			}
+			for (auto& id : ids) {
+				char val[64];
+				sprintf(val, "%d", id.first);
+				clif_print_bonus2_s(s, val, id.second);
+			}
+		};
+		fn("bSpDmgRate", sd->sp_dmg_rate);
+	}
 	return 0;
 }
 

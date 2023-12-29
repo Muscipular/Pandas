@@ -685,6 +685,7 @@ public:
 		int64_t end;
 	} dps;
 	std::vector<s_autospell> autospell, autospell2, autospell3, autospell4;
+	std::vector<s_item_bonus> sp_dmg_rate;
 	std::vector<s_addeffect> addeff, addeff_atked;
 	std::vector<s_addeffectonskill> addeff_onskill;
 	std::vector<s_item_bonus> skillatk, skillusesprate, skillusesp, skillheal, skillheal2, skillblown, skillcastrate, skillfixcastrate, subskill, skillcooldown, skillfixcast, skillcooldownrate,
@@ -1701,6 +1702,7 @@ int pc_useitem(map_session_data*,int);
 int pc_addskillrange_bonus(map_session_data* sd, uint16 skill_id);
 #endif // Pandas_Bonus2_bAddSkillRange
 int pc_skillatk_bonus(map_session_data *sd, uint16 skill_id);
+int pc_sp_dmg_bonus(map_session_data *sd);
 int pc_sub_skillatk_bonus(map_session_data *sd, uint16 skill_id);
 int pc_skillheal_bonus(map_session_data *sd, uint16 skill_id);
 int pc_skillheal2_bonus(map_session_data *sd, uint16 skill_id);
