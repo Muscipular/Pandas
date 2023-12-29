@@ -1,4 +1,4 @@
-ï»¿// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
+// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
 #ifndef SOCKET_HPP
@@ -103,8 +103,8 @@ struct socket_data
 
 	uint32 client_addr; // remote client address
 #ifdef Pandas_Extract_SSOPacket_MacAddress
-	char mac_address[MACADDRESS_LENGTH];	// ç”¨æˆ·ç”µè„‘å®é™…è”ç½‘çš„ MAC åœ°å€, æ ¼å¼: 00-00-00-00-00-00
-	char lan_address[IP4ADDRESS_LENGTH];	// ç”¨æˆ·ç”µè„‘ç¬¬ä¸€ä¸ªç½‘ç»œè¿æ¥çš„å†…ç½‘ IP åœ°å€, æ ¼å¼: 000.000.000.000
+	char mac_address[MACADDRESS_LENGTH];	// ÓÃ»§µçÄÔÊµ¼ÊÁªÍøµÄ MAC µØÖ·, ¸ñÊ½: 00-00-00-00-00-00
+	char lan_address[IP4ADDRESS_LENGTH];	// ÓÃ»§µçÄÔµÚÒ»¸öÍøÂçÁ¬½ÓµÄÄÚÍø IP µØÖ·, ¸ñÊ½: 000.000.000.000
 #endif // Pandas_Extract_SSOPacket_MacAddress
 
 	uint8 *rdata, *wdata;
@@ -210,5 +210,34 @@ void send_shortlist_do_sends();
 #ifdef Pandas_Health_Monitors_Silent
 bool suppresses_close_mes(uint32 ip);
 #endif // Pandas_Health_Monitors_Silent
+// Reuseable global packet buffer to prevent too many allocations
+// Take socket.cpp::socket_max_client_packet into consideration
+static int8 packet_buffer[UINT16_MAX];
+
+template <typename P>
+bool socket_send( int fd, P& packet ){
+	if( !session_isActive( fd ) ){
+		return false;
+	}
+
+	WFIFOHEAD( fd, sizeof( P ) );
+	memcpy( WFIFOP( fd, 0 ), &packet, sizeof( P ) );
+	WFIFOSET( fd, sizeof( P ) );
+
+	return true;
+}
+
+template <typename P>
+bool socket_send( int fd, P* packet ){
+	if( !session_isActive( fd ) ){
+		return false;
+	}
+
+	WFIFOHEAD( fd, packet->packetLength );
+	memcpy( WFIFOP( fd, 0 ), packet, packet->packetLength );
+	WFIFOSET( fd, packet->packetLength );
+
+	return true;
+}
 
 #endif /* SOCKET_HPP */
