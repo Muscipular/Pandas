@@ -8745,6 +8745,7 @@ ACMD_FUNC(dps_log) {
 	sd->dps.map.clear();
 	snprintf(atcmd_output, sizeof atcmd_output, "Log DPS for %d sec", time);
 	clif_displaymessage(fd, atcmd_output);
+	return 0;
 }
 
 ACMD_FUNC(dps_show) {
@@ -8757,9 +8758,9 @@ ACMD_FUNC(dps_show) {
 		for (const auto& it : sd->dps.map) {
 			dmg += it.second->dmgTotal;
 		}
-		snprintf(atcmd_output, sizeof atcmd_output, "dps: %d in %d sec", dmg / time, time);
+		snprintf(atcmd_output, sizeof atcmd_output, "dps: %lld in %d sec", dmg / time, time);
 		clif_displaymessage(fd, atcmd_output);
-		for (const auto &it : sd->dps.map) {
+		for (const auto& it : sd->dps.map) {
 			char buff[64];
 			auto name = it.first <= 0 ? "attack" : skill_get_desc(it.first);
 			if (name == nullptr) {
@@ -8770,9 +8771,11 @@ ACMD_FUNC(dps_show) {
 				it.second->dmgTotal, it.second->dmgTotal / time, it.second->dmgTotal / it.second->hit);
 			clif_displaymessage(fd, atcmd_output);
 		}
-	} else {
+	}
+	else {
 		clif_displaymessage(fd, "no dps record");
 	}
+	return 0;
 }
 
 ACMD_FUNC(bonuslist) {
