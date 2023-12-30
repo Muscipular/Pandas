@@ -2890,11 +2890,11 @@ int skill_counter_additional_effect (struct block_list* src, struct block_list *
 			}
 			dstsd->state.autocast = 0;
 
-			if (sd->bonus.autospell_rate) {
-				autospl_rate += autospl_rate * sd->bonus.autospell_rate / 100;
+			if (dstsd->bonus.autospell_rate) {
+				autospl_rate += autospl_rate * dstsd->bonus.autospell_rate / 100;
 			}
 
-			autospl_rate = autospl_rate * (100 + sd->battle_status.luk) / 100;
+			autospl_rate = autospl_rate * (100 + dstsd->battle_status.luk) / 100;
 
 			if (rnd()%1000 >= autospl_rate)
 				continue;
