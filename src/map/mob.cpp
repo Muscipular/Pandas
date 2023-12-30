@@ -3427,6 +3427,8 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type, uint16 skill
 
 	map_freeblock_unlock();
 
+	md->level = md->db->lv;
+
 	if( !rebirth ) {
 
 #ifdef Pandas_Ease_Mob_Stuck_After_Dead
