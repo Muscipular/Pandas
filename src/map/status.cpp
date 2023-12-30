@@ -2815,21 +2815,34 @@ int status_calc_mob_(struct mob_data* md, uint8 opt)
 	if (flag&32)
 		status_calc_slave_mode(md, map_id2md(md->master_id));
 
+#define CALCST(n,diff) { int v = (int)(n * pow(1.025, (double)diff)); v = cap_value(v,n,UINT16_MAX); n = (pec_ushort)v; }
+#define CALCST2(n,diff) { double v = (n * pow(1.05, (double)diff)); v = cap_value(v,n,UINT64_MAX); n = (uint64_t)v; }
+
 	if (flag&1) { // Increase from mobs leveling up [Valaris]
 		int diff = md->level - md->db->lv;
-
-		status->str += diff;
-		status->agi += diff;
-		status->vit += diff;
-		status->int_ += diff;
-		status->dex += diff;
-		status->luk += diff;
-		status->max_hp += diff * status->vit;
-		status->max_sp += diff * status->int_;
-		status->hp = status->max_hp;
-		status->sp = status->max_sp;
-		status->speed -= cap_value(diff, 0, status->speed - 10);
+		if (diff > 0) {
+			CALCST(status->str, diff);
+			CALCST(status->agi, diff);
+			CALCST(status->vit, diff);
+			CALCST(status->int_, diff);
+			CALCST(status->dex, diff);
+			CALCST(status->luk, diff);
+			CALCST(status->def, diff);
+			CALCST(status->mdef, diff);
+			CALCST(status->res, diff);
+			CALCST(status->mres, diff);
+			CALCST(status->rhw.atk, diff);
+			CALCST(status->rhw.matk, diff);
+			CALCST2(status->max_hp, diff);
+			CALCST2(status->max_sp, diff);
+			status->hp = status->max_hp;
+			status->sp = status->max_sp;
+			status->speed -= cap_value(diff, 0, status->speed - 10);
+		}
 	}
+
+#undef CALCST
+#undef CALCST2
 
 	if (flag&2 && battle_config.mob_size_influence) { // Change for sized monsters [Valaris]
 		if (md->special_state.size == SZ_MEDIUM) {

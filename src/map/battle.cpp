@@ -2058,6 +2058,9 @@ int64 battle_calc_damage(struct block_list *src,struct block_list *bl,struct Dam
 		}
 		if (md && md->damagetaken != 100)
 			damage = i64max(damage * md->damagetaken / 100, 1);
+		if (battle_config.mobs_level_up && md->level >= md->db->lv + 10) {
+			damage = damage * pow(0.9, (md->level - md->db->lv) / 10);
+		}
 	}
 	
 	if (tsc && tsc->count) {

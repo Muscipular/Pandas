@@ -2979,6 +2979,9 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type, uint16 skill
 				drop_rate = (double)drop_rate * (100.0 + battle_config.gExtRate.drop) / 100.0;
 			}
 
+			if (battle_config.mobs_level_up && md->level > md->db->lv)
+				drop_rate += (md->level - md->db->lv) * 0.015 * drop_rate;
+
 #ifdef Pandas_Database_MobItem_FixedRatio
 			// 若严格固定掉率, 那么无视上面的等级惩罚、VIP掉率加成、地图标记掉率修正等计算
 			if (mobdrop_strict_droprate(md->db->dropitem[i].nameid, md->mob_id))
@@ -3235,7 +3238,8 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type, uint16 skill
 #if defined(RENEWAL_DROP)
 				temp = cap_value( apply_rate( temp, penalty ), 0, 10000 );
 #endif
-
+				if (battle_config.mobs_level_up && md->level > md->db->lv) // [Valaris]
+					temp += (md->level - md->db->lv) * 0.015 * temp;
 				if (temp != 10000) {
 					if(temp <= 0 && !battle_config.drop_rate0item)
 						temp = 1;
