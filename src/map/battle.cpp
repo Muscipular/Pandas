@@ -10470,7 +10470,7 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 				sd->state.autocast = 0;
 			}
 
-			if( sc->getSCE(SC_ABYSSFORCEWEAPON) && sd->abyssball > 0 && rnd() % 100 < (15 * (100 + sstatus->luk) / 100) ){
+			if( sc->getSCE(SC_ABYSSFORCEWEAPON) && sd->abyssball > 0 && rnd() % 100 < (15 * (sstatus->luk + 100) / 100) ){
 				uint16 skill_id = ABC_FROM_THE_ABYSS_ATK;
 				uint16 skill_lv = sc->getSCE(SC_ABYSSFORCEWEAPON)->val1;
 
@@ -10483,7 +10483,7 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 
 			// It has a success chance of triggering even tho the description says nothing about it.
 			// TODO: Need to find out what the official success chance is. [Rytech]
-			if( sc->getSCE(SC_ABYSSFORCEWEAPON) && rnd() % 100 < 20 ){
+			if( sc->getSCE(SC_ABYSSFORCEWEAPON) && rnd() % 100 < (20 * (sstatus->luk + 100) / 100)){
 				uint16 skill_id = ABC_ABYSS_SQUARE;
 				uint16 skill_lv = pc_checkskill(sd, ABC_ABYSS_SQUARE);
 

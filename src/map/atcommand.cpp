@@ -8748,17 +8748,28 @@ ACMD_FUNC(dps_log) {
 	return 0;
 }
 
+#define printDMG(buf1, dmg) { 		if (dmg >= 1000 * 1000 * 100) {\
+sprintf(buf1, "%dM", dmg / 1000 / 1000 / 100);\
+}\
+else if (dmg >= 100000) {\
+	sprintf(buf1, "%dk", dmg / 1000 / 100);\
+} else { sprintf(buf1, "%d", dmg); } }
+
 ACMD_FUNC(dps_show) {
 	nullpo_retr(-1, sd);
 
 	auto tick = gettick();
 	int64_t dmg = 0;
-	int time = cap_value(sd->dps.end - sd->dps.start / 1000, 1, 100);
+	int time = cap_value((sd->dps.end - sd->dps.start) / 1000, 1, 100);
 	if (sd->dps.start > 0 && sd->dps.end < tick) {
 		for (const auto& it : sd->dps.map) {
 			dmg += it.second->dmgTotal;
 		}
-		snprintf(atcmd_output, sizeof atcmd_output, "dps: %lld in %d sec", dmg / time, time);
+		char buf1[32];
+		char buf2[32];
+		char buf3[32];
+		printDMG(buf1, dmg);
+		snprintf(atcmd_output, sizeof atcmd_output, "dps: %s in %d sec", buf1, time);
 		clif_displaymessage(fd, atcmd_output);
 		for (const auto& it : sd->dps.map) {
 			char buff[64];
@@ -8767,8 +8778,11 @@ ACMD_FUNC(dps_show) {
 				printf(buff, "%d", (int)it.first);
 				name = buff;
 			}
-			snprintf(atcmd_output, sizeof atcmd_output, "> sk: %s, dmg: %lld, dps: %lld, dph: %lld", name,
-				it.second->dmgTotal, it.second->dmgTotal / time, it.second->dmgTotal / it.second->hit);
+			printDMG(buf1, it.second->dmgTotal);
+			printDMG(buf2, it.second->dmgTotal / time);
+			printDMG(buf3, it.second->dmgTotal / it.second->hit);
+
+			snprintf(atcmd_output, sizeof atcmd_output, "> sk: %s, dmg: %s, dps: %s, dph: %s", name, buf1, buf2, buf3);
 			clif_displaymessage(fd, atcmd_output);
 		}
 	}
