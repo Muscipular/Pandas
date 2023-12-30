@@ -7873,20 +7873,23 @@ bool pc_memo(map_session_data* sd, int pos)
  * @param lv : skill lv
  * @return player skill cooldown
  */
-int pc_get_skillcooldown(map_session_data *sd, uint16 skill_id, uint16 skill_lv) {
+int pc_get_skillcooldown(map_session_data* sd, uint16 skill_id, uint16 skill_lv) {
 	if (skill_id == SJ_NOVAEXPLOSING) {
-		status_change *sc = status_get_sc(&sd->bl);
+		status_change* sc = status_get_sc(&sd->bl);
 
 		if (sc && sc->getSCE(SC_DIMENSION))
 			return 0;
 	}
-
+/*
+	int cd = skill_get_cooldown(skill_id, skill_lv);
+	int delay = skill_get_delay(skill_id, skill_lv);
+*/
 	int cooldown = skill_get_cooldown(skill_id, skill_lv) + sd->bonus.skill_cooldown;
 
 	if (skill_id == SU_TUNABELLY && pc_checkskill(sd, SU_SPIRITOFSEA) > 0)
 		cooldown -= skill_get_time(SU_TUNABELLY, skill_lv);
 
-	for (auto &it : sd->skillcooldown) {
+	for (auto& it : sd->skillcooldown) {
 		if (it.id == skill_id) {
 			cooldown += it.val;
 			break;
@@ -7903,8 +7906,13 @@ int pc_get_skillcooldown(map_session_data *sd, uint16 skill_id, uint16 skill_lv)
 	}
 
 	cooldown = cooldown * (100 + rate) / 100;
-
+	return max(max(0, cooldown), 1000 / 7);
+	/*
+	if (cd > 0 || delay > 0) {
+		return min(max(0, cooldown), 1000 / 7);
+	}
 	return max(0, cooldown);
+	*/
 }
 
 /*==========================================
