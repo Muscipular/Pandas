@@ -1538,7 +1538,7 @@ int status_damage(struct block_list *src,struct block_list *target,int64 dhp, in
 			pc_bonus_script_clear(BL_CAST(BL_PC,target),BSF_REM_ON_DAMAGED);
 		unit_skillcastcancel(target, 2);
 	}
-	if (hp > 0 && src->type == BL_PC) {
+	if (hp > 0 && src && src->type == BL_PC) {
 		auto &dps = ((TBL_PC*)src)->dps;
 		auto tickVal = gettick();
 		if (tickVal >= dps.start && tickVal <= dps.end) {
