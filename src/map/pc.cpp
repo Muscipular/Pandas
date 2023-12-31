@@ -10561,19 +10561,37 @@ int pc_dead(map_session_data *sd,struct block_list *src, uint16 skill_id)
 			struct mob_data *md=(struct mob_data *)src;
 			if(md->target_id==sd->bl.id)
 				mob_unlocktarget(md,tick);
-			if(battle_config.mobs_level_up && md->status.hp &&
+			if (battle_config.mobs_level_up && md->status.hp &&
 				(unsigned int)md->level < INT16_MAX &&
 				!md->guardian_data && !md->special_state.ai// Guardians/summons should not level. [Skotlex]
 				&& !mapdata->getMapFlag(MF_NOMOBLEVELUP)
-			) { 	// monster level up [Valaris]				
-				clif_misceffect(&md->bl,0);
-				md->level++;
-				status_calc_mob(md, SCO_NONE);
-				status_percent_heal(src,10,0);
+				&& (md->db->status.mode & MD_NOLEVELUP) != MD_NOLEVELUP
+				) { 	// monster level up [Valaris]
+				if (md->reqKill <= 0) {
+					md->reqKill = max((int)(md->level * 4.13), 1);
+				}
+				md->killedPC++;
+				if (sd->status.base_level >= 200) {
+					md->killedPC += sd->status.base_level - 200 + sd->status.job_level;
+				}
+				else if (sd->status.base_level >= 99) {
+					md->killedPC += 1;
+				}
+				else {
+					md->killedPC = max(0, md->killedPC - 1);
+				}
+				if (md->reqKill <= md->killedPC) {
+					md->reqKill = 0;
+					md->killedPC = 0;
+					clif_misceffect(&md->bl, 0);
+					md->level++;
+					status_calc_mob(md, SCO_NONE);
+					status_percent_heal(src, 10, 0);
 
-				if( battle_config.show_mob_info&4 )
-				{// update name with new level
-					clif_name_area(&md->bl);
+					if (battle_config.show_mob_info & 4)
+					{// update name with new level
+						clif_name_area(&md->bl);
+					}
 				}
 			}
 			src = battle_get_master(src); // Maybe Player Summon

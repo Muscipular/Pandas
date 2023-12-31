@@ -34522,7 +34522,7 @@ BUILDIN_FUNC(getmapsize) {
 
 BUILDIN_FUNC(setglobalrate) {
 	G_Rate_Mode mode = (G_Rate_Mode)script_getnum(st, 2);
-	int rate = script_getnum(st, 2);
+	int rate = script_getnum(st, 3);
 	switch (mode)
 	{
 	case G_RATE_EXP:
@@ -34538,6 +34538,37 @@ BUILDIN_FUNC(setglobalrate) {
 		ShowError("buildin_setglobalrate: mode is invalid. %d", mode);
 		return SCRIPT_CMD_FAILURE;
 	}
+	return SCRIPT_CMD_SUCCESS;
+}
+
+BUILDIN_FUNC(getglobalrate) {
+	G_Rate_Mode mode = (G_Rate_Mode)script_getnum(st, 2);
+	switch (mode)
+	{
+	case G_RATE_EXP:
+		script_pushint(st, battle_config.gExtRate.exp);
+		break;
+	case G_RATE_JOB:
+		script_pushint(st, battle_config.gExtRate.job);
+		break;
+	case G_RATE_DROP:
+		script_pushint(st, battle_config.gExtRate.drop);
+		break;
+	default:
+		ShowError("buildin_setglobalrate: mode is invalid. %d", mode);
+		return SCRIPT_CMD_FAILURE;
+	}
+	return SCRIPT_CMD_SUCCESS;
+}
+
+BUILDIN_FUNC(setglobalstack) {
+	int rate = script_getnum(st, 2);
+	battle_config.gStack = rate;
+	return SCRIPT_CMD_SUCCESS;
+}
+
+BUILDIN_FUNC(getglobalstack) {
+	script_pushint(st, battle_config.gStack);
 	return SCRIPT_CMD_SUCCESS;
 }
 
@@ -35559,6 +35590,9 @@ struct script_function buildin_func[] = {
 		BUILDIN_DEF(lua_call_fn, "s*"),
 	BUILDIN_DEF(lua_run, "s*"),
 	BUILDIN_DEF(setglobalrate, "ii"),
+	BUILDIN_DEF(getglobalrate, "i"),
+	BUILDIN_DEF(setglobalstack, "i"),
+	BUILDIN_DEF(getglobalstack, ""),
 #include <custom/script_def.inc>
 
 	{NULL,NULL,NULL},

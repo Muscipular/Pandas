@@ -10897,6 +10897,7 @@
 	export_constant(MD_DETECTOR);
 	export_constant(MD_STATUSIMMUNE);
 	export_constant(MD_SKILLIMMUNE);
+	export_constant(MD_NOLEVELUP);
 
 	export_deprecated_constant3("MD_CASTSENSOR_IDLE", MD_CASTSENSORIDLE, "MD_CASTSENSORIDLE");
 	export_deprecated_constant3("MD_NORANDOM_WALK", MD_NORANDOMWALK, "MD_NORANDOMWALK");

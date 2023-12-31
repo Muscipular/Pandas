@@ -2799,6 +2799,27 @@ int status_calc_mob_(struct mob_data* md, uint8 opt)
 	status = md->base_status;
 	memcpy(status, &md->db->status, sizeof(struct status_data));
 
+#define CALCST(n,r,diff) { double v = (max(n, 1) * pow(r, (double)diff)); n = v >= UINT16_MAX ? UINT16_MAX : (pec_ushort)v; }
+#define CALCST2(n,r,diff) { double v = (n * pow(r, (double)diff)); n = v >= UINT64_MAX ? UINT64_MAX : (uint64_t)v; }
+
+	if (battle_config.gStack > 0) {
+		int diff = battle_config.gStack;
+		CALCST(status->str, 1.005, diff);
+		CALCST(status->agi, 1.005, diff);
+		CALCST(status->vit, 1.005, diff);
+		CALCST(status->int_, 1.005, diff);
+		CALCST(status->dex, 1.005, diff);
+		CALCST(status->luk, 1.005, diff);
+		CALCST(status->def, 1.005, diff);
+		CALCST(status->mdef, 1.005, diff);
+		CALCST(status->res, 1.005, diff);
+		CALCST(status->mres, 1.005, diff);
+		CALCST(status->rhw.atk, 1.005, diff);
+		CALCST(status->rhw.matk, 1.005, diff);
+		CALCST2(status->max_hp, 1.01, diff);
+		CALCST2(status->max_sp, 1.01, diff);
+	}
+
 	if (flag&(8|16))
 		mbl = map_id2bl(md->master_id);
 
@@ -2815,26 +2836,23 @@ int status_calc_mob_(struct mob_data* md, uint8 opt)
 	if (flag&32)
 		status_calc_slave_mode(md, map_id2md(md->master_id));
 
-#define CALCST(n,diff) { int v = (int)(n * pow(1.025, (double)diff)); v = cap_value(v,n,UINT16_MAX); n = (pec_ushort)v; }
-#define CALCST2(n,diff) { double v = (n * pow(1.05, (double)diff)); v = cap_value(v,n,UINT64_MAX); n = (uint64_t)v; }
-
-	if (flag&1) { // Increase from mobs leveling up [Valaris]
+	if (flag & 1) { // Increase from mobs leveling up [Valaris]
 		int diff = md->level - md->db->lv;
-		if (diff > 0) {
-			CALCST(status->str, diff);
-			CALCST(status->agi, diff);
-			CALCST(status->vit, diff);
-			CALCST(status->int_, diff);
-			CALCST(status->dex, diff);
-			CALCST(status->luk, diff);
-			CALCST(status->def, diff);
-			CALCST(status->mdef, diff);
-			CALCST(status->res, diff);
-			CALCST(status->mres, diff);
-			CALCST(status->rhw.atk, diff);
-			CALCST(status->rhw.matk, diff);
-			CALCST2(status->max_hp, diff);
-			CALCST2(status->max_sp, diff);
+		if (diff > 0 && (md->db->status.mode & MD_NOLEVELUP) != MD_NOLEVELUP) {
+			CALCST(status->str, 1.025, diff);
+			CALCST(status->agi, 1.025, diff);
+			CALCST(status->vit, 1.025, diff);
+			CALCST(status->int_, 1.025, diff);
+			CALCST(status->dex, 1.025, diff);
+			CALCST(status->luk, 1.025, diff);
+			CALCST(status->def, 1.025, diff);
+			CALCST(status->mdef, 1.025, diff);
+			CALCST(status->res, 1.025, diff);
+			CALCST(status->mres, 1.025, diff);
+			CALCST(status->rhw.atk, 1.025, diff);
+			CALCST(status->rhw.matk, 1.025, diff);
+			CALCST2(status->max_hp, 1.05, diff);
+			CALCST2(status->max_sp, 1.05, diff);
 			status->hp = status->max_hp;
 			status->sp = status->max_sp;
 			status->speed -= cap_value(diff, 0, status->speed - 10);

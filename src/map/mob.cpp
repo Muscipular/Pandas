@@ -1206,6 +1206,8 @@ int mob_spawn (struct mob_data *md)
 
 //	md->master_id = 0;
 	md->master_dist = 0;
+	md->killedPC = 0;
+	md->reqKill = 0;
 
 	md->state.aggressive = status_has_mode(&md->status,MD_ANGRY)?1:0;
 	md->state.skillstate = MSS_IDLE;
@@ -2696,6 +2698,11 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type, uint16 skill
 		mvp_sd = sd;
 	}
 
+	if (md) {
+		md->killedPC = 0;
+		md->reqKill = 0;
+	}
+
 	if( md->guardian_data && md->guardian_data->number >= 0 && md->guardian_data->number < MAX_GUARDIANS )
 		guild_castledatasave(md->guardian_data->castle->castle_id, CD_ENABLED_GUARDIAN00 + md->guardian_data->number,0);
 
@@ -2974,13 +2981,16 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type, uint16 skill
 				continue;
 
 			drop_rate = mob_getdroprate(src, md->db, md->db->dropitem[i].rate, drop_modifier, md);
-
+			auto org_rate = drop_rate;
 			if (battle_config.gExtRate.drop != 0) {
-				drop_rate = (double)drop_rate * (100.0 + battle_config.gExtRate.drop) / 100.0;
+				drop_rate = static_cast<int>(drop_rate * (100.0 + battle_config.gExtRate.drop) / 100.0);
 			}
 
 			if (battle_config.mobs_level_up && md->level > md->db->lv)
-				drop_rate += (md->level - md->db->lv) * 0.015 * drop_rate;
+				drop_rate += static_cast<int>((md->level - md->db->lv) * 0.015 * drop_rate);
+			if (battle_config.gStack > 0) {
+				drop_rate += battle_config.gStack * 0.003333 >= 1 ? org_rate : static_cast<int>(battle_config.gStack * 0.003333 * org_rate);
+			}
 
 #ifdef Pandas_Database_MobItem_FixedRatio
 			// 若严格固定掉率, 那么无视上面的等级惩罚、VIP掉率加成、地图标记掉率修正等计算
@@ -2988,9 +2998,11 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type, uint16 skill
 				drop_rate = md->db->dropitem[i].rate;
 #endif // Pandas_Database_MobItem_FixedRatio
 
-			// attempt to drop the item
-			if (rnd() % 10000 >= drop_rate)
-				continue;
+			if (drop_rate < 10000) {
+				// attempt to drop the item
+				if (rnd() % 10000 >= drop_rate)
+					continue;
+			}
 
 #ifdef Pandas_NpcExpress_MOBDROPITEM
 			if (md && !npc_express_aide_mobdropitem(md, src, dlist, md->db->dropitem[i].nameid, drop_rate, 1))
@@ -3237,10 +3249,14 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type, uint16 skill
 
 #if defined(RENEWAL_DROP)
 				temp = cap_value( apply_rate( temp, penalty ), 0, 10000 );
+				auto org_rate = temp;
 #endif
 				if (battle_config.mobs_level_up && md->level > md->db->lv) // [Valaris]
-					temp += (md->level - md->db->lv) * 0.015 * temp;
-				if (temp != 10000) {
+					temp += static_cast<int>((md->level - md->db->lv) * 0.015 * temp);
+				if (battle_config.gStack > 0) {
+					temp += battle_config.gStack * 0.003333 >= 1 ? org_rate : static_cast<int>(battle_config.gStack * 0.003333 * org_rate);
+				}
+				if (temp < 10000) {
 					if(temp <= 0 && !battle_config.drop_rate0item)
 						temp = 1;
 					if(rnd()%10000 >= temp) //if ==0, then it doesn't drop

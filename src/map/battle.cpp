@@ -2058,7 +2058,7 @@ int64 battle_calc_damage(struct block_list *src,struct block_list *bl,struct Dam
 		}
 		if (md && md->damagetaken != 100)
 			damage = i64max(damage * md->damagetaken / 100, 1);
-		if (battle_config.mobs_level_up && md->level >= md->db->lv + 10) {
+		if (battle_config.mobs_level_up && md->level >= md->db->lv + 10 && (md->db->status.mode & MD_NOLEVELUP) != MD_NOLEVELUP) {
 			damage = damage * pow(0.9, (md->level - md->db->lv) / 10);
 		}
 	}
@@ -3256,6 +3256,7 @@ static bool is_attack_hitting(struct Damage* wd, struct block_list *src, struct 
 	status_change *sc = status_get_sc(src);
 	status_change *tsc = status_get_sc(target);
 	map_session_data *sd = BL_CAST(BL_PC, src);
+	auto *md = BL_CAST(BL_MOB, src);
 	std::bitset<NK_MAX> nk = battle_skill_get_damage_properties(skill_id, wd->miscflag);
 	pec_short flee, hitrate;
 
@@ -3263,7 +3264,11 @@ static bool is_attack_hitting(struct Damage* wd, struct block_list *src, struct 
 		return (wd->dmg_lv != ATK_FLEE);
 	if (is_attack_critical(wd, src, target, skill_id, skill_lv, false))
 		return true;
-	else if(sd && sd->bonus.perfect_hit > 0 && rnd()%100 < sd->bonus.perfect_hit)
+	else if (sd && sd->bonus.perfect_hit > 0 && rnd() % 100 < sd->bonus.perfect_hit)
+		return true;
+	else if (md && md->level > md->db->lv && rnd() % 100 < (md->level - md->db->lv) * 0.5)
+		return true;
+	else if (md && battle_config.gStack > 0 && rnd() % 100 < battle_config.gStack * 0.05)
 		return true;
 	else if (sc && sc->getSCE(SC_FUSION))
 		return true;
@@ -11810,6 +11815,7 @@ void battle_set_defaults()
 	battle_config.gExtRate.job = 0;
 	battle_config.gExtRate.exp = 0;
 	battle_config.gExtRate.drop = 0;
+	battle_config.gStack = 0;
 #endif // Pandas_BattleConfig_Verification
 }
 
