@@ -212,7 +212,7 @@ bool suppresses_close_mes(uint32 ip);
 #endif // Pandas_Health_Monitors_Silent
 // Reuseable global packet buffer to prevent too many allocations
 // Take socket.cpp::socket_max_client_packet into consideration
-static int8 packet_buffer[UINT16_MAX];
+extern int8 packet_buffer[UINT16_MAX];
 
 template <typename P>
 bool socket_send( int fd, P& packet ){
