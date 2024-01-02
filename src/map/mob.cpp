@@ -2993,8 +2993,8 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type, uint16 skill
 			if (mobdrop_strict_droprate(md->db->dropitem[i].nameid, md->mob_id))
 				drop_rate = md->db->dropitem[i].rate;
 #endif // Pandas_Database_MobItem_FixedRatio
-
-			if (drop_rate < 10000) {
+			drop_rate = cap_value(drop_rate, 0, 10000);
+			if (drop_rate != 10000) {
 				// attempt to drop the item
 				if (rnd() % 10000 >= drop_rate)
 					continue;
