@@ -102,7 +102,7 @@ static pec_short status_calc_res(struct block_list *, status_change *, int);
 static pec_short status_calc_mres(struct block_list *, status_change *, int);
 static pec_short status_calc_hplus(struct block_list *, status_change *, int);
 static pec_short status_calc_crate(struct block_list *, status_change *, int);
-static unsigned int status_calc_maxhp(struct block_list *bl, uint64 maxhp);
+static uint64 status_calc_maxhp(struct block_list *bl, uint64 maxhp);
 static unsigned int status_calc_maxsp(struct block_list *bl, uint64 maxsp);
 static unsigned int status_calc_maxap(struct block_list *bl, uint64 maxap);
 static unsigned char status_calc_element(struct block_list *bl, status_change *sc, int element);
@@ -2750,9 +2750,11 @@ int status_calc_mob_(struct mob_data* md, uint8 opt)
 	int flag=0;
 
 	if (opt&SCO_FIRST) { // Set basic level on respawn.
+		/*
 		if (md->level > 0 && md->level <= MAX_LEVEL && md->level != md->db->lv)
 			;
 		else
+		*/
 			md->level = md->db->lv;
 		md->damagetaken = md->db->damagetaken;
 	}
@@ -9257,7 +9259,7 @@ static pec_short status_calc_crate(struct block_list *bl, status_change *sc, int
  * @param maxhp: Object's current max HP
  * @return modified maxhp
  */
-static unsigned int status_calc_maxhp(struct block_list *bl, uint64 maxhp)
+static uint64 status_calc_maxhp(struct block_list *bl, uint64 maxhp)
 {
 	int rate = 100;
 
@@ -9266,7 +9268,7 @@ static unsigned int status_calc_maxhp(struct block_list *bl, uint64 maxhp)
 	if ((rate += status_get_hpbonus(bl,STATUS_BONUS_RATE)) != 100)
 		maxhp = maxhp * rate / 100;
 
-	return (unsigned int)cap_value(maxhp,1,UINT_MAX);
+	return (uint64)cap_value(maxhp,1,INT64_MAX);
 }
 
 /**

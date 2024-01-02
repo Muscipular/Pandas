@@ -8788,6 +8788,26 @@ static std::unordered_map<std::string, e_size> um_size2sizename{
 };
 
 
+ACMD_FUNC(gstack) {
+	nullpo_retr(-1, sd);
+
+	int n = -1;
+	if (message && *message) {
+		time = cap_value(atoi(message), 0, INT32_MAX);
+	}
+	if (n < 0) {
+		snprintf(atcmd_output, sizeof atcmd_output, "gstack: %d", battle_config.gStack);
+		clif_displaymessage(fd, atcmd_output);
+	}
+	else {
+		int o = battle_config.gStack;
+		battle_config.gStack = n;
+		snprintf(atcmd_output, sizeof atcmd_output, "gstack: %d => %d", o, n);
+		clif_displaymessage(fd, atcmd_output);
+	}
+	return 0;
+}
+
 ACMD_FUNC(dps_log) {
 	nullpo_retr(-1, sd);
 
@@ -12124,6 +12144,7 @@ void atcommand_basecommands(void) {
 		ACMD_DEF(join),
 		ACMD_DEF(bonuslist),
 		ACMD_DEF(dps_log),
+		ACMD_DEF(gstack),
 		ACMD_DEF(dps_show),
 		ACMD_DEFR(channel,ATCMD_NOSCRIPT),
 		ACMD_DEF(fontcolor),
