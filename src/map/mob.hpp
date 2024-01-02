@@ -247,6 +247,7 @@ struct s_mob_lootitem {
 /// Struct for monster's drop item
 struct s_mob_drop {
 	t_itemid nameid;
+	item_types type;
 	uint32 rate;
 	uint16 randomopt_group;
 	bool steal_protected;

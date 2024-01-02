@@ -2968,16 +2968,17 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type, uint16 skill
 		dlist->item = NULL;
 
 		for (i = 0; i < MAX_MOB_DROP_TOTAL; i++) {
-			if (md->db->dropitem[i].nameid == 0)
+			auto& item_dropped_data = md->db->dropitem[i];
+			if (item_dropped_data.nameid == 0)
 				continue;
 
-			std::shared_ptr<item_data> it = item_db.find(md->db->dropitem[i].nameid);
+			std::shared_ptr<item_data> it = item_db.find(item_dropped_data.nameid);
 
 			if ( it == nullptr )
 				continue;
 
-			drop_rate = mob_getdroprate(src, md->db, md->db->dropitem[i].rate, drop_modifier, md);
-			auto org_rate = drop_rate;
+			drop_rate = mob_getdroprate(src, md->db, item_dropped_data.rate, drop_modifier, md);
+			int org_rate = static_cast<int>(item_dropped_data.rate);
 			if (battle_config.gExtRate.drop != 0) {
 				drop_rate = static_cast<int>(drop_rate * (100.0 + battle_config.gExtRate.drop) / 100.0);
 			}
@@ -2985,13 +2986,14 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type, uint16 skill
 			if (battle_config.mobs_level_up && md->level > md->db->lv)
 				drop_rate += static_cast<int>((md->level - md->db->lv) * 0.015 * drop_rate);
 			if (battle_config.gStack > 0) {
-				drop_rate += battle_config.gStack * 0.003333 >= 1 ? org_rate : static_cast<int>(battle_config.gStack * 0.003333 * org_rate);
+				double tmp = battle_config.gStack * (item_dropped_data.type == item_types::IT_CARD ? 0.000631 : 0.003333);
+				drop_rate += tmp >= 1 ? org_rate : static_cast<int>(tmp * org_rate);
 			}
 
 #ifdef Pandas_Database_MobItem_FixedRatio
 			// 若严格固定掉率, 那么无视上面的等级惩罚、VIP掉率加成、地图标记掉率修正等计算
-			if (mobdrop_strict_droprate(md->db->dropitem[i].nameid, md->mob_id))
-				drop_rate = md->db->dropitem[i].rate;
+			if (mobdrop_strict_droprate(item_dropped_data.nameid, md->mob_id))
+				drop_rate = item_dropped_data.rate;
 #endif // Pandas_Database_MobItem_FixedRatio
 			drop_rate = cap_value(drop_rate, 0, 10000);
 			if (drop_rate != 10000) {
@@ -3001,16 +3003,16 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type, uint16 skill
 			}
 
 #ifdef Pandas_NpcExpress_MOBDROPITEM
-			if (md && !npc_express_aide_mobdropitem(md, src, dlist, md->db->dropitem[i].nameid, drop_rate, 1))
+			if (md && !npc_express_aide_mobdropitem(md, src, dlist, item_dropped_data.nameid, drop_rate, 1))
 				continue;
 #endif // Pandas_NpcExpress_MOBDROPITEM
 
 			if( mvp_sd && it->type == IT_PETEGG ) {
-				pet_create_egg(mvp_sd, md->db->dropitem[i].nameid);
+				pet_create_egg(mvp_sd, item_dropped_data.nameid);
 				continue;
 			}
 
-			ditem = mob_setdropitem(&md->db->dropitem[i], 1, md->mob_id);
+			ditem = mob_setdropitem(&item_dropped_data, 1, md->mob_id);
 
 #ifdef Pandas_Item_Special_Annouce
 			bool is_spceial_annouced = false;
@@ -3031,7 +3033,7 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type, uint16 skill
 #endif // Pandas_Item_Special_Annouce
 
 			//A Rare Drop Global Announce by Lupus
-			if( mvp_sd && md->db->dropitem[i].rate <= battle_config.rare_drop_announce ) {
+			if( mvp_sd && item_dropped_data.rate <= battle_config.rare_drop_announce ) {
 				char message[128];
 				sprintf (message, msg_txt(NULL,541), mvp_sd->status.name, md->name, it->ename.c_str(), (float)drop_rate/100);
 				//MSG: "'%s' won %s's %s (chance: %0.02f%%)"
@@ -3039,7 +3041,7 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type, uint16 skill
 			}
 			// Announce first, or else ditem will be freed. [Lance]
 			// By popular demand, use base drop rate for autoloot code. [Skotlex]
-			mob_item_drop(md, dlist, ditem, 0, battle_config.autoloot_adjust ? drop_rate : md->db->dropitem[i].rate, homkillonly || merckillonly);
+			mob_item_drop(md, dlist, ditem, 0, battle_config.autoloot_adjust ? drop_rate : item_dropped_data.rate, homkillonly || merckillonly);
 		}
 
 		// Ore Discovery [Celest]
@@ -4719,6 +4721,7 @@ bool MobDatabase::parseDropNode(std::string nodeName, const ryml::NodeRef& node,
 		}
 
 		drops[index].nameid = item->nameid;
+		drops[index].type = item->type;
 		drops[index].rate = rate;
 		drops[index].steal_protected = steal;
 		drops[index].randomopt_group = group;
