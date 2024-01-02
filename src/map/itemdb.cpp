@@ -3471,10 +3471,13 @@ uint64 ItemGroupDatabase::parseBodyNode(const ryml::NodeRef& node) {
 
 			const auto& listNode = subit["List"];
 
+			uint32 n = 0;
 			for (const auto& listit : listNode) {
 				uint32 index;
 
-				if (!this->asUInt32(listit, "Index", index))
+				if (!this->nodeExists(listit, "Index"))
+					index = n++;
+				else if (!this->asUInt32(listit, "Index", index))
 					continue;
 
 				if (this->nodeExists(listit, "Clear")) {

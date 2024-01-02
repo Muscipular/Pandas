@@ -2749,12 +2749,14 @@ int status_calc_mob_(struct mob_data* md, uint8 opt)
 	struct block_list *mbl = NULL;
 	int flag=0;
 
+#define CALCST(n,r,diff) { double v = (max(n, 1) * pow(r, (double)diff)); n = v >= UINT16_MAX ? UINT16_MAX : (pec_ushort)v; }
+#define CALCST2(n,r,diff) { double v = (n * pow(r, (double)diff)); n = v >= UINT64_MAX ? UINT64_MAX : (uint64_t)v; }
+#define CALCST3(n,r,diff) { double v = (n * pow(r, (double)diff)); n = v >= UINT32_MAX ? UINT32_MAX : (uint32_t)v; }
+
 	if (opt&SCO_FIRST) { // Set basic level on respawn.
-		/*
-		if (md->level > 0 && md->level <= MAX_LEVEL && md->level != md->db->lv)
+		if (md->level > 0 && md->level <= 0x7fff && md->level != md->db->lv)
 			;
 		else
-		*/
 			md->level = md->db->lv;
 		md->damagetaken = md->db->damagetaken;
 	}
@@ -2792,7 +2794,29 @@ int status_calc_mob_(struct mob_data* md, uint8 opt)
 		if (opt&SCO_FIRST) {
 			float adelay_bonus = 1.0f;
 			pec_ushort amotion_origin = md->db->status.amotion;
-
+			status = &md->status;
+			if (battle_config.gStack > 0) {
+				int diff = battle_config.gStack;
+				CALCST(status->str, 1.005, diff);
+				CALCST(status->agi, 1.005, diff);
+				CALCST(status->vit, 1.005, diff);
+				CALCST(status->int_, 1.005, diff);
+				CALCST(status->dex, 1.005, diff);
+				CALCST(status->luk, 1.005, diff);
+				CALCST(status->def, 1.005, diff);
+				CALCST(status->mdef, 1.005, diff);
+				CALCST(status->res, 1.005, diff);
+				CALCST(status->mres, 1.005, diff);
+				CALCST(status->matk_min, 1.005, diff);
+				CALCST(status->matk_max, 1.005, diff);
+				CALCST(status->hit, 1.005, diff);
+				CALCST(status->batk, 1.005, diff);
+				CALCST(status->flee, 1.005, diff);
+				CALCST2(status->max_hp, 1.01, diff);
+				CALCST3(status->max_sp, 1.01, diff);
+				status->hp = status->max_hp;
+				status->sp = status->max_sp;
+			}
 			if (map_getmapflag(md->bl.m, MF_MAXASPD) && amotion_origin) {
 				int val = map_getmapflag_param(md->bl.m, MF_MAXASPD, 1);
 				if (val) {
@@ -2814,10 +2838,6 @@ int status_calc_mob_(struct mob_data* md, uint8 opt)
 	status = md->base_status;
 	memcpy(status, &md->db->status, sizeof(struct status_data));
 
-#define CALCST(n,r,diff) { double v = (max(n, 1) * pow(r, (double)diff)); n = v >= UINT16_MAX ? UINT16_MAX : (pec_ushort)v; }
-#define CALCST2(n,r,diff) { double v = (n * pow(r, (double)diff)); n = v >= UINT64_MAX ? UINT64_MAX : (uint64_t)v; }
-#define CALCST3(n,r,diff) { double v = (n * pow(r, (double)diff)); n = v >= UINT32_MAX ? UINT32_MAX : (uint32_t)v; }
-
 	if (battle_config.gStack > 0) {
 		int diff = battle_config.gStack;
 		CALCST(status->str, 1.005, diff);
@@ -2832,8 +2852,19 @@ int status_calc_mob_(struct mob_data* md, uint8 opt)
 		CALCST(status->mres, 1.005, diff);
 		CALCST(status->rhw.atk, 1.005, diff);
 		CALCST(status->rhw.matk, 1.005, diff);
+		CALCST(status->matk_min, 1.005, diff);
+		CALCST(status->matk_max, 1.005, diff);
+		CALCST(status->hit, 1.005, diff);
+		CALCST(status->batk, 1.005, diff);
+		CALCST(status->flee, 1.005, diff);
 		CALCST2(status->max_hp, 1.01, diff);
 		CALCST3(status->max_sp, 1.01, diff);
+		double r = (double)status->hp / status->max_hp;
+		CALCST2(status->max_hp, 1.01, diff);
+		status->hp = status->max_hp * r;
+		double r2 = (double)status->hp / status->max_hp;
+		CALCST3(status->max_sp, 1.01, diff);
+		status->sp = status->max_sp * r2;
 	}
 
 	if (flag&(8|16))
@@ -2867,6 +2898,13 @@ int status_calc_mob_(struct mob_data* md, uint8 opt)
 			CALCST(status->mres, 1.025, diff);
 			CALCST(status->rhw.atk, 1.025, diff);
 			CALCST(status->rhw.matk, 1.025, diff);
+			CALCST(status->matk_min, 1.005, diff);
+			CALCST(status->matk_max, 1.005, diff);
+			CALCST(status->hit, 1.005, diff);
+			CALCST(status->batk, 1.005, diff);
+			CALCST(status->flee, 1.005, diff);
+			CALCST2(status->max_hp, 1.01, diff);
+			CALCST3(status->max_sp, 1.01, diff);
 			CALCST2(status->max_hp, 1.05, diff);
 			CALCST3(status->max_sp, 1.05, diff);
 			status->hp = status->max_hp;

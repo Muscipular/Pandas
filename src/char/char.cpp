@@ -311,7 +311,7 @@ int char_mmo_char_tosql(uint32 char_id, struct mmo_charstatus* p){
 
 		if( SQL_ERROR == Sql_Query(sql_handle, "UPDATE `%s` SET `base_level`='%d', `job_level`='%d',"
 			"`base_exp`='%" PRIu64 "', `job_exp`='%" PRIu64 "', `zeny`='%d',"
-			"`max_hp`='%u',`hp`='%u',`max_sp`='%u',`sp`='%u',`status_point`='%d',`skill_point`='%d',"
+			"`max_hp`='%llu',`hp`='%llu',`max_sp`='%llu',`sp`='%llu',`status_point`='%d',`skill_point`='%d',"
 #ifndef Pandas_Extreme_Computing
 			"`str`='%d',`agi`='%d',`vit`='%d',`int`='%d',`dex`='%d',`luk`='%d',"
 #else

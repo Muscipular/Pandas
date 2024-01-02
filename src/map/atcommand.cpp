@@ -8793,7 +8793,7 @@ ACMD_FUNC(gstack) {
 
 	int n = -1;
 	if (message && *message) {
-		time = cap_value(atoi(message), 0, INT32_MAX);
+		n = cap_value(atoi(message), 0, INT32_MAX);
 	}
 	if (n < 0) {
 		snprintf(atcmd_output, sizeof atcmd_output, "gstack: %d", battle_config.gStack);

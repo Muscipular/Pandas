@@ -5320,7 +5320,7 @@ uint64 MobDatabase::parseBodyNode(const ryml::NodeRef& node) {
 				continue;
 			}
 
-			if (constant < MD_NONE || constant > MD_SKILLIMMUNE) {
+			if (constant < MD_NONE || constant > MD_NOLEVELUP) {
 				this->invalidWarning(modeNode[modeit.key()], "Invalid monster mode %s, skipping.\n", modeName.c_str());
 				continue;
 			}

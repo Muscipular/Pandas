@@ -93,6 +93,9 @@ static inline int32 client_exp(t_exp exp) {
 }
 #endif
 
+
+#define CAP32(n) cap_value(n, 0, INT32_MAX);
+#define CAPU16(n) cap_value(n, 0, INT16_MAX);
 /* for clif_clearunit_delayed */
 static struct eri *delay_clearunit_ers;
 
@@ -6779,12 +6782,12 @@ void clif_skill_estimation(map_session_data *sd,struct block_list *dst)
 	WBUFW(buf, 2)=status_get_class(dst);
 	WBUFW(buf, 4)=status_get_lv(dst);
 	WBUFW(buf, 6)=status->size;
-	WBUFL(buf, 8)=status->hp;
-	WBUFW(buf,12)= (battle_config.estimation_type&1?status->def:0)
-		+(battle_config.estimation_type&2?status->def2:0);
+	WBUFL(buf, 8)=CAP32(status->hp);
+	WBUFW(buf,12)=CAPU16((battle_config.estimation_type&1?status->def:0)
+		+(battle_config.estimation_type&2?status->def2:0));
 	WBUFW(buf,14)=status->race;
-	WBUFW(buf,16)= (battle_config.estimation_type&1?status->mdef:0)
-		+(battle_config.estimation_type&2?status->mdef2:0);
+	WBUFW(buf,16)=CAPU16((battle_config.estimation_type&1?status->mdef:0)
+		+(battle_config.estimation_type&2?status->mdef2:0));
 	WBUFW(buf,18)= status->def_ele;
 	for(i=0;i<9;i++)
 //		The following caps negative attributes to 0 since the client displays them as 255-fix. [Skotlex]
