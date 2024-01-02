@@ -67,7 +67,7 @@
 	//         ^ 此处第四段为 1 表示这是一个 1.0.2 的开发版本 (develop)
 	// 
 	// 在 Windows 环境下, 程序启动时会根据第四段的值自动携带对应的版本后缀, 以便进行版本区分
-	#define Pandas_Version "1.2.2.0"
+	#define Pandas_Version "1.2.3.0"
 
 	// 在启动时显示 Pandas 的 LOGO
 	#define Pandas_Show_Logo
@@ -838,9 +838,6 @@
 	// 例如: "凯撒"中的"凯"字, "聽風"中的"聽"字等
 	#define Pandas_Fix_Chinese_Character_Trimmed
 
-	// 修复 item_trade 中限制物品掉落后, 权限足够的 GM 也无法绕过限制的问题 [Sola丶小克]
-	#define Pandas_Fix_Item_Trade_FloorDropable
-
 	// 修正使用 duplicate 或 copynpc 复制商店类型的 NPC 时, 由于没有完整的复制出售的商品列表, 
 	// 导致使用 npcshop* 系列指令调整复制后的商店内容时, 原商店的内容也会同步受到影响的问题. 
 	// 目前根据各位脚本大神的反馈, 更希望各个商店 NPC 的商品列表内容是各自独立的 [Sola丶小克]
@@ -1029,6 +1026,13 @@
 	// 修正 script_cleararray_pc 无法清空单元素数组的问题 [Sola丶小克]
 	// 特别感谢 "最美的Secret" 指出此问题
 	#define Pandas_Fix_ClearArray_The_First_Element_Is_Ignored
+	
+	// 修正计算偷窃概率时公式的计算结果可能出现 "回绕" 的情况 [Sola丶小克]
+	// 只要 sd_status->dex 和 md_status->dex 的类型是无符号数值并且两者相减出现负数,
+	// 那么最终计算出来的概率值因为出现 "回绕" 而变得很大, 结果等于偷窃必定成功.
+	//
+	// 特别感谢 "最美的Secret" 指出此问题
+	#define Pandas_Fix_StealItem_Formula_Overflow
 #endif // Pandas_Bugfix
 
 // ============================================================================
@@ -1328,16 +1332,6 @@
 // ============================================================================
 
 #ifdef Pandas_Cleanup
-	// 清理读取 sql.db_hostname 选项的相关代码 [Sola丶小克]
-	// 
-	// 在 rAthena 官方的代码中原本预留了一个数据库默认连接的配置组, 
-	// 这些选项以 sql. 开头, 配置在 conf/inter_athena.conf 中的话就会被程序读取.
-	// 但是整个服务端只有 login-server 会尝试去读取这个配置, 所以非常鸡肋.
-	// 以至于目前 rAthena 在官方的 conf/inter_athena.conf 中都把相关配置删了.
-	//
-	// 所以我们也干脆删了吧!! Oh yeah!
-	#define Pandas_Cleanup_Useless_SQL_Global_Configure
-
 	// 清理掉一些没啥作用看着还心烦的终端提示信息 [Sola丶小克]
 	#define Pandas_Cleanup_Useless_Message
 #endif // Pandas_Cleanup
