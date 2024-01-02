@@ -8805,11 +8805,11 @@ ACMD_FUNC(dps_log) {
 }
 
 #define printDMG(buf1, dmg) { 		if (dmg >= 1000 * 1000 * 100) {\
-sprintf(buf1, "%dM", dmg / 1000 / 1000 / 100);\
+sprintf(buf1, "%dM", (int)(dmg / 1000 / 1000 / 100));\
 }\
 else if (dmg >= 100000) {\
-	sprintf(buf1, "%dk", dmg / 1000 / 100);\
-} else { sprintf(buf1, "%d", dmg); } }
+	sprintf(buf1, "%dk", (int)(dmg / 1000 / 100));\
+} else { sprintf(buf1, "%d", (int)dmg); } }
 
 ACMD_FUNC(dps_show) {
 	nullpo_retr(-1, sd);

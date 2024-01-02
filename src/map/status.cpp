@@ -1428,7 +1428,7 @@ int status_damage(struct block_list *src,struct block_list *target,int64 dhp, in
 {
 	struct status_data *status;
 	status_change *sc;
-	int hp = (int)cap_value(dhp,INT_MIN,INT_MAX);
+	uint64 hp = (int)cap_value(dhp,INT_MIN,INT_MAX);
 	int sp = (int)cap_value(dsp,INT_MIN,INT_MAX);
 	int ap = (int)cap_value(dap,INT_MIN,INT_MAX);
 
@@ -1755,7 +1755,7 @@ int status_heal(struct block_list *bl,int64 hhp,int64 hsp, int64 hap, int flag)
 		hap = hap * sd->aprecov_rate / 100;
 	}
 
-	int hp = (int)cap_value(hhp,INT_MIN,INT_MAX);
+	uint64 hp = (int)cap_value(hhp,INT64_MIN,INT64_MAX);
 	int sp = (int)cap_value(hsp,INT_MIN,INT_MAX);
 	int ap = (int)cap_value(hap,INT_MIN,INT_MAX);
 
@@ -1783,7 +1783,7 @@ int status_heal(struct block_list *bl,int64 hhp,int64 hsp, int64 hap, int flag)
 				hp = 0;
 		}
 
-		if((unsigned int)hp > status->max_hp - status->hp)
+		if(hp > status->max_hp - status->hp)
 			hp = status->max_hp - status->hp;
 	}
 
@@ -1936,14 +1936,14 @@ int status_percent_change(struct block_list *src, struct block_list *target, int
 int status_revive(struct block_list *bl, unsigned char per_hp, unsigned char per_sp, unsigned char per_ap)
 {
 	struct status_data *status;
-	unsigned int hp, sp, ap;
+	unsigned int sp, ap;
 	if (!status_isdead(bl)) return 0;
 
 	status = status_get_status_data(bl);
 	if (status == &dummy_status)
 		return 0; // Invalid target.
 
-	hp = (int64)status->max_hp * per_hp/100;
+	uint64 hp = (int64)status->max_hp * per_hp/100;
 	sp = (int64)status->max_sp * per_sp/100;
 	ap = (int64)status->max_ap * per_ap/100;
 
@@ -2814,6 +2814,7 @@ int status_calc_mob_(struct mob_data* md, uint8 opt)
 
 #define CALCST(n,r,diff) { double v = (max(n, 1) * pow(r, (double)diff)); n = v >= UINT16_MAX ? UINT16_MAX : (pec_ushort)v; }
 #define CALCST2(n,r,diff) { double v = (n * pow(r, (double)diff)); n = v >= UINT64_MAX ? UINT64_MAX : (uint64_t)v; }
+#define CALCST3(n,r,diff) { double v = (n * pow(r, (double)diff)); n = v >= UINT32_MAX ? UINT32_MAX : (uint32_t)v; }
 
 	if (battle_config.gStack > 0) {
 		int diff = battle_config.gStack;
@@ -2830,7 +2831,7 @@ int status_calc_mob_(struct mob_data* md, uint8 opt)
 		CALCST(status->rhw.atk, 1.005, diff);
 		CALCST(status->rhw.matk, 1.005, diff);
 		CALCST2(status->max_hp, 1.01, diff);
-		CALCST2(status->max_sp, 1.01, diff);
+		CALCST3(status->max_sp, 1.01, diff);
 	}
 
 	if (flag&(8|16))
@@ -2865,7 +2866,7 @@ int status_calc_mob_(struct mob_data* md, uint8 opt)
 			CALCST(status->rhw.atk, 1.025, diff);
 			CALCST(status->rhw.matk, 1.025, diff);
 			CALCST2(status->max_hp, 1.05, diff);
-			CALCST2(status->max_sp, 1.05, diff);
+			CALCST3(status->max_sp, 1.05, diff);
 			status->hp = status->max_hp;
 			status->sp = status->max_sp;
 			status->speed -= cap_value(diff, 0, status->speed - 10);
@@ -5512,7 +5513,7 @@ void status_calc_regen(struct block_list *bl, struct status_data *status, struct
 		return;
 #endif // Pandas_Crashfix_FunctionParams_Verify
 
-	val = (status->vit/5) + max(1, status->max_hp/200);
+	val = (status->vit / 5) + cap_value(max(1, status->max_hp / 200), 1, INT32_MAX);
 
 	if( sd && sd->hprecov_rate != 100 )
 		val = val*sd->hprecov_rate/100;
@@ -12864,7 +12865,8 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 			break;
 		case SC_GENSOU:
 			{
-				int hp = status_get_hp(bl), lv = 5;
+				auto hp = status_get_hp(bl);
+				int lv = 5;
 				short per = 100 / (status_get_max_hp(bl) / hp);
 
 				if( per <= 15 )
@@ -14785,7 +14787,7 @@ TIMER_FUNC(status_change_timer){
 				damage = (type == SC_DPOISON) ? 2 + status->max_hp / 50 : 2 + status->max_hp * 3 / 200;
 			else
 				damage = (type == SC_DPOISON) ? 2 + status->max_hp / 100 : 2 + status->max_hp / 200;
-			if (status->hp > umax(status->max_hp / 4, damage)) // Stop damaging after 25% HP left.
+			if (status->hp > u64max(status->max_hp / 4, damage)) // Stop damaging after 25% HP left.
 				status_zap(bl, damage, 0);
 		}
 		break;

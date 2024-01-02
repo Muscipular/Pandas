@@ -2325,7 +2325,7 @@ bool pc_set_hate_mob(map_session_data *sd, int pos, struct block_list *bl)
 
 	class_ = status_get_class(bl);
 	if (!pcdb_checkid(class_)) {
-		unsigned int max_hp = status_get_max_hp(bl);
+		auto max_hp = status_get_max_hp(bl);
 		if ((pos == 1 && max_hp < 6000) || (pos == 2 && max_hp < 20000))
 			return false;
 		if (pos != status_get_size(bl))
@@ -13741,7 +13741,7 @@ map_session_data *pc_get_child (map_session_data *sd)
  *------------------------------------------*/
 void pc_bleeding (map_session_data *sd, t_tick diff_tick)
 {
-	int hp = 0, sp = 0;
+	uint64 hp = 0, sp = 0;
 
 	if( pc_isdead(sd) )
 		return;

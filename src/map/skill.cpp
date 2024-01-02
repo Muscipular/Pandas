@@ -2658,7 +2658,7 @@ int skill_onskillusage_always(map_session_data *sd, struct block_list *bl, uint1
 		uint16 skill_lv = it.lv ? it.lv : 1;
 
 		if (it.flag & AUTOSPELL_FORCE_RANDOM_LEVEL)
-			skill_lv = rnd_value( 1, skill_lv ); //random skill_lv
+			skill_lv = rnd_value<uint16>( 1, skill_lv ); //random skill_lv
 
 		e_cast_type type = skill_get_casttype(skill);
 
@@ -4872,7 +4872,8 @@ static int skill_check_condition_mercenary(struct block_list *bl, uint16 skill_i
 {
 	struct status_data *status;
 	map_session_data *sd = NULL;
-	int i, hp, sp, hp_rate, sp_rate, state, mhp;
+	int i, hp_rate, sp_rate, state, mhp;
+	int64_t hp, sp;
 	t_itemid itemid[MAX_SKILL_ITEM_REQUIRE];
 	int amount[ARRAYLENGTH(itemid)], index[ARRAYLENGTH(itemid)];
 
@@ -7032,7 +7033,7 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 			clif_spiritball(src);
 		}
 		skill_attack(BF_MISC, src, src, bl, skill_id, skill_lv, tick, flag);
-		status_set_hp(src, umax(status_get_max_hp(src) / 100, 1), 0);
+		status_set_hp(src, u64max(status_get_max_hp(src) / 100, 1), 0);
 		status_change_end(src, SC_NEN);
 		status_change_end(src, SC_HIDING);
 	}
@@ -8125,7 +8126,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 			break;
 		}
 
-		int heal_amount = 0;
+		uint64 heal_amount = 0;
 
 		if (!status_isimmune(bl))
 			heal_amount = tstatus->max_hp;
@@ -8835,7 +8836,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 	case CD_MEDIALE_VOTUM:
 		if (flag & 1) {
 			if (sd == nullptr || sd->status.party_id == 0 || (flag & 2)) {
-				int heal_amount = sstatus->max_hp * skill_lv * 2 / 100;
+				int64_t heal_amount = sstatus->max_hp * skill_lv * 2 / 100;
 				clif_specialeffect(bl, 1808, AREA);
 				clif_skill_nodamage( nullptr, bl, AL_HEAL, heal_amount, 1 );
 				status_heal(bl, heal_amount, 0, 0);
@@ -8864,7 +8865,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 
 	case CD_COMPETENTIA:
 		if (sd == nullptr || sd->status.party_id == 0 || (flag & 1)) {
-			int hp_amount = tstatus->max_hp * (20 * skill_lv) / 100;
+			uint64 hp_amount = tstatus->max_hp * (20 * skill_lv) / 100;
 			int sp_amount = tstatus->max_sp * (20 * skill_lv) / 100;
 
 			clif_skill_nodamage( nullptr, bl, AL_HEAL, hp_amount, 1 );
@@ -10243,7 +10244,8 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 	case AM_BERSERKPITCHER:
 	case AM_POTIONPITCHER:
 		{
-			int j,hp = 0,sp = 0;
+			int j;
+			int64_t hp = 0, sp = 0;
 			if( dstmd && dstmd->mob_id == MOBID_EMPERIUM ) {
 				map_freeblock_unlock();
 				return 1;
@@ -10563,7 +10565,8 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 				status_percent_damage(bl, src, 0, -20, false); //20% max SP damage.
 			} else {
 				struct unit_data *ud = unit_bl2ud(bl);
-				int bl_skill_id=0,bl_skill_lv=0,hp = 0;
+				int bl_skill_id = 0, bl_skill_lv = 0;
+				uint64 hp = 0;
 				if (!ud || ud->skilltimer == INVALID_TIMER)
 					break; //Nothing to cancel.
 				bl_skill_id = ud->skill_id;
@@ -10821,7 +10824,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 			uint8 hp_rate = abs(skill_get_hp_rate(skill_id, skill_lv));
 
 			if (hp_rate && status_get_hp(src) > status_get_max_hp(src) / hp_rate) {
-				int gain_hp = tstatus->max_hp * hp_rate / 100; // The earned is the same % of the target HP than it costed the caster. [Skotlex]
+				auto gain_hp = tstatus->max_hp * hp_rate / 100; // The earned is the same % of the target HP than it costed the caster. [Skotlex]
 
 				clif_skill_nodamage(src,bl,skill_id,status_heal(bl, gain_hp, 0, 0),1);
 			}
@@ -10933,7 +10936,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 
 	case PF_HPCONVERSION:
 		{
-			int hp, sp;
+			int64_t hp, sp;
 			hp = sstatus->max_hp/10;
 			sp = hp * 10 * skill_lv / 100;
 			if (!status_charge(src,hp,0)) {
@@ -11931,7 +11934,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 
 	case GC_HALLUCINATIONWALK:
 		{
-			int heal = status_get_max_hp(bl) / 10;
+			int64_t heal = status_get_max_hp(bl) / 10;
 			if( status_get_hp(bl) < heal ) { // if you haven't enough HP skill fails.
 				if( sd ) clif_skill_fail(sd,skill_id,USESKILL_FAIL_HP_INSUFFICIENT,0);
 				break;
@@ -12595,7 +12598,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 
 	case SR_GENTLETOUCH_CURE:
 		{
-			unsigned int heal;
+			int64_t heal;
 
 			if (dstmd && (dstmd->mob_id == MOBID_EMPERIUM || status_get_class_(bl) == CLASS_BATTLEFIELD))
 				heal = 0;
@@ -12974,7 +12977,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 	case SO_EL_CURE:
 		if( sd ) {
 			s_elemental_data *ed = sd->ed;
-			int s_hp, s_sp;
+			int64_t s_hp, s_sp;
 
 			if( !ed )
 				break;
@@ -13534,7 +13537,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 
 	case SU_TUNABELLY:
 	{
-		unsigned int heal = 0;
+		int64_t heal = 0;
 
 		if (dstmd && (dstmd->mob_id == MOBID_EMPERIUM || status_get_class_(bl) == CLASS_BATTLEFIELD))
 			heal = 0;
@@ -13733,7 +13736,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 	case ABR_NET_REPAIR:
 	case ABR_NET_SUPPORT:
 		if (flag & 1) {
-			int heal_amount;
+			int64 heal_amount;
 
 			if (skill_id == ABR_NET_REPAIR) {
 				heal_amount = tstatus->max_hp * 10 / 100;
@@ -17687,7 +17690,7 @@ int skill_unit_onplace_timer(struct skill_unit *unit, struct block_list *bl, t_t
 			++sg->val1; // Increment outside of the check to get the exact interval of the skill unit
 			if( bl->type == BL_PC && !battle_check_undead(tstatus->race, tstatus->def_ele) && tstatus->race != RC_DEMON ) {
 				if (sg->val1 % 3 == 0) { // Recover players every 3 seconds
-					int hp, sp;
+					int64_t hp, sp;
 
 					switch( sg->skill_lv ) {
 						case 1: case 2: hp = 3; sp = 2; break;

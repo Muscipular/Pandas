@@ -571,7 +571,7 @@ struct s_homunculus {	//[orn]
 	uint32 char_id;
 	short class_;
 	short prev_class;
-	int hp,max_hp,sp,max_sp;
+	uint64 hp,max_hp,sp,max_sp;
 	unsigned int intimacy;	//[orn]
 	short hunger;
 	struct s_skill hskill[MAX_HOMUNSKILL]; //albator
@@ -602,7 +602,7 @@ struct s_mercenary {
 	int mercenary_id;
 	uint32 char_id;
 	short class_;
-	int hp, sp;
+	uint64 hp, sp;
 	unsigned int kill_count;
 	t_tick life_time;
 };
@@ -612,7 +612,8 @@ struct s_elemental {
 	uint32 char_id;
 	short class_;
 	int mode;
-	int hp, sp, max_hp, max_sp, matk, atk, atk2;
+	uint64 hp, sp, max_hp, max_sp;
+	int matk, atk, atk2;
 	pec_short hit, flee, amotion, def, mdef;
 	t_tick life_time;
 };
@@ -644,7 +645,8 @@ struct mmo_charstatus {
 
 	short class_; ///< Player's JobID
 	unsigned int status_point,skill_point,trait_point;
-	int hp,max_hp,sp,max_sp,ap,max_ap;
+	uint64 hp, max_hp, sp, max_sp;
+	int ap,max_ap;
 	unsigned int option;
 	short manner; // Defines how many minutes a char will be muted, each negative point is equivalent to a minute.
 	unsigned char karma;

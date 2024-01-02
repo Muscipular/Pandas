@@ -1107,12 +1107,12 @@ static void battle_absorb_damage(struct block_list *bl, struct Damage *d) {
 					return;
 				dmg_ori = dmg_new = d->damage + d->damage2;
 				if (sd->bonus.absorb_dmg_maxhp) {
-					int hp = sd->bonus.absorb_dmg_maxhp * status_get_max_hp(bl) / 100;
+					int64 hp = sd->bonus.absorb_dmg_maxhp * status_get_max_hp(bl) / 100;
 					if (dmg_ori > hp)
 						dmg_new = dmg_ori - hp;
 				}
 				if (sd->bonus.absorb_dmg_maxhp2) {
-					int hp = sd->bonus.absorb_dmg_maxhp2 * status_get_max_hp(bl) / 100;
+					int64 hp = sd->bonus.absorb_dmg_maxhp2 * status_get_max_hp(bl) / 100;
 					if (dmg_ori > hp) {
 						dmg_new = hp;
 					}
@@ -1123,7 +1123,7 @@ static void battle_absorb_damage(struct block_list *bl, struct Damage *d) {
 					double dmg_ratio = (double)dmg_ori / status_get_max_hp(bl);
 
 					if (dmg_ratio * 100 >= min(sd->bonus.absorb_dmg_trigger_hpratio, 100)) {
-						int hp = min(sd->bonus.absorb_dmg_cap_ratio, 100) * status_get_max_hp(bl) / 100;
+						int64 hp = min(sd->bonus.absorb_dmg_cap_ratio, 100) * status_get_max_hp(bl) / 100;
 						dmg_new = hp;
 					}
 				}
@@ -4127,7 +4127,7 @@ static void battle_calc_skill_base_damage(struct Damage* wd, struct block_list *
 		case RK_DRAGONBREATH:
 		case RK_DRAGONBREATH_WATER:
 			{
-				int damagevalue = (CAP_HP1100k(sstatus->hp) / 50 + status_get_max_sp(src) / 4) * skill_lv;
+				int64 damagevalue = (CAP_HP1100k(sstatus->hp) / 50 + status_get_max_sp(src) / 4) * skill_lv;
 				if(status_get_lv(src) > 100)
 					damagevalue = damagevalue * status_get_lv(src) / 100;
 				if(sd) {
@@ -5311,7 +5311,7 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
  			break;
 		case SR_TIGERCANNON:
 			{
-				unsigned int hp = CAP_HP1100k(sstatus->max_hp) * (10 + (skill_lv * 2)) / 100,
+				int64 hp = CAP_HP1100k(sstatus->max_hp) * (10 + (skill_lv * 2)) / 100,
 							 sp = sstatus->max_sp * (5 + skill_lv) / 100;
 
 				if (wd->miscflag&8)
@@ -7030,7 +7030,7 @@ static void battle_calc_weapon_final_atk_modifiers(struct Damage* wd, struct blo
 	if( tsc && tsc->getSCE(SC_CRESCENTELBOW) && wd->flag&BF_SHORT && rnd()%100 < tsc->getSCE(SC_CRESCENTELBOW)->val2 ) {
 		//ATK [{(Target HP / 100) x Skill Level} x Caster Base Level / 125] % + [Received damage x {1 + (Skill Level x 0.2)}]
 		int64 rdamage = 0;
-		int ratio = (int64)(status_get_hp(src) / 100) * tsc->getSCE(SC_CRESCENTELBOW)->val1 * status_get_lv(target) / 125;
+		int64 ratio = (int64)(status_get_hp(src) / 100) * tsc->getSCE(SC_CRESCENTELBOW)->val1 * status_get_lv(target) / 125;
 		if (ratio > 5000) ratio = 5000; // Maximum of 5000% ATK
 		rdamage = battle_calc_base_damage(target,tstatus,&tstatus->rhw,tsc,sstatus->size,0);
 		rdamage = (int64)rdamage * ratio / 100 + wd->damage * (10 + tsc->getSCE(SC_CRESCENTELBOW)->val1 * 20 / 10) / 10;
@@ -7046,7 +7046,7 @@ static void battle_calc_weapon_final_atk_modifiers(struct Damage* wd, struct blo
 	if( sc ) {
 		//SC_FUSION hp penalty [Komurka]
 		if (sc->getSCE(SC_FUSION)) {
-			unsigned int hp = sstatus->max_hp;
+			int64 hp = sstatus->max_hp;
 
 			if (sd && tsd) {
 				hp = hp / 13;
@@ -10037,7 +10037,7 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 		clif_skill_nodamage(target, target, SM_ENDURE, tsc->getSCE(SC_MTF_MLEATKED)->val1, sc_start(src, target, SC_ENDURE, 100, tsc->getSCE(SC_MTF_MLEATKED)->val1, skill_get_time(SM_ENDURE, tsc->getSCE(SC_MTF_MLEATKED)->val1)));
 
 	if(tsc && tsc->getSCE(SC_KAAHI) && tstatus->hp < tstatus->max_hp && status_charge(target, 0, tsc->getSCE(SC_KAAHI)->val3)) {
-		int hp_heal = tstatus->max_hp - tstatus->hp;
+		int64 hp_heal = tstatus->max_hp - tstatus->hp;
 		if (hp_heal > tsc->getSCE(SC_KAAHI)->val2)
 			hp_heal = tsc->getSCE(SC_KAAHI)->val2;
 		if (hp_heal)
