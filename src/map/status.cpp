@@ -2797,30 +2797,30 @@ int status_calc_mob_(struct mob_data* md, uint8 opt)
 			status = &md->status;
 			if (battle_config.gStack > 0) {
 				int diff = battle_config.gStack;
-				double v = 0.005;
+				double dd = 0.005;
 				if (md->get_bosstype() == BOSSTYPE_MVP) {
-					v *= 2;
+					dd *= 2;
 				}
 				else {
-					v /= 2;
+					dd /= 2;
 				}
-				CALCST(status->str, 1 + v, diff);
-				CALCST(status->agi, 1 + v, diff);
-				CALCST(status->vit, 1 + v, diff);
-				CALCST(status->int_, 1 + v, diff);
-				CALCST(status->dex, 1 + v, diff);
-				CALCST(status->luk, 1 + v, diff);
-				CALCST(status->def, 1 + v, diff);
-				CALCST(status->mdef, 1 + v, diff);
-				CALCST(status->res, 1 + v, diff);
-				CALCST(status->mres, 1 + v, diff);
-				CALCST(status->matk_min, 1 + v, diff);
-				CALCST(status->matk_max, 1 + v, diff);
-				CALCST(status->hit, 1 + v, diff);
-				CALCST(status->batk, 1 + v, diff);
-				CALCST(status->flee, 1 + v, diff);
-				CALCST2(status->max_hp, 1 + v * 2, diff);
-				CALCST3(status->max_sp, 1 + v * 2, diff);
+				CALCST(status->str, 1 + dd, diff);
+				CALCST(status->agi, 1 + dd, diff);
+				CALCST(status->vit, 1 + dd, diff);
+				CALCST(status->int_, 1 + dd, diff);
+				CALCST(status->dex, 1 + dd, diff);
+				CALCST(status->luk, 1 + dd, diff);
+				CALCST(status->def, 1 + dd, diff);
+				CALCST(status->mdef, 1 + dd, diff);
+				CALCST(status->res, 1 + dd, diff);
+				CALCST(status->mres, 1 + dd, diff);
+				CALCST(status->matk_min, 1 + dd, diff);
+				CALCST(status->matk_max, 1 + dd, diff);
+				CALCST(status->hit, 1 + dd, diff);
+				CALCST(status->batk, 1 + dd, diff);
+				CALCST(status->flee, 1 + dd, diff);
+				CALCST2(status->max_hp, 1 + dd * 2, diff);
+				CALCST3(status->max_sp, 1 + dd * 2, diff);
 				status->hp = status->max_hp;
 				status->sp = status->max_sp;
 			}
@@ -2847,36 +2847,36 @@ int status_calc_mob_(struct mob_data* md, uint8 opt)
 
 	if (battle_config.gStack > 0) {
 		int diff = battle_config.gStack;
-		double v = 0.005;
+		double dd = 0.005;
 		if (md->get_bosstype() == BOSSTYPE_MVP) {
-			v *= 2;
+			dd *= 2;
 		}
 		else {
-			v /= 2;
+			dd /= 2;
 		}
 		double r = (double)status->hp / status->max_hp;
 		double r2 = (double)status->hp / status->max_hp;
-		CALCST(status->str, 1 + v, diff);
-		CALCST(status->agi, 1 + v, diff);
-		CALCST(status->vit, 1 + v, diff);
-		CALCST(status->int_, 1 + v, diff);
-		CALCST(status->dex, 1 + v, diff);
-		CALCST(status->luk, 1 + v, diff);
-		CALCST(status->def, 1 + v, diff);
-		CALCST(status->mdef, 1 + v, diff);
-		CALCST(status->res, 1 + v, diff);
-		CALCST(status->mres, 1 + v, diff);
-		CALCST(status->rhw.atk, 1 + v, diff);
-		CALCST(status->rhw.matk, 1 + v, diff);
-		CALCST(status->matk_min, 1 + v, diff);
-		CALCST(status->matk_max, 1 + v, diff);
-		CALCST(status->hit, 1 + v, diff);
-		CALCST(status->batk, 1 + v, diff);
-		CALCST(status->flee, 1 + v, diff);
-		CALCST2(status->max_hp, 1 + v * 2, diff);
-		CALCST3(status->max_sp, 1 + v * 2, diff);
-		CALCST2(status->max_hp, 1 + v * 2, diff);
-		CALCST3(status->max_sp, 1 + v * 2, diff);
+		CALCST(status->str, 1 + dd, diff);
+		CALCST(status->agi, 1 + dd, diff);
+		CALCST(status->vit, 1 + dd, diff);
+		CALCST(status->int_, 1 + dd, diff);
+		CALCST(status->dex, 1 + dd, diff);
+		CALCST(status->luk, 1 + dd, diff);
+		CALCST(status->def, 1 + dd, diff);
+		CALCST(status->mdef, 1 + dd, diff);
+		CALCST(status->res, 1 + dd, diff);
+		CALCST(status->mres, 1 + dd, diff);
+		CALCST(status->rhw.atk, 1 + dd, diff);
+		CALCST(status->rhw.matk, 1 + dd, diff);
+		CALCST(status->matk_min, 1 + dd, diff);
+		CALCST(status->matk_max, 1 + dd, diff);
+		CALCST(status->hit, 1 + dd, diff);
+		CALCST(status->batk, 1 + dd, diff);
+		CALCST(status->flee, 1 + dd, diff);
+		CALCST2(status->max_hp, 1 + dd * 2, diff);
+		CALCST3(status->max_sp, 1 + dd * 2, diff);
+		CALCST2(status->max_hp, 1 + dd * 2, diff);
+		CALCST3(status->max_sp, 1 + dd * 2, diff);
 		status->hp = status->max_hp * r;
 		status->sp = status->max_sp * r2;
 	}
