@@ -2988,7 +2988,7 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type, uint16 skill
 			if (battle_config.mobs_level_up && md->level > md->db->lv)
 				drop_rate += static_cast<int>((md->level - md->db->lv) * 0.015 * drop_rate);
 			if (battle_config.gStack > 0) {
-				double tmp = battle_config.gStack * (item_dropped_data.type == item_types::IT_CARD ? 0.000631 : 0.003333);
+				double tmp = battle_config.gStack * (item_dropped_data.type == item_types::IT_CARD ? 0.00197 : 0.003333);
 				drop_rate += tmp >= 1 ? org_rate : static_cast<int>(tmp * org_rate);
 			}
 
