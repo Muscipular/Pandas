@@ -2795,7 +2795,9 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type, uint16 skill
 		}
 		if(battle_config.mobs_level_up && md->level > md->db->lv) // [Valaris]
 			bonus += (md->level-md->db->lv)*battle_config.mobs_level_up_exp_rate;
-
+		if (battle_config.gStack > 0) {
+			bonus *= battle_config.gStack * 0.0317 + 1;
+		}
 		for(i = 0; i < DAMAGELOG_SIZE && md->dmglog[i].id; i++) {
 			int flag=1,zeny=0;
 			t_exp base_exp, job_exp;
