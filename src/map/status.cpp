@@ -2802,14 +2802,14 @@ int status_calc_mob_(struct mob_data* md, uint8 opt)
 					dd *= 2;
 				}
 				else {
-					dd /= 2;
+					dd /= max(1, (220 - md->level) / 30);
 				}
 				CALCST(status->str, 1 + dd, diff);
-				CALCST(status->agi, 1 + dd, diff);
+				//CALCST(status->agi, 1 + dd, diff);
 				CALCST(status->vit, 1 + dd, diff);
 				CALCST(status->int_, 1 + dd, diff);
 				CALCST(status->dex, 1 + dd, diff);
-				CALCST(status->luk, 1 + dd, diff);
+				//CALCST(status->luk, 1 + dd, diff);
 				CALCST(status->def, 1 + dd, diff);
 				CALCST(status->mdef, 1 + dd, diff);
 				CALCST(status->res, 1 + dd, diff);
@@ -2818,7 +2818,7 @@ int status_calc_mob_(struct mob_data* md, uint8 opt)
 				CALCST(status->matk_max, 1 + dd, diff);
 				CALCST(status->hit, 1 + dd, diff);
 				CALCST(status->batk, 1 + dd, diff);
-				CALCST(status->flee, 1 + dd, diff);
+				//CALCST(status->flee, 1 + dd, diff);
 				CALCST2(status->max_hp, 1 + dd * 2, diff);
 				CALCST3(status->max_sp, 1 + dd * 2, diff);
 				status->hp = status->max_hp;
@@ -2852,16 +2852,16 @@ int status_calc_mob_(struct mob_data* md, uint8 opt)
 			dd *= 2;
 		}
 		else {
-			dd /= 2;
+			dd /= max(1, (220 - md->level) / 30);
 		}
 		double r = (double)status->hp / status->max_hp;
 		double r2 = (double)status->hp / status->max_hp;
 		CALCST(status->str, 1 + dd, diff);
-		CALCST(status->agi, 1 + dd, diff);
+		//CALCST(status->agi, 1 + dd, diff);
 		CALCST(status->vit, 1 + dd, diff);
 		CALCST(status->int_, 1 + dd, diff);
 		CALCST(status->dex, 1 + dd, diff);
-		CALCST(status->luk, 1 + dd, diff);
+		//CALCST(status->luk, 1 + dd, diff);
 		CALCST(status->def, 1 + dd, diff);
 		CALCST(status->mdef, 1 + dd, diff);
 		CALCST(status->res, 1 + dd, diff);
@@ -2872,7 +2872,7 @@ int status_calc_mob_(struct mob_data* md, uint8 opt)
 		CALCST(status->matk_max, 1 + dd, diff);
 		CALCST(status->hit, 1 + dd, diff);
 		CALCST(status->batk, 1 + dd, diff);
-		CALCST(status->flee, 1 + dd, diff);
+		//CALCST(status->flee, 1 + dd, diff);
 		CALCST2(status->max_hp, 1 + dd * 2, diff);
 		CALCST3(status->max_sp, 1 + dd * 2, diff);
 		CALCST2(status->max_hp, 1 + dd * 2, diff);
