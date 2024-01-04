@@ -4148,6 +4148,16 @@ int mobskill_use(struct mob_data *md, t_tick tick, int event, int64 damage)
 			//Avoid entering on defined events to avoid "hyper-active skill use" due to the overflow of calls to this function in battle.
 			switch (ms[i]->cond1)
 			{
+				case MSC_UPLEVELGT_MVP:
+					if (md->get_bosstype() != BOSSTYPE_MVP) break;
+				case MSC_UPLEVELGT:
+					flag = ((md->status.mode & MD_NOLEVELUP) != MD_NOLEVELUP) && ((md->level - md->db->lv) > c2);
+					break;
+				case MSC_GSTACKLGT_MVP:
+					if (md->get_bosstype() != BOSSTYPE_MVP) break;
+				case MSC_GSTACKLGT:
+					flag = battle_config.gStack > c2;
+					break;
 				case MSC_ALWAYS:
 					flag = 1; break;
 				case MSC_MYHPLTMAXRATE:		// HP< maxhp%
@@ -6235,6 +6245,10 @@ static bool mob_parse_row_mobskilldb(char** str, int columns, int current)
 		{ "groundattacked",    MSC_GROUNDATTACKED    },
 		{ "damagedgt",         MSC_DAMAGEDGT         },
 		{ "damagedgtrate",     MSC_DAMAGEDGTRATE     },
+		{ "uplevelgt",         MSC_UPLEVELGT         },
+		{ "uplevelgtmvp",      MSC_UPLEVELGT_MVP     },
+		{ "gstackgt",          MSC_GSTACKLGT         },
+		{ "gstackgtmvp",       MSC_GSTACKLGT_MVP     },
 	}, cond2[] ={
 		{	"anybad",		-1				},
 		{	"stone",		SC_STONE		},
