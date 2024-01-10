@@ -7007,9 +7007,13 @@ BUILDIN_FUNC(rand)
 	}
 
 	if( minimum == maximum ){
+		script_pushint64(st, minimum);
+		return SCRIPT_CMD_SUCCESS;
+		/*
 		ShowError( "buildin_rand: minimum (%" PRId64 ") and maximum (%" PRId64 ") are equal. No randomness possible.\n", minimum, maximum );
 		st->state = END;
 		return SCRIPT_CMD_FAILURE;
+		*/
 	}
 
 	script_pushint64( st, rnd_value( minimum, maximum ) );
