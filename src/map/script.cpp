@@ -34613,7 +34613,7 @@ BUILDIN_FUNC(mob_add_skill) {
 	ms->val[4] = script_getnum(st, 17);
 
 	if (ms->skill_id == NPC_EMOTION && mob_id > 0 &&
-		ms->val[1] == md->db->status.mode)
+		ms->val[1] == static_cast<int>(md->db->status.mode & 0xffffffff))
 	{
 		ms->val[1] = 0;
 		ms->val[4] = 1; //request to return mode to normal.

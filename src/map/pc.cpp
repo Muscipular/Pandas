@@ -10572,7 +10572,7 @@ int pc_dead(map_session_data *sd,struct block_list *src, uint16 skill_id)
 				(unsigned int)md->level < INT16_MAX &&
 				!md->guardian_data && !md->special_state.ai// Guardians/summons should not level. [Skotlex]
 				&& !mapdata->getMapFlag(MF_NOMOBLEVELUP)
-				&& (md->db->status.mode & MD_NOLEVELUP) != MD_NOLEVELUP
+				&& (md->status.mode & MD_NOLEVELUP) != MD_NOLEVELUP
 				) { 	// monster level up [Valaris]
 				if (md->reqKill <= 0) {
 					md->reqKill = max((int)(md->level * 4.13), 1);

@@ -11132,6 +11132,10 @@
 	export_constant(MD_STATUSIMMUNE);
 	export_constant(MD_SKILLIMMUNE);
 	export_constant(MD_NOLEVELUP);
+	export_constant(MD_ANTHPDRAIN);
+	export_constant(MD_ANTSPDRAIN);
+	export_constant(MD_ANTAPDRAIN);
+	export_constant(MD_ANTDRAINEX);
 
 	export_deprecated_constant3("MD_CASTSENSOR_IDLE", MD_CASTSENSORIDLE, "MD_CASTSENSORIDLE");
 	export_deprecated_constant3("MD_NORANDOM_WALK", MD_NORANDOMWALK, "MD_NORANDOMWALK");

@@ -3221,7 +3221,7 @@ struct status_data {
 		matk_min, matk_max,
 		speed,
 		amotion, adelay, dmotion;
-	int mode;
+	int64 mode;
 	pec_short
 		hit, flee, cri, flee2,
 		def2, mdef2,

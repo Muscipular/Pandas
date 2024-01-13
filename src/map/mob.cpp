@@ -1799,7 +1799,7 @@ int mob_warpchase(struct mob_data *md, struct block_list *target)
 static bool mob_ai_sub_hard(struct mob_data *md, t_tick tick)
 {
 	struct block_list *tbl = nullptr, *abl = nullptr;
-	int mode;
+	int64 mode;
 	int view_range, can_move;
 
 	if(md->bl.prev == nullptr || md->status.hp == 0)
@@ -5332,7 +5332,7 @@ uint64 MobDatabase::parseBodyNode(const ryml::NodeRef& node) {
 				continue;
 			}
 
-			if (constant < MD_NONE || constant > MD_NOLEVELUP) {
+			if (constant < MD_NONE || constant > MD_ANTDRAINEX) {
 				this->invalidWarning(modeNode[modeit.key()], "Invalid monster mode %s, skipping.\n", modeName.c_str());
 				continue;
 			}
@@ -6415,7 +6415,7 @@ static bool mob_parse_row_mobskilldb(char** str, int columns, int current)
 	ms->val[4] = (int)strtol(str[16],NULL,0);
 
 	if(ms->skill_id == NPC_EMOTION && mob_id > 0 &&
-		ms->val[1] == mob->status.mode)
+		ms->val[1] == static_cast<int>(mob->status.mode & 0xffffffff))
 	{
 		ms->val[1] = 0;
 		ms->val[4] = 1; //request to return mode to normal.

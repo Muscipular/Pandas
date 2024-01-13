@@ -2059,7 +2059,7 @@ int64 battle_calc_damage(struct block_list *src,struct block_list *bl,struct Dam
 		}
 		if (md && md->damagetaken != 100)
 			damage = i64max(damage * md->damagetaken / 100, 1);
-		if (battle_config.mobs_level_up && md->level >= md->db->lv + 10 && (md->db->status.mode & MD_NOLEVELUP) != MD_NOLEVELUP) {
+		if (battle_config.mobs_level_up && md->level >= md->db->lv + 10 && (md->status.mode & MD_NOLEVELUP) != MD_NOLEVELUP) {
 			damage = damage * pow(0.9, (md->level - md->db->lv) / 10);
 		}
 	}
@@ -9685,6 +9685,15 @@ bool battle_vellum_damage(map_session_data *sd, struct block_list *target, struc
 	return true;
 }
 
+inline void drainModeVal(int mode, int& v, e_mode flag) {
+	if (v == 1 && mode & flag) {
+		v = 0;
+		if (mode & flag) {
+			v = -1;
+		}
+	}
+}
+
 /*===========================================
  * Perform battle drain effects (HP/SP loss)
  *-------------------------------------------*/
@@ -9702,6 +9711,17 @@ void battle_drain(map_session_data *sd, struct block_list *tbl, int64 rdamage, i
 	if (!CHK_RACE(race) && !CHK_CLASS(class_))
 		return;
 
+	int valHP = 1, valSP = 1, valAP = 1;
+	if (tbl && tbl->type == BL_MOB) {
+		auto md = BL_CAST(BL_MOB, tbl);
+		drainModeVal(md->status.mode, valHP, MD_ANTHPDRAIN);
+		drainModeVal(md->db->status.mode, valHP, MD_ANTHPDRAIN);
+		drainModeVal(md->status.mode, valSP, MD_ANTSPDRAIN);
+		drainModeVal(md->db->status.mode, valSP, MD_ANTSPDRAIN);
+		drainModeVal(md->status.mode, valAP, MD_ANTAPDRAIN);
+		drainModeVal(md->db->status.mode, valAP, MD_ANTAPDRAIN);
+	}
+
 	for (int i = 0; i < 4; i++) {
 		//First two iterations: Right hand
 		if (i < 2) {
@@ -9717,11 +9737,11 @@ void battle_drain(map_session_data *sd, struct block_list *tbl, int64 rdamage, i
 
 		if (i == 1 || i == 3) {
 			hp = wd->hp_drain_class[class_] + wd->hp_drain_class[CLASS_ALL];
-			hp += battle_calc_drain(*damage, wd->hp_drain_rate.rate, wd->hp_drain_rate.per);
+			hp += battle_calc_drain(*damage, wd->hp_drain_rate.rate, valHP > 0 ? wd->hp_drain_rate.per ? valHP == 0 ? 0 : -wd->hp_drain_rate.per);
 
 			sp = wd->sp_drain_class[class_] + wd->sp_drain_class[CLASS_ALL];
-			sp += battle_calc_drain(*damage, wd->sp_drain_rate.rate, wd->sp_drain_rate.per);
-			ap += battle_calc_drain_fixed(*damage, wd->ap_drain_rate.rate, wd->ap_drain_rate.per);
+			sp += battle_calc_drain(*damage, wd->sp_drain_rate.rate, valSP > 0 ? wd->sp_drain_rate.per ? valSP == 0 ? 0 : -wd->sp_drain_rate.per);
+			ap += battle_calc_drain_fixed(*damage, wd->ap_drain_rate.rate, valAP > 0 ? wd->ap_drain_rate.per ? valAP == 0 ? 0 : -wd->ap_drain_rate.per);
 
 			if( hp ) {
 				//rhp += hp;

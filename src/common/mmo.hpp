@@ -264,7 +264,7 @@ enum item_types {
 };
 
 /// Monster mode definitions to clear up code reading. [Skotlex]
-enum e_mode {
+enum e_mode: int64 {
 	MD_NONE					= 0x0000000,
 	MD_CANMOVE				= 0x0000001,
 	MD_LOOTER				= 0x0000002,
@@ -294,7 +294,11 @@ enum e_mode {
 	MD_DETECTOR				= 0x2000000,
 	MD_STATUSIMMUNE			= 0x4000000,
 	MD_SKILLIMMUNE			= 0x8000000,
-	MD_NOLEVELUP			= 0x10000000,
+	MD_NOLEVELUP			= 0x100000000,
+	MD_ANTHPDRAIN           = 0x1000000000,
+	MD_ANTSPDRAIN           = 0x2000000000,
+	MD_ANTAPDRAIN           = 0x4000000000,
+	MD_ANTDRAINEX           = 0x8000000000,
 };
 
 #define MD_MASK 0x000FFFF
