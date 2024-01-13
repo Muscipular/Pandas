@@ -34774,7 +34774,7 @@ BUILDIN_FUNC(set_chara_temp_novice) {
 	}
 	int pet_ix = -1;
 	if (sd->pd) {
-		pet_ix = pet_egg_search(sd, pd->pet.pet_id);
+		pet_ix = pet_egg_search(sd, sd->pd->pet.pet_id);
 		pet_return_egg(sd, sd->pd);
 	}
 	if (hom_is_active(sd->hd))
@@ -34923,11 +34923,11 @@ BUILDIN_FUNC(restore_chara_temp) {
 	memcpy(&sd->inventory, &sd->backup_data->inventory, sizeof(sd->inventory));
 	for (size_t i = 0; i < EQI_MAX; i++) {
 		if (sd->backup_data->equip_index[i] > 0) {
-			pc_equipitem(sd, ->backup_data->equip_index[i], i);
+			pc_equipitem(sd, sd->backup_data->equip_index[i], i);
 		}
 	}
 	if (sd->backup_data->pet_ix >= 0) {
-		pet_(sd, sd->backup_data->pet_ix);
+		pet_select_egg(sd, sd->backup_data->pet_ix);
 	}
 	sd->backup_data = nullptr;
 	party_send_levelup(sd);

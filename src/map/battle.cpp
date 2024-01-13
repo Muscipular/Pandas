@@ -9737,11 +9737,11 @@ void battle_drain(map_session_data *sd, struct block_list *tbl, int64 rdamage, i
 
 		if (i == 1 || i == 3) {
 			hp = wd->hp_drain_class[class_] + wd->hp_drain_class[CLASS_ALL];
-			hp += battle_calc_drain(*damage, wd->hp_drain_rate.rate, valHP > 0 ? wd->hp_drain_rate.per ? valHP == 0 ? 0 : -wd->hp_drain_rate.per);
+			hp += battle_calc_drain(*damage, wd->hp_drain_rate.rate, valHP > 0 ? wd->hp_drain_rate.per : valHP == 0 ? 0 : -wd->hp_drain_rate.per);
 
 			sp = wd->sp_drain_class[class_] + wd->sp_drain_class[CLASS_ALL];
-			sp += battle_calc_drain(*damage, wd->sp_drain_rate.rate, valSP > 0 ? wd->sp_drain_rate.per ? valSP == 0 ? 0 : -wd->sp_drain_rate.per);
-			ap += battle_calc_drain_fixed(*damage, wd->ap_drain_rate.rate, valAP > 0 ? wd->ap_drain_rate.per ? valAP == 0 ? 0 : -wd->ap_drain_rate.per);
+			sp += battle_calc_drain(*damage, wd->sp_drain_rate.rate, valSP > 0 ? wd->sp_drain_rate.per : valSP == 0 ? 0 : -wd->sp_drain_rate.per);
+			ap += battle_calc_drain_fixed(*damage, wd->ap_drain_rate.rate, valAP > 0 ? wd->ap_drain_rate.per : valAP == 0 ? 0 : -wd->ap_drain_rate.per);
 
 			if( hp ) {
 				//rhp += hp;

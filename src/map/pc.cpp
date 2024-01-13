@@ -13773,7 +13773,7 @@ void pc_bleeding (map_session_data *sd, t_tick diff_tick)
 //&2: SP regen
 void pc_regen (map_session_data *sd, t_tick diff_tick)
 {
-	int hp = 0, sp = 0;
+	int64 hp = 0, sp = 0;
 
 	if (sd->hp_regen.value) {
 		sd->hp_regen.tick += diff_tick;

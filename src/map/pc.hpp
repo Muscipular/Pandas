@@ -434,7 +434,7 @@ struct s_backup_data {
 	short equip_index[EQI_MAX];
 	//short equip_switch_index[EQI_MAX];
 	struct s_skill skill[MAX_SKILL];
-
+	int pet_ix;
 	t_exp base_exp, job_exp;
 	short class_; ///< Player's JobID
 	unsigned int status_point, skill_point, trait_point;

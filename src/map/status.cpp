@@ -1428,7 +1428,7 @@ int status_damage(struct block_list *src,struct block_list *target,int64 dhp, in
 {
 	struct status_data *status;
 	status_change *sc;
-	uint64 hp = (int)cap_value(dhp,INT_MIN,INT_MAX);
+	int64 hp = (int)cap_value(dhp,INT_MIN,INT_MAX);
 	int sp = (int)cap_value(dsp,INT_MIN,INT_MAX);
 	int ap = (int)cap_value(dap,INT_MIN,INT_MAX);
 
@@ -1755,7 +1755,7 @@ int status_heal(struct block_list *bl,int64 hhp,int64 hsp, int64 hap, int flag)
 		hap = hap * sd->aprecov_rate / 100;
 	}
 
-	uint64 hp = (int)cap_value(hhp,INT64_MIN,INT64_MAX);
+	int64 hp = (int)cap_value(hhp,INT64_MIN,INT64_MAX);
 	int sp = (int)cap_value(hsp,INT_MIN,INT_MAX);
 	int ap = (int)cap_value(hap,INT_MIN,INT_MAX);
 
