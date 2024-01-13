@@ -34762,6 +34762,182 @@ BUILDIN_FUNC(getglobalstack) {
 	return SCRIPT_CMD_SUCCESS;
 }
 
+BUILDIN_FUNC(set_chara_temp_novice) {
+	map_session_data* sd = nullptr;
+	if (!script_charid2sd(2, sd)) {
+		ShowError("buildin_reset_chara_temp: charid is invalid.");
+		return SCRIPT_CMD_FAILURE;
+	}
+	if (sd->backup_data != nullptr) {
+		ShowError("buildin_reset_chara_temp: can not store data.");
+		return SCRIPT_CMD_FAILURE;
+	}
+	int pet_ix = -1;
+	if (sd->pd) {
+		pet_ix = pet_egg_search(sd, pd->pet.pet_id);
+		pet_return_egg(sd, sd->pd);
+	}
+	if (hom_is_active(sd->hd))
+		hom_vaporize(sd, HOM_ST_ACTIVE);
+
+	if (sd->md)
+		mercenary_delete(sd->md, 3); // Your mercenary soldier has ran away.
+
+	if (sd->ed)
+		elemental_delete(sd->ed);
+
+	auto p = &sd->status;
+	sd->backup_data = std::make_shared<s_backup_data>();
+	sd->backup_data->pet_ix = pet_ix;
+	sd->backup_data->str = p->str;
+	sd->backup_data->agi = p->agi;
+	sd->backup_data->vit = p->vit;
+	sd->backup_data->int_ = p->int_;
+	sd->backup_data->dex = p->dex;
+	sd->backup_data->luk = p->luk;
+	sd->backup_data->pow = p->pow;
+	sd->backup_data->sta = p->sta;
+	sd->backup_data->wis = p->wis;
+	sd->backup_data->spl = p->spl;
+	sd->backup_data->con = p->con;
+	sd->backup_data->crt = p->crt;
+	sd->backup_data->base_level = p->base_level;
+	sd->backup_data->job_level = p->job_level;
+	sd->backup_data->status_point = p->status_point;
+	sd->backup_data->skill_point = p->skill_point;
+	sd->backup_data->trait_point = p->trait_point;
+	sd->backup_data->class_ = p->class_;
+	sd->backup_data->base_exp = p->base_exp;
+	sd->backup_data->job_exp = p->job_exp;
+	memcpy(sd->backup_data->skill, sd->status.skill, sizeof(sd->status.skill));
+	memcpy(sd->backup_data->equip_index, sd->equip_index, sizeof(sd->equip_index));
+	//memcpy(sd->backup_data->equip_switch_index, sd->equip_switch_index, sizeof(sd->equip_switch_index));
+	memcpy(sd->backup_data->inventory_data, sd->inventory_data, sizeof(sd->inventory_data));
+	memcpy(&sd->backup_data->inventory, &sd->inventory, sizeof(sd->inventory));
+	sd->class_ = p->class_ = JOB_NOVICE;
+	pc_resetlvl(sd, 2);
+
+	p->str = 1;
+	p->agi = 1;
+	p->vit = 1;
+	p->int_ = 1;
+	p->dex = 1;
+	p->luk = 1;
+	p->pow = 0;
+	p->sta = 0;
+	p->wis = 0;
+	p->spl = 0;
+	p->con = 0;
+	p->crt = 0;
+	p->base_level = 0;
+	p->job_level = 0;
+	p->status_point = 0;
+	p->skill_point = 0;
+	p->trait_point = 0;
+	p->base_exp = 0;
+	p->job_exp = 0;
+	memset(sd->status.skill, 0, sizeof(sd->status.skill));
+	memset(sd->equip_index, 0, sizeof(sd->equip_index));
+	memset(sd->equip_switch_index, 0, sizeof(sd->equip_switch_index));
+	memset(sd->inventory_data, 0, sizeof(sd->inventory_data));
+	memset(&sd->inventory, 0, sizeof(sd->inventory));
+
+	p->status_point = 100;
+	clif_updatestatus(sd, SP_STATUSPOINT);
+	clif_inventorylist(sd);
+	return SCRIPT_CMD_SUCCESS;
+}
+
+BUILDIN_FUNC(restore_chara_temp) {
+	map_session_data* sd = nullptr;
+	if (!script_charid2sd(2, sd)) {
+		ShowError("buildin_reset_chara_temp: charid is invalid.");
+		return SCRIPT_CMD_FAILURE;
+	}
+	if (sd->backup_data == nullptr) {
+		ShowError("buildin_reset_chara_temp: can not restore data.");
+		return SCRIPT_CMD_FAILURE;
+	}
+	auto p = &sd->status;
+
+	p->str = sd->backup_data->str;
+	p->agi = sd->backup_data->agi;
+	p->vit = sd->backup_data->vit;
+	p->int_ = sd->backup_data->int_;
+	p->dex = sd->backup_data->dex;
+	p->luk = sd->backup_data->luk;
+	p->pow = sd->backup_data->pow;
+	p->sta = sd->backup_data->sta;
+	p->wis = sd->backup_data->wis;
+	p->spl = sd->backup_data->spl;
+	p->con = sd->backup_data->con;
+	p->crt = sd->backup_data->crt;
+	p->base_level = sd->backup_data->base_level;
+	p->job_level = sd->backup_data->job_level;
+	p->status_point = sd->backup_data->status_point;
+	p->skill_point = sd->backup_data->skill_point;
+	p->trait_point = sd->backup_data->trait_point;
+	p->class_ = sd->backup_data->class_;
+	p->base_exp = sd->backup_data->base_exp;
+	p->job_exp = sd->backup_data->job_exp;
+	clif_updatestatus(sd, SP_STATUSPOINT);
+	clif_updatestatus(sd, SP_TRAITPOINT);
+	clif_updatestatus(sd, SP_STR);
+	clif_updatestatus(sd, SP_AGI);
+	clif_updatestatus(sd, SP_VIT);
+	clif_updatestatus(sd, SP_INT);
+	clif_updatestatus(sd, SP_DEX);
+	clif_updatestatus(sd, SP_LUK);
+	clif_updatestatus(sd, SP_POW);
+	clif_updatestatus(sd, SP_STA);
+	clif_updatestatus(sd, SP_WIS);
+	clif_updatestatus(sd, SP_SPL);
+	clif_updatestatus(sd, SP_CON);
+	clif_updatestatus(sd, SP_CRT);
+	clif_updatestatus(sd, SP_BASELEVEL);
+	clif_updatestatus(sd, SP_JOBLEVEL);
+	clif_updatestatus(sd, SP_STATUSPOINT);
+	clif_updatestatus(sd, SP_BASEEXP);
+	clif_updatestatus(sd, SP_JOBEXP);
+	clif_updatestatus(sd, SP_NEXTBASEEXP);
+	clif_updatestatus(sd, SP_NEXTJOBEXP);
+	clif_updatestatus(sd, SP_SKILLPOINT);
+
+	clif_updatestatus(sd, SP_USTR);	// Updates needed stat points - Valaris
+	clif_updatestatus(sd, SP_UAGI);
+	clif_updatestatus(sd, SP_UVIT);
+	clif_updatestatus(sd, SP_UINT);
+	clif_updatestatus(sd, SP_UDEX);
+	clif_updatestatus(sd, SP_ULUK);	// End Addition
+	clif_updatestatus(sd, SP_UPOW);
+	clif_updatestatus(sd, SP_USTA);
+	clif_updatestatus(sd, SP_UWIS);
+	clif_updatestatus(sd, SP_USPL);
+	clif_updatestatus(sd, SP_UCON);
+	clif_updatestatus(sd, SP_UCRT);
+	memcpy(p->skill, sd->backup_data->skill, sizeof(p->skill));
+	//memcpy(sd->backup_data->equip_index, sd->equip_index, sizeof(sd->equip_index));
+	memset(sd->equip_index, 0, sizeof(sd->equip_switch_index));
+	memset(sd->equip_switch_index, 0, sizeof(sd->equip_switch_index));
+	memcpy(sd->inventory_data, sd->backup_data->inventory_data, sizeof(sd->inventory_data));
+	memcpy(&sd->inventory, &sd->backup_data->inventory, sizeof(sd->inventory));
+	for (size_t i = 0; i < EQI_MAX; i++) {
+		if (sd->backup_data->equip_index[i] > 0) {
+			pc_equipitem(sd, ->backup_data->equip_index[i], i);
+		}
+	}
+	if (sd->backup_data->pet_ix >= 0) {
+		pet_(sd, sd->backup_data->pet_ix);
+	}
+	sd->backup_data = nullptr;
+	party_send_levelup(sd);
+
+	status_calc_pc(sd, SCO_FORCE);
+	clif_skillinfoblock(sd);
+	clif_inventorylist(sd);
+	return SCRIPT_CMD_SUCCESS;
+}
+
 // PYHELP - SCRIPTCMD - INSERT POINT - <Section 2>
 
 /// script command definitions
@@ -35780,13 +35956,15 @@ struct script_function buildin_func[] = {
 #endif // Pandas_ScriptCommand_Instance_Add_Warp
 	// PYHELP - SCRIPTCMD - INSERT POINT - <Section 3>
 
-		BUILDIN_DEF(lua_init, ""),
-		BUILDIN_DEF(lua_call_fn, "s*"),
+	BUILDIN_DEF(lua_init, ""),
+	BUILDIN_DEF(lua_call_fn, "s*"),
 	BUILDIN_DEF(lua_run, "s*"),
 	BUILDIN_DEF(setglobalrate, "ii"),
 	BUILDIN_DEF(getglobalrate, "i"),
 	BUILDIN_DEF(setglobalstack, "i"),
 	BUILDIN_DEF(getglobalstack, ""),
+	BUILDIN_DEF(set_chara_temp_novice, "i"),
+	BUILDIN_DEF(restore_chara_temp, "i"),
 #include <custom/script_def.inc>
 
 	{NULL,NULL,NULL},

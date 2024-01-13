@@ -428,6 +428,21 @@ bool pc_autotrade_suspend(map_session_data *sd);
 #endif // Pandas_Struct_Autotrade_Extend
 struct s_dps_dt { int64_t dmgTotal; int hit; };
 
+struct s_backup_data {
+	struct s_storage inventory;
+	struct item_data* inventory_data[MAX_INVENTORY];
+	short equip_index[EQI_MAX];
+	//short equip_switch_index[EQI_MAX];
+	struct s_skill skill[MAX_SKILL];
+
+	t_exp base_exp, job_exp;
+	short class_; ///< Player's JobID
+	unsigned int status_point, skill_point, trait_point;
+	unsigned int base_level, job_level;
+	pec_ushort str, agi, vit, int_, dex, luk;
+	pec_ushort pow, sta, wis, spl, con, crt;
+};
+
 class map_session_data {
 public:
 	struct block_list bl;
@@ -553,6 +568,7 @@ public:
 		int id, price;
 	};
 	struct item_data* inventory_data[MAX_INVENTORY]; // direct pointers to itemdb entries (faster than doing item_id lookups)
+	std::shared_ptr<s_backup_data> backup_data;
 	std::vector<dyn_item_sell> dyn_sell_list;
 	short equip_index[EQI_MAX];
 	short equip_switch_index[EQI_MAX];

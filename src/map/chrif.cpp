@@ -152,6 +152,7 @@ bool chrif_auth_delete(uint32 account_id, uint32 char_id, enum sd_state state) {
 			if (node->sd->regs.arrays)
 				node->sd->regs.arrays->destroy(node->sd->regs.arrays, script_free_array_db);
 
+			printf_s("[DEBUG] chrif_auth_delete %d %d \n", account_id, char_id);
 			node->sd->~map_session_data();
 			aFree(node->sd);
 		}
@@ -296,8 +297,8 @@ int chrif_save(map_session_data *sd, int flag) {
 
 	if (sd->storage.dirty)
 		storage_storagesave(sd);
-	if (flag&CSAVE_INVENTORY)
-		intif_storage_save(sd,&sd->inventory);
+	if (flag & CSAVE_INVENTORY)
+		intif_storage_save(sd, sd->backup_data == nullptr ? &sd->inventory : &sd->backup_data->inventory);
 	if (flag&CSAVE_CART)
 		intif_storage_save(sd,&sd->cart);
 
@@ -321,20 +322,54 @@ int chrif_save(map_session_data *sd, int flag) {
 	WFIFOL(char_fd,4) = sd->status.account_id;
 	WFIFOL(char_fd,8) = sd->status.char_id;
 	WFIFOB(char_fd,12) = (flag&CSAVE_QUIT) ? 1 : 0; //Flag to tell char-server this character is quitting.
-
+	mmo_charstatus* p;
+	if (sd->backup_data != nullptr) {
+		p = new mmo_charstatus();
+		memcpy(p, &sd->status, sizeof(struct mmo_charstatus));
+		p->str = sd->backup_data->str;
+		p->agi = sd->backup_data->agi;
+		p->vit = sd->backup_data->vit;
+		p->int_ = sd->backup_data->int_;
+		p->dex = sd->backup_data->dex;
+		p->luk = sd->backup_data->luk;
+		p->pow = sd->backup_data->pow;
+		p->sta = sd->backup_data->sta;
+		p->wis = sd->backup_data->wis;
+		p->spl = sd->backup_data->spl;
+		p->con = sd->backup_data->con;
+		p->crt = sd->backup_data->crt;
+		p->base_level = sd->backup_data->base_level;
+		p->job_level = sd->backup_data->job_level;
+		p->status_point = sd->backup_data->status_point;
+		p->skill_point = sd->backup_data->skill_point;
+		p->trait_point = sd->backup_data->trait_point;
+		p->class_ = sd->backup_data->class_;
+		p->base_exp = sd->backup_data->base_exp;
+		p->job_exp = sd->backup_data->job_exp;
+		memcpy(p->skill, sd->backup_data->skill, sizeof(p->skill));
+	}
+	else {
+		p = &sd->status;
+	}
 	// Copy the whole status into the packet
-	memcpy( WFIFOP( char_fd, 13 ), &sd->status, sizeof( struct mmo_charstatus ) );
-
+	memcpy(WFIFOP(char_fd, 13), p, sizeof(struct mmo_charstatus));
+	if (p != &sd->status) {
+		delete p;
+	}
 	WFIFOSET(char_fd, WFIFOW(char_fd,2));
 
-	if( sd->status.pet_id > 0 && sd->pd )
-		intif_save_petdata(sd->status.account_id,&sd->pd->pet);
-	if( hom_is_active(sd->hd) )
-		hom_save(sd->hd);
-	if( sd->md && mercenary_get_lifetime(sd->md) > 0 )
-		mercenary_save(sd->md);
-	if( sd->ed && elemental_get_lifetime(sd->ed) > 0 )
-		elemental_save(sd->ed);
+	if(sd->backup_data != nullptr) {
+	}
+	else {
+		if (sd->status.pet_id > 0 && sd->pd)
+			intif_save_petdata(sd->status.account_id, &sd->pd->pet);
+		if (hom_is_active(sd->hd))
+			hom_save(sd->hd);
+		if (sd->md && mercenary_get_lifetime(sd->md) > 0)
+			mercenary_save(sd->md);
+		if (sd->ed && elemental_get_lifetime(sd->ed) > 0)
+			elemental_save(sd->ed);
+	}
 	if( sd->save_quest )
 		intif_quest_save(sd);
 	if (sd->achievement_data.save)
