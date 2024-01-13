@@ -1352,6 +1352,28 @@ enum sc_type : int16 {
 #ifdef RENEWAL
 	SC_EXTREMITYFIST2, //! NOTE: This SC should be right before SC_MAX, so it doesn't disturb if RENEWAL is disabled
 #endif
+
+	SC_CUSTOM_0,
+	SC_CUSTOM_1,
+	SC_CUSTOM_2,
+	SC_CUSTOM_3,
+	SC_CUSTOM_4,
+	SC_CUSTOM_5,
+	SC_CUSTOM_6,
+	SC_CUSTOM_7,
+	SC_CUSTOM_8,
+	SC_CUSTOM_9,
+	SC_CUSTOM_10,
+	SC_CUSTOM_11,
+	SC_CUSTOM_12,
+	SC_CUSTOM_13,
+	SC_CUSTOM_14,
+	SC_CUSTOM_15,
+	SC_CUSTOM_16,
+	SC_CUSTOM_17,
+	SC_CUSTOM_18,
+	SC_CUSTOM_19,
+
 	SC_MAX, //Automatically updated max, used in for's to check we are within bounds.
 };
 

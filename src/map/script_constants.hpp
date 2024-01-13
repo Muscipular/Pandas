@@ -2383,6 +2383,27 @@
 	export_constant(SC_EXTREMITYFIST2);
 #endif
 
+	export_constant(SC_CUSTOM_0);
+	export_constant(SC_CUSTOM_1);
+	export_constant(SC_CUSTOM_2);
+	export_constant(SC_CUSTOM_3);
+	export_constant(SC_CUSTOM_4);
+	export_constant(SC_CUSTOM_5);
+	export_constant(SC_CUSTOM_6);
+	export_constant(SC_CUSTOM_7);
+	export_constant(SC_CUSTOM_8);
+	export_constant(SC_CUSTOM_9);
+	export_constant(SC_CUSTOM_10);
+	export_constant(SC_CUSTOM_11);
+	export_constant(SC_CUSTOM_12);
+	export_constant(SC_CUSTOM_13);
+	export_constant(SC_CUSTOM_14);
+	export_constant(SC_CUSTOM_15);
+	export_constant(SC_CUSTOM_16);
+	export_constant(SC_CUSTOM_17);
+	export_constant(SC_CUSTOM_18);
+	export_constant(SC_CUSTOM_19);
+
 	/* status icons */
 	export_deprecated_constant2("SI_BLANK",-1);
 	export_deprecated_constant2("SI_PROVOKE",0);
