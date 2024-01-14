@@ -34762,6 +34762,46 @@ BUILDIN_FUNC(getglobalstack) {
 	return SCRIPT_CMD_SUCCESS;
 }
 
+inline void flushCharaStatus(map_session_data* sd) {
+	clif_updatestatus(sd, SP_STATUSPOINT);
+	clif_updatestatus(sd, SP_TRAITPOINT);
+	clif_updatestatus(sd, SP_STR);
+	clif_updatestatus(sd, SP_AGI);
+	clif_updatestatus(sd, SP_VIT);
+	clif_updatestatus(sd, SP_INT);
+	clif_updatestatus(sd, SP_DEX);
+	clif_updatestatus(sd, SP_LUK);
+	clif_updatestatus(sd, SP_POW);
+	clif_updatestatus(sd, SP_STA);
+	clif_updatestatus(sd, SP_WIS);
+	clif_updatestatus(sd, SP_SPL);
+	clif_updatestatus(sd, SP_CON);
+	clif_updatestatus(sd, SP_CRT);
+	clif_updatestatus(sd, SP_BASELEVEL);
+	clif_updatestatus(sd, SP_JOBLEVEL);
+	clif_updatestatus(sd, SP_BASEEXP);
+	clif_updatestatus(sd, SP_JOBEXP);
+	clif_updatestatus(sd, SP_NEXTBASEEXP);
+	clif_updatestatus(sd, SP_NEXTJOBEXP);
+	clif_updatestatus(sd, SP_SKILLPOINT);
+
+	clif_updatestatus(sd, SP_USTR);	// Updates needed stat points - Valaris
+	clif_updatestatus(sd, SP_UAGI);
+	clif_updatestatus(sd, SP_UVIT);
+	clif_updatestatus(sd, SP_UINT);
+	clif_updatestatus(sd, SP_UDEX);
+	clif_updatestatus(sd, SP_ULUK);	// End Addition
+	clif_updatestatus(sd, SP_UPOW);
+	clif_updatestatus(sd, SP_USTA);
+	clif_updatestatus(sd, SP_UWIS);
+	clif_updatestatus(sd, SP_USPL);
+	clif_updatestatus(sd, SP_UCON);
+	clif_updatestatus(sd, SP_UCRT);
+	party_send_levelup(sd);
+	clif_skillinfoblock(sd);
+	clif_inventorylist(sd);
+}
+
 BUILDIN_FUNC(set_chara_temp_novice) {
 	map_session_data* sd = nullptr;
 	if (!script_charid2sd(2, sd)) {
@@ -34814,7 +34854,7 @@ BUILDIN_FUNC(set_chara_temp_novice) {
 	//memcpy(sd->backup_data->equip_switch_index, sd->equip_switch_index, sizeof(sd->equip_switch_index));
 	memcpy(sd->backup_data->inventory_data, sd->inventory_data, sizeof(sd->inventory_data));
 	memcpy(&sd->backup_data->inventory, &sd->inventory, sizeof(sd->inventory));
-	sd->class_ = p->class_ = JOB_NOVICE;
+	//sd->class_ = p->class_ = JOB_NOVICE;
 	pc_resetlvl(sd, 2);
 
 	p->str = 1;
@@ -34843,8 +34883,8 @@ BUILDIN_FUNC(set_chara_temp_novice) {
 	memset(&sd->inventory, 0, sizeof(sd->inventory));
 
 	p->status_point = 100;
-	clif_updatestatus(sd, SP_STATUSPOINT);
-	clif_inventorylist(sd);
+	flushCharaStatus(sd);
+	pc_jobchange(sd, JOB_NOVICE, 0);
 	return SCRIPT_CMD_SUCCESS;
 }
 
@@ -34877,50 +34917,16 @@ BUILDIN_FUNC(restore_chara_temp) {
 	p->status_point = sd->backup_data->status_point;
 	p->skill_point = sd->backup_data->skill_point;
 	p->trait_point = sd->backup_data->trait_point;
-	p->class_ = sd->backup_data->class_;
+	//p->class_ = sd->backup_data->class_;
 	p->base_exp = sd->backup_data->base_exp;
 	p->job_exp = sd->backup_data->job_exp;
-	clif_updatestatus(sd, SP_STATUSPOINT);
-	clif_updatestatus(sd, SP_TRAITPOINT);
-	clif_updatestatus(sd, SP_STR);
-	clif_updatestatus(sd, SP_AGI);
-	clif_updatestatus(sd, SP_VIT);
-	clif_updatestatus(sd, SP_INT);
-	clif_updatestatus(sd, SP_DEX);
-	clif_updatestatus(sd, SP_LUK);
-	clif_updatestatus(sd, SP_POW);
-	clif_updatestatus(sd, SP_STA);
-	clif_updatestatus(sd, SP_WIS);
-	clif_updatestatus(sd, SP_SPL);
-	clif_updatestatus(sd, SP_CON);
-	clif_updatestatus(sd, SP_CRT);
-	clif_updatestatus(sd, SP_BASELEVEL);
-	clif_updatestatus(sd, SP_JOBLEVEL);
-	clif_updatestatus(sd, SP_STATUSPOINT);
-	clif_updatestatus(sd, SP_BASEEXP);
-	clif_updatestatus(sd, SP_JOBEXP);
-	clif_updatestatus(sd, SP_NEXTBASEEXP);
-	clif_updatestatus(sd, SP_NEXTJOBEXP);
-	clif_updatestatus(sd, SP_SKILLPOINT);
-
-	clif_updatestatus(sd, SP_USTR);	// Updates needed stat points - Valaris
-	clif_updatestatus(sd, SP_UAGI);
-	clif_updatestatus(sd, SP_UVIT);
-	clif_updatestatus(sd, SP_UINT);
-	clif_updatestatus(sd, SP_UDEX);
-	clif_updatestatus(sd, SP_ULUK);	// End Addition
-	clif_updatestatus(sd, SP_UPOW);
-	clif_updatestatus(sd, SP_USTA);
-	clif_updatestatus(sd, SP_UWIS);
-	clif_updatestatus(sd, SP_USPL);
-	clif_updatestatus(sd, SP_UCON);
-	clif_updatestatus(sd, SP_UCRT);
 	memcpy(p->skill, sd->backup_data->skill, sizeof(p->skill));
 	//memcpy(sd->backup_data->equip_index, sd->equip_index, sizeof(sd->equip_index));
 	memset(sd->equip_index, 0, sizeof(sd->equip_switch_index));
 	memset(sd->equip_switch_index, 0, sizeof(sd->equip_switch_index));
 	memcpy(sd->inventory_data, sd->backup_data->inventory_data, sizeof(sd->inventory_data));
 	memcpy(&sd->inventory, &sd->backup_data->inventory, sizeof(sd->inventory));
+	pc_jobchange(sd, sd->backup_data->class_, 0);
 	for (size_t i = 0; i < EQI_MAX; i++) {
 		if (sd->backup_data->equip_index[i] > 0) {
 			pc_equipitem(sd, sd->backup_data->equip_index[i], i);
@@ -34930,11 +34936,10 @@ BUILDIN_FUNC(restore_chara_temp) {
 		pet_select_egg(sd, sd->backup_data->pet_ix);
 	}
 	sd->backup_data = nullptr;
-	party_send_levelup(sd);
-
+	
 	status_calc_pc(sd, SCO_FORCE);
-	clif_skillinfoblock(sd);
-	clif_inventorylist(sd);
+	flushCharaStatus(sd);
+
 	return SCRIPT_CMD_SUCCESS;
 }
 
