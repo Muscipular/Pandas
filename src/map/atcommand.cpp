@@ -8816,9 +8816,9 @@ ACMD_FUNC(dps_log) {
 		time = cap_value(atoi(message), 3, 60);
 	}
 
-	sd->dps.start = gettick();
-	sd->dps.end = sd->dps.start + time * 1000;
-	sd->dps.map.clear();
+	sd->dps->start = gettick();
+	sd->dps->end = sd->dps->start + time * 1000;
+	sd->dps->map.clear();
 	snprintf(atcmd_output, sizeof atcmd_output, "Log DPS for %d sec", time);
 	clif_displaymessage(fd, atcmd_output);
 	return 0;
@@ -8836,9 +8836,9 @@ ACMD_FUNC(dps_show) {
 
 	auto tick = gettick();
 	int64_t dmg = 0;
-	int time = cap_value((sd->dps.end - sd->dps.start) / 1000, 1, 100);
-	if (sd->dps.start > 0 && sd->dps.end < tick) {
-		for (const auto& it : sd->dps.map) {
+	int time = cap_value((sd->dps->end - sd->dps->start) / 1000, 1, 100);
+	if (sd->dps->start > 0 && sd->dps->end < tick) {
+		for (const auto& it : sd->dps->map) {
 			dmg += it.second->dmgTotal;
 		}
 		char buf1[32];
@@ -8847,7 +8847,7 @@ ACMD_FUNC(dps_show) {
 		printDMG(buf1, dmg);
 		snprintf(atcmd_output, sizeof atcmd_output, "dps: %s in %d sec", buf1, time);
 		clif_displaymessage(fd, atcmd_output);
-		for (const auto& it : sd->dps.map) {
+		for (const auto& it : sd->dps->map) {
 			char buff[64];
 			auto name = it.first <= 0 ? "attack" : skill_get_desc(it.first);
 			if (name == nullptr) {

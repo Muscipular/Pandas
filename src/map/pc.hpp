@@ -427,6 +427,12 @@ enum e_autotrade_mode : uint32 {
 bool pc_autotrade_suspend(map_session_data *sd);
 #endif // Pandas_Struct_Autotrade_Extend
 struct s_dps_dt { int64_t dmgTotal; int hit; };
+struct s_dps_save
+{
+	std::unordered_map<uint16, std::shared_ptr<s_dps_dt>> map;
+	int64_t start;
+	int64_t end;
+};
 
 struct s_backup_data {
 	struct s_storage inventory;
@@ -694,12 +700,7 @@ public:
 	} indexed_bonus;
 	// zeroed arrays end here.
 
-	struct 
-	{
-		std::unordered_map<uint16, std::shared_ptr<s_dps_dt>> map;
-		int64_t start;
-		int64_t end;
-	} dps;
+	std::shared_ptr<s_dps_save> dps;
 	std::vector<s_autospell> autospell, autospell2, autospell3, autospell4;
 	std::vector<s_item_bonus> sp_dmg_rate;
 	std::vector<s_addeffect> addeff, addeff_atked;

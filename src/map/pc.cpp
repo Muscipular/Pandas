@@ -2215,9 +2215,10 @@ bool pc_authok(map_session_data *sd, uint32 login_id2, time_t expiration_time, i
 
 	//Prevent S. Novices from getting the no-death bonus just yet. [Skotlex]
 	sd->die_counter=-1;
-	sd->dps.start = 0;
-	sd->dps.end = 0;
-	sd->dps.map.clear();
+	sd->dps = std::make_shared<s_dps_save>();
+	sd->dps->start = 0;
+	sd->dps->end = 0;
+	sd->dps->map.clear();
 
 #ifdef Pandas_BonusScript_Unique_ID
 	sd->pandas.bonus_script_counter = 0;
