@@ -800,6 +800,7 @@ public:
 		int skill_cooldown;
 		int skill_cooldown_rate;
 		short weapon_atk_rate, weapon_matk_rate;
+		int ammo_rate, ammo_dmg_rate;
 #ifdef Pandas_Bonus3_bRebirthWithHeal
 		int rebirth_rate, rebirth_heal_percent_hp, rebirth_heal_percent_sp;
 #endif // Pandas_Bonus3_bRebirthWithHeal

@@ -4597,6 +4597,14 @@ void pc_bonus(map_session_data *sd,int type,int val)
 			if (sd->state.lr_flag != 2)
 				sd->bonus.melee_rate += val;
 			break;
+		case SP_AMMO_RATE:
+			if (sd->state.lr_flag != 2)
+				sd->bonus.ammo_rate += val;
+			break;
+		case SP_AMMO_DMG_RATE:
+			if (sd->state.lr_flag != 2)
+				sd->bonus.ammo_dmg_rate += val;
+			break;
 		case SP_PANDAS_ADDSKILLRANGE_ALL:
 			if (sd->state.lr_flag != 2)
 				sd->bonus.skillrange += val;

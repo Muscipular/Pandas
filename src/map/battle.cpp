@@ -2720,6 +2720,10 @@ void battle_consume_ammo(map_session_data*sd, int skill, int lv)
 		if (skill == NW_MAGAZINE_FOR_ONE && sd->weapontype1 == W_GATLING)
 			qty += 4;
 	}
+	if (sd->bonus.ammo_rate != 0) {
+		qty *= 1 + sd->bonus.ammo_rate / 100.0;
+		qty = std::max(qty, 1);
+	}
 
 	if (sd->equip_index[EQI_AMMO] >= 0) //Qty check should have been done in skill_check_condition
 		pc_delitem(sd,sd->equip_index[EQI_AMMO],qty,0,1,LOG_TYPE_CONSUME);
@@ -9488,6 +9492,14 @@ struct Damage battle_calc_attack(int attack_type,struct block_list *bl,struct bl
 		d.dmg_lv = ATK_DEF;
 
 	map_session_data *sd = BL_CAST(BL_PC, bl);
+
+	if (sd) {
+		if ((skill_id && skill_get_ammotype(skill_id) != AMMO_NONE) || is_skill_using_arrow(bl, skill_id)) {
+			if (sd->bonus.ammo_dmg_rate) {
+				d.damage += d.damage * (sd->bonus.ammo_dmg_rate / 100.0);
+			}
+		}
+	}
 
 #ifdef Pandas_MapFlag_MaxDmg_Skill
 	if (skill_id && bl && map_getmapflag(bl->m, MF_MAXDMG_SKILL)) {

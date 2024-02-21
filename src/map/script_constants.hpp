@@ -1042,6 +1042,8 @@
 	export_constant2("bAtkRate",SP_ATK_RATE);
 	export_constant2("bWeaponAtkRate",SP_WEAPON_ATK_RATE);
 	export_constant2("bMeleeRate",SP_MELEE_RATE);
+	export_constant2("bAmmoDmgRate",SP_AMMO_DMG_RATE);
+	export_constant2("bAmmoRate",SP_AMMO_RATE);
 	export_constant2("bAutoSpellDmgRate",SP_AUTOSPELL_DMG_RATE);
 	export_constant2("bAutoSpellRate",SP_AUTOSPELL_RATE);
 	export_constant2("bSpeedAddRate",SP_SPEED_ADDRATE);
