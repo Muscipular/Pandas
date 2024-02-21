@@ -9494,7 +9494,7 @@ struct Damage battle_calc_attack(int attack_type,struct block_list *bl,struct bl
 	map_session_data *sd = BL_CAST(BL_PC, bl);
 
 	if (sd) {
-		if ((skill_id && skill_get_ammotype(skill_id) != AMMO_NONE) || is_skill_using_arrow(bl, skill_id)) {
+		if ((skill_id && skill_get_ammotype(skill_id) != AMMO_NONE)) {
 			if (sd->bonus.ammo_dmg_rate) {
 				d.damage += d.damage * (sd->bonus.ammo_dmg_rate / 100.0);
 			}
