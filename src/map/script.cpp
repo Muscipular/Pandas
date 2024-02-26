@@ -1,4 +1,4 @@
-ï»¿// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
+// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
 //#define DEBUG_DISP
@@ -265,10 +265,10 @@ static int str_size = 0; // size of the buffer
 static int str_pos = 0; // next position to be assigned
 
 #ifdef Pandas_ScriptEngine_AddStr_Realloc_Memory
-// str_data æ¯æ¬¡è¢«é‡æ–°åˆ†é…æ—¶, å¢åŠ å¤šå°‘ä¸ªå­—èŠ‚çš„å®¹é‡
+// str_data Ã¿´Î±»ÖØĞÂ·ÖÅäÊ±, Ôö¼Ó¶àÉÙ¸ö×Ö½ÚµÄÈİÁ¿
 #define STR_DATA_INCREASING_SIZE 128 * 4
 
-// str_buf  æ¯æ¬¡è¢«é‡æ–°åˆ†é…æ—¶, å¢åŠ å¤šå°‘ä¸ªå­—èŠ‚çš„å®¹é‡
+// str_buf  Ã¿´Î±»ÖØĞÂ·ÖÅäÊ±, Ôö¼Ó¶àÉÙ¸ö×Ö½ÚµÄÈİÁ¿
 #define STR_BUF_INCREASING_SIZE 256 * 32
 #endif // Pandas_ScriptEngine_AddStr_Realloc_Memory
 
@@ -312,201 +312,201 @@ struct Script_Config script_config = {
 	"OnPCJobLvUpEvent", //joblvup_event_name
 
 	/************************************************************************/
-	/* Filter ç±»å‹çš„è¿‡æ»¤äº‹ä»¶ï¼Œè¿™äº›äº‹ä»¶å¯ä»¥è¢« processhalt ä¸­æ–­                    */
+	/* Filter ÀàĞÍµÄ¹ıÂËÊÂ¼ş£¬ÕâĞ©ÊÂ¼ş¿ÉÒÔ±» processhalt ÖĞ¶Ï                    */
 	/************************************************************************/
 
 #ifdef Pandas_NpcFilter_IDENTIFY
-	"OnPCIdentifyFilter",	// NPCF_IDENTIFY		// identify_filter_name	// å½“ç©å®¶åœ¨è£…å¤‡é‰´å®šåˆ—è¡¨ä¸­é€‰æ‹©å¥½è£…å¤‡, å¹¶ç‚¹å‡»â€œç¡®å®šâ€æŒ‰é’®æ—¶è§¦å‘è¿‡æ»¤å™¨
+	"OnPCIdentifyFilter",	// NPCF_IDENTIFY		// identify_filter_name	// µ±Íæ¼ÒÔÚ×°±¸¼ø¶¨ÁĞ±íÖĞÑ¡ÔñºÃ×°±¸, ²¢µã»÷¡°È·¶¨¡±°´Å¥Ê±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_IDENTIFY
 
 #ifdef Pandas_NpcFilter_ENTERCHAT
-	"OnPCInChatroomFilter",	// NPCF_ENTERCHAT		// enterchat_filter_name	// å½“ç©å®¶è¿›å…¥ NPC å¼€å¯çš„èŠå¤©å®¤æ—¶è§¦å‘è¿‡æ»¤å™¨
+	"OnPCInChatroomFilter",	// NPCF_ENTERCHAT		// enterchat_filter_name	// µ±Íæ¼Ò½øÈë NPC ¿ªÆôµÄÁÄÌìÊÒÊ±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_ENTERCHAT
 
 #ifdef Pandas_NpcFilter_INSERT_CARD
-	"OnPCInsertCardFilter",	// NPCF_INSERT_CARD		// insert_card_filter_name	// å½“ç©å®¶å‡†å¤‡æ’å…¥å¡ç‰‡æ—¶è§¦å‘è¿‡æ»¤å™¨
+	"OnPCInsertCardFilter",	// NPCF_INSERT_CARD		// insert_card_filter_name	// µ±Íæ¼Ò×¼±¸²åÈë¿¨Æ¬Ê±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_INSERT_CARD
 
 #ifdef Pandas_NpcFilter_USE_ITEM
-	"OnPCUseItemFilter",	// NPCF_USE_ITEM		// use_item_filter_name	// å½“ç©å®¶å‡†å¤‡ä½¿ç”¨éè£…å¤‡ç±»é“å…·æ—¶è§¦å‘è¿‡æ»¤å™¨
+	"OnPCUseItemFilter",	// NPCF_USE_ITEM		// use_item_filter_name	// µ±Íæ¼Ò×¼±¸Ê¹ÓÃ·Ç×°±¸ÀàµÀ¾ßÊ±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_USE_ITEM
 
 #ifdef Pandas_NpcFilter_USE_SKILL
-	"OnPCUseSkillFilter",	// NPCF_USE_SKILL		// use_skill_filter_name	// å½“ç©å®¶å‡†å¤‡ä½¿ç”¨æŠ€èƒ½æ—¶è§¦å‘è¿‡æ»¤å™¨
+	"OnPCUseSkillFilter",	// NPCF_USE_SKILL		// use_skill_filter_name	// µ±Íæ¼Ò×¼±¸Ê¹ÓÃ¼¼ÄÜÊ±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_USE_SKILL
 
 #ifdef Pandas_NpcFilter_ROULETTE_OPEN
-	"OnPCOpenRouletteFilter",	// NPCF_ROULETTE_OPEN		// roulette_open_filter_name	// å½“ç©å®¶å‡†å¤‡æ‰“å¼€ä¹é€å¤§è½¬ç›˜çš„æ—¶å€™è§¦å‘è¿‡æ»¤å™¨
+	"OnPCOpenRouletteFilter",	// NPCF_ROULETTE_OPEN		// roulette_open_filter_name	// µ±Íæ¼Ò×¼±¸´ò¿ªÀÖÍ¸´ó×ªÅÌµÄÊ±ºò´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_ROULETTE_OPEN
 
 #ifdef Pandas_NpcFilter_VIEW_EQUIP
-	"OnPCViewEquipFilter",	// NPCF_VIEW_EQUIP		// view_equip_filter_name	// å½“ç©å®¶å‡†å¤‡æŸ¥çœ‹æŸä¸ªè§’è‰²çš„è£…å¤‡æ—¶è§¦å‘è¿‡æ»¤å™¨
+	"OnPCViewEquipFilter",	// NPCF_VIEW_EQUIP		// view_equip_filter_name	// µ±Íæ¼Ò×¼±¸²é¿´Ä³¸ö½ÇÉ«µÄ×°±¸Ê±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_VIEW_EQUIP
 
 #ifdef Pandas_NpcFilter_EQUIP
-	"OnPCEquipFilter",	// NPCF_EQUIP		// equip_filter_name	// å½“ç©å®¶å‡†å¤‡ç©¿æˆ´è£…å¤‡æ—¶è§¦å‘è¿‡æ»¤å™¨
+	"OnPCEquipFilter",	// NPCF_EQUIP		// equip_filter_name	// µ±Íæ¼Ò×¼±¸´©´÷×°±¸Ê±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_EQUIP
 
 #ifdef Pandas_NpcFilter_UNEQUIP
-	"OnPCUnequipFilter",	// NPCF_UNEQUIP		// unequip_filter_name	// å½“ç©å®¶å‡†å¤‡è„±ä¸‹è£…å¤‡æ—¶è§¦å‘è¿‡æ»¤å™¨
+	"OnPCUnequipFilter",	// NPCF_UNEQUIP		// unequip_filter_name	// µ±Íæ¼Ò×¼±¸ÍÑÏÂ×°±¸Ê±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_UNEQUIP
 
 #ifdef Pandas_NpcFilter_CHANGETITLE
-	"OnPCChangeTitleFilter",	// NPCF_CHANGETITLE		// changetitle_filter_name	// å½“ç©å®¶è¯•å›¾å˜æ›´ç§°å·æ—¶å°†è§¦å‘è¿‡æ»¤å™¨
+	"OnPCChangeTitleFilter",	// NPCF_CHANGETITLE		// changetitle_filter_name	// µ±Íæ¼ÒÊÔÍ¼±ä¸ü³ÆºÅÊ±½«´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_CHANGETITLE
 
 #ifdef Pandas_NpcFilter_SC_START
-	"OnPCBuffStartFilter",	// NPCF_SC_START		// sc_start_filter_name	// å½“ç©å®¶å‡†å¤‡è·å¾—ä¸€ä¸ªçŠ¶æ€(Buff)æ—¶è§¦å‘è¿‡æ»¤å™¨
+	"OnPCBuffStartFilter",	// NPCF_SC_START		// sc_start_filter_name	// µ±Íæ¼Ò×¼±¸»ñµÃÒ»¸ö×´Ì¬(Buff)Ê±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_SC_START
 
 #ifdef Pandas_NpcFilter_USE_REVIVE_TOKEN
-	"OnPCUseReviveTokenFilter",	// NPCF_USE_REVIVE_TOKEN		// use_revive_token_filter_name	// å½“ç©å®¶ä½¿ç”¨èœå•ä¸­çš„åŸåœ°å¤æ´»ä¹‹è¯æ—¶è§¦å‘è¿‡æ»¤å™¨
+	"OnPCUseReviveTokenFilter",	// NPCF_USE_REVIVE_TOKEN		// use_revive_token_filter_name	// µ±Íæ¼ÒÊ¹ÓÃ²Ëµ¥ÖĞµÄÔ­µØ¸´»îÖ®Ö¤Ê±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_USE_REVIVE_TOKEN
 
 #ifdef Pandas_NpcFilter_ONECLICK_IDENTIFY
-	"OnPCUseOCIdentifyFilter",	// NPCF_ONECLICK_IDENTIFY		// oneclick_identify_filter_name	// å½“ç©å®¶ä½¿ç”¨ä¸€é”®é‰´å®šé“å…·æ—¶è§¦å‘è¿‡æ»¤å™¨
+	"OnPCUseOCIdentifyFilter",	// NPCF_ONECLICK_IDENTIFY		// oneclick_identify_filter_name	// µ±Íæ¼ÒÊ¹ÓÃÒ»¼ü¼ø¶¨µÀ¾ßÊ±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_ONECLICK_IDENTIFY
 
 #ifdef Pandas_NpcFilter_GUILDCREATE
-	"OnPCGuildCreateFilter",	// NPCF_GUILDCREATE		// guildcreate_filter_name	// å½“ç©å®¶å‡†å¤‡åˆ›å»ºå…¬ä¼šæ—¶è§¦å‘è¿‡æ»¤å™¨
+	"OnPCGuildCreateFilter",	// NPCF_GUILDCREATE		// guildcreate_filter_name	// µ±Íæ¼Ò×¼±¸´´½¨¹«»áÊ±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_GUILDCREATE
 
 #ifdef Pandas_NpcFilter_GUILDJOIN
-	"OnPCGuildJoinFilter",	// NPCF_GUILDJOIN		// guildjoin_filter_name	// å½“ç©å®¶å³å°†åŠ å…¥å…¬ä¼šæ—¶è§¦å‘è¿‡æ»¤å™¨
+	"OnPCGuildJoinFilter",	// NPCF_GUILDJOIN		// guildjoin_filter_name	// µ±Íæ¼Ò¼´½«¼ÓÈë¹«»áÊ±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_GUILDJOIN
 
 #ifdef Pandas_NpcFilter_GUILDLEAVE
-	"OnPCGuildLeaveFilter",	// NPCF_GUILDLEAVE		// guildleave_filter_name	// å½“ç©å®¶å‡†å¤‡ç¦»å¼€å…¬ä¼šæ—¶è§¦å‘è¿‡æ»¤å™¨
+	"OnPCGuildLeaveFilter",	// NPCF_GUILDLEAVE		// guildleave_filter_name	// µ±Íæ¼Ò×¼±¸Àë¿ª¹«»áÊ±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_GUILDLEAVE
 
 #ifdef Pandas_NpcFilter_PARTYCREATE
-	"OnPCPartyCreateFilter",	// NPCF_PARTYCREATE		// partycreate_filter_name	// å½“ç©å®¶å‡†å¤‡åˆ›å»ºé˜Ÿä¼æ—¶è§¦å‘è¿‡æ»¤å™¨
+	"OnPCPartyCreateFilter",	// NPCF_PARTYCREATE		// partycreate_filter_name	// µ±Íæ¼Ò×¼±¸´´½¨¶ÓÎéÊ±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_PARTYCREATE
 
 #ifdef Pandas_NpcFilter_PARTYJOIN
-	"OnPCPartyJoinFilter",	// NPCF_PARTYJOIN		// partyjoin_filter_name	// å½“ç©å®¶å³å°†åŠ å…¥é˜Ÿä¼æ—¶è§¦å‘è¿‡æ»¤å™¨
+	"OnPCPartyJoinFilter",	// NPCF_PARTYJOIN		// partyjoin_filter_name	// µ±Íæ¼Ò¼´½«¼ÓÈë¶ÓÎéÊ±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_PARTYJOIN
 
 #ifdef Pandas_NpcFilter_PARTYLEAVE
-	"OnPCPartyLeaveFilter",	// NPCF_PARTYLEAVE		// partyleave_filter_name	// å½“ç©å®¶å‡†å¤‡ç¦»å¼€é˜Ÿä¼æ—¶è§¦å‘è¿‡æ»¤å™¨
+	"OnPCPartyLeaveFilter",	// NPCF_PARTYLEAVE		// partyleave_filter_name	// µ±Íæ¼Ò×¼±¸Àë¿ª¶ÓÎéÊ±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_PARTYLEAVE
 
 #ifdef Pandas_NpcFilter_DROPITEM
-	"OnPCDropItemFilter",	// NPCF_DROPITEM		// dropitem_filter_name	// å½“ç©å®¶å‡†å¤‡ä¸¢å¼ƒæˆ–æ‰è½é“å…·æ—¶è§¦å‘è¿‡æ»¤å™¨
+	"OnPCDropItemFilter",	// NPCF_DROPITEM		// dropitem_filter_name	// µ±Íæ¼Ò×¼±¸¶ªÆú»òµôÂäµÀ¾ßÊ±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_DROPITEM
 
 #ifdef Pandas_NpcFilter_CLICKTOMB
-	"OnPCClickTombFilter",	// NPCF_CLICKTOMB		// clicktomb_filter_name	// å½“ç©å®¶ç‚¹å‡»é­”ç‰©å¢“ç¢‘æ—¶è§¦å‘è¿‡æ»¤å™¨
+	"OnPCClickTombFilter",	// NPCF_CLICKTOMB		// clicktomb_filter_name	// µ±Íæ¼Òµã»÷Ä§ÎïÄ¹±®Ê±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_CLICKTOMB
 
 #ifdef Pandas_NpcFilter_STORAGE_ADD
-	"OnPCStorageAddFilter",	// NPCF_STORAGE_ADD		// storage_add_filter_name	// å½“ç©å®¶å‡†å¤‡å°†é“å…·å­˜å…¥ä»“åº“æ—¶è§¦å‘è¿‡æ»¤å™¨
+	"OnPCStorageAddFilter",	// NPCF_STORAGE_ADD		// storage_add_filter_name	// µ±Íæ¼Ò×¼±¸½«µÀ¾ß´æÈë²Ö¿âÊ±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_STORAGE_ADD
 
 #ifdef Pandas_NpcFilter_STORAGE_DEL
-	"OnPCStorageDelFilter",	// NPCF_STORAGE_DEL		// storage_del_filter_name	// å½“ç©å®¶å‡†å¤‡å°†é“å…·å–å‡ºä»“åº“æ—¶è§¦å‘è¿‡æ»¤å™¨
+	"OnPCStorageDelFilter",	// NPCF_STORAGE_DEL		// storage_del_filter_name	// µ±Íæ¼Ò×¼±¸½«µÀ¾ßÈ¡³ö²Ö¿âÊ±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_STORAGE_DEL
 
 #ifdef Pandas_NpcFilter_CART_ADD
-	"OnPCCartAddFilter",	// NPCF_CART_ADD		// cart_add_filter_name	// å½“ç©å®¶å‡†å¤‡å°†é“å…·ä»èƒŒåŒ…å­˜å…¥æ‰‹æ¨è½¦æ—¶è§¦å‘è¿‡æ»¤å™¨
+	"OnPCCartAddFilter",	// NPCF_CART_ADD		// cart_add_filter_name	// µ±Íæ¼Ò×¼±¸½«µÀ¾ß´Ó±³°ü´æÈëÊÖÍÆ³µÊ±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_CART_ADD
 
 #ifdef Pandas_NpcFilter_CART_DEL
-	"OnPCCartDelFilter",	// NPCF_CART_DEL		// cart_del_filter_name	// å½“ç©å®¶å‡†å¤‡å°†é“å…·ä»æ‰‹æ¨è½¦å–å›èƒŒåŒ…æ—¶è§¦å‘è¿‡æ»¤å™¨
+	"OnPCCartDelFilter",	// NPCF_CART_DEL		// cart_del_filter_name	// µ±Íæ¼Ò×¼±¸½«µÀ¾ß´ÓÊÖÍÆ³µÈ¡»Ø±³°üÊ±´¥·¢¹ıÂËÆ÷
 #endif // Pandas_NpcFilter_CART_DEL
 
 #ifdef Pandas_NpcFilter_FAVORITE_ADD
-	"OnPCFavoriteAddFilter",	// NPCF_FAVORITE_ADD		// favorite_add_filter_name	// å½“ç©å®¶å‡†å¤‡å°†é“å…·ç§»å…¥æ”¶è—æ ä½æ—¶è§¦å‘è¿‡æ»¤å™¨ [é¦™è‰]
+	"OnPCFavoriteAddFilter",	// NPCF_FAVORITE_ADD		// favorite_add_filter_name	// µ±Íæ¼Ò×¼±¸½«µÀ¾ßÒÆÈëÊÕ²ØÀ¸Î»Ê±´¥·¢¹ıÂËÆ÷ [Ïã²İ]
 #endif // Pandas_NpcFilter_FAVORITE_ADD
 
 #ifdef Pandas_NpcFilter_FAVORITE_DEL
-	"OnPCFavoriteDelFilter",	// NPCF_FAVORITE_DEL		// favorite_del_filter_name	// å½“ç©å®¶å‡†å¤‡å°†é“å…·ä»æ”¶è—æ ä½ç§»å‡ºæ—¶è§¦å‘è¿‡æ»¤å™¨ [é¦™è‰]
+	"OnPCFavoriteDelFilter",	// NPCF_FAVORITE_DEL		// favorite_del_filter_name	// µ±Íæ¼Ò×¼±¸½«µÀ¾ß´ÓÊÕ²ØÀ¸Î»ÒÆ³öÊ±´¥·¢¹ıÂËÆ÷ [Ïã²İ]
 #endif // Pandas_NpcFilter_FAVORITE_DEL
 	// PYHELP - NPCEVENT - INSERT POINT - <Section 5>
 
 	/************************************************************************/
-	/* Event  ç±»å‹çš„æ ‡å‡†äº‹ä»¶ï¼Œè¿™äº›äº‹ä»¶ä¸èƒ½è¢« processhalt æ‰“æ–­                    */
+	/* Event  ÀàĞÍµÄ±ê×¼ÊÂ¼ş£¬ÕâĞ©ÊÂ¼ş²»ÄÜ±» processhalt ´ò¶Ï                    */
 	/************************************************************************/
 
 #ifdef Pandas_NpcEvent_KILLMVP
-	"OnPCKillMvpEvent",	// NPCE_KILLMVP		// killmvp_event_name	// å½“ç©å®¶æ€æ­» MVP é­”ç‰©åè§¦å‘äº‹ä»¶
+	"OnPCKillMvpEvent",	// NPCE_KILLMVP		// killmvp_event_name	// µ±Íæ¼ÒÉ±ËÀ MVP Ä§Îïºó´¥·¢ÊÂ¼ş
 #endif // Pandas_NpcEvent_KILLMVP
 
 #ifdef Pandas_NpcEvent_IDENTIFY
-	"OnPCIdentifyEvent",	// NPCE_IDENTIFY		// identify_event_name	// å½“ç©å®¶æˆåŠŸé‰´å®šäº†è£…å¤‡æ—¶è§¦å‘äº‹ä»¶
+	"OnPCIdentifyEvent",	// NPCE_IDENTIFY		// identify_event_name	// µ±Íæ¼Ò³É¹¦¼ø¶¨ÁË×°±¸Ê±´¥·¢ÊÂ¼ş
 #endif // Pandas_NpcEvent_IDENTIFY
 
 #ifdef Pandas_NpcEvent_INSERT_CARD
-	"OnPCInsertCardEvent",	// NPCE_INSERT_CARD		// insert_card_event_name	// å½“ç©å®¶æˆåŠŸæ’å…¥å¡ç‰‡åè§¦å‘äº‹ä»¶
+	"OnPCInsertCardEvent",	// NPCE_INSERT_CARD		// insert_card_event_name	// µ±Íæ¼Ò³É¹¦²åÈë¿¨Æ¬ºó´¥·¢ÊÂ¼ş
 #endif // Pandas_NpcEvent_INSERT_CARD
 
 #ifdef Pandas_NpcEvent_USE_ITEM
-	"OnPCUseItemEvent",	// NPCE_USE_ITEM		// use_item_event_name	// å½“ç©å®¶æˆåŠŸä½¿ç”¨éè£…å¤‡ç±»é“å…·åè§¦å‘äº‹ä»¶
+	"OnPCUseItemEvent",	// NPCE_USE_ITEM		// use_item_event_name	// µ±Íæ¼Ò³É¹¦Ê¹ÓÃ·Ç×°±¸ÀàµÀ¾ßºó´¥·¢ÊÂ¼ş
 #endif // Pandas_NpcEvent_USE_ITEM
 
 #ifdef Pandas_NpcEvent_USE_SKILL
-	"OnPCUseSkillEvent",	// NPCE_USE_SKILL		// use_skill_event_name	// å½“ç©å®¶æˆåŠŸä½¿ç”¨æŠ€èƒ½åè§¦å‘äº‹ä»¶
+	"OnPCUseSkillEvent",	// NPCE_USE_SKILL		// use_skill_event_name	// µ±Íæ¼Ò³É¹¦Ê¹ÓÃ¼¼ÄÜºó´¥·¢ÊÂ¼ş
 #endif // Pandas_NpcEvent_USE_SKILL
 
 #ifdef Pandas_NpcEvent_EQUIP
-	"OnPCEquipEvent",	// NPCE_EQUIP		// equip_event_name	// å½“ç©å®¶æˆåŠŸç©¿æˆ´ä¸€ä»¶è£…å¤‡æ—¶è§¦å‘äº‹ä»¶
+	"OnPCEquipEvent",	// NPCE_EQUIP		// equip_event_name	// µ±Íæ¼Ò³É¹¦´©´÷Ò»¼ş×°±¸Ê±´¥·¢ÊÂ¼ş
 #endif // Pandas_NpcEvent_EQUIP
 
 #ifdef Pandas_NpcEvent_UNEQUIP
-	"OnPCUnequipEvent",	// NPCE_UNEQUIP		// unequip_event_name	// å½“ç©å®¶æˆåŠŸè„±ä¸‹ä¸€ä»¶è£…å¤‡æ—¶è§¦å‘äº‹ä»¶
+	"OnPCUnequipEvent",	// NPCE_UNEQUIP		// unequip_event_name	// µ±Íæ¼Ò³É¹¦ÍÑÏÂÒ»¼ş×°±¸Ê±´¥·¢ÊÂ¼ş
 #endif // Pandas_NpcEvent_UNEQUIP
 	// PYHELP - NPCEVENT - INSERT POINT - <Section 11>
 
 	/************************************************************************/
-	/* Express ç±»å‹çš„å¿«é€Ÿäº‹ä»¶ï¼Œè¿™äº›äº‹ä»¶å°†ä¼šè¢«ç«‹åˆ»æ‰§è¡Œ, ä¸è¿›äº‹ä»¶é˜Ÿåˆ—                */
+	/* Express ÀàĞÍµÄ¿ìËÙÊÂ¼ş£¬ÕâĞ©ÊÂ¼ş½«»á±»Á¢¿ÌÖ´ĞĞ, ²»½øÊÂ¼ş¶ÓÁĞ                */
 	/************************************************************************/
 
 #ifdef Pandas_NpcExpress_STATCALC
-	"OnPCStatCalcEvent",	// NPCE_STATCALC		// statcalc_express_name	// å½“è§’è‰²èƒ½åŠ›è¢«é‡æ–°è®¡ç®—æ—¶è§¦å‘äº‹ä»¶
+	"OnPCStatCalcEvent",	// NPCE_STATCALC		// statcalc_express_name	// µ±½ÇÉ«ÄÜÁ¦±»ÖØĞÂ¼ÆËãÊ±´¥·¢ÊÂ¼ş
 #endif // Pandas_NpcExpress_STATCALC
 
 #ifdef Pandas_NpcExpress_SC_END
-	"OnPCBuffEndExpress",	// NPCX_SC_END		// sc_end_express_name	// å½“ç©å®¶æˆåŠŸè§£é™¤ä¸€ä¸ªçŠ¶æ€(Buff)åè§¦å‘å®æ—¶äº‹ä»¶
+	"OnPCBuffEndExpress",	// NPCX_SC_END		// sc_end_express_name	// µ±Íæ¼Ò³É¹¦½â³ıÒ»¸ö×´Ì¬(Buff)ºó´¥·¢ÊµÊ±ÊÂ¼ş
 #endif // Pandas_NpcExpress_SC_END
 
 #ifdef Pandas_NpcExpress_SC_START
-	"OnPCBuffStartExpress",	// NPCX_SC_START		// sc_start_express_name	// å½“ç©å®¶æˆåŠŸè·å¾—ä¸€ä¸ªçŠ¶æ€(Buff)åè§¦å‘å®æ—¶äº‹ä»¶
+	"OnPCBuffStartExpress",	// NPCX_SC_START		// sc_start_express_name	// µ±Íæ¼Ò³É¹¦»ñµÃÒ»¸ö×´Ì¬(Buff)ºó´¥·¢ÊµÊ±ÊÂ¼ş
 #endif // Pandas_NpcExpress_SC_START
 
 #ifdef Pandas_NpcExpress_ENTERMAP
-	"OnPCEnterMapExpress",	// NPCX_ENTERMAP		// entermap_express_name	// å½“ç©å®¶è¿›å…¥æˆ–è€…æ”¹å˜åœ°å›¾æ—¶è§¦å‘å®æ—¶äº‹ä»¶
+	"OnPCEnterMapExpress",	// NPCX_ENTERMAP		// entermap_express_name	// µ±Íæ¼Ò½øÈë»òÕß¸Ä±äµØÍ¼Ê±´¥·¢ÊµÊ±ÊÂ¼ş
 #endif // Pandas_NpcExpress_ENTERMAP
 
 #ifdef Pandas_NpcExpress_PROGRESSABORT
-	"OnPCProgressAbortExpress",	// NPCX_PROGRESSABORT		// progressabort_express_name	// å½“ progressbar è¿›åº¦æ¡è¢«æ‰“æ–­æ—¶è§¦å‘å®æ—¶äº‹ä»¶
+	"OnPCProgressAbortExpress",	// NPCX_PROGRESSABORT		// progressabort_express_name	// µ± progressbar ½ø¶ÈÌõ±»´ò¶ÏÊ±´¥·¢ÊµÊ±ÊÂ¼ş
 #endif // Pandas_NpcExpress_PROGRESSABORT
 
 #ifdef Pandas_NpcExpress_UNIT_KILL
-	"OnUnitKillExpress",	// NPCX_UNIT_KILL		// unit_kill_express_name	// å½“æŸä¸ªå•ä½è¢«å‡»æ€æ—¶è§¦å‘å®æ—¶äº‹ä»¶
+	"OnUnitKillExpress",	// NPCX_UNIT_KILL		// unit_kill_express_name	// µ±Ä³¸öµ¥Î»±»»÷É±Ê±´¥·¢ÊµÊ±ÊÂ¼ş
 #endif // Pandas_NpcExpress_UNIT_KILL
 
 #ifdef Pandas_NpcExpress_MOBDROPITEM
-	"OnMobDropItemExpress",	// NPCX_MOBDROPITEM		// mobdropitem_express_name	// å½“é­”ç‰©å³å°†æ‰è½é“å…·æ—¶è§¦å‘å®æ—¶äº‹ä»¶
+	"OnMobDropItemExpress",	// NPCX_MOBDROPITEM		// mobdropitem_express_name	// µ±Ä§Îï¼´½«µôÂäµÀ¾ßÊ±´¥·¢ÊµÊ±ÊÂ¼ş
 #endif // Pandas_NpcExpress_MOBDROPITEM
 
 #ifdef Pandas_NpcExpress_PCATTACK
-	"OnPCAttackExpress",	// NPCX_PCATTACK		// pcattack_express_name	// å½“ç©å®¶å‘èµ·æ”»å‡»å¹¶å³å°†è¿›è¡Œç»“ç®—æ—¶è§¦å‘å®æ—¶äº‹ä»¶ [è½é¢¨]
+	"OnPCAttackExpress",	// NPCX_PCATTACK		// pcattack_express_name	// µ±Íæ¼Ò·¢Æğ¹¥»÷²¢¼´½«½øĞĞ½áËãÊ±´¥·¢ÊµÊ±ÊÂ¼ş [Â ïL]
 #endif // Pandas_NpcExpress_PCATTACK
 
 #ifdef Pandas_NpcExpress_MER_CALL
-	"OnPCMerCallExpress",	// NPCX_MER_CALL		// mer_call_express_name	// å½“ç©å®¶æˆåŠŸå¬å”¤å‡ºä½£å…µæ—¶è§¦å‘å®æ—¶äº‹ä»¶
+	"OnPCMerCallExpress",	// NPCX_MER_CALL		// mer_call_express_name	// µ±Íæ¼Ò³É¹¦ÕÙ»½³öÓ¶±øÊ±´¥·¢ÊµÊ±ÊÂ¼ş
 #endif // Pandas_NpcExpress_MER_CALL
 
 #ifdef Pandas_NpcExpress_MER_LEAVE
-	"OnPCMerLeaveExpress",	// NPCX_MER_LEAVE		// mer_leave_express_name	// å½“ä½£å…µç¦»å¼€ç©å®¶æ—¶è§¦å‘å®æ—¶äº‹ä»¶
+	"OnPCMerLeaveExpress",	// NPCX_MER_LEAVE		// mer_leave_express_name	// µ±Ó¶±øÀë¿ªÍæ¼ÒÊ±´¥·¢ÊµÊ±ÊÂ¼ş
 #endif // Pandas_NpcExpress_MER_LEAVE
 
 #ifdef Pandas_NpcExpress_PC_TALK
-		"OnPCTalkExpress",	// NPCX_PC_TALK		// pc_talk_express_name	// å½“ç©å®¶å¾€èŠå¤©æ¡†å‘é€ä¿¡æ¯æ—¶è§¦å‘å®æ—¶äº‹ä»¶ [äººé±¼å§¬çš„æ€å¿µ]
+		"OnPCTalkExpress",	// NPCX_PC_TALK		// pc_talk_express_name	// µ±Íæ¼ÒÍùÁÄÌì¿ò·¢ËÍĞÅÏ¢Ê±´¥·¢ÊµÊ±ÊÂ¼ş [ÈËÓã¼§µÄË¼Äî]
 #endif // Pandas_NpcExpress_PC_TALK
 
 #ifdef Pandas_NpcExpress_PCHARMED
-	"OnPCHarmedExpress",	// NPCX_PCHARMED		// pcharmed_express_name	// å½“ç©å®¶å—åˆ°ä¼¤å®³å¹¶å³å°†è¿›è¡Œç»“ç®—æ—¶è§¦å‘å®æ—¶äº‹ä»¶ [äººé±¼å§¬çš„æ€å¿µ]
+	"OnPCHarmedExpress",	// NPCX_PCHARMED		// pcharmed_express_name	// µ±Íæ¼ÒÊÜµ½ÉËº¦²¢¼´½«½øĞĞ½áËãÊ±´¥·¢ÊµÊ±ÊÂ¼ş [ÈËÓã¼§µÄË¼Äî]
 #endif // Pandas_NpcExpress_PCHARMED
 	// PYHELP - NPCEVENT - INSERT POINT - <Section 17>
 
@@ -4030,7 +4030,7 @@ struct script_state* script_alloc_state(struct script_code* rootscript, int pos,
 	st->refCount = 0;
 
 #ifdef Pandas_ScriptCommand_UnlockCmd
-	// ç¡®ä¿åˆ›å»º script_state çš„æ—¶å€™ unlockcmd çš„å€¼ä¸º 0
+	// È·±£´´½¨ script_state µÄÊ±ºò unlockcmd µÄÖµÎª 0
 	st->unlockcmd = 0;
 #endif // Pandas_ScriptCommand_UnlockCmd
 
@@ -4082,8 +4082,8 @@ void script_free_state(struct script_state* st)
 			}
 
 #ifdef Pandas_Fix_Progressbar_Abort_Stuck
-			// è‹¥å½“å‰è§’è‰²çš„ progressbar ä¿¡æ¯é‡Œè®°å½•çš„æ¥æº NPC ç¼–å·ç­‰äºå³å°†é”€æ¯çš„ st çš„ NPC ç¼–å·,
-			// é‚£ä¹ˆè¿›è¡Œå¯¹åº”çš„æ¸…ç†æ“ä½œé¿å…åç»­è§’è‰²å‡ºç°å¡ä½æ— æ³•ç§»åŠ¨çš„æƒ…å†µ
+			// Èôµ±Ç°½ÇÉ«µÄ progressbar ĞÅÏ¢Àï¼ÇÂ¼µÄÀ´Ô´ NPC ±àºÅµÈÓÚ¼´½«Ïú»ÙµÄ st µÄ NPC ±àºÅ,
+			// ÄÇÃ´½øĞĞ¶ÔÓ¦µÄÇåÀí²Ù×÷±ÜÃâºóĞø½ÇÉ«³öÏÖ¿¨×¡ÎŞ·¨ÒÆ¶¯µÄÇé¿ö
 			if (sd->progressbar.npc_id == sd->st->oid && sd->status.account_id == sd->st->rid) {
 				clif_progressbar_abort(sd);
 
@@ -4567,7 +4567,7 @@ int run_func(struct script_state *st)
 		if (st && st->rid && !st->unlockcmd) {
 			map_session_data *sd = map_id2sd(st->rid);
 			if (sd && npc_event_is_realtime(sd->pandas.workinevent)) {
-				// ä»¥ä¸‹ä¸ºå®æ—¶äº‹ä»¶å’Œè¿‡æ»¤å™¨äº‹ä»¶ä¸­ç¦æ­¢ä½¿ç”¨çš„è„šæœ¬æŒ‡ä»¤, éœ€è¦å®šæœŸæ›´æ–° [Solaä¸¶å°å…‹]
+				// ÒÔÏÂÎªÊµÊ±ÊÂ¼şºÍ¹ıÂËÆ÷ÊÂ¼şÖĞ½ûÖ¹Ê¹ÓÃµÄ½Å±¾Ö¸Áî, ĞèÒª¶¨ÆÚ¸üĞÂ [SolaØ¼Ğ¡¿Ë]
 				static std::vector<std::string> blockcmd = {
 					"mes", "next", "close", "close2", "menu", "select", "prompt", "input",
 					"openstorage", "guildopenstorage", "produce", "cooking", "birthpet",
@@ -5315,11 +5315,11 @@ void script_generic_ui_array_expand (unsigned int plus)
 #ifdef Pandas_ScriptCommands
 //************************************
 // Method:      script_abort
-// Description: ä¸­æ–­è„šæœ¬çš„æ‰§è¡Œå¹¶æ‰“å°ç›¸å…³çš„é”™è¯¯ä¿¡æ¯
+// Description: ÖĞ¶Ï½Å±¾µÄÖ´ĞĞ²¢´òÓ¡Ïà¹ØµÄ´íÎóĞÅÏ¢
 // Access:      public 
 // Parameter:   struct script_state * st
 // Returns:     void
-// Author:      Solaä¸¶å°å…‹(CairoLee)  2022/3/29 9:36
+// Author:      SolaØ¼Ğ¡¿Ë(CairoLee)  2022/3/29 9:36
 //************************************
 void script_abort(struct script_state* st) {
 	struct script_data* data = nullptr;
@@ -5339,7 +5339,7 @@ void script_abort(struct script_state* st) {
 
 //************************************
 // Method:      script_get_optnum
-// Description: è·å– st ä¸­æŒ‡å®š loc ä½ç½®çš„å¯é€‰æ•°å€¼å‚æ•°
+// Description: »ñÈ¡ st ÖĞÖ¸¶¨ loc Î»ÖÃµÄ¿ÉÑ¡ÊıÖµ²ÎÊı
 // Access:      public 
 // Parameter:   struct script_state * st
 // Parameter:   int loc
@@ -5348,7 +5348,7 @@ void script_abort(struct script_state* st) {
 // Parameter:   bool allow_notexists
 // Parameter:   int defval
 // Returns:     bool
-// Author:      Solaä¸¶å°å…‹(CairoLee)  2021/02/12 12:06
+// Author:      SolaØ¼Ğ¡¿Ë(CairoLee)  2021/02/12 12:06
 //************************************ 
 bool script_get_optnum(struct script_state *st, int loc, const char* desc, int &ret, bool allow_notexists = false, int defval = 0) {
 	if (!st) return false;
@@ -5383,7 +5383,7 @@ bool script_get_optnum(struct script_state *st, int loc, const char* desc, int &
 
 //************************************
 // Method:      script_get_optstr
-// Description: è·å– st ä¸­æŒ‡å®š loc ä½ç½®çš„å¯é€‰å­—ç¬¦ä¸²å‚æ•°
+// Description: »ñÈ¡ st ÖĞÖ¸¶¨ loc Î»ÖÃµÄ¿ÉÑ¡×Ö·û´®²ÎÊı
 // Access:      public 
 // Parameter:   struct script_state * st
 // Parameter:   int loc
@@ -5392,7 +5392,7 @@ bool script_get_optnum(struct script_state *st, int loc, const char* desc, int &
 // Parameter:   bool allow_notexists
 // Parameter:   std::string defval
 // Returns:     bool
-// Author:      Solaä¸¶å°å…‹(CairoLee)  2021/02/12 12:08
+// Author:      SolaØ¼Ğ¡¿Ë(CairoLee)  2021/02/12 12:08
 //************************************ 
 bool script_get_optstr(struct script_state *st, int loc, const char* desc, std::string &ret, bool allow_notexists = false, std::string defval = "") {
 	if (!st) return false;
@@ -5427,13 +5427,13 @@ bool script_get_optstr(struct script_state *st, int loc, const char* desc, std::
 
 //************************************
 // Method:      script_cleararray_st
-// Description: æ¸…ç† st ä¸­æŒ‡å®š loc æ•°ç»„å˜é‡çš„å†…å®¹
+// Description: ÇåÀí st ÖĞÖ¸¶¨ loc Êı×é±äÁ¿µÄÄÚÈİ
 // Access:      public 
 // Parameter:   struct script_state * st
 // Parameter:   int loc
 // Parameter:   bool bslient
 // Returns:     bool
-// Author:      Solaä¸¶å°å…‹(CairoLee)  2021/02/12 11:42
+// Author:      SolaØ¼Ğ¡¿Ë(CairoLee)  2021/02/12 11:42
 //************************************ 
 bool script_cleararray_st(struct script_state* st, int loc, bool bslient = true) {
 	map_session_data* sd = nullptr;
@@ -5486,7 +5486,7 @@ bool script_cleararray_st(struct script_state* st, int loc, bool bslient = true)
 
 //************************************
 // Method:      script_get_array
-// Description: è·å– st ä¸­æŒ‡å®š loc ä½ç½®çš„æ•°ç»„å‚æ•°
+// Description: »ñÈ¡ st ÖĞÖ¸¶¨ loc Î»ÖÃµÄÊı×é²ÎÊı
 // Access:      public 
 // Parameter:   struct script_state * st
 // Parameter:   int loc
@@ -5496,7 +5496,7 @@ bool script_cleararray_st(struct script_state* st, int loc, bool bslient = true)
 // Parameter:   bool expected_str
 // Parameter:   const char * desc
 // Returns:     bool
-// Author:      Solaä¸¶å°å…‹(CairoLee)  2021/02/12 16:26
+// Author:      SolaØ¼Ğ¡¿Ë(CairoLee)  2021/02/12 16:26
 //************************************ 
 bool script_get_array(struct script_state* st, int loc, int& ret_varid, char*& ret_varname, struct script_data*& ret_vardata, bool expected_str = false, const char* desc = nullptr) {
 	if (!script_hasdata(st, loc)) {
@@ -5570,13 +5570,13 @@ bool script_get_array(struct script_state* st, int loc, int& ret_varid, char*& r
 
 //************************************
 // Method:      script_get_mapindex
-// Description: è·å–åœ°å›¾åå¯¹åº”çš„åœ°å›¾ç´¢å¼•å€¼ (è‡ªåŠ¨å¤„ç† this ç‰¹æ®Šåœ°å›¾å)
+// Description: »ñÈ¡µØÍ¼Ãû¶ÔÓ¦µÄµØÍ¼Ë÷ÒıÖµ (×Ô¶¯´¦Àí this ÌØÊâµØÍ¼Ãû)
 // Access:      public 
 // Parameter:   struct script_state * st
 // Parameter:   const char * mapname
 // Parameter:   int & map_id
 // Returns:     bool
-// Author:      Solaä¸¶å°å…‹(CairoLee)  2021/02/12 00:12
+// Author:      SolaØ¼Ğ¡¿Ë(CairoLee)  2021/02/12 00:12
 //************************************ 
 bool script_get_mapindex(struct script_state *st, const char* mapname, int &mapindex, int char_id = 0) {
 	if (stricmp(mapname, "this") != 0) {
@@ -5611,16 +5611,16 @@ bool script_get_mapindex(struct script_state *st, const char* mapname, int &mapi
 
 //************************************
 // Method:      script_both_setreg
-// Description: åŒæ—¶è®¾ç½® $@ å’Œ @ æ•°å€¼å˜é‡ (è®¾ç½® @ å˜é‡çš„å‰ææ˜¯èƒ½æ‰¾åˆ° sd)
+// Description: Í¬Ê±ÉèÖÃ $@ ºÍ @ ÊıÖµ±äÁ¿ (ÉèÖÃ @ ±äÁ¿µÄÇ°ÌáÊÇÄÜÕÒµ½ sd)
 // Access:      public 
 // Parameter:   struct script_state * st
 // Parameter:   const char * varname_without_prefix
 // Parameter:   int64 value
-// Parameter:   bool isarray	æ˜¯ä¸æ˜¯æ•°ç»„
-// Parameter:   int index		å¦‚æœæ˜¯æ•°ç»„é‚£ä¹ˆç´¢å¼•æ˜¯å¤šå°‘
-// Parameter:   int char_id		è‹¥æä¾›äº†è§’è‰²ç¼–å·åˆ™å°† @ å˜é‡å€¼å†™å…¥è¯¥è§’è‰²
+// Parameter:   bool isarray	ÊÇ²»ÊÇÊı×é
+// Parameter:   int index		Èç¹ûÊÇÊı×éÄÇÃ´Ë÷ÒıÊÇ¶àÉÙ
+// Parameter:   int char_id		ÈôÌá¹©ÁË½ÇÉ«±àºÅÔò½« @ ±äÁ¿ÖµĞ´Èë¸Ã½ÇÉ«
 // Returns:     void
-// Author:      Solaä¸¶å°å…‹(CairoLee)  2021/08/17 23:34
+// Author:      SolaØ¼Ğ¡¿Ë(CairoLee)  2021/08/17 23:34
 //************************************ 
 void script_both_setreg(struct script_state* st, const char* varname_without_prefix, int64 value, bool isarray, int index = -1, int char_id = 0) {
 	map_session_data* sd = nullptr;
@@ -5646,16 +5646,16 @@ void script_both_setreg(struct script_state* st, const char* varname_without_pre
 
 //************************************
 // Method:      script_both_setregstr
-// Description: åŒæ—¶è®¾ç½® $@ å’Œ @ å­—ç¬¦ä¸²å˜é‡ (è®¾ç½® @ å˜é‡çš„å‰ææ˜¯èƒ½æ‰¾åˆ° sd)
+// Description: Í¬Ê±ÉèÖÃ $@ ºÍ @ ×Ö·û´®±äÁ¿ (ÉèÖÃ @ ±äÁ¿µÄÇ°ÌáÊÇÄÜÕÒµ½ sd)
 // Access:      public 
 // Parameter:   struct script_state * st
 // Parameter:   const char * varname_without_prefix
 // Parameter:   const char * value
-// Parameter:   bool isarray	æ˜¯ä¸æ˜¯æ•°ç»„
-// Parameter:   int index		å¦‚æœæ˜¯æ•°ç»„é‚£ä¹ˆç´¢å¼•æ˜¯å¤šå°‘
-// Parameter:   int char_id		è‹¥æä¾›äº†è§’è‰²ç¼–å·åˆ™å°† @ å˜é‡å€¼å†™å…¥è¯¥è§’è‰²
+// Parameter:   bool isarray	ÊÇ²»ÊÇÊı×é
+// Parameter:   int index		Èç¹ûÊÇÊı×éÄÇÃ´Ë÷ÒıÊÇ¶àÉÙ
+// Parameter:   int char_id		ÈôÌá¹©ÁË½ÇÉ«±àºÅÔò½« @ ±äÁ¿ÖµĞ´Èë¸Ã½ÇÉ«
 // Returns:     void
-// Author:      Solaä¸¶å°å…‹(CairoLee)  2021/08/17 23:36
+// Author:      SolaØ¼Ğ¡¿Ë(CairoLee)  2021/08/17 23:36
 //************************************ 
 void script_both_setregstr(struct script_state* st, const char* varname_without_prefix, const char* value, bool isarray, int index = -1, int char_id = 0) {
 	map_session_data* sd = nullptr;
@@ -5681,14 +5681,14 @@ void script_both_setregstr(struct script_state* st, const char* varname_without_
 
 //************************************
 // Method:      script_getstorage
-// Description: æ ¹æ®æŒ‡ä»¤åç§°æ¥è·å–ä¸åŒçš„å­˜å‚¨ç©ºé—´
+// Description: ¸ù¾İÖ¸ÁîÃû³ÆÀ´»ñÈ¡²»Í¬µÄ´æ´¢¿Õ¼ä
 // Parameter:   struct script_state * st
 // Parameter:   map_session_data * sd
 // Parameter:   struct s_storage * * stor
 // Parameter:   struct item * * inventory
 // Parameter:   int stor_id
 // Returns:     bool
-// Author:      Solaä¸¶å°å…‹(CairoLee)  2022/08/06 12:11
+// Author:      SolaØ¼Ğ¡¿Ë(CairoLee)  2022/08/06 12:11
 //************************************
 bool script_getstorage(struct script_state* st, map_session_data* sd, struct s_storage** stor, struct item** inventory, int stor_id = 0) {
 	nullpo_retr(false, st);
@@ -5720,7 +5720,7 @@ bool script_getstorage(struct script_state* st, map_session_data* sd, struct s_s
 #endif // OFFICIAL_GUILD_STORAGE
 
 		if (guild2storage2(sd->status.guild_id) || st->waiting_guild_storage) {
-			// å¦‚æœè¯¥å…¬ä¼šçš„ä»“åº“æ•°æ®å·²ç»åœ¨åœ°å›¾æœåŠ¡å™¨å†…å­˜ä¸­, åˆ™ç›´æ¥ä½¿ç”¨
+			// Èç¹û¸Ã¹«»áµÄ²Ö¿âÊı¾İÒÑ¾­ÔÚµØÍ¼·şÎñÆ÷ÄÚ´æÖĞ, ÔòÖ±½ÓÊ¹ÓÃ
 			*stor = guild2storage2(sd->status.guild_id);
 			if (!(*stor)) {
 				ShowError("buildin_%s: player's guild does not have a guild storage (CID: %d | Guild ID: %d).\n", command, sd->status.char_id, sd->status.guild_id);
@@ -5732,7 +5732,7 @@ bool script_getstorage(struct script_state* st, map_session_data* sd, struct s_s
 			st->state = RUN;
 		}
 		else if (!st->waiting_guild_storage) {
-			// å¦åˆ™, éœ€è¦å…ˆå‘é€è¯·æ±‚ç»™è§’è‰²æœåŠ¡å™¨, ç”¨äºåŠ è½½æŒ‡å®šçš„å…¬ä¼šä»“åº“å†…å®¹
+			// ·ñÔò, ĞèÒªÏÈ·¢ËÍÇëÇó¸ø½ÇÉ«·şÎñÆ÷, ÓÃÓÚ¼ÓÔØÖ¸¶¨µÄ¹«»á²Ö¿âÄÚÈİ
 			st->state = RERUNLINE;
 			st->waiting_guild_storage = 1;
 			intif_request_guild_storage(sd->status.account_id, sd->status.guild_id);
@@ -5753,8 +5753,8 @@ bool script_getstorage(struct script_state* st, map_session_data* sd, struct s_s
 		}
 		else {
 			if (sd->premiumStorage.stor_id == stor_id || st->waiting_premium_storage) {
-				// å¦‚æœç°æœ‰çš„ premiumStorage å°±æ˜¯æˆ‘ä»¬æœŸæœ›çš„æ‹“å±•ä»“åº“
-				// å‚è€ƒ storage_premiumStorage_load çš„é€»è¾‘, æ­¤æ—¶çš„ premiumStorage å†…å®¹å¯ä¿¡
+				// Èç¹ûÏÖÓĞµÄ premiumStorage ¾ÍÊÇÎÒÃÇÆÚÍûµÄÍØÕ¹²Ö¿â
+				// ²Î¿¼ storage_premiumStorage_load µÄÂß¼­, ´ËÊ±µÄ premiumStorage ÄÚÈİ¿ÉĞÅ
 				*stor = &sd->premiumStorage;
 				*inventory = (*stor)->u.items_storage;
 
@@ -5762,7 +5762,7 @@ bool script_getstorage(struct script_state* st, map_session_data* sd, struct s_s
 				st->state = RUN;
 			}
 			else if (!st->waiting_premium_storage) {
-				// å¦åˆ™, éœ€è¦å…ˆå‘é€è¯·æ±‚ç»™è§’è‰²æœåŠ¡å™¨, ç”¨äºåŠ è½½æŒ‡å®šçš„æ‹“å±•ä»“åº“å†…å®¹
+				// ·ñÔò, ĞèÒªÏÈ·¢ËÍÇëÇó¸ø½ÇÉ«·şÎñÆ÷, ÓÃÓÚ¼ÓÔØÖ¸¶¨µÄÍØÕ¹²Ö¿âÄÚÈİ
 				st->state = RERUNLINE;
 				st->waiting_premium_storage = 1;
 				intif_storage_request(sd, TABLE_STORAGE, stor_id, STOR_MODE_ALL);
@@ -6943,7 +6943,7 @@ BUILDIN_FUNC(warpparty)
 		if( pc_isdead(pl_sd) )
 			continue;
 #else
-		// è‹¥ä½¿ç”¨çš„ä¸º warppartyrevive æŒ‡ä»¤å, é‚£ä¹ˆæ­»äº¡çš„é˜Ÿå‘˜ä¹Ÿä¸ä¼šè¢«å¿½ç•¥
+		// ÈôÊ¹ÓÃµÄÎª warppartyrevive Ö¸ÁîÃû, ÄÇÃ´ËÀÍöµÄ¶ÓÔ±Ò²²»»á±»ºöÂÔ
 		if (pc_isdead(pl_sd) && strcmpi(script_getfuncname(st), "warppartyrevive") != 0 && strcmpi(script_getfuncname(st), "warpparty2") != 0)
 			continue;
 #endif // Pandas_ScriptCommand_WarpPartyRevive
@@ -8860,7 +8860,7 @@ BUILDIN_FUNC(getitem2)
 #ifndef Pandas_ScriptCommand_GetGradeItem
 		if (strcmpi(command,"getitem4") == 0) {
 #else
-		// ç»™ getitem4 æ·»åŠ ä¸€ä¸ªåˆ«åå« getgradeitem
+		// ¸ø getitem4 Ìí¼ÓÒ»¸ö±ğÃû½Ğ getgradeitem
 		if (strcmpi(command,"getitem4") == 0 || strcmpi(command, "getgradeitem") == 0) {
 #endif // Pandas_ScriptCommand_GetGradeItem
 			grade_offset = 11;
@@ -9305,8 +9305,8 @@ BUILDIN_FUNC(makeitem) {
 		item_tmp.expire_time = (unsigned int)(time(NULL) + next_dropitem_special.rent_duration);
 		next_dropitem_special.rent_duration = 0;
 	}
-	// æç¤º: åœ¨è¿™é‡Œæ— éœ€å¤„ç† next_dropitem_special.drop_effect,
-	// è¿™éƒ¨åˆ†æ”¾åœ¨äº† clif_dropflooritem è¿›è¡Œ, åº•éƒ¨çš„ map_addflooritem æœ€ç»ˆä¼šè°ƒç”¨å®ƒ
+	// ÌáÊ¾: ÔÚÕâÀïÎŞĞè´¦Àí next_dropitem_special.drop_effect,
+	// Õâ²¿·Ö·ÅÔÚÁË clif_dropflooritem ½øĞĞ, µ×²¿µÄ map_addflooritem ×îÖÕ»áµ÷ÓÃËü
 #endif // Pandas_ScriptCommand_Next_Dropitem_Special
 
 	script_pushint(st, map_addflooritem(&item_tmp, amount, m, x, y, 0, 0, 0, 4, 0, canShowEffect));
@@ -9410,8 +9410,8 @@ BUILDIN_FUNC(makeitem2) {
 			item_tmp.expire_time = (unsigned int)(time(NULL) + next_dropitem_special.rent_duration);
 			next_dropitem_special.rent_duration = 0;
 		}
-		// æç¤º: åœ¨è¿™é‡Œæ— éœ€å¤„ç† next_dropitem_special.drop_effect,
-		// è¿™éƒ¨åˆ†æ”¾åœ¨äº† clif_dropflooritem è¿›è¡Œ, åº•éƒ¨çš„ map_addflooritem æœ€ç»ˆä¼šè°ƒç”¨å®ƒ
+		// ÌáÊ¾: ÔÚÕâÀïÎŞĞè´¦Àí next_dropitem_special.drop_effect,
+		// Õâ²¿·Ö·ÅÔÚÁË clif_dropflooritem ½øĞĞ, µ×²¿µÄ map_addflooritem ×îÖÕ»áµ÷ÓÃËü
 #endif // Pandas_ScriptCommand_Next_Dropitem_Special
 
 		bool canShowEffect = false;
@@ -10464,15 +10464,15 @@ BUILDIN_FUNC(getequipname)
 	return SCRIPT_CMD_SUCCESS;
 }
 /**
-*setequipedcard <è£…å¤‡ä½ç½®ç¼–å·>,<ç¬¬å‡ ä¸ªå¡æ§½>,<ç‰©å“ID>{,<è§’è‰²ID>};
+*setequipedcard <×°±¸Î»ÖÃ±àºÅ>,<µÚ¼¸¸ö¿¨²Û>,<ÎïÆ·ID>{,<½ÇÉ«ID>};
 
-åœ¨å·²è£…å¤‡çš„é“å…·ä¸­è®¾ç½®ç›¸åº”å¡æ§½ä¸­çš„ç‰©å“, ä¸ä¼šåœ¨çª—å£æç¤ºå¸ä¸‹å†ç©¿ä¸Šè£…å¤‡.
-å¦‚æœ å¡ç‰‡ID ä¸º 0 åˆ™æ‹†ä¸‹ç›¸åº”å¡æ§½çš„é“å…·
-æ³¨æ„: è®¾ç½®å¡æ§½ä¸ä¼šå¯¹èƒŒåŒ…ä¸­ä»»ä½•é“å…·å¢åŠ æˆ–åˆ é™¤
+ÔÚÒÑ×°±¸µÄµÀ¾ßÖĞÉèÖÃÏàÓ¦¿¨²ÛÖĞµÄÎïÆ·, ²»»áÔÚ´°¿ÚÌáÊ¾Ğ¶ÏÂÔÙ´©ÉÏ×°±¸.
+Èç¹û ¿¨Æ¬ID Îª 0 Ôò²ğÏÂÏàÓ¦¿¨²ÛµÄµÀ¾ß
+×¢Òâ: ÉèÖÃ¿¨²Û²»»á¶Ô±³°üÖĞÈÎºÎµÀ¾ßÔö¼Ó»òÉ¾³ı
 
-<è£…å¤‡ä½ç½®ç¼–å·> æ˜¯æŒ‡ EQI_* å¼€å¤´çš„ä½ç½®å¸¸é‡
-<ç¬¬å‡ ä¸ªå¡æ§½> ä»0å¼€å§‹ 0~3çš„æ•°å­—
-<ç‰©å“ID> ä¸ºä½ æƒ³è¦æ’å…¥å¡æ§½çš„ç‰©å“, å¯ä»¥æ˜¯ä»»ä½•ç‰©å“
+<×°±¸Î»ÖÃ±àºÅ> ÊÇÖ¸ EQI_* ¿ªÍ·µÄÎ»ÖÃ³£Á¿
+<µÚ¼¸¸ö¿¨²Û> ´Ó0¿ªÊ¼ 0~3µÄÊı×Ö
+<ÎïÆ·ID> ÎªÄãÏëÒª²åÈë¿¨²ÛµÄÎïÆ·, ¿ÉÒÔÊÇÈÎºÎÎïÆ·
 */
 BUILDIN_FUNC(setequipedcard)
 {
@@ -10523,15 +10523,15 @@ BUILDIN_FUNC(setequipedcard)
 }
 
 /**
-*setequipedattr <è£…å¤‡ä½ç½®ç¼–å·>,<ç¬¬å‡ ä¸ªå±æ€§>,<å±æ€§ID>,<å±æ€§å€¼>{,<è§’è‰²ID>};
+*setequipedattr <×°±¸Î»ÖÃ±àºÅ>,<µÚ¼¸¸öÊôĞÔ>,<ÊôĞÔID>,<ÊôĞÔÖµ>{,<½ÇÉ«ID>};
 
-åœ¨å·²è£…å¤‡çš„é“å…·ä¸­è®¾ç½®ç›¸åº”å¡æ§½ä¸­çš„ç‰©å“, ä¸ä¼šåœ¨çª—å£æç¤ºå¸ä¸‹å†ç©¿ä¸Šè£…å¤‡.
-å¦‚æœ å±æ€§ID ä¸º 0 åˆ™æ‹†ä¸‹ç›¸åº”å¡æ§½çš„é“å…·
-æ³¨æ„: è®¾ç½®å¡æ§½ä¸ä¼šå¯¹èƒŒåŒ…ä¸­ä»»ä½•é“å…·å¢åŠ æˆ–åˆ é™¤
+ÔÚÒÑ×°±¸µÄµÀ¾ßÖĞÉèÖÃÏàÓ¦¿¨²ÛÖĞµÄÎïÆ·, ²»»áÔÚ´°¿ÚÌáÊ¾Ğ¶ÏÂÔÙ´©ÉÏ×°±¸.
+Èç¹û ÊôĞÔID Îª 0 Ôò²ğÏÂÏàÓ¦¿¨²ÛµÄµÀ¾ß
+×¢Òâ: ÉèÖÃ¿¨²Û²»»á¶Ô±³°üÖĞÈÎºÎµÀ¾ßÔö¼Ó»òÉ¾³ı
 
-<è£…å¤‡ä½ç½®ç¼–å·> æ˜¯æŒ‡ EQI_* å¼€å¤´çš„ä½ç½®å¸¸é‡
-<ç¬¬å‡ ä¸ªå¡æ§½> ä»0å¼€å§‹ 0~4çš„æ•°å­—
-<å±æ€§ID> ä¸ºä½ æƒ³è¦æ’å…¥å¡æ§½çš„ç‰©å“, å¯ä»¥æ˜¯ä»»ä½•ç‰©å“
+<×°±¸Î»ÖÃ±àºÅ> ÊÇÖ¸ EQI_* ¿ªÍ·µÄÎ»ÖÃ³£Á¿
+<µÚ¼¸¸ö¿¨²Û> ´Ó0¿ªÊ¼ 0~4µÄÊı×Ö
+<ÊôĞÔID> ÎªÄãÏëÒª²åÈë¿¨²ÛµÄÎïÆ·, ¿ÉÒÔÊÇÈÎºÎÎïÆ·
 */
 BUILDIN_FUNC(setequipedattr)
 {
@@ -11687,8 +11687,8 @@ BUILDIN_FUNC(end)
 	st->state = END;
 
 #ifdef Pandas_ScriptEngine_Express
-	// é˜²æ­¢åœ¨ç©¿é€äº‹ä»¶çš„è„šæœ¬ä»£ç ä¸­ä½¿ç”¨ end æŒ‡ä»¤, ä¼šå¯¼è‡´è§’è‰²æ­£åœ¨æ‰§è¡Œçš„è„šæœ¬æˆ–å¯¹è¯è¢«å¼ºåˆ¶ä¸­æ–­,
-	// æˆ–ä¸ NPC è¿›è¡Œä¸­çš„å¯¹è¯æ¡†ç›´æ¥æ˜¾ç¤ºå‡º [å…³é—­] æŒ‰é’®çš„é—®é¢˜ [Solaä¸¶å°å…‹]
+	// ·ÀÖ¹ÔÚ´©Í¸ÊÂ¼şµÄ½Å±¾´úÂëÖĞÊ¹ÓÃ end Ö¸Áî, »áµ¼ÖÂ½ÇÉ«ÕıÔÚÖ´ĞĞµÄ½Å±¾»ò¶Ô»°±»Ç¿ÖÆÖĞ¶Ï,
+	// »òÓë NPC ½øĞĞÖĞµÄ¶Ô»°¿òÖ±½ÓÏÔÊ¾³ö [¹Ø±Õ] °´Å¥µÄÎÊÌâ [SolaØ¼Ğ¡¿Ë]
 	if (sd && npc_event_is_realtime(sd->pandas.workinevent))
 		return SCRIPT_CMD_SUCCESS;
 #endif // Pandas_ScriptEngine_Express
@@ -13230,21 +13230,21 @@ BUILDIN_FUNC(announce)
 			clif_broadcast(bl, mes, (int)strlen(mes)+1, flag&BC_COLOR_MASK, target);
 #else
 		if (flag & BC_NAME && bl && bl->type == BL_PC) {
-			// è‹¥æºå¸¦äº† BC_NAME æ ‡è®°ä½, åˆ™å¼ºåˆ¶åªèƒ½èµ° clif_broadcast
+			// ÈôĞ¯´øÁË BC_NAME ±ê¼ÇÎ», ÔòÇ¿ÖÆÖ»ÄÜ×ß clif_broadcast
 			char output[CHAT_SIZE_MAX] = { 0 };
 
-			// è‹¥æ²¡æœ‰æŒ‡å®šé¢œè‰², åˆ™æŒ‡å®šé»„è‰²ä½œä¸ºé»˜è®¤è‰²
+			// ÈôÃ»ÓĞÖ¸¶¨ÑÕÉ«, ÔòÖ¸¶¨»ÆÉ«×÷ÎªÄ¬ÈÏÉ«
 			if (!fontColor)
 				fontColor = "0xFFFF00";
 
-			// å°†é¢œè‰²ä»£ç æ”¾åˆ°æ–‡æœ¬ä¿¡æ¯çš„æœ€å¼€å¤´
+			// ½«ÑÕÉ«´úÂë·Åµ½ÎÄ±¾ĞÅÏ¢µÄ×î¿ªÍ·
 			sprintf(output, "%06lx%s", strtol(fontColor, (char**)NULL, 0), mes);
 
-			// è°ƒç”¨ clif_broadcast å°†ä¿¡æ¯å‘é€ç»™å®¢æˆ·ç«¯
+			// µ÷ÓÃ clif_broadcast ½«ĞÅÏ¢·¢ËÍ¸ø¿Í»§¶Ë
 			clif_broadcast(bl, output, (int)strlen(output) + 1, flag, target);
 		}
 		else {
-			// åœ¨åŸå§‹æµç¨‹ä¸­å¦‚æœæºå¸¦äº†å­—ä½“é¢œè‰²åˆ™èµ° clif_broadcast2 å¦åˆ™èµ° clif_broadcast
+			// ÔÚÔ­Ê¼Á÷³ÌÖĞÈç¹ûĞ¯´øÁË×ÖÌåÑÕÉ«Ôò×ß clif_broadcast2 ·ñÔò×ß clif_broadcast
 			if (fontColor)
 				clif_broadcast2(bl, mes, (int)strlen(mes) + 1, strtol(fontColor, (char**)NULL, 0), fontType, fontSize, fontAlign, fontY, target);
 			else
@@ -14916,7 +14916,7 @@ BUILDIN_FUNC(setmapflag)
 
 		switch (args_count) {
 		case 0:
-			// åœ°å›¾æ ‡è®°å‚æ•°çš„æ•°é‡ç­‰äº 0 é‚£ä¹ˆä»€ä¹ˆéƒ½ä¸ç”¨åš (æ„Ÿè°¢ "å±±æœ‰" åé¦ˆ)
+			// µØÍ¼±ê¼Ç²ÎÊıµÄÊıÁ¿µÈÓÚ 0 ÄÇÃ´Ê²Ã´¶¼²»ÓÃ×ö (¸ĞĞ» "É½ÓĞ" ·´À¡)
 			break;
 		case 1:
 			FETCH(4, args.input[0]);
@@ -16460,10 +16460,10 @@ BUILDIN_FUNC(getinventorylist)
 }
 #else
 /* ===========================================================
- * getinventorylist {<è§’è‰²ç¼–å·>{,<æƒ³æŸ¥è¯¢çš„æ•°æ®ç±»å‹>}};
- * getcartlist {<è§’è‰²ç¼–å·>{,<æƒ³æŸ¥è¯¢çš„æ•°æ®ç±»å‹>}};
- * getguildstoragelist {<è§’è‰²ç¼–å·>{,<æƒ³æŸ¥è¯¢çš„æ•°æ®ç±»å‹>}};
- * getstoragelist {<è§’è‰²ç¼–å·>{,<æƒ³æŸ¥è¯¢çš„æ•°æ®ç±»å‹>{,<ä»“åº“ç¼–å·>}}};
+ * getinventorylist {<½ÇÉ«±àºÅ>{,<Ïë²éÑ¯µÄÊı¾İÀàĞÍ>}};
+ * getcartlist {<½ÇÉ«±àºÅ>{,<Ïë²éÑ¯µÄÊı¾İÀàĞÍ>}};
+ * getguildstoragelist {<½ÇÉ«±àºÅ>{,<Ïë²éÑ¯µÄÊı¾İÀàĞÍ>}};
+ * getstoragelist {<½ÇÉ«±àºÅ>{,<Ïë²éÑ¯µÄÊı¾İÀàĞÍ>{,<²Ö¿â±àºÅ>}}};
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(getinventorylist) {
 	map_session_data* sd = nullptr;
@@ -19591,24 +19591,24 @@ std::map<int, DBResultData*> query_sql_db;
 static int buildin_query_sql_aysnc_sub(struct script_state* st, dbType type)
 {
 	if (!st->asyncSleep) {
-		// è‹¥å½“å‰ st æ²¡æœ‰å¤„äºå¼‚æ­¥ä¼‘çœ çŠ¶æ€
-		// é‚£ä¹ˆè¯´æ˜è¿™æ˜¯ä¸€æ¬¡å…¨æ–°æ‰§è¡Œçš„å¼‚æ­¥æŸ¥è¯¢è°ƒç”¨
+		// Èôµ±Ç° st Ã»ÓĞ´¦ÓÚÒì²½ĞİÃß×´Ì¬
+		// ÄÇÃ´ËµÃ÷ÕâÊÇÒ»´ÎÈ«ĞÂÖ´ĞĞµÄÒì²½²éÑ¯µ÷ÓÃ
 
-		// è·å–å¯¹åº”çš„æŸ¥è¯¢è¯­å¥
+		// »ñÈ¡¶ÔÓ¦µÄ²éÑ¯Óï¾ä
 		const char* query = script_getstr(st, 2);
 
 		int batch_number = script_batch;
 
-		// å¦‚æœæœ‰ä¼ é€’ç”¨æ¥æ¥æ”¶è¿”å›å€¼çš„å˜é‡, é‚£ä¹ˆæ‰§è¡Œå¼‚æ­¥æŸ¥è¯¢å¹¶è¦æ±‚è¿”å›ç»“æœ
+		// Èç¹ûÓĞ´«µİÓÃÀ´½ÓÊÕ·µ»ØÖµµÄ±äÁ¿, ÄÇÃ´Ö´ĞĞÒì²½²éÑ¯²¢ÒªÇó·µ»Ø½á¹û
 		if (script_hasdata(st, 3)) {
 
-			// ä¸‹æ¬¡è„šæœ¬è¢«æ‰§è¡Œçš„æ—¶å€™å°†ç›´æ¥ä»å½“å‰è„šæœ¬è¡Œç»§ç»­å¾€ä¸‹æ‰§è¡Œ
+			// ÏÂ´Î½Å±¾±»Ö´ĞĞµÄÊ±ºò½«Ö±½Ó´Óµ±Ç°½Å±¾ĞĞ¼ÌĞøÍùÏÂÖ´ĞĞ
 			st->state = RERUNLINE;
 
-			// è®¾ç½®å½“å‰çš„è„šæœ¬è¿›å…¥å¼‚æ­¥ä¼‘çœ çŠ¶æ€
+			// ÉèÖÃµ±Ç°µÄ½Å±¾½øÈëÒì²½ĞİÃß×´Ì¬
 			st->asyncSleep = true;
 
-			// è®¾ç½®æŸ¥è¯¢ä»»åŠ¡, å¹¶è¦æ±‚åœ¨æŸ¥è¯¢ç»“æŸä¹‹åæ‰§è¡ŒåŒ¿åå›è°ƒå‡½æ•°
+			// ÉèÖÃ²éÑ¯ÈÎÎñ, ²¢ÒªÇóÔÚ²éÑ¯½áÊøÖ®ºóÖ´ĞĞÄäÃû»Øµ÷º¯Êı
 			asyncquery_addDBJob(
 				type,
 				query,
@@ -19617,26 +19617,26 @@ static int buildin_query_sql_aysnc_sub(struct script_state* st, dbType type)
 						return; // st is probably a danging pointer by now, do nothing.
 					}
 
-					// å°†æŸ¥è¯¢çš„ç»“æœä¿å­˜åˆ° query_sql_db å­—å…¸ä¸­
+					// ½«²éÑ¯µÄ½á¹û±£´æµ½ query_sql_db ×ÖµäÖĞ
 					query_sql_db[st->id] = (DBResultData*)result_data;
 
-					// æ¢å¤è„šæœ¬çš„æ‰§è¡Œ
+					// »Ö¸´½Å±¾µÄÖ´ĞĞ
 					run_script_main(st);
 				}
 			);
 		}
 		else
-			// å¦‚æœæ²¡æœ‰è¦æ±‚éœ€è¦ä¿å­˜è¿”å›å€¼, é‚£ä¹ˆä¸è®¾ç½®åŒ¿åå›è°ƒå‡½æ•°
+			// Èç¹ûÃ»ÓĞÒªÇóĞèÒª±£´æ·µ»ØÖµ, ÄÇÃ´²»ÉèÖÃÄäÃû»Øµ÷º¯Êı
 			asyncquery_addDBJob(type, query);
 	}
 	else {
-		// è‹¥å½“å‰ st å¤„äºå¼‚æ­¥ä¼‘çœ çŠ¶æ€
-		// é‚£ä¹ˆè¯´æ˜ç°åœ¨å¼‚æ­¥çº¿ç¨‹å·²ç»å®Œæˆäº†æ•°æ®æŸ¥è¯¢å·¥ä½œå¹¶å›è°ƒç»§ç»­æ‰§è¡Œè„šæœ¬
+		// Èôµ±Ç° st ´¦ÓÚÒì²½ĞİÃß×´Ì¬
+		// ÄÇÃ´ËµÃ÷ÏÖÔÚÒì²½Ïß³ÌÒÑ¾­Íê³ÉÁËÊı¾İ²éÑ¯¹¤×÷²¢»Øµ÷¼ÌĞøÖ´ĞĞ½Å±¾
 
-		// ä» query_sql_db å­—å…¸ä¸­è¯»å–å½“å‰ st å¯¹åº”çš„æŸ¥è¯¢ç»“æœ
+		// ´Ó query_sql_db ×ÖµäÖĞ¶ÁÈ¡µ±Ç° st ¶ÔÓ¦µÄ²éÑ¯½á¹û
 		DBResultData result_data(query_sql_db[st->id]);
 
-		// è¯»å–å®Œæˆåç›´æ¥ç§»é™¤å­—å…¸ä¸­ä¿å­˜çš„å†…å®¹
+		// ¶ÁÈ¡Íê³ÉºóÖ±½ÓÒÆ³ı×ÖµäÖĞ±£´æµÄÄÚÈİ
 		delete query_sql_db[st->id];
 		query_sql_db.erase(st->id);
 
@@ -19648,10 +19648,10 @@ static int buildin_query_sql_aysnc_sub(struct script_state* st, dbType type)
 		size_t num_vars;
 		size_t num_cols;
 
-		// å–æ¶ˆå½“å‰è„šæœ¬çš„å¼‚æ­¥ä¼‘çœ çŠ¶æ€
+		// È¡Ïûµ±Ç°½Å±¾µÄÒì²½ĞİÃß×´Ì¬
 		st->asyncSleep = false;
 
-		// è®¾ç½®è„šæœ¬çš„çŠ¶æ€ä¸ºæ¢å¤æ­£å¸¸æ‰§è¡Œ
+		// ÉèÖÃ½Å±¾µÄ×´Ì¬Îª»Ö¸´Õı³£Ö´ĞĞ
 		st->state = RUN;
 
 		// check target variables
@@ -20555,9 +20555,9 @@ BUILDIN_FUNC(checkvending) {
 		if (sd->state.autotrade)
 			ret |= 2;
 #else
-		// ç»ç”± Pandas_Struct_Autotrade_Extend æ”¹é€ ä¹‹å
-		// sd->state.autotrade åŒæ—¶ä¹ŸåŒ…å«äº†å…¶ä»–æŒ‚æœºæ¨¡å¼çš„ä½å€¼åœ¨å…¶ä¸­
-		// å› æ­¤ä¸èƒ½ä»…åˆ¤æ–­ sd->state.autotrade æ˜¯å¦é 0, è€Œåº”è¯¥è¿›è¡Œæ˜ç¡®æŒ‡å®šçš„ä½è¿ç®—åˆ¤æ–­
+		// ¾­ÓÉ Pandas_Struct_Autotrade_Extend ¸ÄÔìÖ®ºó
+		// sd->state.autotrade Í¬Ê±Ò²°üº¬ÁËÆäËû¹Ò»úÄ£Ê½µÄÎ»ÖµÔÚÆäÖĞ
+		// Òò´Ë²»ÄÜ½öÅĞ¶Ï sd->state.autotrade ÊÇ·ñ·Ç 0, ¶øÓ¦¸Ã½øĞĞÃ÷È·Ö¸¶¨µÄÎ»ÔËËãÅĞ¶Ï
 		if ((sd->state.autotrade & AUTOTRADE_VENDING) == AUTOTRADE_VENDING ||
 			(sd->state.autotrade & AUTOTRADE_BUYINGSTORE) == AUTOTRADE_BUYINGSTORE) {
 			ret |= 2;
@@ -21450,12 +21450,12 @@ BUILDIN_FUNC(setunitdata)
 			}
 
 #ifdef Pandas_Persistent_SetUnitData_For_Monster_StatusData
-		// ä½¿ç”¨ setunitdata å¯¹æ­¤é­”ç‰©è¿›è¡Œäº†ä»€ä¹ˆé¡¹ç›®çš„ä¿®æ”¹, éƒ½è®°å½•ä¸‹æ¥
+		// Ê¹ÓÃ setunitdata ¶Ô´ËÄ§Îï½øĞĞÁËÊ²Ã´ÏîÄ¿µÄĞŞ¸Ä, ¶¼¼ÇÂ¼ÏÂÀ´
 		if (md->pandas.special_setunitdata) {
 			int data_type = type;
 
-			// UMOB_SLAVECPYMSTRMD æœ€ç»ˆä¿®æ”¹çš„è¿˜æ˜¯ base_status->mode çš„å€¼
-			// å› æ­¤å¦‚æœè®¾ç½®çš„æ•°æ®ç±»å‹æ˜¯ UMOB_SLAVECPYMSTRMD åˆ™æŠŠä»–è§†ä¸º UMOB_MODE æ¥å¤„ç†
+			// UMOB_SLAVECPYMSTRMD ×îÖÕĞŞ¸ÄµÄ»¹ÊÇ base_status->mode µÄÖµ
+			// Òò´ËÈç¹ûÉèÖÃµÄÊı¾İÀàĞÍÊÇ UMOB_SLAVECPYMSTRMD Ôò°ÑËûÊÓÎª UMOB_MODE À´´¦Àí
 			if (type == UMOB_SLAVECPYMSTRMD)
 				data_type = UMOB_MODE;
 
@@ -29610,6 +29610,106 @@ BUILDIN_FUNC(opentips){
 #endif
 }
 
+BUILDIN_FUNC(setdialogalign){
+	map_session_data *sd;
+
+	if ( !script_rid2sd(sd) ) {
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	int32 align = script_getnum( st, 2 );
+	
+	if( align < DIALOG_ALIGN_LEFT || align > DIALOG_ALIGN_BOTTOM ){
+		ShowError( "buildin_setdialogalign: Unknown align value %d\n", align );
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	clif_set_dialog_align( *sd, st->oid, static_cast<e_say_dialog_align>( align ) );
+
+	return SCRIPT_CMD_SUCCESS;
+}
+
+BUILDIN_FUNC(setdialogsize){
+	map_session_data *sd;
+
+	if ( !script_rid2sd(sd) ) {
+		script_pushint(st, 0);
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	int32 x = script_getnum( st, 2 );
+	
+	if( x < 0 || x > INT16_MAX ){
+		ShowError( "buildin_setdialogsize: x size %d is out of range [0,%d]\n", x, INT16_MAX );
+		return SCRIPT_CMD_FAILURE;
+	}
+	
+	int32 y = script_getnum( st, 3 );
+	
+	if( y < 0 || y > INT16_MAX ){
+		ShowError( "buildin_setdialogsize: y size %d is out of range [0,%d]\n", y, INT16_MAX );
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	clif_set_npc_window_size( *sd, x, y );
+
+	return SCRIPT_CMD_SUCCESS;
+}
+
+BUILDIN_FUNC(setdialogpos){
+	map_session_data *sd;
+
+	if ( !script_rid2sd(sd) ) {
+		script_pushint(st, 0);
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	int32 x = script_getnum( st, 2 );
+	
+	if( x < 0 || x > INT16_MAX ){
+		ShowError( "buildin_setdialogpos: x position %d is out of range [0,%d]\n", x, INT16_MAX );
+		return SCRIPT_CMD_FAILURE;
+	}
+	
+	int32 y = script_getnum( st, 3 );
+	
+	if( y < 0 || y > INT16_MAX ){
+		ShowError( "buildin_setdialogpos: y position %d is out of range [0,%d]\n", y, INT16_MAX );
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	clif_set_npc_window_pos( *sd, x, y );
+
+	return SCRIPT_CMD_SUCCESS;
+}
+
+BUILDIN_FUNC(setdialogpospercent){
+	map_session_data *sd;
+
+	if ( !script_rid2sd(sd) ) {
+		script_pushint(st, 0);
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	int32 x = script_getnum( st, 2 );
+	
+	if( x < 0 || x > 100 ){
+		ShowError( "buildin_setdialogpospercent: x rate %d is out of range [0,100]\n", x );
+		return SCRIPT_CMD_FAILURE;
+	}
+	
+	int32 y = script_getnum( st, 3 );
+	
+	if( y < 0 || y > 100 ){
+		ShowError( "buildin_setdialogpospercent: y rate %d is out of range [0,100]\n", y );
+		return SCRIPT_CMD_FAILURE;
+	}
+	
+	clif_set_npc_window_pos_percent( *sd, x, y );
+
+	return SCRIPT_CMD_SUCCESS;
+}
+
 #include <custom/script.inc>
 
 // declarations that were supposed to be exported from npc_chat.cpp
@@ -29660,12 +29760,12 @@ BUILDIN_FUNC(preg_match) {
 
 #ifdef Pandas_ScriptCommand_SetHeadDir
 /* ===========================================================
- * æŒ‡ä»¤: setheaddir
- * æè¿°: è°ƒæ•´è§’è‰²çº¸å¨ƒå¨ƒè„‘è¢‹çš„æœå‘
- * ç”¨æ³•: setheaddir <æœå‘ç¼–å·>{,<è§’è‰²ç¼–å·>};
- * æœå‘: 0ä¸ºçœ‹æ­£å‰æ–¹, 1ä¸ºå‘å³çœ‹, 2ä¸ºå‘å·¦çœ‹
- * è¿”å›: è¯¥æŒ‡ä»¤æ— è®ºæˆåŠŸä¸å¦, éƒ½ä¸ä¼šæœ‰è¿”å›å€¼
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: setheaddir
+ * ÃèÊö: µ÷Õû½ÇÉ«Ö½ÍŞÍŞÄÔ´üµÄ³¯Ïò
+ * ÓÃ·¨: setheaddir <³¯Ïò±àºÅ>{,<½ÇÉ«±àºÅ>};
+ * ³¯Ïò: 0Îª¿´ÕıÇ°·½, 1ÎªÏòÓÒ¿´, 2ÎªÏò×ó¿´
+ * ·µ»Ø: ¸ÃÖ¸ÁîÎŞÂÛ³É¹¦Óë·ñ, ¶¼²»»áÓĞ·µ»ØÖµ
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(setheaddir) {
 	map_session_data *sd = nullptr;
@@ -29685,11 +29785,11 @@ BUILDIN_FUNC(setheaddir) {
 
 #ifdef Pandas_ScriptCommand_SetBodyDir
 /* ===========================================================
- * æŒ‡ä»¤: setbodydir
- * æè¿°: ç”¨äºè°ƒæ•´è§’è‰²çº¸å¨ƒå¨ƒèº«ä½“çš„æœå‘
- * ç”¨æ³•: setbodydir <æœå‘ç¼–å·>{,<è§’è‰²ç¼–å·>};
- * è¿”å›: è¯¥æŒ‡ä»¤æ— è®ºæˆåŠŸä¸å¦, éƒ½ä¸ä¼šæœ‰è¿”å›å€¼
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: setbodydir
+ * ÃèÊö: ÓÃÓÚµ÷Õû½ÇÉ«Ö½ÍŞÍŞÉíÌåµÄ³¯Ïò
+ * ÓÃ·¨: setbodydir <³¯Ïò±àºÅ>{,<½ÇÉ«±àºÅ>};
+ * ·µ»Ø: ¸ÃÖ¸ÁîÎŞÂÛ³É¹¦Óë·ñ, ¶¼²»»áÓĞ·µ»ØÖµ
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(setbodydir) {
 	map_session_data *sd = nullptr;
@@ -29709,11 +29809,11 @@ BUILDIN_FUNC(setbodydir) {
 
 #ifdef Pandas_ScriptCommand_InstanceUsers
 /* ===========================================================
- * æŒ‡ä»¤: instance_users
- * æè¿°: è·å–æŒ‡å®šçš„å‰¯æœ¬å®ä¾‹ä¸­å·²ç»è¿›å…¥å‰¯æœ¬åœ°å›¾çš„äººæ•°
- * ç”¨æ³•: instance_users <å‰¯æœ¬å®ä¾‹ç¼–å·>;
- * è¿”å›: æˆåŠŸç›´æ¥è¿”å›å‰¯æœ¬ä¸­çš„äººæ•°, å‰¯æœ¬ä¸å­˜åœ¨æˆ–å‰¯æœ¬ä¸­æ— äººå­˜åœ¨åˆ™è¿”å› 0
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: instance_users
+ * ÃèÊö: »ñÈ¡Ö¸¶¨µÄ¸±±¾ÊµÀıÖĞÒÑ¾­½øÈë¸±±¾µØÍ¼µÄÈËÊı
+ * ÓÃ·¨: instance_users <¸±±¾ÊµÀı±àºÅ>;
+ * ·µ»Ø: ³É¹¦Ö±½Ó·µ»Ø¸±±¾ÖĞµÄÈËÊı, ¸±±¾²»´æÔÚ»ò¸±±¾ÖĞÎŞÈË´æÔÚÔò·µ»Ø 0
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(instance_users) {
 	struct instance_data *im = nullptr;
@@ -29738,11 +29838,11 @@ BUILDIN_FUNC(instance_users) {
 
 #ifdef Pandas_ScriptCommand_MobRemove
 /* ===========================================================
- * æŒ‡ä»¤: mobremove
- * æè¿°: æ ¹æ® GID ç§»é™¤ä¸€ä¸ªé­”ç‰©å•ä½ (åªæ˜¯ç§»é™¤, ä¸ä¼šè®©é­”ç‰©æ­»äº¡)
- * ç”¨æ³•: mobremove <é­”ç‰©çš„GID>;
- * è¿”å›: è¯¥æŒ‡ä»¤æ— è®ºæˆåŠŸå¤±è´¥, éƒ½ä¸ä¼šæœ‰è¿”å›å€¼
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: mobremove
+ * ÃèÊö: ¸ù¾İ GID ÒÆ³ıÒ»¸öÄ§Îïµ¥Î» (Ö»ÊÇÒÆ³ı, ²»»áÈÃÄ§ÎïËÀÍö)
+ * ÓÃ·¨: mobremove <Ä§ÎïµÄGID>;
+ * ·µ»Ø: ¸ÃÖ¸ÁîÎŞÂÛ³É¹¦Ê§°Ü, ¶¼²»»áÓĞ·µ»ØÖµ
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(mobremove) {
 	struct block_list *bl = nullptr;
@@ -29770,11 +29870,11 @@ BUILDIN_FUNC(mobremove) {
 
 #ifdef Pandas_ScriptCommand_BattleIgnore
 /* ===========================================================
- * æŒ‡ä»¤: battleignore
- * æè¿°: å°†è§’è‰²è®¾ç½®ä¸ºé­”ç‰©å…æˆ˜çŠ¶æ€, é¿å…è¢«é­”ç‰©æ”»å‡»
- * ç”¨æ³•: battleignore <å¼€å…³çŠ¶æ€>{,<è§’è‰²ç¼–å·>};
- * è¿”å›: è¯¥æŒ‡ä»¤æ— è®ºæˆåŠŸå¤±è´¥, éƒ½ä¸ä¼šæœ‰è¿”å›å€¼
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: battleignore
+ * ÃèÊö: ½«½ÇÉ«ÉèÖÃÎªÄ§ÎïÃâÕ½×´Ì¬, ±ÜÃâ±»Ä§Îï¹¥»÷
+ * ÓÃ·¨: battleignore <¿ª¹Ø×´Ì¬>{,<½ÇÉ«±àºÅ>};
+ * ·µ»Ø: ¸ÃÖ¸ÁîÎŞÂÛ³É¹¦Ê§°Ü, ¶¼²»»áÓĞ·µ»ØÖµ
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(battleignore) {
 	map_session_data *sd = nullptr;
@@ -29794,12 +29894,12 @@ BUILDIN_FUNC(battleignore) {
 
 #ifdef Pandas_ScriptCommand_GetHotkey
 /* ===========================================================
- * æŒ‡ä»¤: gethotkey
- * æè¿°: è·å–æŒ‡å®šå¿«æ·é”®ä½ç½®å½“å‰çš„ä¿¡æ¯
- * ç”¨æ³•: gethotkey <å¿«æ·é”®ä½ç½®ç¼–å·>{,<è¦è·å–çš„æ•°æ®ç±»å‹>};
- * è¿”å›: è‹¥æºå¸¦ <è¦è·å–çš„æ•°æ®ç±»å‹> å‚æ•°æ—¶, å‘ç”Ÿé”™è¯¯å°†è¿”å› -1, æˆåŠŸåˆ™è¿”å›æŸ¥è¯¢çš„å€¼;
-		ä¸æºå¸¦ <è¦è·å–çš„æ•°æ®ç±»å‹> å‚æ•°æ—¶, å‘ç”Ÿé”™è¯¯å°†è¿”å› -1, æˆåŠŸåˆ™å°†ä¿¡æ¯ä¿å­˜åˆ°å˜é‡å¹¶è¿”å› 1
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: gethotkey
+ * ÃèÊö: »ñÈ¡Ö¸¶¨¿ì½İ¼üÎ»ÖÃµ±Ç°µÄĞÅÏ¢
+ * ÓÃ·¨: gethotkey <¿ì½İ¼üÎ»ÖÃ±àºÅ>{,<Òª»ñÈ¡µÄÊı¾İÀàĞÍ>};
+ * ·µ»Ø: ÈôĞ¯´ø <Òª»ñÈ¡µÄÊı¾İÀàĞÍ> ²ÎÊıÊ±, ·¢Éú´íÎó½«·µ»Ø -1, ³É¹¦Ôò·µ»Ø²éÑ¯µÄÖµ;
+		²»Ğ¯´ø <Òª»ñÈ¡µÄÊı¾İÀàĞÍ> ²ÎÊıÊ±, ·¢Éú´íÎó½«·µ»Ø -1, ³É¹¦Ôò½«ĞÅÏ¢±£´æµ½±äÁ¿²¢·µ»Ø 1
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(gethotkey) {
 	map_session_data *sd = nullptr;
@@ -29849,11 +29949,11 @@ BUILDIN_FUNC(gethotkey) {
 
 #ifdef Pandas_ScriptCommand_SetHotkey
 /* ===========================================================
- * æŒ‡ä»¤: sethotkey
- * æè¿°: è®¾ç½®æŒ‡å®šå¿«æ·é”®ä½ç½®çš„ä¿¡æ¯
- * ç”¨æ³•: sethotkey <å¿«æ·é”®ä½ç½®ç¼–å·>,<å¿«æ·é”®çš„ç±»å‹>,<ç‰©å“/æŠ€èƒ½çš„ID>,<æŠ€èƒ½ç­‰çº§>;
- * è¿”å›: è®¾ç½®æˆåŠŸåˆ™è¿”å› 1, è®¾ç½®å¤±è´¥åˆ™è¿”å› 0
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: sethotkey
+ * ÃèÊö: ÉèÖÃÖ¸¶¨¿ì½İ¼üÎ»ÖÃµÄĞÅÏ¢
+ * ÓÃ·¨: sethotkey <¿ì½İ¼üÎ»ÖÃ±àºÅ>,<¿ì½İ¼üµÄÀàĞÍ>,<ÎïÆ·/¼¼ÄÜµÄID>,<¼¼ÄÜµÈ¼¶>;
+ * ·µ»Ø: ÉèÖÃ³É¹¦Ôò·µ»Ø 1, ÉèÖÃÊ§°ÜÔò·µ»Ø 0
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(sethotkey) {
 	map_session_data *sd = nullptr;
@@ -29878,14 +29978,14 @@ BUILDIN_FUNC(sethotkey) {
 	}
 
 	int hotkey_id = script_getnum(st, 4);
-	if (hotkey_type == 0) {	// ç‰©å“
+	if (hotkey_type == 0) {	// ÎïÆ·
 		if (!item_db.exists(hotkey_id)) {
 			ShowError("buildin_sethotkey: Nonexistant item %d requested.\n", hotkey_id);
 			script_pushint(st, 0);
 			return SCRIPT_CMD_SUCCESS;
 		}
 	}
-	else {	// æŠ€èƒ½
+	else {	// ¼¼ÄÜ
 		if (!skill_get_index(hotkey_id)) {
 			ShowError("buildin_sethotkey: Invalid skill ID %d , please review.\n", hotkey_id);
 			script_pushint(st, 0);
@@ -29894,7 +29994,7 @@ BUILDIN_FUNC(sethotkey) {
 	}
 
 	int hotkey_lv = script_getnum(st, 5);
-	if (hotkey_type == 0) {	// ç‰©å“
+	if (hotkey_type == 0) {	// ÎïÆ·
 		hotkey_lv = 0;
 	}
 
@@ -29917,11 +30017,11 @@ BUILDIN_FUNC(sethotkey) {
 
 #ifdef Pandas_ScriptCommand_ShowVend
 /* ===========================================================
- * æŒ‡ä»¤: showvend
- * æè¿°: ä½¿æŒ‡å®šçš„ NPC å¤´ä¸Šå¯ä»¥æ˜¾ç¤ºéœ²å¤©å•†åº—çš„æ‹›ç‰Œ
- * ç”¨æ³•: showvend "<NPCåç§°>",<æ˜¯å¦æ˜¾ç¤º>{,"<æ‹›ç‰Œåç§°>"};
- * è¿”å›: æ“ä½œæˆåŠŸåˆ™è¿”å› 1, æ“ä½œå¤±è´¥åˆ™è¿”å› 0
- * ä½œè€…: Jian916, Rewrite By Solaä¸¶å°å…‹
+ * Ö¸Áî: showvend
+ * ÃèÊö: Ê¹Ö¸¶¨µÄ NPC Í·ÉÏ¿ÉÒÔÏÔÊ¾Â¶ÌìÉÌµêµÄÕĞÅÆ
+ * ÓÃ·¨: showvend "<NPCÃû³Æ>",<ÊÇ·ñÏÔÊ¾>{,"<ÕĞÅÆÃû³Æ>"};
+ * ·µ»Ø: ²Ù×÷³É¹¦Ôò·µ»Ø 1, ²Ù×÷Ê§°ÜÔò·µ»Ø 0
+ * ×÷Õß: Jian916, Rewrite By SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(showvend) {
 	struct npc_data *nd = nullptr;
@@ -29975,11 +30075,11 @@ BUILDIN_FUNC(showvend) {
 
 #ifdef Pandas_ScriptCommand_ViewEquip
 /* ===========================================================
- * æŒ‡ä»¤: viewequip
- * æè¿°: æŸ¥çœ‹æŒ‡å®šåœ¨çº¿è§’è‰²çš„è£…å¤‡é¢æ¿ä¿¡æ¯
- * ç”¨æ³•: viewequip <ç›®æ ‡çš„è§’è‰²ç¼–å·|ç›®æ ‡çš„è´¦å·ç¼–å·>{,<æ˜¯å¦å¼ºåˆ¶æŸ¥çœ‹>};
- * è¿”å›: æ“ä½œæˆåŠŸåˆ™è¿”å› 1, æ“ä½œå¤±è´¥åˆ™è¿”å› 0
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: viewequip
+ * ÃèÊö: ²é¿´Ö¸¶¨ÔÚÏß½ÇÉ«µÄ×°±¸Ãæ°åĞÅÏ¢
+ * ÓÃ·¨: viewequip <Ä¿±êµÄ½ÇÉ«±àºÅ|Ä¿±êµÄÕËºÅ±àºÅ>{,<ÊÇ·ñÇ¿ÖÆ²é¿´>};
+ * ·µ»Ø: ²Ù×÷³É¹¦Ôò·µ»Ø 1, ²Ù×÷Ê§°ÜÔò·µ»Ø 0
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(viewequip) {
 	map_session_data *sd = nullptr;
@@ -30015,11 +30115,11 @@ BUILDIN_FUNC(viewequip) {
 
 #ifdef Pandas_ScriptCommand_CountItemIdx
 /* ===========================================================
- * æŒ‡ä»¤: countitemidx
- * æè¿°: è·å–æŒ‡å®šèƒŒåŒ…åºå·çš„é“å…·åœ¨èƒŒåŒ…ä¸­çš„æ•°é‡
- * ç”¨æ³•: countitemidx <èƒŒåŒ…åºå·>{,<è§’è‰²ç¼–å·>};
- * è¿”å›: æ“ä½œæˆåŠŸåˆ™è¿”å›é“å…·çš„æ•°é‡, æ“ä½œå¤±è´¥åˆ™è¿”å› 0
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: countitemidx
+ * ÃèÊö: »ñÈ¡Ö¸¶¨±³°üĞòºÅµÄµÀ¾ßÔÚ±³°üÖĞµÄÊıÁ¿
+ * ÓÃ·¨: countitemidx <±³°üĞòºÅ>{,<½ÇÉ«±àºÅ>};
+ * ·µ»Ø: ²Ù×÷³É¹¦Ôò·µ»ØµÀ¾ßµÄÊıÁ¿, ²Ù×÷Ê§°ÜÔò·µ»Ø 0
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(countitemidx) {
 	map_session_data *sd = nullptr;
@@ -30050,11 +30150,11 @@ BUILDIN_FUNC(countitemidx) {
 
 #ifdef Pandas_ScriptCommand_IdentifyIdx
 /* ===========================================================
- * æŒ‡ä»¤: identifyidx
- * æè¿°: é‰´å®šæŒ‡å®šèƒŒåŒ…åºå·çš„é“å…·
- * ç”¨æ³•: identifyidx <èƒŒåŒ…åºå·>{,<è§’è‰²ç¼–å·>};
- * è¿”å›: æ“ä½œæˆåŠŸåˆ™è¿”å› 1, æ“ä½œå¤±è´¥åˆ™è¿”å› 0
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: identifyidx
+ * ÃèÊö: ¼ø¶¨Ö¸¶¨±³°üĞòºÅµÄµÀ¾ß
+ * ÓÃ·¨: identifyidx <±³°üĞòºÅ>{,<½ÇÉ«±àºÅ>};
+ * ·µ»Ø: ²Ù×÷³É¹¦Ôò·µ»Ø 1, ²Ù×÷Ê§°ÜÔò·µ»Ø 0
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(identifyidx) {
 	map_session_data *sd = nullptr;
@@ -30090,11 +30190,11 @@ BUILDIN_FUNC(identifyidx) {
 
 #ifdef Pandas_ScriptCommand_UnEquipIdx
 /* ===========================================================
- * æŒ‡ä»¤: unequipidx
- * æè¿°: è„±ä¸‹æŒ‡å®šèƒŒåŒ…åºå·çš„é“å…·
- * ç”¨æ³•: unequipidx <èƒŒåŒ…åºå·>{,<è§’è‰²ç¼–å·>};
- * è¿”å›: æ“ä½œæˆåŠŸåˆ™è¿”å› 1, æ“ä½œå¤±è´¥åˆ™è¿”å› 0
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: unequipidx
+ * ÃèÊö: ÍÑÏÂÖ¸¶¨±³°üĞòºÅµÄµÀ¾ß
+ * ÓÃ·¨: unequipidx <±³°üĞòºÅ>{,<½ÇÉ«±àºÅ>};
+ * ·µ»Ø: ²Ù×÷³É¹¦Ôò·µ»Ø 1, ²Ù×÷Ê§°ÜÔò·µ»Ø 0
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(unequipidx) {
 	map_session_data *sd = nullptr;
@@ -30136,11 +30236,11 @@ BUILDIN_FUNC(unequipidx) {
 
 #ifdef Pandas_ScriptCommand_EquipIdx
 /* ===========================================================
- * æŒ‡ä»¤: equipidx
- * æè¿°: ç©¿æˆ´æŒ‡å®šèƒŒåŒ…åºå·çš„é“å…·
- * ç”¨æ³•: equipidx <èƒŒåŒ…åºå·>{,<è§’è‰²ç¼–å·>};
- * è¿”å›: æ“ä½œæˆåŠŸåˆ™è¿”å› 1, æ“ä½œå¤±è´¥åˆ™è¿”å› 0
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: equipidx
+ * ÃèÊö: ´©´÷Ö¸¶¨±³°üĞòºÅµÄµÀ¾ß
+ * ÓÃ·¨: equipidx <±³°üĞòºÅ>{,<½ÇÉ«±àºÅ>};
+ * ·µ»Ø: ²Ù×÷³É¹¦Ôò·µ»Ø 1, ²Ù×÷Ê§°ÜÔò·µ»Ø 0
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(equipidx) {
 	map_session_data *sd = nullptr;
@@ -30182,12 +30282,12 @@ BUILDIN_FUNC(equipidx) {
 
 #ifdef Pandas_ScriptCommand_ItemExists
 /* ===========================================================
- * æŒ‡ä»¤: itemexists
- * æè¿°: ç¡®è®¤ç‰©å“æ•°æ®åº“ä¸­æ˜¯å¦å­˜åœ¨æŒ‡å®šç‰©å“
- * ç”¨æ³•: itemexists <ç‰©å“ç¼–å·/"ç‰©å“åç§°">;
- * è¿”å›: è‹¥ç‰©å“æŒ‡å®šçš„é“å…·ç¼–å·ä¸å­˜åœ¨äºç‰©å“æ•°æ®åº“ä¸­åˆ™è¿”å› 0,
- *      è‹¥ç‰©å“å­˜åœ¨ä¸”å¯å †å åˆ™è¿”å›æ­£æ•°ç‰©å“ç¼–å·, ä¸å¯å †å åˆ™è¿”å›è´Ÿæ•°ç‰©å“ç¼–å·
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: itemexists
+ * ÃèÊö: È·ÈÏÎïÆ·Êı¾İ¿âÖĞÊÇ·ñ´æÔÚÖ¸¶¨ÎïÆ·
+ * ÓÃ·¨: itemexists <ÎïÆ·±àºÅ/"ÎïÆ·Ãû³Æ">;
+ * ·µ»Ø: ÈôÎïÆ·Ö¸¶¨µÄµÀ¾ß±àºÅ²»´æÔÚÓÚÎïÆ·Êı¾İ¿âÖĞÔò·µ»Ø 0,
+ *      ÈôÎïÆ·´æÔÚÇÒ¿É¶ÑµşÔò·µ»ØÕıÊıÎïÆ·±àºÅ, ²»¿É¶ÑµşÔò·µ»Ø¸ºÊıÎïÆ·±àºÅ
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(itemexists) {
 	std::shared_ptr<item_data> id;
@@ -30209,11 +30309,11 @@ BUILDIN_FUNC(itemexists) {
 
 #ifdef Pandas_ScriptCommand_RentTime
 /* ===========================================================
- * æŒ‡ä»¤: renttime
- * æè¿°: å¢åŠ /å‡å°‘æŒ‡å®šä½ç½®è£…å¤‡çš„ç§Ÿèµæ—¶é—´
- * ç”¨æ³•: renttime <EQIè£…å¤‡ä½ç½®>,<å¢å‡çš„æ—¶é—´ç§’æ•°>{,<è§’è‰²ç¼–å·>};
- * è¿”å›: æ“ä½œå¤±è´¥è¿”å› 0, é 0 çš„æ­£æ•°è¡¨ç¤ºæˆåŠŸå¢å‡åæ–°çš„å‰©ä½™æ—¶é—´ç§’æ•°
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: renttime
+ * ÃèÊö: Ôö¼Ó/¼õÉÙÖ¸¶¨Î»ÖÃ×°±¸µÄ×âÁŞÊ±¼ä
+ * ÓÃ·¨: renttime <EQI×°±¸Î»ÖÃ>,<Ôö¼õµÄÊ±¼äÃëÊı>{,<½ÇÉ«±àºÅ>};
+ * ·µ»Ø: ²Ù×÷Ê§°Ü·µ»Ø 0, ·Ç 0 µÄÕıÊı±íÊ¾³É¹¦Ôö¼õºóĞÂµÄÊ£ÓàÊ±¼äÃëÊı
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(renttime) {
 	map_session_data *sd = nullptr;
@@ -30279,11 +30379,11 @@ BUILDIN_FUNC(renttime) {
 
 #ifdef Pandas_ScriptCommand_GetEquipIdx
 /* ===========================================================
- * æŒ‡ä»¤: getequipidx
- * æè¿°: è·å–æŒ‡å®šä½ç½®è£…å¤‡çš„èƒŒåŒ…åºå·
- * ç”¨æ³•: getequipidx <EQIè£…å¤‡ä½ç½®>{,<è§’è‰²ç¼–å·>};
- * è¿”å›: è·å–å¤±è´¥è¿”å›å„ç§è´Ÿæ•°, é 0 çš„æ­£æ•°è¡¨ç¤ºè·å–åˆ°çš„èƒŒåŒ…åºå·
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: getequipidx
+ * ÃèÊö: »ñÈ¡Ö¸¶¨Î»ÖÃ×°±¸µÄ±³°üĞòºÅ
+ * ÓÃ·¨: getequipidx <EQI×°±¸Î»ÖÃ>{,<½ÇÉ«±àºÅ>};
+ * ·µ»Ø: »ñÈ¡Ê§°Ü·µ»Ø¸÷ÖÖ¸ºÊı, ·Ç 0 µÄÕıÊı±íÊ¾»ñÈ¡µ½µÄ±³°üĞòºÅ
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(getequipidx) {
 	map_session_data *sd = nullptr;
@@ -30312,11 +30412,11 @@ BUILDIN_FUNC(getequipidx) {
 
 #ifdef Pandas_ScriptCommand_GetEquipExpireTick
 /* ===========================================================
- * æŒ‡ä»¤: getequipexpiretick
- * æè¿°: è·å–æŒ‡å®šä½ç½®è£…å¤‡çš„ç§Ÿèµåˆ°æœŸå‰©ä½™ç§’æ•°
- * ç”¨æ³•: getequipexpiretick <EQIè£…å¤‡ä½ç½®>{,<è§’è‰²ç¼–å·>};
- * è¿”å›: è·å–å¤±è´¥è¿”å›å„ç§è´Ÿæ•°, è¿”å› 0 è¡¨ç¤ºç›®æ ‡è£…å¤‡éç§Ÿèµ, å…¶ä»–é 0 æ­£æ•´æ•°åˆ™ä»£è¡¨å‰©ä½™ç§’æ•°
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: getequipexpiretick
+ * ÃèÊö: »ñÈ¡Ö¸¶¨Î»ÖÃ×°±¸µÄ×âÁŞµ½ÆÚÊ£ÓàÃëÊı
+ * ÓÃ·¨: getequipexpiretick <EQI×°±¸Î»ÖÃ>{,<½ÇÉ«±àºÅ>};
+ * ·µ»Ø: »ñÈ¡Ê§°Ü·µ»Ø¸÷ÖÖ¸ºÊı, ·µ»Ø 0 ±íÊ¾Ä¿±ê×°±¸·Ç×âÁŞ, ÆäËû·Ç 0 ÕıÕûÊıÔò´ú±íÊ£ÓàÃëÊı
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(getequipexpiretick) {
 	map_session_data *sd = nullptr;
@@ -30356,14 +30456,14 @@ BUILDIN_FUNC(getequipexpiretick) {
 
 #ifdef Pandas_ScriptCommand_GetInventoryInfo
 /* ===========================================================
- * æŒ‡ä»¤: getinventoryinfo
- * æè¿°: æŸ¥è¯¢æŒ‡å®šèƒŒåŒ…åºå·çš„é“å…·çš„è¯¦ç»†ä¿¡æ¯
- * ç”¨æ³•: getinventoryinfo <é“å…·çš„èƒŒåŒ…åºå·>,<è¦æŸ¥çœ‹çš„ä¿¡æ¯ç±»å‹>{,<è§’è‰²ç¼–å·>};
- * ç”¨æ³•: getcartinfo <é“å…·çš„æ‰‹æ¨è½¦åºå·>,<è¦æŸ¥çœ‹çš„ä¿¡æ¯ç±»å‹>{,<è§’è‰²ç¼–å·>};
- * ç”¨æ³•: getguildstorageinfo <é“å…·çš„å…¬ä¼šä»“åº“åºå·>,<è¦æŸ¥çœ‹çš„ä¿¡æ¯ç±»å‹>{,<è§’è‰²ç¼–å·>};
- * ç”¨æ³•: getstorageinfo <é“å…·çš„ä¸ªäººä»“åº“/æ‰©å……ä»“åº“åºå·>,<è¦æŸ¥çœ‹çš„ä¿¡æ¯ç±»å‹>{{,<ä»“åº“ç¼–å·>},<è§’è‰²ç¼–å·>};
- * è¿”å›: æŸ¥è¯¢å¤±è´¥è¿”å› -1, è‹¥æŸ¥è¯¢æˆåŠŸåˆ™è¿”å›ä½ æ‰€æŸ¥è¯¢çš„ä¿¡æ¯
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: getinventoryinfo
+ * ÃèÊö: ²éÑ¯Ö¸¶¨±³°üĞòºÅµÄµÀ¾ßµÄÏêÏ¸ĞÅÏ¢
+ * ÓÃ·¨: getinventoryinfo <µÀ¾ßµÄ±³°üĞòºÅ>,<Òª²é¿´µÄĞÅÏ¢ÀàĞÍ>{,<½ÇÉ«±àºÅ>};
+ * ÓÃ·¨: getcartinfo <µÀ¾ßµÄÊÖÍÆ³µĞòºÅ>,<Òª²é¿´µÄĞÅÏ¢ÀàĞÍ>{,<½ÇÉ«±àºÅ>};
+ * ÓÃ·¨: getguildstorageinfo <µÀ¾ßµÄ¹«»á²Ö¿âĞòºÅ>,<Òª²é¿´µÄĞÅÏ¢ÀàĞÍ>{,<½ÇÉ«±àºÅ>};
+ * ÓÃ·¨: getstorageinfo <µÀ¾ßµÄ¸öÈË²Ö¿â/À©³ä²Ö¿âĞòºÅ>,<Òª²é¿´µÄĞÅÏ¢ÀàĞÍ>{{,<²Ö¿â±àºÅ>},<½ÇÉ«±àºÅ>};
+ * ·µ»Ø: ²éÑ¯Ê§°Ü·µ»Ø -1, Èô²éÑ¯³É¹¦Ôò·µ»ØÄãËù²éÑ¯µÄĞÅÏ¢
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(getinventoryinfo) {
     map_session_data *sd = nullptr;
@@ -30513,11 +30613,11 @@ BUILDIN_FUNC(getmapiteminfo) {
 
 #ifdef Pandas_ScriptCommand_StatusCheck
 /* ===========================================================
- * æŒ‡ä»¤: statuscheck
- * æè¿°: åˆ¤æ–­çŠ¶æ€æ˜¯å¦å­˜åœ¨, å¹¶å–å¾—ç›¸å…³çš„çŠ¶æ€å‚æ•°
- * ç”¨æ³•: statuscheck <çŠ¶æ€ç¼–å·>{,<æ¸¸æˆå•ä½ç¼–å·>};
- * è¿”å›: è·å–æˆåŠŸåˆ™è¿”å› 1, è§’è‰²æ²¡æœ‰è¯¥çŠ¶æ€åˆ™è¿”å› 0, å…¶ä»–é”™è¯¯è¿”å› -1
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: statuscheck
+ * ÃèÊö: ÅĞ¶Ï×´Ì¬ÊÇ·ñ´æÔÚ, ²¢È¡µÃÏà¹ØµÄ×´Ì¬²ÎÊı
+ * ÓÃ·¨: statuscheck <×´Ì¬±àºÅ>{,<ÓÎÏ·µ¥Î»±àºÅ>};
+ * ·µ»Ø: »ñÈ¡³É¹¦Ôò·µ»Ø 1, ½ÇÉ«Ã»ÓĞ¸Ã×´Ì¬Ôò·µ»Ø 0, ÆäËû´íÎó·µ»Ø -1
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(statuscheck) {
 	map_session_data *sd = nullptr;
@@ -30543,9 +30643,9 @@ BUILDIN_FUNC(statuscheck) {
 	pc_setreg(sd, add_str("@sc_val3"), sd->sc.getSCE(id)->val3);
 	pc_setreg(sd, add_str("@sc_val4"), sd->sc.getSCE(id)->val4);
 
-	// è¿™ç§è¿”å›æ–¹å¼è‹¥å‰©ä½™æ—¶é—´è¿‡é•¿çš„è¯ @sc_tickleft ä¿å­˜çš„æ•°å€¼ä¼šè¢«æˆªæ–­, ä¸å¯é 
-	// å»ºè®®è¿˜æ˜¯å¤šä½¿ç”¨ rAthena è‡ªå¸¦çš„ getstatus æŒ‡ä»¤æ¥æ›¿ä»£ statuscheck / sc_check
-	// ä¹‹æ‰€ä»¥å®ç° statuscheck / sc_check å®Œå…¨å‡ºäºå…¼å®¹ç›®çš„è€ƒè™‘
+	// ÕâÖÖ·µ»Ø·½Ê½ÈôÊ£ÓàÊ±¼ä¹ı³¤µÄ»° @sc_tickleft ±£´æµÄÊıÖµ»á±»½Ø¶Ï, ²»¿É¿¿
+	// ½¨Òé»¹ÊÇ¶àÊ¹ÓÃ rAthena ×Ô´øµÄ getstatus Ö¸ÁîÀ´Ìæ´ú statuscheck / sc_check
+	// Ö®ËùÒÔÊµÏÖ statuscheck / sc_check ÍêÈ«³öÓÚ¼æÈİÄ¿µÄ¿¼ÂÇ
 	struct TimerData* timer = (struct TimerData*)get_timer(sd->sc.getSCE(id)->timer);
 	t_tick tickleft = (timer ? DIFF_TICK(timer->tick, gettick()) : -1);
 	pc_setreg(sd, add_str("@sc_tickleft"), tickleft);
@@ -30558,10 +30658,10 @@ BUILDIN_FUNC(statuscheck) {
 #if defined(Pandas_ScriptCommand_RentTimeIdx) || defined(Pandas_ScriptCommand_SetInventoryInfo)
 //************************************
 // Method:      inventory_rental_update
-// Description: ç§»é™¤è¿‡æœŸç§Ÿèµé“å…·; æœ€åå¦‚æœè¿ä¸€ä»¶ç§Ÿèµé“å…·éƒ½æ²¡æœ‰, é‚£ä¹ˆç›´æ¥åˆ æ‰è®¡æ—¶å™¨
+// Description: ÒÆ³ı¹ıÆÚ×âÁŞµÀ¾ß; ×îºóÈç¹ûÁ¬Ò»¼ş×âÁŞµÀ¾ß¶¼Ã»ÓĞ, ÄÇÃ´Ö±½ÓÉ¾µô¼ÆÊ±Æ÷
 // Parameter:   map_session_data * sd
 // Returns:     void
-// Author:      Solaä¸¶å°å…‹(CairoLee)  2020/5/26 23:23
+// Author:      SolaØ¼Ğ¡¿Ë(CairoLee)  2020/5/26 23:23
 //************************************
 void inventory_rental_update(map_session_data* sd) {
 	int i = 0, c = 0;
@@ -30594,11 +30694,11 @@ void inventory_rental_update(map_session_data* sd) {
 
 #ifdef Pandas_ScriptCommand_RentTimeIdx
 /* ===========================================================
- * æŒ‡ä»¤: renttimeidx
- * æè¿°: å¢åŠ /å‡å°‘æŒ‡å®šèƒŒåŒ…åºå·é“å…·çš„ç§Ÿèµæ—¶é—´
- * ç”¨æ³•: renttimeidx <èƒŒåŒ…åºå·>,<å¢å‡çš„æ—¶é—´ç§’æ•°>{,<è§’è‰²ç¼–å·>};
- * è¿”å›: æ“ä½œå¤±è´¥è¿”å› 0, é 0 çš„æ­£æ•°è¡¨ç¤ºæˆåŠŸå¢å‡åæ–°çš„å‰©ä½™æ—¶é—´ç§’æ•°
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: renttimeidx
+ * ÃèÊö: Ôö¼Ó/¼õÉÙÖ¸¶¨±³°üĞòºÅµÀ¾ßµÄ×âÁŞÊ±¼ä
+ * ÓÃ·¨: renttimeidx <±³°üĞòºÅ>,<Ôö¼õµÄÊ±¼äÃëÊı>{,<½ÇÉ«±àºÅ>};
+ * ·µ»Ø: ²Ù×÷Ê§°Ü·µ»Ø 0, ·Ç 0 µÄÕıÊı±íÊ¾³É¹¦Ôö¼õºóĞÂµÄÊ£ÓàÊ±¼äÃëÊı
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(renttimeidx) {
 	map_session_data *sd = nullptr;
@@ -30639,11 +30739,11 @@ BUILDIN_FUNC(renttimeidx) {
 
 #ifdef Pandas_ScriptCommand_PartyLeave
 /* ===========================================================
- * æŒ‡ä»¤: party_leave
- * æè¿°: ä½¿å½“å‰è§’è‰²æˆ–æŒ‡å®šè§’è‰²é€€å‡ºé˜Ÿä¼
- * ç”¨æ³•: party_leave {<è§’è‰²ç¼–å·>};
- * è¿”å›: è‹¥æŒ‡å®šçš„è§’è‰²ä¸åœ¨çº¿æˆ–ä¸åœ¨é˜Ÿä¼ä¸­åˆ™è¿”å› 0, è‹¥è§’è‰²æˆåŠŸé€€å‡ºé˜Ÿä¼åˆ™è¿”å› 1
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: party_leave
+ * ÃèÊö: Ê¹µ±Ç°½ÇÉ«»òÖ¸¶¨½ÇÉ«ÍË³ö¶ÓÎé
+ * ÓÃ·¨: party_leave {<½ÇÉ«±àºÅ>};
+ * ·µ»Ø: ÈôÖ¸¶¨µÄ½ÇÉ«²»ÔÚÏß»ò²»ÔÚ¶ÓÎéÖĞÔò·µ»Ø 0, Èô½ÇÉ«³É¹¦ÍË³ö¶ÓÎéÔò·µ»Ø 1
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(party_leave) {
 	map_session_data *sd = nullptr;
@@ -30660,8 +30760,8 @@ BUILDIN_FUNC(party_leave) {
 
 #ifdef Pandas_ScriptCommand_Script4Each
 /* ===========================================================
- * æŒ‡ä»¤: buildin_script4each_sub
- * æè¿°: é…åˆ script4each æŒ‡ä»¤ä½¿ç”¨çš„ä¸€ä¸ªå†…éƒ¨å¤„ç†å‡½æ•°
+ * Ö¸Áî: buildin_script4each_sub
+ * ÃèÊö: ÅäºÏ script4each Ö¸ÁîÊ¹ÓÃµÄÒ»¸öÄÚ²¿´¦Àíº¯Êı
  * -----------------------------------------------------------*/
 static int buildin_script4each_sub(struct block_list *bl, va_list ap) {
 	struct script_code* script = va_arg(ap, struct script_code*);
@@ -30675,13 +30775,13 @@ static int buildin_script4each_sub(struct block_list *bl, va_list ap) {
 }
 
 /* ===========================================================
- * æŒ‡ä»¤: script4each / script4eachmob / script4eachnpc
- * æè¿°: å¯¹æŒ‡å®šèŒƒå›´çš„ç©å®¶æ‰§è¡Œç›¸åŒçš„ä¸€æ®µè„šæœ¬
- * ç”¨æ³•: script4each <"{è„šæœ¬}">,<è„šæœ¬çš„æ‰§è¡ŒèŒƒå›´>{,<åŠ¨æ€å‚æ•°>...};
- * ç”¨æ³•: script4eachmob <"{è„šæœ¬}">,<è„šæœ¬çš„æ‰§è¡ŒèŒƒå›´>{,<åŠ¨æ€å‚æ•°>...};
- * ç”¨æ³•: script4eachnpc <"{è„šæœ¬}">,<è„šæœ¬çš„æ‰§è¡ŒèŒƒå›´>{,<åŠ¨æ€å‚æ•°>...};
- * è¿”å›: è¯¥æŒ‡ä»¤æ— è®ºæˆåŠŸå¤±è´¥, éƒ½ä¸ä¼šæœ‰è¿”å›å€¼
- * ä½œè€…: Solaä¸¶å°å…‹ (æœ€æ—©å€Ÿé‰´è‡ª Sense çš„ä»£ç è¿›è¡Œæ”¹è¿›)
+ * Ö¸Áî: script4each / script4eachmob / script4eachnpc
+ * ÃèÊö: ¶ÔÖ¸¶¨·¶Î§µÄÍæ¼ÒÖ´ĞĞÏàÍ¬µÄÒ»¶Î½Å±¾
+ * ÓÃ·¨: script4each <"{½Å±¾}">,<½Å±¾µÄÖ´ĞĞ·¶Î§>{,<¶¯Ì¬²ÎÊı>...};
+ * ÓÃ·¨: script4eachmob <"{½Å±¾}">,<½Å±¾µÄÖ´ĞĞ·¶Î§>{,<¶¯Ì¬²ÎÊı>...};
+ * ÓÃ·¨: script4eachnpc <"{½Å±¾}">,<½Å±¾µÄÖ´ĞĞ·¶Î§>{,<¶¯Ì¬²ÎÊı>...};
+ * ·µ»Ø: ¸ÃÖ¸ÁîÎŞÂÛ³É¹¦Ê§°Ü, ¶¼²»»áÓĞ·µ»ØÖµ
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë (×îÔç½è¼ø×Ô Sense µÄ´úÂë½øĞĞ¸Ä½ø)
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(script4each) {
 	const char *execute_script = script_getstr(st, 2);
@@ -30709,7 +30809,7 @@ BUILDIN_FUNC(script4each) {
 	struct block_list* bl = nullptr;
 	enum bl_type bltype = BL_PC;
 
-	// æ ¹æ®ä½¿ç”¨çš„æŒ‡ä»¤åç§°, ç¡®å®šåç»­å¯¹ä»€ä¹ˆç±»å‹çš„å•ä½è¿›è¡Œéå†
+	// ¸ù¾İÊ¹ÓÃµÄÖ¸ÁîÃû³Æ, È·¶¨ºóĞø¶ÔÊ²Ã´ÀàĞÍµÄµ¥Î»½øĞĞ±éÀú
 	const char* command = script_getfuncname(st);
 	if (stricmp(command, "script4each") == 0) {
 		bltype = BL_PC;
@@ -30727,7 +30827,7 @@ BUILDIN_FUNC(script4each) {
 	switch (execute_range)
 	{
 	case 0: {
-		// å…¨æœå•ä½ - script4each "{<è„šæœ¬>}",0;
+		// È«·şµ¥Î» - script4each "{<½Å±¾>}",0;
 		for (bl = mapit_first(iter); mapit_exists(iter); bl = mapit_next(iter)) {
 			if (!bl || bl->type != bltype) continue;
 			mapreg_setreg(add_str("$@gid"), bl->id);
@@ -30736,7 +30836,7 @@ BUILDIN_FUNC(script4each) {
 		break;
 	}
 	case 1: {
-		// æŒ‡å®šåœ°å›¾ä¸Šçš„å…¨éƒ¨å•ä½ - script4each "{<è„šæœ¬>}",1,<"åœ°å›¾åç§°">;
+		// Ö¸¶¨µØÍ¼ÉÏµÄÈ«²¿µ¥Î» - script4each "{<½Å±¾>}",1,<"µØÍ¼Ãû³Æ">;
 		int map_id = -1;
 
 		if (!script_hasdata(st, 4) || !script_isstring(st, 4)) break;
@@ -30750,7 +30850,7 @@ BUILDIN_FUNC(script4each) {
 		break;
 	}
 	case 2: {
-		// ä»¥åœ°å›¾æŸä¸ªç‚¹ä¸ºä¸­å¿ƒåŠå¾„è·ç¦»å†…çš„å•ä½ - script4each "{<è„šæœ¬>}",2,<"åœ°å›¾åç§°">,<ä¸­å¿ƒåæ ‡x>,<ä¸­å¿ƒåæ ‡y>,<èŒƒå›´>;
+		// ÒÔµØÍ¼Ä³¸öµãÎªÖĞĞÄ°ë¾¶¾àÀëÄÚµÄµ¥Î» - script4each "{<½Å±¾>}",2,<"µØÍ¼Ãû³Æ">,<ÖĞĞÄ×ø±êx>,<ÖĞĞÄ×ø±êy>,<·¶Î§>;
 		int map_id = -1, map_x = 0, map_y = 0, range = 0;
 
 		if (!script_hasdata(st, 4) || !script_isstring(st, 4)) break;
@@ -30772,11 +30872,11 @@ BUILDIN_FUNC(script4each) {
 		break;
 	}
 	case 3: {
-		// æŒ‡å®šç©å®¶æ‰€åœ¨çš„é˜Ÿä¼ä¸­çš„å…¨éƒ¨é˜Ÿä¼æˆå‘˜ - script4each "{<è„šæœ¬>}",3,<è§’è‰²ç¼–å·>;
+		// Ö¸¶¨Íæ¼ÒËùÔÚµÄ¶ÓÎéÖĞµÄÈ«²¿¶ÓÎé³ÉÔ± - script4each "{<½Å±¾>}",3,<½ÇÉ«±àºÅ>;
 		int party_id = 0;
 		map_session_data *target_sd = nullptr;
 
-		// è¯¥ç±»å‹ä¸æ”¯æŒ script4eachmob å’Œ script4eachnpc æŒ‡ä»¤
+		// ¸ÃÀàĞÍ²»Ö§³Ö script4eachmob ºÍ script4eachnpc Ö¸Áî
 		if (bltype != BL_PC) break;
 
 		if (!script_hasdata(st, 4) || !script_isint(st, 4)) break;
@@ -30792,11 +30892,11 @@ BUILDIN_FUNC(script4each) {
 		break;
 	}
 	case 4: {
-		// æŒ‡å®šç©å®¶æ‰€åœ¨çš„å…¬ä¼šä¸­çš„å…¨éƒ¨å…¬ä¼šæˆå‘˜ - script4each "{<è„šæœ¬>}",4,<è§’è‰²ç¼–å·>;
+		// Ö¸¶¨Íæ¼ÒËùÔÚµÄ¹«»áÖĞµÄÈ«²¿¹«»á³ÉÔ± - script4each "{<½Å±¾>}",4,<½ÇÉ«±àºÅ>;
 		int guild_id = 0;
 		map_session_data *target_sd = nullptr;
 
-		// è¯¥ç±»å‹ä¸æ”¯æŒ script4eachmob å’Œ script4eachnpc æŒ‡ä»¤
+		// ¸ÃÀàĞÍ²»Ö§³Ö script4eachmob ºÍ script4eachnpc Ö¸Áî
 		if (bltype != BL_PC) break;
 
 		if (!script_hasdata(st, 4) || !script_isint(st, 4)) break;
@@ -30812,7 +30912,7 @@ BUILDIN_FUNC(script4each) {
 		break;
 	}
 	case 5: {
-		// æŒ‡å®šåŒºåŸŸ - script4each "{<è„šæœ¬>}",5,<"åœ°å›¾åç§°">,<åæ ‡x0>,<åæ ‡y0>,<åæ ‡x1>,<åæ ‡y1>;
+		// Ö¸¶¨ÇøÓò - script4each "{<½Å±¾>}",5,<"µØÍ¼Ãû³Æ">,<×ø±êx0>,<×ø±êy0>,<×ø±êx1>,<×ø±êy1>;
 		int map_id = -1, map_x0 = 0, map_y0 = 0, map_x1 = 0, map_y1 = 0;
 
 		if (!script_hasdata(st, 4) || !script_isstring(st, 4)) break;
@@ -30831,10 +30931,10 @@ BUILDIN_FUNC(script4each) {
 		break;
 	}
 	case 6: {
-		// æŒ‡å®šé˜Ÿä¼ä¸­çš„å…¨éƒ¨é˜Ÿä¼æˆå‘˜ - script4each "{<è„šæœ¬>}",6,<é˜Ÿä¼ç¼–å·>;
+		// Ö¸¶¨¶ÓÎéÖĞµÄÈ«²¿¶ÓÎé³ÉÔ± - script4each "{<½Å±¾>}",6,<¶ÓÎé±àºÅ>;
 		int party_id = 0;
 
-		// è¯¥ç±»å‹ä¸æ”¯æŒ script4eachmob å’Œ script4eachnpc æŒ‡ä»¤
+		// ¸ÃÀàĞÍ²»Ö§³Ö script4eachmob ºÍ script4eachnpc Ö¸Áî
 		if (bltype != BL_PC) break;
 
 		if (!script_hasdata(st, 4) || !script_isint(st, 4)) break;
@@ -30849,10 +30949,10 @@ BUILDIN_FUNC(script4each) {
 		break;
 	}
 	case 7: {
-		// æŒ‡å®šå…¬ä¼šä¸­çš„å…¨éƒ¨å…¬ä¼šæˆå‘˜ - script4each "{<è„šæœ¬>}",7,<å…¬ä¼šç¼–å·>;
+		// Ö¸¶¨¹«»áÖĞµÄÈ«²¿¹«»á³ÉÔ± - script4each "{<½Å±¾>}",7,<¹«»á±àºÅ>;
 		int guild_id = 0;
 
-		// è¯¥ç±»å‹ä¸æ”¯æŒ script4eachmob å’Œ script4eachnpc æŒ‡ä»¤
+		// ¸ÃÀàĞÍ²»Ö§³Ö script4eachmob ºÍ script4eachnpc Ö¸Áî
 		if (bltype != BL_PC) break;
 
 		if (!script_hasdata(st, 4) || !script_isint(st, 4)) break;
@@ -30880,15 +30980,15 @@ BUILDIN_FUNC(script4each) {
 
 #ifdef Pandas_ScriptCommand_GetSameIpInfo
 /* ===========================================================
- * æŒ‡ä»¤: buildin_getsameipinfo_sub
- * æè¿°: é…åˆ getsameipinfo æŒ‡ä»¤ä½¿ç”¨çš„ä¸€ä¸ªå†…éƒ¨å¤„ç†å‡½æ•°
+ * Ö¸Áî: buildin_getsameipinfo_sub
+ * ÃèÊö: ÅäºÏ getsameipinfo Ö¸ÁîÊ¹ÓÃµÄÒ»¸öÄÚ²¿´¦Àíº¯Êı
  * -----------------------------------------------------------*/
 static int buildin_getsameipinfo_sub(map_session_data* pl_sd, va_list ap)
 {
 	map_session_data *sd = va_arg(ap, map_session_data*);
 	uint32 ipaddr = va_arg(ap, uint32);
 	uint32 *count = va_arg(ap, uint32*);
-	int32 m = va_arg(ap, int32);	// int16 é€šè¿‡å¯å˜å‚æ•°æ–¹å¼ä¼ é€’, ä¼šè¢«æå‡ä¸º int32
+	int32 m = va_arg(ap, int32);	// int16 Í¨¹ı¿É±ä²ÎÊı·½Ê½´«µİ, »á±»ÌáÉıÎª int32
 
 	if (!ipaddr || !sd || !count) return 0;
 	if (!pl_sd || pl_sd->state.autotrade) return 0;
@@ -30906,11 +31006,11 @@ static int buildin_getsameipinfo_sub(map_session_data* pl_sd, va_list ap)
 }
 
 /* ===========================================================
- * æŒ‡ä»¤: getsameipinfo
- * æè¿°: è·å¾—æŸä¸ªæŒ‡å®š IP åœ¨çº¿çš„ç©å®¶ä¿¡æ¯
- * ç”¨æ³•: getsameipinfo {<"IPåœ°å€">{<,"åœ°å›¾å">}};
- * è¿”å›: å‡ºé”™è¿”å› -1, å…¶ä»–å« 0 æ­£æ•´æ•°è¡¨ç¤ºæŸ¥åˆ°çš„æ­¤ IP çš„åœ¨çº¿ç©å®¶æ•°
- * ä½œè€…: Solaä¸¶å°å…‹, æ™“æ™“
+ * Ö¸Áî: getsameipinfo
+ * ÃèÊö: »ñµÃÄ³¸öÖ¸¶¨ IP ÔÚÏßµÄÍæ¼ÒĞÅÏ¢
+ * ÓÃ·¨: getsameipinfo {<"IPµØÖ·">{<,"µØÍ¼Ãû">}};
+ * ·µ»Ø: ³ö´í·µ»Ø -1, ÆäËûº¬ 0 ÕıÕûÊı±íÊ¾²éµ½µÄ´Ë IP µÄÔÚÏßÍæ¼ÒÊı
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë, ÏşÏş
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(getsameipinfo) {
 	map_session_data *sd = nullptr;
@@ -30954,11 +31054,11 @@ BUILDIN_FUNC(getsameipinfo) {
 
 #ifdef Pandas_ScriptCommand_Logout
 /* ===========================================================
- * æŒ‡ä»¤: logout
- * æè¿°: ä½¿æŒ‡å®šçš„è§’è‰²ç«‹åˆ»ç™»å‡ºæ¸¸æˆ
- * ç”¨æ³•: logout <ç™»å‡ºç†ç”±>{,"<è§’è‰²åç§°>"|<è´¦å·ç¼–å·>|<è§’è‰²ç¼–å·>};
- * è¿”å›: è¯¥æŒ‡ä»¤æ— è®ºæˆåŠŸå¤±è´¥, éƒ½ä¸ä¼šæœ‰è¿”å›å€¼
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: logout
+ * ÃèÊö: Ê¹Ö¸¶¨µÄ½ÇÉ«Á¢¿ÌµÇ³öÓÎÏ·
+ * ÓÃ·¨: logout <µÇ³öÀíÓÉ>{,"<½ÇÉ«Ãû³Æ>"|<ÕËºÅ±àºÅ>|<½ÇÉ«±àºÅ>};
+ * ·µ»Ø: ¸ÃÖ¸ÁîÎŞÂÛ³É¹¦Ê§°Ü, ¶¼²»»áÓĞ·µ»ØÖµ
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(logout) {
 	map_session_data *sd = nullptr;
@@ -30998,8 +31098,8 @@ BUILDIN_FUNC(logout) {
 
 #ifdef Pandas_ScriptCommand_GetAreaGid
 /* ===========================================================
- * æŒ‡ä»¤: buildin_getareagid_sub
- * æè¿°: é…åˆ getareagid æŒ‡ä»¤ä½¿ç”¨çš„ä¸€ä¸ªå†…éƒ¨å¤„ç†å‡½æ•°
+ * Ö¸Áî: buildin_getareagid_sub
+ * ÃèÊö: ÅäºÏ getareagid Ö¸ÁîÊ¹ÓÃµÄÒ»¸öÄÚ²¿´¦Àíº¯Êı
  * -----------------------------------------------------------*/
 static int buildin_getareagid_sub(struct block_list *bl, va_list ap) {
 	map_session_data *sd = nullptr;
@@ -31022,11 +31122,11 @@ static int buildin_getareagid_sub(struct block_list *bl, va_list ap) {
 }
 
 /* ===========================================================
- * æŒ‡ä»¤: getareagid
- * æè¿°: è·å–æŒ‡å®šèŒƒå›´å†…ç‰¹å®šç±»å‹å•ä½çš„å…¨éƒ¨ GID
- * ç”¨æ³•: getareagid <è¿”å›æ•°ç»„>,<æœç´¢èŒƒå›´>{,<åŠ¨æ€å‚æ•°>...};
- * è¿”å›: æ“ä½œå¤±è´¥è¿”å› -1, å…¶ä»–å« 0 æ­£æ•´æ•°è¡¨ç¤ºæœç´¢åˆ°çš„ GID æ•°é‡
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: getareagid
+ * ÃèÊö: »ñÈ¡Ö¸¶¨·¶Î§ÄÚÌØ¶¨ÀàĞÍµ¥Î»µÄÈ«²¿ GID
+ * ÓÃ·¨: getareagid <·µ»ØÊı×é>,<ËÑË÷·¶Î§>{,<¶¯Ì¬²ÎÊı>...};
+ * ·µ»Ø: ²Ù×÷Ê§°Ü·µ»Ø -1, ÆäËûº¬ 0 ÕıÕûÊı±íÊ¾ËÑË÷µ½µÄ GID ÊıÁ¿
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(getareagid) {
 	map_session_data *sd = nullptr;
@@ -31068,13 +31168,13 @@ BUILDIN_FUNC(getareagid) {
 		return SCRIPT_CMD_FAILURE;
 	}
 
-	// ä»¥ä¸‹ç”¨äºæ¸…ç©ºå­˜æ”¾è¿”å›æ•°æ®çš„æ•°å€¼å‹æ•°ç»„ (å‚è€ƒ script_cleararray_pc çš„å®ç°)
+	// ÒÔÏÂÓÃÓÚÇå¿Õ´æ·Å·µ»ØÊı¾İµÄÊıÖµĞÍÊı×é (²Î¿¼ script_cleararray_pc µÄÊµÏÖ)
 	script_array_ensure_zero(st, NULL, retdata->u.num, reference_getref(retdata));
 	struct script_array* sa = static_cast<script_array *>(idb_get(src_reg_db->arrays, retid));
 	unsigned int array_len = script_array_highest_key(st, sd, retname, reference_getref(retdata));
 
 	if (sa) {
-		// è‹¥ç»™å®šçš„æ•°ç»„æ˜¯å­˜åœ¨çš„, é‚£ä¹ˆéœ€è¦æ¸…ç©ºä¸€ä¸‹
+		// Èô¸ø¶¨µÄÊı×éÊÇ´æÔÚµÄ, ÄÇÃ´ĞèÒªÇå¿ÕÒ»ÏÂ
 		unsigned int* list = script_array_cpy_list(sa);
 		unsigned int size = sa->size;
 
@@ -31086,7 +31186,7 @@ BUILDIN_FUNC(getareagid) {
 	switch (search_range)
 	{
 	case 0: {
-		// getareagid <è¿”å›æ•°ç»„>,0,<æƒ³æœç´¢çš„å•ä½ç±»å‹>,<"åœ°å›¾åç§°">;
+		// getareagid <·µ»ØÊı×é>,0,<ÏëËÑË÷µÄµ¥Î»ÀàĞÍ>,<"µØÍ¼Ãû³Æ">;
 		int map_id = -1, unitfilter = BL_ALL;
 		std::string mapname;
 
@@ -31098,7 +31198,7 @@ BUILDIN_FUNC(getareagid) {
 		break;
 	}
 	case 1: {
-		// getareagid <è¿”å›æ•°ç»„>,1,<æƒ³æœç´¢çš„å•ä½ç±»å‹>,<"åœ°å›¾åç§°">,<ä¸­å¿ƒåæ ‡x>,<ä¸­å¿ƒåæ ‡y>,<èŒƒå›´>;
+		// getareagid <·µ»ØÊı×é>,1,<ÏëËÑË÷µÄµ¥Î»ÀàĞÍ>,<"µØÍ¼Ãû³Æ">,<ÖĞĞÄ×ø±êx>,<ÖĞĞÄ×ø±êy>,<·¶Î§>;
 		int map_id = -1, unitfilter = BL_ALL;
 		int map_x = 0, map_y = 0, range = 0;
 		std::string mapname;
@@ -31119,7 +31219,7 @@ BUILDIN_FUNC(getareagid) {
 		break;
 	}
 	case 2: {
-		// getareagid <è¿”å›æ•°ç»„>,2,<æƒ³æœç´¢çš„å•ä½ç±»å‹>,<"åœ°å›¾åç§°">,<åæ ‡x0>,<åæ ‡y0>,<åæ ‡x1>,<åæ ‡y1>;
+		// getareagid <·µ»ØÊı×é>,2,<ÏëËÑË÷µÄµ¥Î»ÀàĞÍ>,<"µØÍ¼Ãû³Æ">,<×ø±êx0>,<×ø±êy0>,<×ø±êx1>,<×ø±êy1>;
 		int map_id = -1, unitfilter = BL_ALL;
 		int map_x0 = 0, map_y0 = 0, map_x1 = 0, map_y1 = 0;
 		std::string mapname;
@@ -31147,11 +31247,11 @@ BUILDIN_FUNC(getareagid) {
 
 #ifdef Pandas_ScriptCommand_ProcessHalt
 /* ===========================================================
- * æŒ‡ä»¤: processhalt
- * æè¿°: åœ¨äº‹ä»¶å¤„ç†ä»£ç ä¸­ä½¿ç”¨è¯¥æŒ‡ä»¤, å¯ä»¥ä¸­æ–­æºä»£ç çš„åç»­å¤„ç†é€»è¾‘
- * ç”¨æ³•: processhalt {<æ˜¯å¦è®¾ç½®ä¸­æ–­>};
- * è¿”å›: è¯¥æŒ‡ä»¤æ— è®ºæˆåŠŸå¤±è´¥, éƒ½ä¸ä¼šæœ‰è¿”å›å€¼
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: processhalt
+ * ÃèÊö: ÔÚÊÂ¼ş´¦Àí´úÂëÖĞÊ¹ÓÃ¸ÃÖ¸Áî, ¿ÉÒÔÖĞ¶ÏÔ´´úÂëµÄºóĞø´¦ÀíÂß¼­
+ * ÓÃ·¨: processhalt {<ÊÇ·ñÉèÖÃÖĞ¶Ï>};
+ * ·µ»Ø: ¸ÃÖ¸ÁîÎŞÂÛ³É¹¦Ê§°Ü, ¶¼²»»áÓĞ·µ»ØÖµ
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(processhalt) {
 	map_session_data *sd = nullptr;
@@ -31192,11 +31292,11 @@ BUILDIN_FUNC(processhalt) {
 
 #ifdef Pandas_ScriptCommand_SetEventTrigger
 /* ===========================================================
- * æŒ‡ä»¤: settrigger
- * æè¿°: ä½¿ç”¨è¯¥æŒ‡ä»¤å¯ä»¥è®¾ç½®æŸä¸ªäº‹ä»¶æˆ–è¿‡æ»¤å™¨çš„è§¦å‘è¡Œä¸º (ç¦æ­¢è§¦å‘ã€ä¸‹æ¬¡è§¦å‘ã€æ°¸ä¹…è§¦å‘)
- * ç”¨æ³•: settrigger <äº‹ä»¶çš„å¸¸é‡åç§°>,<è§¦å‘è¡Œä¸º>;
- * è¿”å›: è¯¥æŒ‡ä»¤æ— è®ºæˆåŠŸå¤±è´¥, éƒ½ä¸ä¼šæœ‰è¿”å›å€¼
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: settrigger
+ * ÃèÊö: Ê¹ÓÃ¸ÃÖ¸Áî¿ÉÒÔÉèÖÃÄ³¸öÊÂ¼ş»ò¹ıÂËÆ÷µÄ´¥·¢ĞĞÎª (½ûÖ¹´¥·¢¡¢ÏÂ´Î´¥·¢¡¢ÓÀ¾Ã´¥·¢)
+ * ÓÃ·¨: settrigger <ÊÂ¼şµÄ³£Á¿Ãû³Æ>,<´¥·¢ĞĞÎª>;
+ * ·µ»Ø: ¸ÃÖ¸ÁîÎŞÂÛ³É¹¦Ê§°Ü, ¶¼²»»áÓĞ·µ»ØÖµ
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(settrigger) {
 	map_session_data *sd = nullptr;
@@ -31232,11 +31332,11 @@ BUILDIN_FUNC(settrigger) {
 
 #ifdef Pandas_ScriptCommand_MessageColor
 /* ===========================================================
- * æŒ‡ä»¤: messagecolor
- * æè¿°: å‘é€æŒ‡å®šé¢œè‰²çš„æ¶ˆæ¯æ–‡æœ¬åˆ°èŠå¤©çª—å£ä¸­
- * ç”¨æ³•: messagecolor "<æ¶ˆæ¯æ–‡æœ¬>"{,"<æ–‡æœ¬é¢œè‰²ä»£ç >",<å‘é€ç›®æ ‡>,<æ¸¸æˆå•ä½ç¼–å·>};
- * è¿”å›: è¯¥æŒ‡ä»¤æ— è®ºæˆåŠŸå¤±è´¥, éƒ½ä¸ä¼šæœ‰è¿”å›å€¼
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: messagecolor
+ * ÃèÊö: ·¢ËÍÖ¸¶¨ÑÕÉ«µÄÏûÏ¢ÎÄ±¾µ½ÁÄÌì´°¿ÚÖĞ
+ * ÓÃ·¨: messagecolor "<ÏûÏ¢ÎÄ±¾>"{,"<ÎÄ±¾ÑÕÉ«´úÂë>",<·¢ËÍÄ¿±ê>,<ÓÎÏ·µ¥Î»±àºÅ>};
+ * ·µ»Ø: ¸ÃÖ¸ÁîÎŞÂÛ³É¹¦Ê§°Ü, ¶¼²»»áÓĞ·µ»ØÖµ
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(messagecolor) {
 	const char* text = script_getstr(st, 2);
@@ -31269,17 +31369,17 @@ BUILDIN_FUNC(messagecolor) {
 
 #ifdef Pandas_ScriptCommand_Copynpc
 /* ===========================================================
- * æŒ‡ä»¤: copynpc
- * æè¿°: å¤åˆ¶æŒ‡å®šçš„ NPC åˆ°ä¸€ä¸ªæ–°çš„ä½ç½®
- * ç”¨æ³•: copynpc "<å¤åˆ¶å‡ºæ¥çš„æ–°NPCæ‰€åœ¨åœ°å›¾åç§°>,<Xåæ ‡>,<Yåæ ‡>,<æœå‘ç¼–å·>","duplicate(<æ¥æºNPCåç§°>)","<å¤åˆ¶å‡ºæ¥çš„æ–°NPCåç§°>","<å›¾æ¡£å¤–è§‚ç¼–å·>";
- * ç”¨æ³•: copynpc "<å¤åˆ¶å‡ºæ¥çš„æ–°NPCæ‰€åœ¨åœ°å›¾åç§°>",<Xåæ ‡>,<Yåæ ‡>,<æœå‘ç¼–å·>,"<æ¥æºNPCåç§°>","<å¤åˆ¶å‡ºæ¥çš„æ–°NPCåç§°>",<å›¾æ¡£å¤–è§‚ç¼–å·>;
- * è¿”å›: å¤åˆ¶æˆåŠŸåˆ™è¿”å›æ–° NPC çš„ GID, å¤åˆ¶å¤±è´¥åˆ™è¿”å› 0
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: copynpc
+ * ÃèÊö: ¸´ÖÆÖ¸¶¨µÄ NPC µ½Ò»¸öĞÂµÄÎ»ÖÃ
+ * ÓÃ·¨: copynpc "<¸´ÖÆ³öÀ´µÄĞÂNPCËùÔÚµØÍ¼Ãû³Æ>,<X×ø±ê>,<Y×ø±ê>,<³¯Ïò±àºÅ>","duplicate(<À´Ô´NPCÃû³Æ>)","<¸´ÖÆ³öÀ´µÄĞÂNPCÃû³Æ>","<Í¼µµÍâ¹Û±àºÅ>";
+ * ÓÃ·¨: copynpc "<¸´ÖÆ³öÀ´µÄĞÂNPCËùÔÚµØÍ¼Ãû³Æ>",<X×ø±ê>,<Y×ø±ê>,<³¯Ïò±àºÅ>,"<À´Ô´NPCÃû³Æ>","<¸´ÖÆ³öÀ´µÄĞÂNPCÃû³Æ>",<Í¼µµÍâ¹Û±àºÅ>;
+ * ·µ»Ø: ¸´ÖÆ³É¹¦Ôò·µ»ØĞÂ NPC µÄ GID, ¸´ÖÆÊ§°ÜÔò·µ»Ø 0
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(copynpc) {
 	// --------------------------------------------------------------------------------------
-	// æœ¬æŒ‡ä»¤çš„ç»å¤§éƒ¨åˆ†ä»£ç æ¥æºè‡ª npc.cpp çš„ npc_parse_duplicate å‡½æ•°
-	// è‹¥æœªæ¥ rAthena å®˜æ–¹ä¿®æ”¹äº† npc_parse_duplicate é‚£ä¹ˆè¿™é‡Œä¹Ÿéœ€è¦è¿›è¡Œå¯¹åº”çš„è°ƒæ•´, ä»¥ä¾¿ç¡®ä¿ä¸»æµç¨‹ä¸€è‡´
+	// ±¾Ö¸ÁîµÄ¾ø´ó²¿·Ö´úÂëÀ´Ô´×Ô npc.cpp µÄ npc_parse_duplicate º¯Êı
+	// ÈôÎ´À´ rAthena ¹Ù·½ĞŞ¸ÄÁË npc_parse_duplicate ÄÇÃ´ÕâÀïÒ²ĞèÒª½øĞĞ¶ÔÓ¦µÄµ÷Õû, ÒÔ±ãÈ·±£Ö÷Á÷³ÌÒ»ÖÂ
 	// --------------------------------------------------------------------------------------
 	int flag = 0;
 	const char *w1 = nullptr, *w2 = nullptr, *w3 = nullptr, *w4 = nullptr;
@@ -31288,14 +31388,14 @@ BUILDIN_FUNC(copynpc) {
 	int* npc_script = get_npc_script_ptr();
 	int* npc_shop = get_npc_shop_ptr();
 	int* npc_warp = get_npc_warp_ptr();
-	struct npc_data* local_nd = map_id2nd(st->oid);	// å½“å‰æ‰§è¡Œäº† copynpc æŒ‡ä»¤çš„ npc å¯¹è±¡
+	struct npc_data* local_nd = map_id2nd(st->oid);	// µ±Ç°Ö´ĞĞÁË copynpc Ö¸ÁîµÄ npc ¶ÔÏó
 	const char* filepath = (local_nd ? local_nd->path : "Unable to confirm the file path where the NPC executes 'copynpc' command.");
-	const char *start = nullptr, *buffer = nullptr; // npc_parsename å’Œ npc_parseview éœ€è¦ç”¨åˆ°, ç”±äºæ²¡æœ‰å…·ä½“æ•°æ®, æ‰€ä»¥æ•…æ„ä¸èµ‹å€¼
+	const char *start = nullptr, *buffer = nullptr; // npc_parsename ºÍ npc_parseview ĞèÒªÓÃµ½, ÓÉÓÚÃ»ÓĞ¾ßÌåÊı¾İ, ËùÒÔ¹ÊÒâ²»¸³Öµ
 
-	// å¦‚æœåœ¨ç‰©å“çš„ä½¿ç”¨è„šæœ¬æˆ–ç±»ä¼¼çš„æ—  NPC ä½œä¸ºè§¦å‘ä¸»ä½“çš„åœ°æ–¹ä½¿ç”¨äº† copynpc,
-	// é‚£ä¹ˆ filepath å°†ä¼šæ˜¯ç©ºæŒ‡é’ˆ, è€Œä¸æ˜¯æŸä¸ª npc è„šæœ¬çš„å…·ä½“è·¯å¾„.
-	// è¿™ä¼šå¯¼è‡´ npc_parsename å‡½æ•°ä¸­ä½¿ç”¨ strlen(filepath) æ—¶å¯¼è‡´ç©ºæŒ‡é’ˆå´©æºƒ.
-	// åœ¨è¿™ç§æƒ…å†µä¸‹æˆ‘ä»¬å°†æ­¤ npc å½’å±çš„è·¯å¾„, è®¾ç½®ä¸ºå½“å‰å‡½æ•°çš„åå­—: buildin_copynpc ä»¥è§„é¿æ­¤é—®é¢˜
+	// Èç¹ûÔÚÎïÆ·µÄÊ¹ÓÃ½Å±¾»òÀàËÆµÄÎŞ NPC ×÷Îª´¥·¢Ö÷ÌåµÄµØ·½Ê¹ÓÃÁË copynpc,
+	// ÄÇÃ´ filepath ½«»áÊÇ¿ÕÖ¸Õë, ¶ø²»ÊÇÄ³¸ö npc ½Å±¾µÄ¾ßÌåÂ·¾¶.
+	// Õâ»áµ¼ÖÂ npc_parsename º¯ÊıÖĞÊ¹ÓÃ strlen(filepath) Ê±µ¼ÖÂ¿ÕÖ¸Õë±ÀÀ£.
+	// ÔÚÕâÖÖÇé¿öÏÂÎÒÃÇ½«´Ë npc ¹éÊôµÄÂ·¾¶, ÉèÖÃÎªµ±Ç°º¯ÊıµÄÃû×Ö: buildin_copynpc ÒÔ¹æ±Ü´ËÎÊÌâ
 	if (filepath == nullptr) {
 		filepath = __func__;
 	}
@@ -31303,20 +31403,20 @@ BUILDIN_FUNC(copynpc) {
 	do
 	{
 		if (script_lastdata(st) == 5) {
-			// è‹¥ç”¨å››ä¸ªå‚æ•°çš„å½¢å¼è°ƒç”¨ copynpc, é‚£ä¹ˆå››ä¸ªå‚æ•°å¿…é¡»å…¨éƒ¨éƒ½æ˜¯å­—ç¬¦ä¸²ç±»å‹
-			// ç¬¬å››ä¸ªå‚æ•°å¯ä»¥å…è®¸æ˜¯æ•°å€¼å˜é‡, å› ä¸ºæ•°å€¼å˜é‡å¯ä»¥ç›´æ¥è¢« script_getstr å¼ºåˆ¶è½¬æ¢æˆå­—ç¬¦ä¸²
+			// ÈôÓÃËÄ¸ö²ÎÊıµÄĞÎÊ½µ÷ÓÃ copynpc, ÄÇÃ´ËÄ¸ö²ÎÊı±ØĞëÈ«²¿¶¼ÊÇ×Ö·û´®ÀàĞÍ
+			// µÚËÄ¸ö²ÎÊı¿ÉÒÔÔÊĞíÊÇÊıÖµ±äÁ¿, ÒòÎªÊıÖµ±äÁ¿¿ÉÒÔÖ±½Ó±» script_getstr Ç¿ÖÆ×ª»»³É×Ö·û´®
 			if (script_isstring(st, 2) && script_isstring(st, 3) &&
 				script_isstring(st, 4) && (script_isstring(st, 5) || script_isint(st, 5))) {
 				w1 = script_getstr(st, 2);
 				w2 = script_getstr(st, 3);
 				w3 = script_getstr(st, 4);
 				w4 = script_getstr(st, 5);
-				break; // è¿™é‡Œçš„ break è¡¨ç¤ºæµç¨‹æ­£å¸¸ç»“æŸ, æ— éœ€æŠ¥é”™
+				break; // ÕâÀïµÄ break ±íÊ¾Á÷³ÌÕı³£½áÊø, ÎŞĞè±¨´í
 			}
 		}
 		else if (script_lastdata(st) == 6) {
-			// è‹¥ç”¨å››ä¸ªå‚æ•°çš„å½¢å¼è°ƒç”¨ copynpc, é‚£ä¹ˆå››ä¸ªå‚æ•°å¿…é¡»å…¨éƒ¨éƒ½æ˜¯å­—ç¬¦ä¸²ç±»å‹
-			// ç¬¬å››ä¸ªå‚æ•°å¯ä»¥å…è®¸æ˜¯æ•°å€¼å˜é‡, å› ä¸ºæ•°å€¼å˜é‡å¯ä»¥ç›´æ¥è¢« script_getstr å¼ºåˆ¶è½¬æ¢æˆå­—ç¬¦ä¸²
+			// ÈôÓÃËÄ¸ö²ÎÊıµÄĞÎÊ½µ÷ÓÃ copynpc, ÄÇÃ´ËÄ¸ö²ÎÊı±ØĞëÈ«²¿¶¼ÊÇ×Ö·û´®ÀàĞÍ
+			// µÚËÄ¸ö²ÎÊı¿ÉÒÔÔÊĞíÊÇÊıÖµ±äÁ¿, ÒòÎªÊıÖµ±äÁ¿¿ÉÒÔÖ±½Ó±» script_getstr Ç¿ÖÆ×ª»»³É×Ö·û´®
 			if (script_isstring(st, 2) && script_isstring(st, 3) &&
 				script_isstring(st, 4) && (script_isstring(st, 5) || script_isint(st, 5))) {
 				w1 = script_getstr(st, 2);
@@ -31324,11 +31424,11 @@ BUILDIN_FUNC(copynpc) {
 				w3 = script_getstr(st, 4);
 				w4 = script_getstr(st, 5);
 				flag = script_getnum(st, 6);
-				break; // è¿™é‡Œçš„ break è¡¨ç¤ºæµç¨‹æ­£å¸¸ç»“æŸ, æ— éœ€æŠ¥é”™
+				break; // ÕâÀïµÄ break ±íÊ¾Á÷³ÌÕı³£½áÊø, ÎŞĞè±¨´í
 			}
 		}
 		else if (script_lastdata(st) == 8) {
-			// è‹¥ä½¿ç”¨ä¸ƒä¸ªå‚æ•°çš„å½¢å¼è°ƒç”¨ copynpc, é‚£ä¹ˆä¸ƒä¸ªå‚æ•°çš„ç±»å‹åˆ†åˆ«éœ€è¦æ˜¯: siiissi
+			// ÈôÊ¹ÓÃÆß¸ö²ÎÊıµÄĞÎÊ½µ÷ÓÃ copynpc, ÄÇÃ´Æß¸ö²ÎÊıµÄÀàĞÍ·Ö±ğĞèÒªÊÇ: siiissi
 			if (script_isstring(st, 2) && script_isint(st, 3) &&
 				script_isint(st, 4) && script_isint(st, 5) &&
 				script_isstring(st, 6) && script_isstring(st, 7) && script_isint(st, 8)) {
@@ -31342,11 +31442,11 @@ BUILDIN_FUNC(copynpc) {
 				w2 = w2buf;
 				w3 = w3buf;
 				w4 = w4buf;
-				break; // è¿™é‡Œçš„ break è¡¨ç¤ºæµç¨‹æ­£å¸¸ç»“æŸ, æ— éœ€æŠ¥é”™
+				break; // ÕâÀïµÄ break ±íÊ¾Á÷³ÌÕı³£½áÊø, ÎŞĞè±¨´í
 			}
 		}
 		else if (script_lastdata(st) == 9) {
-			// è‹¥ä½¿ç”¨ä¸ƒä¸ªå‚æ•°çš„å½¢å¼è°ƒç”¨ copynpc, é‚£ä¹ˆä¸ƒä¸ªå‚æ•°çš„ç±»å‹åˆ†åˆ«éœ€è¦æ˜¯: siiissi
+			// ÈôÊ¹ÓÃÆß¸ö²ÎÊıµÄĞÎÊ½µ÷ÓÃ copynpc, ÄÇÃ´Æß¸ö²ÎÊıµÄÀàĞÍ·Ö±ğĞèÒªÊÇ: siiissi
 			if (script_isstring(st, 2) && script_isint(st, 3) &&
 				script_isint(st, 4) && script_isint(st, 5) &&
 				script_isstring(st, 6) && script_isstring(st, 7) && script_isint(st, 8)) {
@@ -31361,7 +31461,7 @@ BUILDIN_FUNC(copynpc) {
 				w3 = w3buf;
 				w4 = w4buf;
 				flag = script_getnum(st, 9);
-				break; // è¿™é‡Œçš„ break è¡¨ç¤ºæµç¨‹æ­£å¸¸ç»“æŸ, æ— éœ€æŠ¥é”™
+				break; // ÕâÀïµÄ break ±íÊ¾Á÷³ÌÕı³£½áÊø, ÎŞĞè±¨´í
 			}
 		}
 
@@ -31450,12 +31550,12 @@ BUILDIN_FUNC(copynpc) {
 	}
 
 	// --------------------------------------------------------------------------------------
-	// æ³¨æ„: è¿™é‡Œçš„ start å’Œ buffer æœ€ç»ˆä¼šåœ¨ npc_parsename å’Œ npc_parseview ä¸­
-	// ç”¨äºè®¡ç®—å‡ºæŠ¥é”™ä»£ç çš„æ‰€åœ¨è¡Œæ•°. ä½†æ˜¯ç›®å‰è„šæœ¬å¼•æ“é‡Œé¢, å¥½åƒå¹¶æ²¡æœ‰åŠæ³•çŸ¥é“å½“å‰çš„æŒ‡ä»¤å¤„äºé‚£ä¸€è¡Œ,
-	// æ‰€ä»¥ä¹Ÿæ— æ³•æ¨¡æ‹Ÿå‡ºä¸€ä¸ªå¯ä»¥æç¤ºæ­£ç¡®è¡Œæ•°çš„ start å’Œ buffer çš„å€¼ç”¨äºåé¢çš„å±•ç°.
+	// ×¢Òâ: ÕâÀïµÄ start ºÍ buffer ×îÖÕ»áÔÚ npc_parsename ºÍ npc_parseview ÖĞ
+	// ÓÃÓÚ¼ÆËã³ö±¨´í´úÂëµÄËùÔÚĞĞÊı. µ«ÊÇÄ¿Ç°½Å±¾ÒıÇæÀïÃæ, ºÃÏñ²¢Ã»ÓĞ°ì·¨ÖªµÀµ±Ç°µÄÖ¸Áî´¦ÓÚÄÇÒ»ĞĞ,
+	// ËùÒÔÒ²ÎŞ·¨Ä£Äâ³öÒ»¸ö¿ÉÒÔÌáÊ¾ÕıÈ·ĞĞÊıµÄ start ºÍ buffer µÄÖµÓÃÓÚºóÃæµÄÕ¹ÏÖ.
 	// 
-	// æˆ‘ä»¬çš„åŸåˆ™æ˜¯å°½é‡å°‘æ”¹åŠ¨ rAthena çš„ä»£ç , è¿™é‡Œä¸æƒ³å¤§æ”¹ npc_parsename å’Œ npc_parseview å‡½æ•°.
-	// æ‰€ä»¥è¿™é‡Œä¸äºˆè®¾ç½® start å’Œ buffer çš„å€¼, æ­¤åšæ³•ä¼šè®©å‡ºé”™çš„æ—¶å€™æ— æ³•å‘Šè¯‰ç”¨æˆ·å‡ºé—®é¢˜çš„è„šæœ¬è¡Œæ•°
+	// ÎÒÃÇµÄÔ­ÔòÊÇ¾¡Á¿ÉÙ¸Ä¶¯ rAthena µÄ´úÂë, ÕâÀï²»Ïë´ó¸Ä npc_parsename ºÍ npc_parseview º¯Êı.
+	// ËùÒÔÕâÀï²»ÓèÉèÖÃ start ºÍ buffer µÄÖµ, ´Ë×ö·¨»áÈÃ³ö´íµÄÊ±ºòÎŞ·¨¸æËßÓÃ»§³öÎÊÌâµÄ½Å±¾ĞĞÊı
 	// --------------------------------------------------------------------------------------
 
 	nd = npc_create_npc(m, x, y);
@@ -31467,7 +31567,7 @@ BUILDIN_FUNC(copynpc) {
 	nd->subtype = (enum npc_subtype)type;
 	switch (type) {
 	case NPCTYPE_SCRIPT:
-		++(*npc_script); // ä¸ npc_parse_duplicate ä¸åŒ, è¿™é‡Œæ˜¯ä¸ªæŒ‡é’ˆ, éœ€è¦å…ˆè§£å¼•ç”¨åå†é€’å¢
+		++(*npc_script); // Óë npc_parse_duplicate ²»Í¬, ÕâÀïÊÇ¸öÖ¸Õë, ĞèÒªÏÈ½âÒıÓÃºóÔÙµİÔö
 		nd->u.scr.xs = xs;
 		nd->u.scr.ys = ys;
 		nd->u.scr.script = dnd->u.scr.script;
@@ -31480,15 +31580,15 @@ BUILDIN_FUNC(copynpc) {
 	case NPCTYPE_ITEMSHOP:
 	case NPCTYPE_POINTSHOP:
 	case NPCTYPE_MARKETSHOP:
-		++(*npc_shop); // ä¸ npc_parse_duplicate ä¸åŒ, è¿™é‡Œæ˜¯ä¸ªæŒ‡é’ˆ, éœ€è¦å…ˆè§£å¼•ç”¨åå†é€’å¢
+		++(*npc_shop); // Óë npc_parse_duplicate ²»Í¬, ÕâÀïÊÇ¸öÖ¸Õë, ĞèÒªÏÈ½âÒıÓÃºóÔÙµİÔö
 		safestrncpy(nd->u.shop.pointshop_str, dnd->u.shop.pointshop_str, strlen(dnd->u.shop.pointshop_str));
 		nd->u.shop.itemshop_nameid = dnd->u.shop.itemshop_nameid;
 #ifndef Pandas_Fix_Duplicate_Shop_With_FullyShopItemList
 		nd->u.shop.shop_item = dnd->u.shop.shop_item;
 #else
-		// ä¸ºäº†é¿å…è¢«å¤åˆ¶å‡ºæ¥çš„[å­å•†åº—]å’Œ[æ¥æºå•†åº—]ä½¿ç”¨ç›¸åŒçš„å•†å“é“å…·ä¿¡æ¯æº,
-		// è€Œå¯¼è‡´åé¢å¯¹[æ¥æºå•†åº—]æˆ–ä»»æ„ä¸€ä¸ª[å­å•†åº—]çš„é“å…·è¿›è¡Œå¢åˆ æ“ä½œæ—¶å½±å“åˆ°åŒä¸€ä¸ª[æ¥æºå•†åº—]çš„[å­å•†åº—]
-		// è¿™é‡Œåœ¨å¤åˆ¶å•†åº— NPC çš„æ—¶å€™, å°†å…¨éƒ¨çš„å•†å“åˆ—è¡¨å®Œæ•´çš„å¤åˆ¶ä¸€ä»½å‡ºæ¥, ä»–ä»¬ä¹‹é—´ç›¸äº’ç‹¬ç«‹
+		// ÎªÁË±ÜÃâ±»¸´ÖÆ³öÀ´µÄ[×ÓÉÌµê]ºÍ[À´Ô´ÉÌµê]Ê¹ÓÃÏàÍ¬µÄÉÌÆ·µÀ¾ßĞÅÏ¢Ô´,
+		// ¶øµ¼ÖÂºóÃæ¶Ô[À´Ô´ÉÌµê]»òÈÎÒâÒ»¸ö[×ÓÉÌµê]µÄµÀ¾ß½øĞĞÔöÉ¾²Ù×÷Ê±Ó°Ïìµ½Í¬Ò»¸ö[À´Ô´ÉÌµê]µÄ[×ÓÉÌµê]
+		// ÕâÀïÔÚ¸´ÖÆÉÌµê NPC µÄÊ±ºò, ½«È«²¿µÄÉÌÆ·ÁĞ±íÍêÕûµÄ¸´ÖÆÒ»·İ³öÀ´, ËûÃÇÖ®¼äÏà»¥¶ÀÁ¢
 		CREATE(nd->u.shop.shop_item, struct npc_item_list, dnd->u.shop.count);
 		memcpy(nd->u.shop.shop_item, dnd->u.shop.shop_item, sizeof(struct npc_item_list) * dnd->u.shop.count);
 #endif // Pandas_Fix_Duplicate_Shop_With_FullyShopItemList
@@ -31500,7 +31600,7 @@ BUILDIN_FUNC(copynpc) {
 		break;
 
 	case NPCTYPE_WARP:
-		++(*npc_warp); // ä¸ npc_parse_duplicate ä¸åŒ, è¿™é‡Œæ˜¯ä¸ªæŒ‡é’ˆ, éœ€è¦å…ˆè§£å¼•ç”¨åå†é€’å¢
+		++(*npc_warp); // Óë npc_parse_duplicate ²»Í¬, ÕâÀïÊÇ¸öÖ¸Õë, ĞèÒªÏÈ½âÒıÓÃºóÔÙµİÔö
 		if (!battle_config.warp_point_debug)
 			nd->class_ = JT_WARPNPC;
 		else
@@ -31558,7 +31658,7 @@ BUILDIN_FUNC(copynpc) {
 	//if (!strcmp(filepath, "INSTANCING")) //Instance NPCs will use this for commands
 	//	nd->instance_id = mapdata->instance_id;
 
-	// å¦‚æœå¤åˆ¶å‡ºæ¥çš„ NPC å‡ºç°åœ¨ä¸€ä¸ªå‰¯æœ¬åœ°å›¾ä¸­, é‚£ä¹ˆè¯¥ NPC åº”éš¶å±è¯¥å‰¯æœ¬
+	// Èç¹û¸´ÖÆ³öÀ´µÄ NPC ³öÏÖÔÚÒ»¸ö¸±±¾µØÍ¼ÖĞ, ÄÇÃ´¸Ã NPC Ó¦Á¥Êô¸Ã¸±±¾
 	if (mapdata->instance_id) {
 		nd->instance_id = mapdata->instance_id;
 	}
@@ -31573,11 +31673,11 @@ BUILDIN_FUNC(copynpc) {
 
 #ifdef Pandas_ScriptCommand_GetTimeFmt
 /* ===========================================================
- * æŒ‡ä»¤: gettimefmt
- * æè¿°: å°†å½“å‰æ—¶é—´æ ¼å¼åŒ–è¾“å‡ºæˆå­—ç¬¦ä¸², æ˜¯ gettimestr çš„æ”¹è¿›ç‰ˆ
- * ç”¨æ³•: gettimefmt <"æ—¶é—´æ ¼å¼åŒ–æ ‡å‡†">{,<è¦è½¬æ¢çš„ç§’æ•°>{,<æ˜¯å¦æ ¼å¼åŒ–æˆ UTC æ—¶é—´>}};
- * è¿”å›: æˆåŠŸåˆ™è¿”å›è¢«æ ¼å¼åŒ–çš„æ—¶é—´, å¤±è´¥åˆ™è¿”å›ç©ºå­—ç¬¦ä¸²
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: gettimefmt
+ * ÃèÊö: ½«µ±Ç°Ê±¼ä¸ñÊ½»¯Êä³ö³É×Ö·û´®, ÊÇ gettimestr µÄ¸Ä½ø°æ
+ * ÓÃ·¨: gettimefmt <"Ê±¼ä¸ñÊ½»¯±ê×¼">{,<Òª×ª»»µÄÃëÊı>{,<ÊÇ·ñ¸ñÊ½»¯³É UTC Ê±¼ä>}};
+ * ·µ»Ø: ³É¹¦Ôò·µ»Ø±»¸ñÊ½»¯µÄÊ±¼ä, Ê§°ÜÔò·µ»Ø¿Õ×Ö·û´®
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(gettimefmt) {
 	const char *fmtstr = script_getstr(st, 2);
@@ -31625,11 +31725,11 @@ BUILDIN_FUNC(gettimefmt) {
 
 #ifdef Pandas_ScriptCommand_MultiCatchPet
 /* ===========================================================
- * æŒ‡ä»¤: multicatchpet
- * æè¿°: ä¸ catchpet æŒ‡ä»¤ç±»ä¼¼, ä½†å¯ä»¥æŒ‡å®šæ›´å¤šæ”¯æŒæ•æ‰çš„é­”ç‰©ç¼–å·
- * ç”¨æ³•: multicatchpet <é­”ç‰©ç¼–å·>{,<é­”ç‰©ç¼–å·>...};
- * è¿”å›: è¯¥æŒ‡ä»¤æ— è®ºæˆåŠŸå¤±è´¥, éƒ½ä¸ä¼šæœ‰è¿”å›å€¼
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: multicatchpet
+ * ÃèÊö: Óë catchpet Ö¸ÁîÀàËÆ, µ«¿ÉÒÔÖ¸¶¨¸ü¶àÖ§³Ö²¶×½µÄÄ§Îï±àºÅ
+ * ÓÃ·¨: multicatchpet <Ä§Îï±àºÅ>{,<Ä§Îï±àºÅ>...};
+ * ·µ»Ø: ¸ÃÖ¸ÁîÎŞÂÛ³É¹¦Ê§°Ü, ¶¼²»»áÓĞ·µ»ØÖµ
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(multicatchpet) {
 	TBL_PC* sd;
@@ -31671,10 +31771,10 @@ BUILDIN_FUNC(multicatchpet) {
 
 //************************************
 // Method:      selfdeletion_exec_endtalk
-// Description: å½“ä¸€ä¸ªç©å®¶ç»“æŸä¸æŸ NPC çš„äº¤äº’æ—¶, æ£€æŸ¥æ˜¯å¦éœ€è¦è‡ªæ¯æ­¤ NPC
+// Description: µ±Ò»¸öÍæ¼Ò½áÊøÓëÄ³ NPC µÄ½»»¥Ê±, ¼ì²éÊÇ·ñĞèÒª×Ô»Ù´Ë NPC
 // Parameter:   struct script_state * st
 // Returns:     void
-// Author:      Solaä¸¶å°å…‹(CairoLee)  2019/11/25 01:04
+// Author:      SolaØ¼Ğ¡¿Ë(CairoLee)  2019/11/25 01:04
 //************************************
 void selfdeletion_exec_endtalk(struct script_state* st) {
 	if (!st->oid) return;
@@ -31689,8 +31789,8 @@ void selfdeletion_exec_endtalk(struct script_state* st) {
 
 //************************************
 // Method:      selfdeletion_timer
-// Description: é…åˆ selfdeletion æŒ‡ä»¤ä½¿ç”¨çš„è®¡æ—¶å™¨
-// Author:      Solaä¸¶å°å…‹(CairoLee)  2019/11/25 01:03
+// Description: ÅäºÏ selfdeletion Ö¸ÁîÊ¹ÓÃµÄ¼ÆÊ±Æ÷
+// Author:      SolaØ¼Ğ¡¿Ë(CairoLee)  2019/11/25 01:03
 //************************************
 TIMER_FUNC(selfdeletion_timer) {
 	TBL_NPC* nd = map_id2nd(id);
@@ -31702,8 +31802,8 @@ TIMER_FUNC(selfdeletion_timer) {
 	}
 
 	if (nd->pandas.destruction_strategy == 1) {
-		// æ‰§è¡Œç»“æŸå¯¹è¯åæ˜¯å¦è‡ªæ¯çš„æ£€æµ‹
-		// è‹¥å½“å‰æ²¡æœ‰å…¶ä»–ç©å®¶æ­£åœ¨ä¸æ­¤ NPC äº¤äº’åˆ™è‡ªåŠ¨å¸è½½æ­¤ NPC
+		// Ö´ĞĞ½áÊø¶Ô»°ºóÊÇ·ñ×Ô»ÙµÄ¼ì²â
+		// Èôµ±Ç°Ã»ÓĞÆäËûÍæ¼ÒÕıÔÚÓë´Ë NPC ½»»¥Ôò×Ô¶¯Ğ¶ÔØ´Ë NPC
 		struct s_mapiterator* iter = nullptr;
 		struct block_list* bl = nullptr;
 		iter = mapit_geteachpc();
@@ -31742,19 +31842,19 @@ TIMER_FUNC(selfdeletion_timer) {
 }
 
 /* ===========================================================
- * æŒ‡ä»¤: selfdeletion
- * æè¿°: è®¾ç½® NPC çš„è‡ªæ¯ç­–ç•¥
- * ç”¨æ³•: selfdeletion <è‡ªæ¯ç­–ç•¥>;
- * è¿”å›: è¯¥æŒ‡ä»¤æ— è®ºæˆåŠŸå¤±è´¥, éƒ½ä¸ä¼šæœ‰è¿”å›å€¼
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: selfdeletion
+ * ÃèÊö: ÉèÖÃ NPC µÄ×Ô»Ù²ßÂÔ
+ * ÓÃ·¨: selfdeletion <×Ô»Ù²ßÂÔ>;
+ * ·µ»Ø: ¸ÃÖ¸ÁîÎŞÂÛ³É¹¦Ê§°Ü, ¶¼²»»áÓĞ·µ»ØÖµ
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(selfdeletion) {
 	TBL_PC* sd = map_id2sd(st->rid);
 	int option = (script_hasdata(st, 2) ? script_getnum(st, 2) : SELFDEL_NOW);
 
-	// SELFDEL_NOW = ç«‹åˆ»ç»ˆæ­¢å…¨éƒ¨ä¸æ­¤ NPC ç›¸å…³çš„ç©å®¶å¯¹è¯, å¹¶ç«‹åˆ»è‡ªæ¯
-	// SELFDEL_WAITFREE = ä¸æœ€åä¸€ä¸ªä¸ç©å®¶çš„äº¤äº’ç»“æŸåè‡ªæ¯
-	// SELFDEL_CANCEL = å–æ¶ˆä¸æœ€åä¸€ä¸ªä¸ç©å®¶çš„äº¤äº’ç»“æŸåè‡ªæ¯
+	// SELFDEL_NOW = Á¢¿ÌÖÕÖ¹È«²¿Óë´Ë NPC Ïà¹ØµÄÍæ¼Ò¶Ô»°, ²¢Á¢¿Ì×Ô»Ù
+	// SELFDEL_WAITFREE = Óë×îºóÒ»¸öÓëÍæ¼ÒµÄ½»»¥½áÊøºó×Ô»Ù
+	// SELFDEL_CANCEL = È¡ÏûÓë×îºóÒ»¸öÓëÍæ¼ÒµÄ½»»¥½áÊøºó×Ô»Ù
 
 	TBL_NPC* nd = map_id2nd(st->oid);
 	bool immediately = (option == SELFDEL_NOW);
@@ -31772,16 +31872,16 @@ BUILDIN_FUNC(selfdeletion) {
 		return SCRIPT_CMD_SUCCESS;
 	}
 
-	// èƒ½æ‰§è¡Œåˆ°è¿™é‡Œè¡¨ç¤ºæœŸæœ›ç«‹åˆ»é”€æ¯å½“å‰çš„ NPC
-	// å…ˆçœ‹çœ‹å½“å‰åœ°å›¾æœ‰å¤šå°‘äººæ­£åœ¨å’Œæ­¤ NPC å¯¹è¯, ä¸”å…¶ st çŠ¶æ€çš„ mes_active ä¸º 1 çš„
-	// è‹¥å‘ç°äº†åˆ™å…ˆé€æ­¤ç©å®¶ä¸€ä¸ªå…³é—­æŒ‰é’®, å¹¶å°†ä»–å’Œæ­¤ NPC çš„è„šæœ¬æµè®¾ç½®ä¸º END
+	// ÄÜÖ´ĞĞµ½ÕâÀï±íÊ¾ÆÚÍûÁ¢¿ÌÏú»Ùµ±Ç°µÄ NPC
+	// ÏÈ¿´¿´µ±Ç°µØÍ¼ÓĞ¶àÉÙÈËÕıÔÚºÍ´Ë NPC ¶Ô»°, ÇÒÆä st ×´Ì¬µÄ mes_active Îª 1 µÄ
+	// Èô·¢ÏÖÁËÔòÏÈËÍ´ËÍæ¼ÒÒ»¸ö¹Ø±Õ°´Å¥, ²¢½«ËûºÍ´Ë NPC µÄ½Å±¾Á÷ÉèÖÃÎª END
 	struct s_mapiterator* iter = nullptr;
 	struct block_list* bl = nullptr;
 	iter = mapit_geteachpc();
 
 	for (bl = mapit_first(iter); mapit_exists(iter); bl = mapit_next(iter)) {
 		if (!bl || bl->m != nd->bl.m) continue;
-		if (bl->id == st->rid) continue; // ä¸ç»“æŸå½“å‰å¯¹è¯
+		if (bl->id == st->rid) continue; // ²»½áÊøµ±Ç°¶Ô»°
 
 		struct script_state* bl_st = ((TBL_PC*)bl)->st;
 		if (bl_st == nullptr || bl_st->oid != st->oid) continue;
@@ -31790,14 +31890,14 @@ BUILDIN_FUNC(selfdeletion) {
 	}
 	if (iter) mapit_free(iter);
 
-	// å…¶ä»–æ­£åœ¨ä¸å½“å‰ NPC å‘ç”Ÿå¯¹è¯çš„è§’è‰², è‡³æ­¤å·²ç»å…¨éƒ¨å‘é€äº†å…³é—­æŒ‰é’®å¹¶ç»ˆæ­¢äº†åç»­è„šæœ¬æ‰§è¡Œ
-	// æ¥ä¸‹æ¥è®¾ç½®ä¸€ä¸ªå®šæ—¶å™¨, æ—¶é—´åˆ°äº†æŠŠå½“å‰ NPC ç›´æ¥ unload æ‰
+	// ÆäËûÕıÔÚÓëµ±Ç° NPC ·¢Éú¶Ô»°µÄ½ÇÉ«, ÖÁ´ËÒÑ¾­È«²¿·¢ËÍÁË¹Ø±Õ°´Å¥²¢ÖÕÖ¹ÁËºóĞø½Å±¾Ö´ĞĞ
+	// ½ÓÏÂÀ´ÉèÖÃÒ»¸ö¶¨Ê±Æ÷, Ê±¼äµ½ÁË°Ñµ±Ç° NPC Ö±½Ó unload µô
 	nd->pandas.destruction_timer = add_timer(
 		gettick() + 500, selfdeletion_timer, st->oid, st->rid
 	);
 
 	if (sd) {
-		// å…³é—­å½“å‰ NPC å’Œå½“å‰ç©å®¶çš„å¯¹è¯, è‹¥å­˜åœ¨å¯¹è¯æ¡†åˆ™é€ä¸€ä¸ªå…³é—­æŒ‰é’®
+		// ¹Ø±Õµ±Ç° NPC ºÍµ±Ç°Íæ¼ÒµÄ¶Ô»°, Èô´æÔÚ¶Ô»°¿òÔòËÍÒ»¸ö¹Ø±Õ°´Å¥
 		pc_close_npc(sd, 1 | 4);
 	}
 
@@ -31807,11 +31907,11 @@ BUILDIN_FUNC(selfdeletion) {
 
 #ifdef Pandas_ScriptCommand_SetCharTitle
 /* ===========================================================
- * æŒ‡ä»¤: setchartitle
- * æè¿°: è®¾ç½®æŒ‡å®šç©å®¶çš„ç§°å·ID
- * ç”¨æ³•: setchartitle <ç§°å·ID>{,<è§’è‰²ç¼–å·>};
- * è¿”å›: è®¾ç½®æˆåŠŸåˆ™è¿”å› 1, è®¾ç½®å¤±è´¥åˆ™è¿”å› 0
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: setchartitle
+ * ÃèÊö: ÉèÖÃÖ¸¶¨Íæ¼ÒµÄ³ÆºÅID
+ * ÓÃ·¨: setchartitle <³ÆºÅID>{,<½ÇÉ«±àºÅ>};
+ * ·µ»Ø: ÉèÖÃ³É¹¦Ôò·µ»Ø 1, ÉèÖÃÊ§°ÜÔò·µ»Ø 0
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(setchartitle) {
 #if PACKETVER < 20150513
@@ -31835,11 +31935,11 @@ BUILDIN_FUNC(setchartitle) {
 
 #ifdef Pandas_ScriptCommand_GetCharTitle
 /* ===========================================================
- * æŒ‡ä»¤: getchartitle
- * æè¿°: è·å¾—æŒ‡å®šç©å®¶çš„ç§°å·ID
- * ç”¨æ³•: getchartitle {<è§’è‰²ç¼–å·>};
- * è¿”å›: è¿”å›ç©å®¶çš„ç§°å·ID (è‹¥ä¸º 0 åˆ™è¡¨ç¤ºæ­¤ç©å®¶æ²¡æœ‰ç§°å·), è·å–å¤±è´¥åˆ™è¿”å› -1
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: getchartitle
+ * ÃèÊö: »ñµÃÖ¸¶¨Íæ¼ÒµÄ³ÆºÅID
+ * ÓÃ·¨: getchartitle {<½ÇÉ«±àºÅ>};
+ * ·µ»Ø: ·µ»ØÍæ¼ÒµÄ³ÆºÅID (ÈôÎª 0 Ôò±íÊ¾´ËÍæ¼ÒÃ»ÓĞ³ÆºÅ), »ñÈ¡Ê§°ÜÔò·µ»Ø -1
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(getchartitle) {
 #if PACKETVER < 20150513
@@ -31862,11 +31962,11 @@ BUILDIN_FUNC(getchartitle) {
 
 #ifdef Pandas_ScriptCommand_NpcExists
 /* ===========================================================
- * æŒ‡ä»¤: npcexists
- * æè¿°: åˆ¤æ–­æŒ‡å®šåç§°çš„ NPC æ˜¯å¦å­˜åœ¨, å°±ç®—ä¸å­˜åœ¨æ§åˆ¶å°ä¹Ÿä¸ä¼šæŠ¥é”™
- * ç”¨æ³•: npcexists "<NPCåç§°>"{,<ç”¨äºä¿å­˜ GameID çš„å˜é‡>};
- * è¿”å›: å­˜åœ¨è¿”å› 1, ä¸å­˜åœ¨è¿”å› 0
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: npcexists
+ * ÃèÊö: ÅĞ¶ÏÖ¸¶¨Ãû³ÆµÄ NPC ÊÇ·ñ´æÔÚ, ¾ÍËã²»´æÔÚ¿ØÖÆÌ¨Ò²²»»á±¨´í
+ * ÓÃ·¨: npcexists "<NPCÃû³Æ>"{,<ÓÃÓÚ±£´æ GameID µÄ±äÁ¿>};
+ * ·µ»Ø: ´æÔÚ·µ»Ø 1, ²»´æÔÚ·µ»Ø 0
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(npcexists) {
 	struct script_data* vardata = nullptr;
@@ -31901,7 +32001,7 @@ BUILDIN_FUNC(npcexists) {
 			return SCRIPT_CMD_FAILURE;
 		}
 
-		// å°†ç”¨äºä¿å­˜ GameID çš„å˜é‡å†…å®¹è®¾ç½®ä¸º 0 
+		// ½«ÓÃÓÚ±£´æ GameID µÄ±äÁ¿ÄÚÈİÉèÖÃÎª 0 
 		clear_reg(st, sd, num, name, script_getref(st, 3));
 	}
 
@@ -31922,12 +32022,12 @@ BUILDIN_FUNC(npcexists) {
 
 #ifdef Pandas_ScriptCommand_StorageGetItem
 /* ===========================================================
- * æŒ‡ä»¤: storagegetitem
- * æè¿°: å¾€ä»“åº“ç›´æ¥åˆ›é€ ä¸€ä¸ªæŒ‡å®šçš„é“å…·
- * ç”¨æ³•: storagegetitem <ç‰©å“ç¼–å·>,<æ•°é‡>{,<è´¦å·ç¼–å·>};
- * ç”¨æ³•: storagegetitem "<ç‰©å“åç§°>",<æ•°é‡>{,<è´¦å·ç¼–å·>};
- * è¿”å›: æ·»åŠ æˆåŠŸä¼šè¿”å› 0, è¿”å›å°äº 0 åˆ™è¡¨ç¤ºæœ‰é”™è¯¯
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: storagegetitem
+ * ÃèÊö: Íù²Ö¿âÖ±½Ó´´ÔìÒ»¸öÖ¸¶¨µÄµÀ¾ß
+ * ÓÃ·¨: storagegetitem <ÎïÆ·±àºÅ>,<ÊıÁ¿>{,<ÕËºÅ±àºÅ>};
+ * ÓÃ·¨: storagegetitem "<ÎïÆ·Ãû³Æ>",<ÊıÁ¿>{,<ÕËºÅ±àºÅ>};
+ * ·µ»Ø: Ìí¼Ó³É¹¦»á·µ»Ø 0, ·µ»ØĞ¡ÓÚ 0 Ôò±íÊ¾ÓĞ´íÎó
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(storagegetitem) {
 	int get_count = 0, i = 0;
@@ -32034,11 +32134,11 @@ BUILDIN_FUNC(storagegetitem) {
 
 #ifdef Pandas_ScriptCommand_SetInventoryInfo
 /* ===========================================================
- * æŒ‡ä»¤: setinventoryinfo
- * æè¿°: è®¾ç½®æŒ‡å®šèƒŒåŒ…åºå·é“å…·çš„éƒ¨åˆ†è¯¦ç»†ä¿¡æ¯, ä¸ getinventoryinfo å¯¹åº”
- * ç”¨æ³•: setinventoryinfo <é“å…·çš„èƒŒåŒ…åºå·>,<è¦è®¾ç½®çš„ä¿¡æ¯ç±»å‹>,<å€¼>{{,<æ ‡è®°ä½>},<è§’è‰²ç¼–å·>};
- * è¿”å›: è®¾ç½®æˆåŠŸåˆ™è¿”å› 1, è®¾ç½®å¤±è´¥æˆ–è§’è‰²ä¸å­˜åœ¨åˆ™è¿”å› 0, è¿”å›è´Ÿæ•°ä¹Ÿæ˜¯å¤±è´¥ (å€¼è¡¨ç¤ºä¸åŒå¤±è´¥åŸå› )
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: setinventoryinfo
+ * ÃèÊö: ÉèÖÃÖ¸¶¨±³°üĞòºÅµÀ¾ßµÄ²¿·ÖÏêÏ¸ĞÅÏ¢, Óë getinventoryinfo ¶ÔÓ¦
+ * ÓÃ·¨: setinventoryinfo <µÀ¾ßµÄ±³°üĞòºÅ>,<ÒªÉèÖÃµÄĞÅÏ¢ÀàĞÍ>,<Öµ>{{,<±ê¼ÇÎ»>},<½ÇÉ«±àºÅ>};
+ * ·µ»Ø: ÉèÖÃ³É¹¦Ôò·µ»Ø 1, ÉèÖÃÊ§°Ü»ò½ÇÉ«²»´æÔÚÔò·µ»Ø 0, ·µ»Ø¸ºÊıÒ²ÊÇÊ§°Ü (Öµ±íÊ¾²»Í¬Ê§°ÜÔ­Òò)
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(setinventoryinfo) {
 	map_session_data* sd = nullptr;
@@ -32060,11 +32160,11 @@ BUILDIN_FUNC(setinventoryinfo) {
 	}
 
 	if (script_hasdata(st, 5) && script_isint(st, 5)) {
-		//   0 : ç»´æŒé»˜è®¤è¡Œä¸º
-		// & 1 : è·³è¿‡è§’è‰²èƒ½åŠ›é‡ç®—
-		// & 2 : è·³è¿‡å…¨é‡åˆ·æ–°è§’è‰²çš„èƒŒåŒ…æ•°æ®
-		// & 4 : å¿½ç•¥å¡ç‰‡æ’å…¥åˆç†æ€§çš„æ ¡éªŒ(å¿…é¡»æ˜¯å¡ç‰‡, å¡ç‰‡ä½ç½®å’Œè£…å¤‡ä½ç½®ç¬¦åˆ)
-		// & 8 : æ’å…¥å¡ç‰‡æ— éœ€å†™å…¥ picklog è®°å½•(å‡­ç©ºç”Ÿæˆ)
+		//   0 : Î¬³ÖÄ¬ÈÏĞĞÎª
+		// & 1 : Ìø¹ı½ÇÉ«ÄÜÁ¦ÖØËã
+		// & 2 : Ìø¹ıÈ«Á¿Ë¢ĞÂ½ÇÉ«µÄ±³°üÊı¾İ
+		// & 4 : ºöÂÔ¿¨Æ¬²åÈëºÏÀíĞÔµÄĞ£Ñé(±ØĞëÊÇ¿¨Æ¬, ¿¨Æ¬Î»ÖÃºÍ×°±¸Î»ÖÃ·ûºÏ)
+		// & 8 : ²åÈë¿¨Æ¬ÎŞĞèĞ´Èë picklog ¼ÇÂ¼(Æ¾¿ÕÉú³É)
 		flag = script_getnum(st, 5);
 	}
 
@@ -32328,11 +32428,11 @@ BUILDIN_FUNC(setmapiteminfo) {
 
 #ifdef Pandas_ScriptCommand_UpdateInventory
 /* ===========================================================
- * æŒ‡ä»¤: updateinventory
- * æè¿°: é‡æ–°ä¸‹å‘å…³è”ç©å®¶çš„èƒŒåŒ…æ•°æ®ç»™å®¢æˆ·ç«¯ (åˆ·æ–°å®¢æˆ·ç«¯èƒŒåŒ…æ•°æ®)
- * ç”¨æ³•: updateinventory {<è§’è‰²ç¼–å·>};
- * è¿”å›: è¿”å› 1 è¡¨ç¤ºæˆåŠŸ, 0 è¡¨ç¤ºå¤±è´¥
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: updateinventory
+ * ÃèÊö: ÖØĞÂÏÂ·¢¹ØÁªÍæ¼ÒµÄ±³°üÊı¾İ¸ø¿Í»§¶Ë (Ë¢ĞÂ¿Í»§¶Ë±³°üÊı¾İ)
+ * ÓÃ·¨: updateinventory {<½ÇÉ«±àºÅ>};
+ * ·µ»Ø: ·µ»Ø 1 ±íÊ¾³É¹¦, 0 ±íÊ¾Ê§°Ü
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(updateinventory) {
 	map_session_data* sd = nullptr;
@@ -32349,11 +32449,11 @@ BUILDIN_FUNC(updateinventory) {
 
 #ifdef Pandas_ScriptCommand_GetCharMacAddress
 /* ===========================================================
- * æŒ‡ä»¤: getcharmac
- * æè¿°: è·å–æŒ‡å®šè§’è‰²ç™»å½•æ—¶ä½¿ç”¨çš„ MAC åœ°å€
- * ç”¨æ³•: getcharmac(<è´¦æˆ·ç¼–å·>/<è§’è‰²ç¼–å·>/<"è§’è‰²åç§°">);
- * è¿”å›: æˆåŠŸåˆ™è¿”å› MAC åœ°å€, å¤±è´¥åˆ™è¿”å›ç©ºå­—ç¬¦ä¸²
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: getcharmac
+ * ÃèÊö: »ñÈ¡Ö¸¶¨½ÇÉ«µÇÂ¼Ê±Ê¹ÓÃµÄ MAC µØÖ·
+ * ÓÃ·¨: getcharmac(<ÕË»§±àºÅ>/<½ÇÉ«±àºÅ>/<"½ÇÉ«Ãû³Æ">);
+ * ·µ»Ø: ³É¹¦Ôò·µ»Ø MAC µØÖ·, Ê§°ÜÔò·µ»Ø¿Õ×Ö·û´®
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(getcharmac) {
 	map_session_data* sd = nullptr;
@@ -32387,11 +32487,11 @@ BUILDIN_FUNC(getcharmac) {
 
 #ifdef Pandas_ScriptCommand_GetConstant
 /* ===========================================================
- * æŒ‡ä»¤: getconstant
- * æè¿°: æŸ¥è¯¢ä¸€ä¸ªå¸¸é‡å­—ç¬¦ä¸²å¯¹åº”çš„æ•°å€¼
- * ç”¨æ³•: getconstant <"å¸¸é‡å­—ç¬¦ä¸²">;
- * è¿”å›: æˆåŠŸåˆ™è¿”å›å¸¸é‡å¯¹åº”çš„æ•°å€¼, æŸ¥è¯¢å¤±è´¥åˆ™è¿”å› -255
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: getconstant
+ * ÃèÊö: ²éÑ¯Ò»¸ö³£Á¿×Ö·û´®¶ÔÓ¦µÄÊıÖµ
+ * ÓÃ·¨: getconstant <"³£Á¿×Ö·û´®">;
+ * ·µ»Ø: ³É¹¦Ôò·µ»Ø³£Á¿¶ÔÓ¦µÄÊıÖµ, ²éÑ¯Ê§°ÜÔò·µ»Ø -255
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(getconstant) {
 	const char* name = script_getstr(st, 2);
@@ -32410,11 +32510,11 @@ BUILDIN_FUNC(getconstant) {
 
 #ifdef Pandas_ScriptCommand_Preg_Search
 /* ===========================================================
- * æŒ‡ä»¤: preg_search
- * æè¿°: ä½¿ç”¨æ­£åˆ™è¡¨è¾¾å¼æœç´¢å¹¶è¿”å›é¦–ä¸ªåŒ¹é…çš„åˆ†ç»„å†…å®¹
- * ç”¨æ³•: preg_search <"å­—ç¬¦ä¸²">,<"åŒ¹é…è¡¨è¾¾å¼">,<æ‹“å±•æ ‡è®°ä½>,<å­˜æ”¾åŒ¹é…ç»“æœçš„å­—ç¬¦ä¸²æ•°ç»„>;
- * è¿”å›: è¿”å›è´Ÿæ•°è¡¨ç¤ºé”™è¯¯, å…¶ä»–æ­£æ•´æ•°è¡¨ç¤ºåŒ¹é…åˆ°çš„åˆ†ç»„ä¸ªæ•°
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: preg_search
+ * ÃèÊö: Ê¹ÓÃÕıÔò±í´ïÊ½ËÑË÷²¢·µ»ØÊ×¸öÆ¥ÅäµÄ·Ö×éÄÚÈİ
+ * ÓÃ·¨: preg_search <"×Ö·û´®">,<"Æ¥Åä±í´ïÊ½">,<ÍØÕ¹±ê¼ÇÎ»>,<´æ·ÅÆ¥Åä½á¹ûµÄ×Ö·û´®Êı×é>;
+ * ·µ»Ø: ·µ»Ø¸ºÊı±íÊ¾´íÎó, ÆäËûÕıÕûÊı±íÊ¾Æ¥Åäµ½µÄ·Ö×é¸öÊı
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(preg_search) {
 	map_session_data* sd = nullptr;
@@ -32457,13 +32557,13 @@ BUILDIN_FUNC(preg_search) {
 		return SCRIPT_CMD_FAILURE;
 	}
 
-	// ä»¥ä¸‹ç”¨äºæ¸…ç©ºå­˜æ”¾è¿”å›æ•°æ®çš„å­—ç¬¦ä¸²æ•°ç»„ (å‚è€ƒ script_cleararray_pc çš„å®ç°)
+	// ÒÔÏÂÓÃÓÚÇå¿Õ´æ·Å·µ»ØÊı¾İµÄ×Ö·û´®Êı×é (²Î¿¼ script_cleararray_pc µÄÊµÏÖ)
 	script_array_ensure_zero(st, NULL, retdata->u.num, reference_getref(retdata));
 	struct script_array* sa = static_cast<script_array*>(idb_get(src_reg_db->arrays, retid));
 	unsigned int array_len = script_array_highest_key(st, sd, retname, reference_getref(retdata));
 
 	if (sa) {
-		// è‹¥ç»™å®šçš„æ•°ç»„æ˜¯å­˜åœ¨çš„, é‚£ä¹ˆéœ€è¦æ¸…ç©ºä¸€ä¸‹
+		// Èô¸ø¶¨µÄÊı×éÊÇ´æÔÚµÄ, ÄÇÃ´ĞèÒªÇå¿ÕÒ»ÏÂ
 		unsigned int* list = script_array_cpy_list(sa);
 		unsigned int size = sa->size;
 
@@ -32509,11 +32609,11 @@ BUILDIN_FUNC(preg_search) {
 
 #ifdef Pandas_ScriptCommand_Aura
 /* ===========================================================
- * æŒ‡ä»¤: aura
- * æè¿°: æ¿€æ´»æŒ‡å®šçš„å…‰ç¯ç»„åˆ
- * ç”¨æ³•: aura <å…‰ç¯ç¼–å·>{,<è§’è‰²ç¼–å·>};
- * è¿”å›: æˆåŠŸè¿”å› 1 å¤±è´¥è¿”å› 0
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: aura
+ * ÃèÊö: ¼¤»îÖ¸¶¨µÄ¹â»·×éºÏ
+ * ÓÃ·¨: aura <¹â»·±àºÅ>{,<½ÇÉ«±àºÅ>};
+ * ·µ»Ø: ³É¹¦·µ»Ø 1 Ê§°Ü·µ»Ø 0
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(aura) {
 	uint32 aura_id = script_getnum(st, 2);
@@ -32541,11 +32641,11 @@ BUILDIN_FUNC(aura) {
 
 #ifdef Pandas_ScriptCommand_UnitAura
 /* ===========================================================
- * æŒ‡ä»¤: unitaura
- * æè¿°: ç”¨äºè°ƒæ•´ä¸ƒç§å•ä½çš„å…‰ç¯ç»„åˆ (ä½†ä»… BL_PC ä¼šè¢«æŒä¹…åŒ–)
- * ç”¨æ³•: unitaura <å•ä½ç¼–å·>,<å…‰ç¯ç¼–å·>;
- * è¿”å›: æˆåŠŸè¿”å› 1 å¤±è´¥è¿”å› 0
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: unitaura
+ * ÃèÊö: ÓÃÓÚµ÷ÕûÆßÖÖµ¥Î»µÄ¹â»·×éºÏ (µ«½ö BL_PC »á±»³Ö¾Ã»¯)
+ * ÓÃ·¨: unitaura <µ¥Î»±àºÅ>,<¹â»·±àºÅ>;
+ * ·µ»Ø: ³É¹¦·µ»Ø 1 Ê§°Ü·µ»Ø 0
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(unitaura) {
 	uint32 aura_id = script_getnum(st, 3);
@@ -32580,11 +32680,11 @@ BUILDIN_FUNC(unitaura) {
 
 #ifdef Pandas_ScriptCommand_GetUnitTarget
 /* ===========================================================
- * æŒ‡ä»¤: getunittarget
- * æè¿°: è¯¥æŒ‡ä»¤ç”¨äºè·å–æŒ‡å®šå•ä½å½“å‰æ­£åœ¨æ”»å‡»çš„ç›®æ ‡å•ä½ç¼–å·
- * ç”¨æ³•: getunittarget <æ¸¸æˆå•ä½ç¼–å·>;
- * è¿”å›: ç›®æ ‡çš„ GameID, è¿”å› 0 è¡¨ç¤ºæ²¡æœ‰ç›®æ ‡
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: getunittarget
+ * ÃèÊö: ¸ÃÖ¸ÁîÓÃÓÚ»ñÈ¡Ö¸¶¨µ¥Î»µ±Ç°ÕıÔÚ¹¥»÷µÄÄ¿±êµ¥Î»±àºÅ
+ * ÓÃ·¨: getunittarget <ÓÎÏ·µ¥Î»±àºÅ>;
+ * ·µ»Ø: Ä¿±êµÄ GameID, ·µ»Ø 0 ±íÊ¾Ã»ÓĞÄ¿±ê
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(getunittarget) {
 	struct block_list* bl = nullptr;
@@ -32614,11 +32714,11 @@ BUILDIN_FUNC(getunittarget) {
 
 #ifdef Pandas_ScriptCommand_UnlockCmd
 /* ===========================================================
- * æŒ‡ä»¤: unlockcmd
- * æè¿°: è§£é”å®æ—¶äº‹ä»¶å’Œè¿‡æ»¤å™¨äº‹ä»¶çš„æŒ‡ä»¤é™åˆ¶, åªèƒ½ç”¨äºå®æ—¶æˆ–è¿‡æ»¤å™¨äº‹ä»¶
- * ç”¨æ³•: unlockcmd;
- * è¿”å›: è¯¥æŒ‡ä»¤æ— è®ºæˆåŠŸä¸å¦, éƒ½ä¸ä¼šæœ‰è¿”å›å€¼
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: unlockcmd
+ * ÃèÊö: ½âËøÊµÊ±ÊÂ¼şºÍ¹ıÂËÆ÷ÊÂ¼şµÄÖ¸ÁîÏŞÖÆ, Ö»ÄÜÓÃÓÚÊµÊ±»ò¹ıÂËÆ÷ÊÂ¼ş
+ * ÓÃ·¨: unlockcmd;
+ * ·µ»Ø: ¸ÃÖ¸ÁîÎŞÂÛ³É¹¦Óë·ñ, ¶¼²»»áÓĞ·µ»ØÖµ
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(unlockcmd) {
 	map_session_data* sd = nullptr;
@@ -32640,11 +32740,11 @@ BUILDIN_FUNC(unlockcmd) {
 
 #ifdef Pandas_ScriptCommand_BattleRecordQuery
 /* ===========================================================
- * æŒ‡ä»¤: batrec_query
- * æè¿°: æŸ¥è¯¢æŒ‡å®šå•ä½çš„æˆ˜æ–—è®°å½•, æŸ¥çœ‹ä¸äº¤äº’ç›®æ ‡å•ä½äº§ç”Ÿçš„å…·ä½“è®°å½•å€¼
- * ç”¨æ³•: batrec_query <è®°å½•å®¿ä¸»çš„å•ä½ç¼–å·>,<äº¤äº’ç›®æ ‡çš„å•ä½ç¼–å·>,<è®°å½•ç±»å‹>{,<èšåˆè§„åˆ™>};
- * è¿”å›: è¿”å› -1 è¡¨ç¤ºæŸ¥æ— è®°å½•, å« 0 æ­£æ•´æ•°è¡¨ç¤ºä¼¤å®³å€¼
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: batrec_query
+ * ÃèÊö: ²éÑ¯Ö¸¶¨µ¥Î»µÄÕ½¶·¼ÇÂ¼, ²é¿´Óë½»»¥Ä¿±êµ¥Î»²úÉúµÄ¾ßÌå¼ÇÂ¼Öµ
+ * ÓÃ·¨: batrec_query <¼ÇÂ¼ËŞÖ÷µÄµ¥Î»±àºÅ>,<½»»¥Ä¿±êµÄµ¥Î»±àºÅ>,<¼ÇÂ¼ÀàĞÍ>{,<¾ÛºÏ¹æÔò>};
+ * ·µ»Ø: ·µ»Ø -1 ±íÊ¾²éÎŞ¼ÇÂ¼, º¬ 0 ÕıÕûÊı±íÊ¾ÉËº¦Öµ
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(batrec_query) {
 	struct block_list* bl = nullptr;
@@ -32676,11 +32776,11 @@ BUILDIN_FUNC(batrec_query) {
 
 #ifdef Pandas_ScriptCommand_BattleRecordRank
 /* ===========================================================
- * æŒ‡ä»¤: batrec_rank
- * æè¿°: æŸ¥è¯¢æŒ‡å®šå•ä½çš„æˆ˜æ–—è®°å½•å¹¶å¯¹è®°å½•çš„å€¼è¿›è¡Œæ’åº, è¿”å›æ’è¡Œæ¦œå•
- * ç”¨æ³•: batrec_rank <è®°å½•å®¿ä¸»çš„å•ä½ç¼–å·>,<è¿”å›äº¤äº’ç›®æ ‡çš„å•ä½ç¼–å·æ•°ç»„>,<è¿”å›è®°å½•å€¼æ•°ç»„>,<è®°å½•ç±»å‹>{,<èšåˆè§„åˆ™>{,<æ’åºè§„åˆ™>}};
- * è¿”å›: å¤±è´¥è¿”å› -1, å« 0 æ­£æ•´æ•°è¡¨ç¤ºæ•°ç»„ä¸­è¿”å›çš„æ¦œå•è®°å½•æ•°
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: batrec_rank
+ * ÃèÊö: ²éÑ¯Ö¸¶¨µ¥Î»µÄÕ½¶·¼ÇÂ¼²¢¶Ô¼ÇÂ¼µÄÖµ½øĞĞÅÅĞò, ·µ»ØÅÅĞĞ°ñµ¥
+ * ÓÃ·¨: batrec_rank <¼ÇÂ¼ËŞÖ÷µÄµ¥Î»±àºÅ>,<·µ»Ø½»»¥Ä¿±êµÄµ¥Î»±àºÅÊı×é>,<·µ»Ø¼ÇÂ¼ÖµÊı×é>,<¼ÇÂ¼ÀàĞÍ>{,<¾ÛºÏ¹æÔò>{,<ÅÅĞò¹æÔò>}};
+ * ·µ»Ø: Ê§°Ü·µ»Ø -1, º¬ 0 ÕıÕûÊı±íÊ¾Êı×éÖĞ·µ»ØµÄ°ñµ¥¼ÇÂ¼Êı
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(batrec_rank) {
 	map_session_data* sd = nullptr;
@@ -32767,11 +32867,11 @@ BUILDIN_FUNC(batrec_rank) {
 
 #ifdef Pandas_ScriptCommand_BattleRecordSortout
 /* ===========================================================
- * æŒ‡ä»¤: batrec_sortout
- * æè¿°: ç§»é™¤æŒ‡å®šå•ä½çš„æˆ˜æ–—è®°å½•ä¸­äº¤äº’å•ä½å·²ç»ä¸å­˜åœ¨ (æˆ–ä¸‹çº¿) çš„è®°å½•
- * ç”¨æ³•: batrec_sortout <è®°å½•å®¿ä¸»çš„å•ä½ç¼–å·>{,<è®°å½•ç±»å‹>};
- * è¿”å›: è¯¥æŒ‡ä»¤æ— è®ºæˆåŠŸä¸å¦, éƒ½ä¸ä¼šæœ‰è¿”å›å€¼
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: batrec_sortout
+ * ÃèÊö: ÒÆ³ıÖ¸¶¨µ¥Î»µÄÕ½¶·¼ÇÂ¼ÖĞ½»»¥µ¥Î»ÒÑ¾­²»´æÔÚ (»òÏÂÏß) µÄ¼ÇÂ¼
+ * ÓÃ·¨: batrec_sortout <¼ÇÂ¼ËŞÖ÷µÄµ¥Î»±àºÅ>{,<¼ÇÂ¼ÀàĞÍ>};
+ * ·µ»Ø: ¸ÃÖ¸ÁîÎŞÂÛ³É¹¦Óë·ñ, ¶¼²»»áÓĞ·µ»ØÖµ
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(batrec_sortout) {
 	struct block_list* bl = nullptr;
@@ -32799,11 +32899,11 @@ BUILDIN_FUNC(batrec_sortout) {
 
 #ifdef Pandas_ScriptCommand_BattleRecordReset
 /* ===========================================================
- * æŒ‡ä»¤: batrec_reset
- * æè¿°: æ¸…é™¤æŒ‡å®šå•ä½çš„æˆ˜æ–—è®°å½•
- * ç”¨æ³•: batrec_reset <è®°å½•å®¿ä¸»çš„å•ä½ç¼–å·>;
- * è¿”å›: è¯¥æŒ‡ä»¤æ— è®ºæˆåŠŸä¸å¦, éƒ½ä¸ä¼šæœ‰è¿”å›å€¼
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: batrec_reset
+ * ÃèÊö: Çå³ıÖ¸¶¨µ¥Î»µÄÕ½¶·¼ÇÂ¼
+ * ÓÃ·¨: batrec_reset <¼ÇÂ¼ËŞÖ÷µÄµ¥Î»±àºÅ>;
+ * ·µ»Ø: ¸ÃÖ¸ÁîÎŞÂÛ³É¹¦Óë·ñ, ¶¼²»»áÓĞ·µ»ØÖµ
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(batrec_reset) {
 	struct block_list* bl = nullptr;
@@ -32815,11 +32915,11 @@ BUILDIN_FUNC(batrec_reset) {
 
 #ifdef Pandas_ScriptCommand_EnableBattleRecord
 /* ===========================================================
- * æŒ‡ä»¤: enable_batrec
- * æè¿°: å¯ç”¨æŒ‡å®šå•ä½çš„æˆ˜æ–—è®°å½•
- * ç”¨æ³•: enable_batrec {<æ¸¸æˆå•ä½ç¼–å·>};
- * è¿”å›: è¯¥æŒ‡ä»¤æ— è®ºæˆåŠŸä¸å¦, éƒ½ä¸ä¼šæœ‰è¿”å›å€¼
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: enable_batrec
+ * ÃèÊö: ÆôÓÃÖ¸¶¨µ¥Î»µÄÕ½¶·¼ÇÂ¼
+ * ÓÃ·¨: enable_batrec {<ÓÎÏ·µ¥Î»±àºÅ>};
+ * ·µ»Ø: ¸ÃÖ¸ÁîÎŞÂÛ³É¹¦Óë·ñ, ¶¼²»»áÓĞ·µ»ØÖµ
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(enable_batrec) {
 	struct block_list* bl = nullptr;
@@ -32845,11 +32945,11 @@ BUILDIN_FUNC(enable_batrec) {
 
 #ifdef Pandas_ScriptCommand_DisableBattleRecord
 /* ===========================================================
- * æŒ‡ä»¤: disable_batrec
- * æè¿°: ç¦ç”¨æŒ‡å®šå•ä½çš„æˆ˜æ–—è®°å½•
- * ç”¨æ³•: disable_batrec {<æ¸¸æˆå•ä½ç¼–å·>};
- * è¿”å›: è¯¥æŒ‡ä»¤æ— è®ºæˆåŠŸä¸å¦, éƒ½ä¸ä¼šæœ‰è¿”å›å€¼
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: disable_batrec
+ * ÃèÊö: ½ûÓÃÖ¸¶¨µ¥Î»µÄÕ½¶·¼ÇÂ¼
+ * ÓÃ·¨: disable_batrec {<ÓÎÏ·µ¥Î»±àºÅ>};
+ * ·µ»Ø: ¸ÃÖ¸ÁîÎŞÂÛ³É¹¦Óë·ñ, ¶¼²»»áÓĞ·µ»ØÖµ
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(disable_batrec) {
 	struct block_list* bl = nullptr;
@@ -32875,11 +32975,11 @@ BUILDIN_FUNC(disable_batrec) {
 
 #ifdef Pandas_ScriptCommand_Login
 /* ===========================================================
- * æŒ‡ä»¤: login
- * æè¿°: å°†æŒ‡å®šçš„è§’è‰²ä»¥ç‰¹å®šçš„ç™»å½•æ¨¡å¼æ‹‰ä¸Šçº¿
- * ç”¨æ³•: login <è§’è‰²ç¼–å·>{,<é»˜è®¤æ˜¯å¦åä¸‹>{,<é»˜è®¤èº«ä½“æœå‘>{,<é»˜è®¤è„‘è¢‹æœå‘>{,<ç™»å½•æ¨¡å¼>}}}};
- * è¿”å›: æˆåŠŸè¿”å› 1, å¤±è´¥è¿”å› 0
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: login
+ * ÃèÊö: ½«Ö¸¶¨µÄ½ÇÉ«ÒÔÌØ¶¨µÄµÇÂ¼Ä£Ê½À­ÉÏÏß
+ * ÓÃ·¨: login <½ÇÉ«±àºÅ>{,<Ä¬ÈÏÊÇ·ñ×øÏÂ>{,<Ä¬ÈÏÉíÌå³¯Ïò>{,<Ä¬ÈÏÄÔ´ü³¯Ïò>{,<µÇÂ¼Ä£Ê½>}}}};
+ * ·µ»Ø: ³É¹¦·µ»Ø 1, Ê§°Ü·µ»Ø 0
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(login) {
 	script_pushint(st, 0);
@@ -32923,11 +33023,11 @@ BUILDIN_FUNC(login) {
 
 #ifdef Pandas_ScriptCommand_CheckSuspend
 /* ===========================================================
- * æŒ‡ä»¤: checksuspend
- * æè¿°: è·å–æŒ‡å®šè§’è‰²æˆ–æŒ‡å®šè´¦å·å½“å‰åœ¨çº¿è§’è‰²çš„æŒ‚æœºæ¨¡å¼
- * ç”¨æ³•: checksuspend {<è§’è‰²ç¼–å·|è´¦å·ç¼–å·|"è§’è‰²åç§°">};
- * è¿”å›: è§’è‰²ä¸å­˜åœ¨è¿”å› -1, å¦åˆ™è¿”å›å½“å‰çš„æŒ‚æœºçŠ¶æ€
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: checksuspend
+ * ÃèÊö: »ñÈ¡Ö¸¶¨½ÇÉ«»òÖ¸¶¨ÕËºÅµ±Ç°ÔÚÏß½ÇÉ«µÄ¹Ò»úÄ£Ê½
+ * ÓÃ·¨: checksuspend {<½ÇÉ«±àºÅ|ÕËºÅ±àºÅ|"½ÇÉ«Ãû³Æ">};
+ * ·µ»Ø: ½ÇÉ«²»´æÔÚ·µ»Ø -1, ·ñÔò·µ»Øµ±Ç°µÄ¹Ò»ú×´Ì¬
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(checksuspend) {
 	TBL_PC* sd = nullptr;
@@ -32969,11 +33069,11 @@ BUILDIN_FUNC(checksuspend) {
 
 #ifdef Pandas_ScriptCommand_BonusScriptRemove
 /* ===========================================================
- * æŒ‡ä»¤: bonus_script_remove
- * æè¿°: ç§»é™¤æŒ‡å®šçš„ bonus_script æ•ˆæœè„šæœ¬
- * ç”¨æ³•: bonus_script_remove <æ•ˆæœè„šæœ¬ç¼–å·>{,<è§’è‰²ç¼–å·>};
- * è¿”å›: æˆåŠŸç§»é™¤åˆ™è¿”å› true, æ‰¾ä¸åˆ°è„šæœ¬ä»£ç æˆ–ç§»é™¤å¤±è´¥åˆ™è¿”å› false
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: bonus_script_remove
+ * ÃèÊö: ÒÆ³ıÖ¸¶¨µÄ bonus_script Ğ§¹û½Å±¾
+ * ÓÃ·¨: bonus_script_remove <Ğ§¹û½Å±¾±àºÅ>{,<½ÇÉ«±àºÅ>};
+ * ·µ»Ø: ³É¹¦ÒÆ³ıÔò·µ»Ø true, ÕÒ²»µ½½Å±¾´úÂë»òÒÆ³ıÊ§°ÜÔò·µ»Ø false
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(bonus_script_remove) {
 	TBL_PC* sd = nullptr;
@@ -32994,11 +33094,11 @@ BUILDIN_FUNC(bonus_script_remove) {
 
 #ifdef Pandas_ScriptCommand_BonusScriptList
 /* ===========================================================
- * æŒ‡ä»¤: bonus_script_list
- * æè¿°: ç”¨äºè·å–æŒ‡å®šè§’è‰²å½“å‰æ¿€æ´»çš„å…¨éƒ¨ bonus_script æ•ˆæœè„šæœ¬ç¼–å·
- * ç”¨æ³•: bonus_script_list <è¿”å›æ•ˆæœè„šæœ¬ç¼–å·çš„æ•°å€¼å‹æ•°ç»„>{,<è§’è‰²ç¼–å·>};
- * è¿”å›: è·å–åˆ°çš„è„šæœ¬ä»£ç æ•°é‡, å‘ç”Ÿé”™è¯¯åˆ™è¿”å› -1
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: bonus_script_list
+ * ÃèÊö: ÓÃÓÚ»ñÈ¡Ö¸¶¨½ÇÉ«µ±Ç°¼¤»îµÄÈ«²¿ bonus_script Ğ§¹û½Å±¾±àºÅ
+ * ÓÃ·¨: bonus_script_list <·µ»ØĞ§¹û½Å±¾±àºÅµÄÊıÖµĞÍÊı×é>{,<½ÇÉ«±àºÅ>};
+ * ·µ»Ø: »ñÈ¡µ½µÄ½Å±¾´úÂëÊıÁ¿, ·¢Éú´íÎóÔò·µ»Ø -1
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(bonus_script_list) {
 	TBL_PC* sd = nullptr;
@@ -33039,11 +33139,11 @@ BUILDIN_FUNC(bonus_script_list) {
 
 #ifdef Pandas_ScriptCommand_BonusScriptExists
 /* ===========================================================
- * æŒ‡ä»¤: bonus_script_exists
- * æè¿°: æŸ¥è¯¢æŒ‡å®šè§’è‰²æ˜¯å¦å·²ç»æ¿€æ´»äº†ç‰¹å®šçš„ bonus_script æ•ˆæœè„šæœ¬
- * ç”¨æ³•: bonus_script_exists <æ•ˆæœè„šæœ¬ç¼–å·>{,<è§’è‰²ç¼–å·>};
- * è¿”å›: æ•ˆæœå·²ç»å­˜åœ¨åˆ™è¿”å› true, è§’è‰²ä¸åœ¨çº¿æˆ–æ•ˆæœä¸å­˜åœ¨å¦åˆ™è¿”å› false
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: bonus_script_exists
+ * ÃèÊö: ²éÑ¯Ö¸¶¨½ÇÉ«ÊÇ·ñÒÑ¾­¼¤»îÁËÌØ¶¨µÄ bonus_script Ğ§¹û½Å±¾
+ * ÓÃ·¨: bonus_script_exists <Ğ§¹û½Å±¾±àºÅ>{,<½ÇÉ«±àºÅ>};
+ * ·µ»Ø: Ğ§¹ûÒÑ¾­´æÔÚÔò·µ»Ø true, ½ÇÉ«²»ÔÚÏß»òĞ§¹û²»´æÔÚ·ñÔò·µ»Ø false
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(bonus_script_exists) {
 	TBL_PC* sd = nullptr;
@@ -33064,11 +33164,11 @@ BUILDIN_FUNC(bonus_script_exists) {
 
 #ifdef Pandas_ScriptCommand_BonusScriptGetId
 /* ===========================================================
- * æŒ‡ä»¤: bonus_script_getid
- * æè¿°: ç”¨äºæŸ¥è¯¢æ•ˆæœè„šæœ¬ä»£ç å¯¹åº”çš„æ•ˆæœè„šæœ¬ç¼–å·
- * ç”¨æ³•: bonus_script_getid <"æ•ˆæœè„šæœ¬ä»£ç ">,<è¿”å›æ•ˆæœè„šæœ¬ç¼–å·æ•°ç»„>{,<è§’è‰²ç¼–å·>};
- * è¿”å›: æŸ¥è¯¢åˆ°çš„è®°å½•æ•°
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: bonus_script_getid
+ * ÃèÊö: ÓÃÓÚ²éÑ¯Ğ§¹û½Å±¾´úÂë¶ÔÓ¦µÄĞ§¹û½Å±¾±àºÅ
+ * ÓÃ·¨: bonus_script_getid <"Ğ§¹û½Å±¾´úÂë">,<·µ»ØĞ§¹û½Å±¾±àºÅÊı×é>{,<½ÇÉ«±àºÅ>};
+ * ·µ»Ø: ²éÑ¯µ½µÄ¼ÇÂ¼Êı
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(bonus_script_getid) {
 	TBL_PC* sd = nullptr;
@@ -33113,11 +33213,11 @@ BUILDIN_FUNC(bonus_script_getid) {
 
 #ifdef Pandas_ScriptCommand_BonusScriptInfo
 /* ===========================================================
- * æŒ‡ä»¤: bonus_script_info
- * æè¿°: æŸ¥è¯¢æŒ‡å®šæ•ˆæœè„šæœ¬çš„ç›¸å…³ä¿¡æ¯
- * ç”¨æ³•: bonus_script_info <æ•ˆæœè„šæœ¬ç¼–å·>,<æŸ¥è¯¢ç±»å‹>{,<è§’è‰²ç¼–å·>};
- * è¿”å›: ç›´æ¥è¿”å›æ‰€æŸ¥è¯¢çš„ç»“æœå€¼
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: bonus_script_info
+ * ÃèÊö: ²éÑ¯Ö¸¶¨Ğ§¹û½Å±¾µÄÏà¹ØĞÅÏ¢
+ * ÓÃ·¨: bonus_script_info <Ğ§¹û½Å±¾±àºÅ>,<²éÑ¯ÀàĞÍ>{,<½ÇÉ«±àºÅ>};
+ * ·µ»Ø: Ö±½Ó·µ»ØËù²éÑ¯µÄ½á¹ûÖµ
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(bonus_script_info) {
 	TBL_PC* sd = nullptr;
@@ -33151,15 +33251,15 @@ BUILDIN_FUNC(bonus_script_info) {
 	}
 
 	switch (query_type) {
-	case 0:		// æ•ˆæœè„šæœ¬ä»£ç 
+	case 0:		// Ğ§¹û½Å±¾´úÂë
 		script_pushstrcopy(st, StringBuf_Value(entry->script_buf)); break;
-	case 1:		// æ ‡è®°ä½
+	case 1:		// ±ê¼ÇÎ»
 		script_pushint(st, entry->flag); break;
-	case 2:		// çŠ¶æ€å›¾æ ‡ç¼–å·
+	case 2:		// ×´Ì¬Í¼±ê±àºÅ
 		script_pushint(st, entry->icon); break;
-	case 3:		// ç±»å‹
+	case 3:		// ÀàĞÍ
 		script_pushint(st, entry->type); break;
-	case 4:		// å‰©ä½™æ—¶é—´ (æ¯«ç§’)
+	case 4:		// Ê£ÓàÊ±¼ä (ºÁÃë)
 		if (entry->tid == INVALID_TIMER) {
 			script_pushint(st, -1);
 			break;
@@ -33178,11 +33278,11 @@ BUILDIN_FUNC(bonus_script_info) {
 
 #ifdef Pandas_ScriptCommand_ExpandInventoryAdjust
 /* ===========================================================
- * æŒ‡ä»¤: expandinventory_adjust
- * æè¿°: å¢åŠ è§’è‰²çš„èƒŒåŒ…å®¹é‡ä¸Šé™
- * ç”¨æ³•: expandinventory_adjust <å¢åŠ å¤šå°‘å®¹é‡>;
- * è¿”å›: è°ƒæ•´æˆåŠŸè¿”å› 1, å¤±è´¥è¿”å› 0
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: expandinventory_adjust
+ * ÃèÊö: Ôö¼Ó½ÇÉ«µÄ±³°üÈİÁ¿ÉÏÏŞ
+ * ÓÃ·¨: expandinventory_adjust <Ôö¼Ó¶àÉÙÈİÁ¿>;
+ * ·µ»Ø: µ÷Õû³É¹¦·µ»Ø 1, Ê§°Ü·µ»Ø 0
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(expandinventory_adjust) {
 	TBL_PC* sd = nullptr;
@@ -33210,11 +33310,11 @@ BUILDIN_FUNC(expandinventory_adjust) {
 
 #ifdef Pandas_ScriptCommand_GetInventorySize
 /* ===========================================================
- * æŒ‡ä»¤: getinventorysize
- * æè¿°: æŸ¥è¯¢å¹¶è·å–å½“å‰è§’è‰²çš„èƒŒåŒ…å®¹é‡ä¸Šé™
- * ç”¨æ³•: getinventorysize {<è§’è‰²ç¼–å·>};
- * è¿”å›: æ‰¾ä¸åˆ°è§’è‰²åˆ™è¿”å› 0, å¦åˆ™è¿”å›æŸ¥è¯¢åˆ°çš„èƒŒåŒ…å®¹é‡
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: getinventorysize
+ * ÃèÊö: ²éÑ¯²¢»ñÈ¡µ±Ç°½ÇÉ«µÄ±³°üÈİÁ¿ÉÏÏŞ
+ * ÓÃ·¨: getinventorysize {<½ÇÉ«±àºÅ>};
+ * ·µ»Ø: ÕÒ²»µ½½ÇÉ«Ôò·µ»Ø 0, ·ñÔò·µ»Ø²éÑ¯µ½µÄ±³°üÈİÁ¿
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(getinventorysize) {
 	TBL_PC* sd = nullptr;
@@ -33229,11 +33329,11 @@ BUILDIN_FUNC(getinventorysize) {
 
 #ifdef Pandas_ScriptCommand_GetMapSpawns
 /* ===========================================================
- * æŒ‡ä»¤: getmapspawns
- * æè¿°: è·å–æŒ‡å®šåœ°å›¾çš„é­”ç‰©åˆ·æ–°ç‚¹ä¿¡æ¯
- * ç”¨æ³•: getmapspawns "<åœ°å›¾åç§°>"{,<è§’è‰²ç¼–å·>};
- * è¿”å›: æˆåŠŸåˆ™è¿”å›æ‰¾åˆ°çš„åˆ·æ–°ç‚¹æ•°é‡, å¤±è´¥åˆ™è¿”å› -1
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: getmapspawns
+ * ÃèÊö: »ñÈ¡Ö¸¶¨µØÍ¼µÄÄ§ÎïË¢ĞÂµãĞÅÏ¢
+ * ÓÃ·¨: getmapspawns "<µØÍ¼Ãû³Æ>"{,<½ÇÉ«±àºÅ>};
+ * ·µ»Ø: ³É¹¦Ôò·µ»ØÕÒµ½µÄË¢ĞÂµãÊıÁ¿, Ê§°ÜÔò·µ»Ø -1
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(getmapspawns) {
 	int mapindex = -1;
@@ -33295,11 +33395,11 @@ BUILDIN_FUNC(getmapspawns) {
 
 #ifdef Pandas_ScriptCommand_GetMobSpawns
 /* ===========================================================
- * æŒ‡ä»¤: getmobspawns
- * æè¿°: æŸ¥è¯¢æŒ‡å®šé­”ç‰©åœ¨ä¸åŒåœ°å›¾çš„åˆ·æ–°ç‚¹ä¿¡æ¯
- * ç”¨æ³•: getmobspawns <é­”ç‰©ç¼–å·>{,"<åœ°å›¾åç§°>"{,<è§’è‰²ç¼–å·>}};
- * è¿”å›: æˆåŠŸåˆ™è¿”å›æ‰¾åˆ°çš„åˆ·æ–°ç‚¹æ•°é‡, å¤±è´¥åˆ™è¿”å› -1
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: getmobspawns
+ * ÃèÊö: ²éÑ¯Ö¸¶¨Ä§ÎïÔÚ²»Í¬µØÍ¼µÄË¢ĞÂµãĞÅÏ¢
+ * ÓÃ·¨: getmobspawns <Ä§Îï±àºÅ>{,"<µØÍ¼Ãû³Æ>"{,<½ÇÉ«±àºÅ>}};
+ * ·µ»Ø: ³É¹¦Ôò·µ»ØÕÒµ½µÄË¢ĞÂµãÊıÁ¿, Ê§°ÜÔò·µ»Ø -1
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(getmobspawns) {
 	int mapindex = -1;
@@ -33309,7 +33409,7 @@ BUILDIN_FUNC(getmobspawns) {
 
 	script_both_setreg(st, "spawn_count", 0, false, -1, char_id);
 
-	// è‹¥æŒ‡å®šäº†åœ°å›¾åç§°åˆ™é¡ºå¸¦æŸ¥è¯¢åœ°å›¾æ•°æ®ä¿¡æ¯, æ²¡æŒ‡å®šå°±ç®—äº†
+	// ÈôÖ¸¶¨ÁËµØÍ¼Ãû³ÆÔòË³´ø²éÑ¯µØÍ¼Êı¾İĞÅÏ¢, Ã»Ö¸¶¨¾ÍËãÁË
 	if (mapname.length() > 0) {
 		if (!script_get_mapindex(st, mapname.c_str(), mapindex, char_id)) {
 			ShowError("buildin_getmobspawns: Could not found valid map by map name '%s'\n", mapname.c_str());
@@ -33328,7 +33428,7 @@ BUILDIN_FUNC(getmobspawns) {
 		}
 	}
 
-	// é€šè¿‡ rAthena å†…å»ºçš„åˆ·æ–°ç‚¹ç¼“å­˜å¿«é€Ÿç¡®å®šå…³è”åœ°å›¾
+	// Í¨¹ı rAthena ÄÚ½¨µÄË¢ĞÂµã»º´æ¿ìËÙÈ·¶¨¹ØÁªµØÍ¼
 	const std::vector<spawn_info> spawns = mob_get_spawns(mob_id);
 
 	int j = 0;
@@ -33336,14 +33436,14 @@ BUILDIN_FUNC(getmobspawns) {
 	for (auto& spawn : spawns) {
 		int16 mapid = map_mapindex2mapid(spawn.mapindex);
 
-		// è‹¥è®¾ç½®äº†ä»…æŸ¥è¯¢æŸåœ°å›¾çš„é­”ç‰©åˆ·æ–°ç‚¹ä¿¡æ¯, é‚£ä¹ˆéæŒ‡å®šåœ°å›¾çš„éƒ½è·³è¿‡
+		// ÈôÉèÖÃÁË½ö²éÑ¯Ä³µØÍ¼µÄÄ§ÎïË¢ĞÂµãĞÅÏ¢, ÄÇÃ´·ÇÖ¸¶¨µØÍ¼µÄ¶¼Ìø¹ı
 		if (mapindex != -1 && mapid != mapindex)
 			continue;
 
-		// è·å–æœ‰è®°è½½æŒ‡å®šé­”ç‰©åˆ·æ–°ç‚¹çš„ç›®æ ‡åœ°å›¾æ•°æ®
+		// »ñÈ¡ÓĞ¼ÇÔØÖ¸¶¨Ä§ÎïË¢ĞÂµãµÄÄ¿±êµØÍ¼Êı¾İ
 		struct map_data* mapdata = map_getmapdata(mapid);
 
-		// æ‰¾ä¸åˆ°å¯¹åº”åœ°å›¾çš„æ•°æ®åˆ™ç›´æ¥è·³è¿‡
+		// ÕÒ²»µ½¶ÔÓ¦µØÍ¼µÄÊı¾İÔòÖ±½ÓÌø¹ı
 		if (!mapdata) continue;
 
 		for (const auto& data : mapdata->mobspawns) {
@@ -33383,11 +33483,11 @@ BUILDIN_FUNC(getmobspawns) {
 
 #ifdef Pandas_ScriptCommand_GetCalendarTime
 /* ===========================================================
- * æŒ‡ä»¤: getcalendartime
- * æè¿°: è·å–ä¸‹æ¬¡å‡ºç°æŒ‡å®šæ—¶é—´çš„ UNIX æ—¶é—´æˆ³
- * ç”¨æ³•: getcalendartime <å°æ—¶>,<åˆ†é’Ÿ>{,<æœˆçš„ç¬¬å‡ å¤©>{,<å‘¨çš„ç¬¬å‡ å¤©>}};
- * è¿”å›: æˆåŠŸåˆ™è¿”å›æ—¶é—´æˆ³, å¤±è´¥åˆ™è¿”å› -1
- * ä½œè€…: Haru <haru@dotalux.com>
+ * Ö¸Áî: getcalendartime
+ * ÃèÊö: »ñÈ¡ÏÂ´Î³öÏÖÖ¸¶¨Ê±¼äµÄ UNIX Ê±¼ä´Á
+ * ÓÃ·¨: getcalendartime <Ğ¡Ê±>,<·ÖÖÓ>{,<ÔÂµÄµÚ¼¸Ìì>{,<ÖÜµÄµÚ¼¸Ìì>}};
+ * ·µ»Ø: ³É¹¦Ôò·µ»ØÊ±¼ä´Á, Ê§°ÜÔò·µ»Ø -1
+ * ×÷Õß: Haru <haru@dotalux.com>
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(getcalendartime) {
 	struct tm info = { 0 };
@@ -33488,12 +33588,12 @@ BUILDIN_FUNC(getcalendartime) {
 
 #ifdef Pandas_ScriptCommand_GetSkillInfo
 /* ===========================================================
- * æŒ‡ä»¤: getskillinfo
- * æè¿°: è·å–æŒ‡å®šæŠ€èƒ½åœ¨æŠ€èƒ½æ•°æ®åº“ä¸­æ‰€é…ç½®çš„å„é¡¹ä¿¡æ¯
- * ç”¨æ³•: getskillinfo <æŸ¥è¯¢çš„ä¿¡æ¯ç±»å‹>,<æŠ€èƒ½ç¼–å·>{,<æŠ€èƒ½ç­‰çº§>{,<è§’è‰²ç¼–å·>}};
- * ç”¨æ³•: getskillinfo <æŸ¥è¯¢çš„ä¿¡æ¯ç±»å‹>,<"æŠ€èƒ½åç§°">{,<æŠ€èƒ½ç­‰çº§>{,<è§’è‰²ç¼–å·>}};
- * è¿”å›: è¯·æŸ¥é˜… doc/pandas_script_commands.txt ä¸­çš„è¯´æ˜
- * ä½œè€…: è½é¢¨
+ * Ö¸Áî: getskillinfo
+ * ÃèÊö: »ñÈ¡Ö¸¶¨¼¼ÄÜÔÚ¼¼ÄÜÊı¾İ¿âÖĞËùÅäÖÃµÄ¸÷ÏîĞÅÏ¢
+ * ÓÃ·¨: getskillinfo <²éÑ¯µÄĞÅÏ¢ÀàĞÍ>,<¼¼ÄÜ±àºÅ>{,<¼¼ÄÜµÈ¼¶>{,<½ÇÉ«±àºÅ>}};
+ * ÓÃ·¨: getskillinfo <²éÑ¯µÄĞÅÏ¢ÀàĞÍ>,<"¼¼ÄÜÃû³Æ">{,<¼¼ÄÜµÈ¼¶>{,<½ÇÉ«±àºÅ>}};
+ * ·µ»Ø: Çë²éÔÄ doc/pandas_script_commands.txt ÖĞµÄËµÃ÷
+ * ×÷Õß: Â ïL
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(getskillinfo) {
 	int type = 0;
@@ -33633,11 +33733,11 @@ BUILDIN_FUNC(getskillinfo) {
 
 #ifdef Pandas_ScriptCommand_Sleep3
 /* ===========================================================
- * æŒ‡ä»¤: sleep3
- * æè¿°: ä¼‘çœ ä¸€æ®µæ—¶é—´å†æ‰§è¡Œåç»­è„šæœ¬, ä¸ sleep2 ç±»ä¼¼ä½†å¿½ç•¥æŠ¥é”™
- * ç”¨æ³•: sleep3 <ä¼‘çœ æ¯«ç§’æ•°>;
- * è¿”å›: è¯¥æŒ‡ä»¤æ— è®ºæˆåŠŸä¸å¦, éƒ½ä¸ä¼šæœ‰è¿”å›å€¼
- * ä½œè€…: äººé±¼å§¬çš„æ€å¿µ
+ * Ö¸Áî: sleep3
+ * ÃèÊö: ĞİÃßÒ»¶ÎÊ±¼äÔÙÖ´ĞĞºóĞø½Å±¾, Óë sleep2 ÀàËÆµ«ºöÂÔ±¨´í
+ * ÓÃ·¨: sleep3 <ĞİÃßºÁÃëÊı>;
+ * ·µ»Ø: ¸ÃÖ¸ÁîÎŞÂÛ³É¹¦Óë·ñ, ¶¼²»»áÓĞ·µ»ØÖµ
+ * ×÷Õß: ÈËÓã¼§µÄË¼Äî
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(sleep3) {
 	// First call(by function call)
@@ -33668,11 +33768,11 @@ BUILDIN_FUNC(sleep3) {
 
 #ifdef Pandas_ScriptCommand_GetQuestTime
 /* ===========================================================
- * æŒ‡ä»¤: getquesttime
- * æè¿°: æŸ¥è¯¢è§’è‰²æŒ‡å®šä»»åŠ¡çš„æ—¶é—´ä¿¡æ¯
- * ç”¨æ³•: getquesttime <ä»»åŠ¡ç¼–å·>{,<æƒ³æŸ¥è¯¢çš„æ—¶é—´ç±»å‹>{,<è§’è‰²ç¼–å·>}};
- * è¿”å›: æˆåŠŸè¿”å›æ—¶é—´æˆ³, å¤±è´¥è¿”å› -1
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: getquesttime
+ * ÃèÊö: ²éÑ¯½ÇÉ«Ö¸¶¨ÈÎÎñµÄÊ±¼äĞÅÏ¢
+ * ÓÃ·¨: getquesttime <ÈÎÎñ±àºÅ>{,<Ïë²éÑ¯µÄÊ±¼äÀàĞÍ>{,<½ÇÉ«±àºÅ>}};
+ * ·µ»Ø: ³É¹¦·µ»ØÊ±¼ä´Á, Ê§°Ü·µ»Ø -1
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(getquesttime) {
 	int quest_id = script_getnum(st, 2);
@@ -33721,11 +33821,11 @@ BUILDIN_FUNC(getquesttime) {
 
 #ifdef Pandas_ScriptCommand_UnitSpecialEffect
 /* ===========================================================
- * æŒ‡ä»¤: unitspecialeffect
- * æè¿°: ä½¿æŒ‡å®šæ¸¸æˆå•ä½å¯ä»¥æ˜¾ç¤ºæŸä¸ªç‰¹æ•ˆ, å¹¶æ”¯æŒæ§åˆ¶ç‰¹æ•ˆå¯è§èŒƒå›´
- * ç”¨æ³•: unitspecialeffect <æ¸¸æˆå•ä½ç¼–å·>,<ç‰¹æ•ˆç¼–å·>{,<è°èƒ½çœ‹è§ç‰¹æ•ˆ>{,<èƒ½çœ‹è§ç‰¹æ•ˆçš„è´¦å·ç¼–å·>}};
- * è¿”å›: è¯¥æŒ‡ä»¤æ— è®ºæˆåŠŸä¸å¦, éƒ½ä¸ä¼šæœ‰è¿”å›å€¼
- * ä½œè€…: äººé±¼å§¬çš„æ€å¿µ
+ * Ö¸Áî: unitspecialeffect
+ * ÃèÊö: Ê¹Ö¸¶¨ÓÎÏ·µ¥Î»¿ÉÒÔÏÔÊ¾Ä³¸öÌØĞ§, ²¢Ö§³Ö¿ØÖÆÌØĞ§¿É¼û·¶Î§
+ * ÓÃ·¨: unitspecialeffect <ÓÎÏ·µ¥Î»±àºÅ>,<ÌØĞ§±àºÅ>{,<Ë­ÄÜ¿´¼ûÌØĞ§>{,<ÄÜ¿´¼ûÌØĞ§µÄÕËºÅ±àºÅ>}};
+ * ·µ»Ø: ¸ÃÖ¸ÁîÎŞÂÛ³É¹¦Óë·ñ, ¶¼²»»áÓĞ·µ»ØÖµ
+ * ×÷Õß: ÈËÓã¼§µÄË¼Äî
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(unitspecialeffect) {
 	struct block_list* bl = nullptr;
@@ -33765,11 +33865,11 @@ BUILDIN_FUNC(unitspecialeffect) {
 
 #ifdef Pandas_ScriptCommand_Next_Dropitem_Special
 /* ===========================================================
- * æŒ‡ä»¤: next_dropitem_special
- * æè¿°: å¯¹ä¸‹ä¸€ä¸ªæ‰è½åˆ°åœ°é¢ä¸Šçš„ç‰©å“è¿›è¡Œç‰¹æ®Šè®¾ç½®
- * ç”¨æ³•: next_dropitem_special <é“å…·ç»‘å®šç±»å‹>,<ç§Ÿèµæ—¶é•¿>,<æ‰è½å…‰æŸ±é¢œè‰²>;
- * è¿”å›: è¯¥æŒ‡ä»¤æ— è®ºæˆåŠŸä¸å¦, éƒ½ä¸ä¼šæœ‰è¿”å›å€¼
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: next_dropitem_special
+ * ÃèÊö: ¶ÔÏÂÒ»¸öµôÂäµ½µØÃæÉÏµÄÎïÆ·½øĞĞÌØÊâÉèÖÃ
+ * ÓÃ·¨: next_dropitem_special <µÀ¾ß°ó¶¨ÀàĞÍ>,<×âÁŞÊ±³¤>,<µôÂä¹âÖùÑÕÉ«>;
+ * ·µ»Ø: ¸ÃÖ¸ÁîÎŞÂÛ³É¹¦Óë·ñ, ¶¼²»»áÓĞ·µ»ØÖµ
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(next_dropitem_special) {
 	next_dropitem_special.bound = cap_value(script_getnum(st, 2), BOUND_NONE, BOUND_MAX - 1);
@@ -33781,19 +33881,19 @@ BUILDIN_FUNC(next_dropitem_special) {
 
 #ifdef Pandas_ScriptCommand_GetRateIdx
 /* ===========================================================
- * æŒ‡ä»¤: getrateidx
- * æè¿°: éšæœºè·å–ä¸€ä¸ªæ•°å€¼å‹æ•°ç»„çš„ç´¢å¼•åºå·, æ•°ç»„ä¸­æ¯ä¸ªå…ƒç´ çš„å€¼ä¸ºæƒé‡å€¼
- * ç”¨æ³•: getrateidx <æ•°å€¼å‹æ•°ç»„å˜é‡>;
- * ç”¨æ³•: getrateidx <æ•°å€¼1>{, <æ•°å€¼2>{, ...<æ•°å€¼n>}};
- * è¿”å›: è¿”å›éšæœºå‘½ä¸­çš„ç´¢å¼•åºå·
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: getrateidx
+ * ÃèÊö: Ëæ»ú»ñÈ¡Ò»¸öÊıÖµĞÍÊı×éµÄË÷ÒıĞòºÅ, Êı×éÖĞÃ¿¸öÔªËØµÄÖµÎªÈ¨ÖØÖµ
+ * ÓÃ·¨: getrateidx <ÊıÖµĞÍÊı×é±äÁ¿>;
+ * ÓÃ·¨: getrateidx <ÊıÖµ1>{, <ÊıÖµ2>{, ...<ÊıÖµn>}};
+ * ·µ»Ø: ·µ»ØËæ»úÃüÖĞµÄË÷ÒıĞòºÅ
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(getrateidx) {
 	uint64 total_weight = 0;
 	struct script_data* data = script_getdata(st, 2);
 	std::vector<uint64> weights;
 
-	// å¦‚æœä¸æ˜¯ä¸€ä¸ªæ•°ç»„, é‚£ä¹ˆå°†å‚æ•°é€ä¸ªç´¯åŠ 
+	// Èç¹û²»ÊÇÒ»¸öÊı×é, ÄÇÃ´½«²ÎÊıÖğ¸öÀÛ¼Ó
 	if (!data_isreference(data)) {
 		for (int i = 0; i < script_lastdata(st) - 1; i++) {
 			uint64 weight = script_getnum(st, i + 2);
@@ -33801,13 +33901,13 @@ BUILDIN_FUNC(getrateidx) {
 			total_weight += weight;
 		}
 	}
-	// å¦åˆ™è¯´æ˜ä¼ é€’çš„æ˜¯ä¸€ä¸ªæ•°ç»„, ä»æ•°ç»„ä¸­è¯»å–å†…å®¹
+	// ·ñÔòËµÃ÷´«µİµÄÊÇÒ»¸öÊı×é, ´ÓÊı×éÖĞ¶ÁÈ¡ÄÚÈİ
 	else {
 		map_session_data* sd = nullptr;
 		int varid = reference_getid(data);
 		const char* varname = reference_getname(data);
 
-		// è‹¥ä¸æ˜¯æœåŠ¡å™¨å˜é‡, é‚£ä¹ˆå¿…é¡»è¦å…³è”åˆ°ç©å®¶
+		// Èô²»ÊÇ·şÎñÆ÷±äÁ¿, ÄÇÃ´±ØĞëÒª¹ØÁªµ½Íæ¼Ò
 		if (not_server_variable(*varname)) {
 			if (!script_rid2sd(sd)) {
 				ShowError("buildin_getrateidx: '%s' is not server variable, please attach to a player.\n", varname);
@@ -33816,14 +33916,14 @@ BUILDIN_FUNC(getrateidx) {
 			}
 		}
 
-		// æ£€æŸ¥æ˜¯å¦ä¸ºæ•°å€¼ç±»å‹çš„æ•°ç»„å˜é‡, ä¸æ˜¯åˆ™æŠ¥é”™å¹¶ç»ˆæ­¢
+		// ¼ì²éÊÇ·ñÎªÊıÖµÀàĞÍµÄÊı×é±äÁ¿, ²»ÊÇÔò±¨´í²¢ÖÕÖ¹
 		if (is_string_variable(varname)) {
 			ShowError("buildin_getrateidx: '%s' is not an int array.\n", varname);
 			script_abort(st);
 			return SCRIPT_CMD_FAILURE;
 		}
 
-		// è·å–æ•°ç»„çš„å…ƒç´ ä¸ªæ•°, å¹¶åˆ¤æ–­æ˜¯å¦åœ¨æœ‰æ•ˆèŒƒå›´å†…
+		// »ñÈ¡Êı×éµÄÔªËØ¸öÊı, ²¢ÅĞ¶ÏÊÇ·ñÔÚÓĞĞ§·¶Î§ÄÚ
 		uint32 array_size = script_array_highest_key(st, sd, varname, reference_getref(data));
 		if (array_size == 0 || array_size > SCRIPT_MAX_ARRAYSIZE) {
 			ShowError("buildin_getrateidx: The size of '%s' is not in valid range.\n", varname);
@@ -33874,11 +33974,11 @@ BUILDIN_FUNC(getrateidx) {
 
 #ifdef Pandas_ScriptCommand_GetBossInfo
 /* ===========================================================
- * æŒ‡ä»¤: getbossinfo
- * æè¿°: æŸ¥è¯¢ BOSS é­”ç‰©é‡ç”Ÿæ—¶é—´åŠå…¶åŸå¢“ç­‰ä¿¡æ¯
- * ç”¨æ³•: getbossinfo {<"åœ°å›¾åç§°">{,<é­”ç‰©ç¼–å·>{,<è§’è‰²ç¼–å·>}}};
- * è¿”å›: è¿”å›æŸ¥è¯¢åˆ°çš„è®°å½•æ•°
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: getbossinfo
+ * ÃèÊö: ²éÑ¯ BOSS Ä§ÎïÖØÉúÊ±¼ä¼°Æä·ØÄ¹µÈĞÅÏ¢
+ * ÓÃ·¨: getbossinfo {<"µØÍ¼Ãû³Æ">{,<Ä§Îï±àºÅ>{,<½ÇÉ«±àºÅ>}}};
+ * ·µ»Ø: ·µ»Ø²éÑ¯µ½µÄ¼ÇÂ¼Êı
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(getbossinfo) {
 	const char* mapname = nullptr;
@@ -33889,11 +33989,11 @@ BUILDIN_FUNC(getbossinfo) {
 		mapname = script_getstr(st, 2);
 
 		if (strcmpi(mapname, "all") == 0) {
-			// æŸ¥è¯¢å…¨éƒ¨åœ°å›¾
+			// ²éÑ¯È«²¿µØÍ¼
 			mapid = -1;
 		}
 		else if (strcmpi(mapname, "this") == 0) {
-			// æŸ¥è¯¢è„šæœ¬æ‰€å…³è”ç©å®¶çš„å½“å‰åœ°å›¾
+			// ²éÑ¯½Å±¾Ëù¹ØÁªÍæ¼ÒµÄµ±Ç°µØÍ¼
 			if (!script_charid2sd(4, sd)) {
 				// todo: warning
 				script_pushint(st, 0);
@@ -33902,7 +34002,7 @@ BUILDIN_FUNC(getbossinfo) {
 			mapid = sd->bl.m;
 		}
 		else {
-			// æŒ‰æŒ‡å®šçš„åœ°å›¾åç§°è¿›è¡ŒæŸ¥è¯¢
+			// °´Ö¸¶¨µÄµØÍ¼Ãû³Æ½øĞĞ²éÑ¯
 			mapid = map_mapname2mapid(mapname);
 
 			if (mapid < 0) {
@@ -33986,11 +34086,11 @@ BUILDIN_FUNC(getbossinfo) {
 
 #ifdef Pandas_ScriptCommand_WhoDropItem
 /* ===========================================================
- * æŒ‡ä»¤: whodropitem
- * æè¿°: æŸ¥è¯¢æŒ‡å®šé“å…·ä¼šä»å“ªäº›é­”ç‰©èº«ä¸Šæ‰è½ä»¥åŠæ‰è½çš„æœºç‡ä¿¡æ¯
- * ç”¨æ³•: whodropitem <ç‰©å“ç¼–å·/"ç‰©å“åç§°">{,<è¿”å›çš„æœ€å¤§è®°å½•æ•°>{,<è§’è‰²ç¼–å·>}};
- * è¿”å›: è¿”å›æŸ¥è¯¢åˆ°çš„è®°å½•æ•°é‡
- * ä½œè€…: Solaä¸¶å°å…‹ (æ„Ÿè°¢ "äººé±¼å§¬çš„æ€å¿µ")
+ * Ö¸Áî: whodropitem
+ * ÃèÊö: ²éÑ¯Ö¸¶¨µÀ¾ß»á´ÓÄÄĞ©Ä§ÎïÉíÉÏµôÂäÒÔ¼°µôÂäµÄ»úÂÊĞÅÏ¢
+ * ÓÃ·¨: whodropitem <ÎïÆ·±àºÅ/"ÎïÆ·Ãû³Æ">{,<·µ»ØµÄ×î´ó¼ÇÂ¼Êı>{,<½ÇÉ«±àºÅ>}};
+ * ·µ»Ø: ·µ»Ø²éÑ¯µ½µÄ¼ÇÂ¼ÊıÁ¿
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë (¸ĞĞ» "ÈËÓã¼§µÄË¼Äî")
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(whodropitem) {
 	t_itemid nameid = 0;
@@ -33999,7 +34099,7 @@ BUILDIN_FUNC(whodropitem) {
 	std::shared_ptr<item_data> id;
 	map_session_data *sd = nullptr;
 
-	// æ¸…ç©ºæ¯”è¾ƒå…³é”®çš„è¿”å›å€¼
+	// Çå¿Õ±È½Ï¹Ø¼üµÄ·µ»ØÖµ
 	script_both_setreg(st, "whodropitem_count", 0, false, 0, char_id);
 
 	if (script_isstring(st, 2)) {// "<item name>"
@@ -34026,20 +34126,20 @@ BUILDIN_FUNC(whodropitem) {
 		}
 	}
 	
-	// æœ€å¤§è¿”å›çš„ç»“æœæ•°é‡è‹¥æœªè¢«æŒ‡å®š, åˆ™é»˜è®¤å€¼ä¸º MAX_SEARCH
+	// ×î´ó·µ»ØµÄ½á¹ûÊıÁ¿ÈôÎ´±»Ö¸¶¨, ÔòÄ¬ÈÏÖµÎª MAX_SEARCH
 	max_result = (max_result ? max_result : MAX_SEARCH);
 
-	// æœ€å¤§è¿”å›çš„ç»“æœæ•°é‡åº”è¯¥åœ¨ 1-500 ä¹‹é—´ (è¿™é‡Œçš„ 500 æ˜¯æ‹è„‘è¢‹çš„, é€šå¸¸åº”è¯¥å¤Ÿç”¨äº†)
+	// ×î´ó·µ»ØµÄ½á¹ûÊıÁ¿Ó¦¸ÃÔÚ 1-500 Ö®¼ä (ÕâÀïµÄ 500 ÊÇÅÄÄÔ´üµÄ, Í¨³£Ó¦¸Ã¹»ÓÃÁË)
 	max_result = cap_value(max_result, 1, 500);
 	
-	// è‹¥è¿ä¸€ä¸ªæ‰è½æ­¤ç‰©å“çš„é­”ç‰©éƒ½æ²¡æœ‰, é‚£ä¹ˆç›´æ¥è¿”å› 0
+	// ÈôÁ¬Ò»¸öµôÂä´ËÎïÆ·µÄÄ§Îï¶¼Ã»ÓĞ, ÄÇÃ´Ö±½Ó·µ»Ø 0
 	if (id->mob[0].chance == 0) {
 		script_pushint(st, 0);
 		return SCRIPT_CMD_SUCCESS;
 	}
 
-	// å…è®¸åœ¨æœªå…³è”ç©å®¶çš„æƒ…å†µä¸‹æ‰§è¡Œè¯¥æŒ‡ä»¤, æ²¡å…³è”ç©å®¶ä¹Ÿä¸æŠ¥é”™
-	// ä½†æ˜¯è‹¥æ˜ç¡®æŒ‡å®šäº†æŸä¸ªè§’è‰², ä½†ç›®æ ‡è§’è‰²ä¸å­˜åœ¨çš„è¯, é‚£ä¹ˆéœ€è¦æŠ¥é”™
+	// ÔÊĞíÔÚÎ´¹ØÁªÍæ¼ÒµÄÇé¿öÏÂÖ´ĞĞ¸ÃÖ¸Áî, Ã»¹ØÁªÍæ¼ÒÒ²²»±¨´í
+	// µ«ÊÇÈôÃ÷È·Ö¸¶¨ÁËÄ³¸ö½ÇÉ«, µ«Ä¿±ê½ÇÉ«²»´æÔÚµÄ»°, ÄÇÃ´ĞèÒª±¨´í
 	if (char_id && !(sd = map_charid2sd(char_id))) {
 		script_pushint(st, 0);
 		return SCRIPT_CMD_FAILURE;
@@ -34048,10 +34148,10 @@ BUILDIN_FUNC(whodropitem) {
 		sd = map_id2sd(st->rid);
 	}
 
-	// ç”¨æ¥ä¸´æ—¶ä¿å­˜ç»“æœçš„ç¼“å­˜åŒºåŸŸ <é­”ç‰©ç¼–å·, æ‰è½æœºç‡>
+	// ÓÃÀ´ÁÙÊ±±£´æ½á¹ûµÄ»º´æÇøÓò <Ä§Îï±àºÅ, µôÂä»úÂÊ>
 	std::map<uint32, int> result_cache;
 
-	// æ„å»ºæˆ‘ä»¬éœ€è¦çš„ç»“æœ, åªæŸ¥è¯¢å•ä¸ªé“å…·å…¶å®é€Ÿåº¦éå¸¸å¿«, ä¸ç”¨æ‹…å¿ƒæ€§èƒ½è¿‡æ¸¡å¼€é”€
+	// ¹¹½¨ÎÒÃÇĞèÒªµÄ½á¹û, Ö»²éÑ¯µ¥¸öµÀ¾ßÆäÊµËÙ¶È·Ç³£¿ì, ²»ÓÃµ£ĞÄĞÔÄÜ¹ı¶É¿ªÏú
 	for (auto const& pair : mob_db) {
 		if (mob_is_clone(pair.first)) {
 			continue;
@@ -34071,14 +34171,14 @@ BUILDIN_FUNC(whodropitem) {
 		}
 	}
 
-	// æ ¹æ®ä¸€äº›æ‰ç‡è°ƒæ•´è®¾ç½®æ¥å¤„ç†é“å…·çš„æ‰ç‡, è¿™æ ·æœ€åæ’åºçš„æ—¶å€™æ‰èƒ½è€ƒè™‘è¿›å»
+	// ¸ù¾İÒ»Ğ©µôÂÊµ÷ÕûÉèÖÃÀ´´¦ÀíµÀ¾ßµÄµôÂÊ, ÕâÑù×îºóÅÅĞòµÄÊ±ºò²ÅÄÜ¿¼ÂÇ½øÈ¥
 	for (auto const& it : result_cache) {
 		int dropchance = it.second;
 		
 #ifdef RENEWAL_DROP
 		if (sd && battle_config.atcommand_mobinfo_type) {
 			std::shared_ptr<s_mob_db> mob = mob_db.find(it.first);
-			// å¤‡æ³¨: ç”±äº pc_level_penalty_mod å†…éƒ¨å·²ç»åˆ¤æ–­äº† mob æ™ºèƒ½æŒ‡é’ˆçš„æœ‰æ•ˆæ€§, å› æ­¤åœ¨æ­¤å¤„ä¸é‡å¤åˆ¤æ–­
+			// ±¸×¢: ÓÉÓÚ pc_level_penalty_mod ÄÚ²¿ÒÑ¾­ÅĞ¶ÏÁË mob ÖÇÄÜÖ¸ÕëµÄÓĞĞ§ĞÔ, Òò´ËÔÚ´Ë´¦²»ÖØ¸´ÅĞ¶Ï
 			dropchance = dropchance * pc_level_penalty_mod(sd, PENALTY_DROP, mob) / 100;
 			if (dropchance <= 0 && !battle_config.drop_rate0item)
 				dropchance = 1;
@@ -34088,7 +34188,7 @@ BUILDIN_FUNC(whodropitem) {
 			dropchance += (dropchance * battle_config.vip_drop_increase) / 100;
 
 #ifdef Pandas_Database_MobItem_FixedRatio
-		// è‹¥ä¸¥æ ¼å›ºå®šæ‰ç‡, é‚£ä¹ˆæ— è§†ä¸Šé¢çš„ç­‰çº§æƒ©ç½šã€VIPæ‰ç‡åŠ æˆç­‰è®¡ç®—
+		// ÈôÑÏ¸ñ¹Ì¶¨µôÂÊ, ÄÇÃ´ÎŞÊÓÉÏÃæµÄµÈ¼¶³Í·£¡¢VIPµôÂÊ¼Ó³ÉµÈ¼ÆËã
 		if (mobdrop_strict_droprate(nameid, it.first))
 			dropchance = it.second;
 #endif // Pandas_Database_MobItem_FixedRatio
@@ -34096,33 +34196,33 @@ BUILDIN_FUNC(whodropitem) {
 		result_cache[it.first] = dropchance;
 	}
 
-	// å¯¹ result_cache çš„å†…å®¹è¿›è¡Œé™åºæ’åº
+	// ¶Ô result_cache µÄÄÚÈİ½øĞĞ½µĞòÅÅĞò
 	std::vector<std::pair<uint32, int>> result_sortd;
 	for (auto const& pair : result_cache) {
 		result_sortd.push_back(std::make_pair(pair.first, pair.second));
 	}
 
-	// å…ˆæŒ‰é­”ç‰©ç¼–å·ä»å°åˆ°å¤§æ’åº
+	// ÏÈ°´Ä§Îï±àºÅ´ÓĞ¡µ½´óÅÅĞò
 	std::sort(result_sortd.begin(), result_sortd.end(),
 		[](const std::pair<uint32, int>& a, const std::pair<uint32, int>& b) {
 			return a.first < b.first;
 		}
 	);
 
-	// å†æŒ‰æ‰ç‡ä»å¤§åˆ°å°æ’åº
+	// ÔÙ°´µôÂÊ´Ó´óµ½Ğ¡ÅÅĞò
 	std::sort(result_sortd.begin(), result_sortd.end(),
 		[](const std::pair<uint32, int>& a, const std::pair<uint32, int>& b) {
 			return a.second > b.second;
 		}
 	);
 
-	// è‹¥æ’åºåçš„ result_sortd æ²¡æœ‰ä»»ä½•ç»“æœ, é‚£ä¹ˆç›´æ¥è¿”å›å³å¯
+	// ÈôÅÅĞòºóµÄ result_sortd Ã»ÓĞÈÎºÎ½á¹û, ÄÇÃ´Ö±½Ó·µ»Ø¼´¿É
 	if (result_sortd.empty()) {
 		script_pushint(st, 0);
 		return SCRIPT_CMD_SUCCESS;
 	}
 
-	// å‡†å¤‡å°±ç»ª, å¼€å§‹å¡«å……æ•°ç»„å†…å®¹å¹¶è¿”å›ç»“æœ
+	// ×¼±¸¾ÍĞ÷, ¿ªÊ¼Ìî³äÊı×éÄÚÈİ²¢·µ»Ø½á¹û
 	int current_index = 0;
 
 	for (const auto& it : result_sortd) {
@@ -34149,11 +34249,11 @@ BUILDIN_FUNC(whodropitem) {
 
 #ifdef Pandas_ScriptCommand_Instance_Add_Map
 /* ===========================================================
- * æŒ‡ä»¤: instance_add_map
- * æè¿°: åŠ¨æ€åŠ åœ°å›¾
- * ç”¨æ³•: instance_add_map <å‰¯æœ¬id>,<åœ°å›¾åå­—>,<nomapflag>,<nonpc>;
- * è¿”å›: mapid
- * ä½œè€…: Muscipular
+ * Ö¸Áî: instance_add_map
+ * ÃèÊö: ¶¯Ì¬¼ÓµØÍ¼
+ * ÓÃ·¨: instance_add_map <¸±±¾id>,<µØÍ¼Ãû×Ö>,<nomapflag>,<nonpc>;
+ * ·µ»Ø: mapid
+ * ×÷Õß: Muscipular
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(instance_add_map) {
 	int n = instance_addmap(script_getnum(st, 2), script_getstr(st, 3), script_getnum(st, 4), script_getnum(st, 5));
@@ -34163,11 +34263,11 @@ BUILDIN_FUNC(instance_add_map) {
 #endif // Pandas_ScriptCommand_Instance_Addmap
 #ifdef Pandas_ScriptCommand_Instance_Add_Warp
 /* ===========================================================
- * æŒ‡ä»¤: instance_add_warp
- * æè¿°: åŠ¨æ€åŠ åœ°å›¾
- * ç”¨æ³•: instance_add_warp <å‰¯æœ¬id>,<åœ°å›¾åå­—>,<x>,<y>,<åœ°å›¾åå­—>,<x>,<y>;
- * è¿”å›: npcName
- * ä½œè€…: Muscipular
+ * Ö¸Áî: instance_add_warp
+ * ÃèÊö: ¶¯Ì¬¼ÓµØÍ¼
+ * ÓÃ·¨: instance_add_warp <¸±±¾id>,<µØÍ¼Ãû×Ö>,<x>,<y>,<µØÍ¼Ãû×Ö>,<x>,<y>;
+ * ·µ»Ø: npcName
+ * ×÷Õß: Muscipular
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(instance_add_warp) {
 	const char* n = instance_addwarp(script_getnum(st, 2),
@@ -34178,11 +34278,11 @@ BUILDIN_FUNC(instance_add_warp) {
 }
 #endif // Pandas_ScriptCommand_Instance_Add_Warp
 /* ===========================================================
- * æŒ‡ä»¤: mob_clear_skill
- * æè¿°: æ¸…ç©ºé­”ç‰©skill
- * ç”¨æ³•: mob_clear_skill gid, reset;
- * è¿”å›: int
- * ä½œè€…: Muscipular
+ * Ö¸Áî: mob_clear_skill
+ * ÃèÊö: Çå¿ÕÄ§Îïskill
+ * ÓÃ·¨: mob_clear_skill gid, reset;
+ * ·µ»Ø: int
+ * ×÷Õß: Muscipular
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(mob_clear_skill) {
 	struct block_list* bl;
@@ -34245,11 +34345,11 @@ BUILDIN_FUNC(lua_run) {
 
 // END LUA
 /* ===========================================================
- * æŒ‡ä»¤: mob_add_skill
- * æè¿°: é­”ç‰©æ·»åŠ skill
- * ç”¨æ³•: mob_add_skill gid, State,SkillID,SkillLv,Rate,CastTime,Delay,Cancelable,Target,Condition type,Condition value,val1,val2,val3,val4,val5,Emotion,Chat;
- * è¿”å›: int
- * ä½œè€…: Muscipular
+ * Ö¸Áî: mob_add_skill
+ * ÃèÊö: Ä§ÎïÌí¼Óskill
+ * ÓÃ·¨: mob_add_skill gid, State,SkillID,SkillLv,Rate,CastTime,Delay,Cancelable,Target,Condition type,Condition value,val1,val2,val3,val4,val5,Emotion,Chat;
+ * ·µ»Ø: int
+ * ×÷Õß: Muscipular
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(mob_add_skill) {
 	struct block_list* bl;
@@ -34480,11 +34580,11 @@ BUILDIN_FUNC(mob_add_skill) {
 }
 #ifdef Pandas_ScriptCommand_Map_Get_Size
 /* ===========================================================
- * æŒ‡ä»¤: getmapsize
- * æè¿°: è·å–åœ°å›¾å¤§å°
- * ç”¨æ³•: getmapsize <åœ°å›¾åå­—>,<x>,<y>;
- * è¿”å›: int
- * ä½œè€…: Muscipular
+ * Ö¸Áî: getmapsize
+ * ÃèÊö: »ñÈ¡µØÍ¼´óĞ¡
+ * ÓÃ·¨: getmapsize <µØÍ¼Ãû×Ö>,<x>,<y>;
+ * ·µ»Ø: int
+ * ×÷Õß: Muscipular
  * -----------------------------------------------------------*/
 BUILDIN_FUNC(getmapsize) {
 	const char* mapn = script_getstr(st, 2), * name_x, * name_y;
@@ -35013,9 +35113,9 @@ struct script_function buildin_func[] = {
 #ifndef Pandas_Mapflags
 	BUILDIN_DEF(setmapflag,"si??"),
 #else
-	// rAthena åŸå…ˆçš„å®šä¹‰ä¸º:
+	// rAthena Ô­ÏÈµÄ¶¨ÒåÎª:
 	// setmapflag "<map name>",<flag>{,<zone>{,<type>}};
-	// ä¸ºäº†æ–¹ä¾¿å¯¹ä¸åŒé•¿åº¦çš„å‚æ•°å€¼è¿›è¡Œèµ‹å€¼, ç†ŠçŒ«æ”¹é€ æˆäº†:
+	// ÎªÁË·½±ã¶Ô²»Í¬³¤¶ÈµÄ²ÎÊıÖµ½øĞĞ¸³Öµ, ĞÜÃ¨¸ÄÔì³ÉÁË:
 	// setmapflag "<map name>",<flag>{,<val1>{,<val2>{,<val3>{,<val4>}}}};
 	BUILDIN_DEF(setmapflag,"si????"),
 #endif // Pandas_Mapflags
@@ -35523,275 +35623,280 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(autoloot,"??"),
 	BUILDIN_DEF(opentips, "i?"),
 
+	BUILDIN_DEF(setdialogalign, "i"),
+	BUILDIN_DEF(setdialogsize, "ii"),
+	BUILDIN_DEF(setdialogpos, "ii"),
+	BUILDIN_DEF(setdialogpospercent, "ii"),
+
 	// -----------------------------------------------------------------
-	// ç†ŠçŒ«æ¨¡æ‹Ÿå™¨æ‹“å±•è„šæœ¬æŒ‡ä»¤ - å¼€å§‹
+	// ĞÜÃ¨Ä£ÄâÆ÷ÍØÕ¹½Å±¾Ö¸Áî - ¿ªÊ¼
 	// -----------------------------------------------------------------
 
 #ifdef Pandas_ScriptCommand_SetHeadDir
-	BUILDIN_DEF(setheaddir, "i?"),						// è°ƒæ•´è§’è‰²çº¸å¨ƒå¨ƒè„‘è¢‹çš„æœå‘ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(setheaddir, "i?"),						// µ÷Õû½ÇÉ«Ö½ÍŞÍŞÄÔ´üµÄ³¯Ïò [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_SetHeadDir
 #ifdef Pandas_ScriptCommand_SetBodyDir
-	BUILDIN_DEF(setbodydir, "i?"),						// ç”¨äºè°ƒæ•´è§’è‰²çº¸å¨ƒå¨ƒèº«ä½“çš„æœå‘ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(setbodydir, "i?"),						// ÓÃÓÚµ÷Õû½ÇÉ«Ö½ÍŞÍŞÉíÌåµÄ³¯Ïò [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_SetBodyDir
 #ifdef Pandas_ScriptCommand_InstanceUsers
-	BUILDIN_DEF(instance_users, "i"),					// è·å–æŒ‡å®šçš„å‰¯æœ¬å®ä¾‹ä¸­, å·²ç»è¿›å…¥å‰¯æœ¬åœ°å›¾çš„äººæ•° [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(instance_users, "i"),					// »ñÈ¡Ö¸¶¨µÄ¸±±¾ÊµÀıÖĞ, ÒÑ¾­½øÈë¸±±¾µØÍ¼µÄÈËÊı [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_InstanceUsers
 #ifdef Pandas_ScriptCommand_CapValue
-	BUILDIN_DEF2(cap_value, "cap", "iii"),				// ä¸º cap_value æŒ‡å®šä¸€ä¸ªåˆ«å, ä»¥ä¾¿å…¼å®¹çš„è€ç‰ˆæœ¬æˆ–å…¶ä»–æœåŠ¡ç«¯ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF2(cap_value, "cap", "iii"),				// Îª cap_value Ö¸¶¨Ò»¸ö±ğÃû, ÒÔ±ã¼æÈİµÄÀÏ°æ±¾»òÆäËû·şÎñ¶Ë [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_CapValue
 #ifdef Pandas_ScriptCommand_MobRemove
-	BUILDIN_DEF(mobremove, "i"),						// æ ¹æ® GID ç§»é™¤ä¸€ä¸ªé­”ç‰©å•ä½ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(mobremove, "i"),						// ¸ù¾İ GID ÒÆ³ıÒ»¸öÄ§Îïµ¥Î» [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_MobRemove
 #ifdef Pandas_ScriptCommand_MesClear
-	BUILDIN_DEF2(clear, "mesclear", ""),				// ç”±äº rAthena å·²ç»å®ç° clear æŒ‡ä»¤, è¿™é‡Œå…¼å®¹è€ç‰ˆæœ¬ mesclear æŒ‡ä»¤ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF2(clear, "mesclear", ""),				// ÓÉÓÚ rAthena ÒÑ¾­ÊµÏÖ clear Ö¸Áî, ÕâÀï¼æÈİÀÏ°æ±¾ mesclear Ö¸Áî [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_MesClear
 #ifdef Pandas_ScriptCommand_BattleIgnore
-	BUILDIN_DEF(battleignore, "i?"),					// å°†è§’è‰²è®¾ç½®ä¸ºé­”ç‰©å…æˆ˜çŠ¶æ€, é¿å…è¢«é­”ç‰©æ”»å‡» [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(battleignore, "i?"),					// ½«½ÇÉ«ÉèÖÃÎªÄ§ÎïÃâÕ½×´Ì¬, ±ÜÃâ±»Ä§Îï¹¥»÷ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_BattleIgnore
 #ifdef Pandas_ScriptCommand_GetHotkey
-	BUILDIN_DEF(gethotkey, "i?"),						// è·å–æŒ‡å®šå¿«æ·é”®ä½ç½®å½“å‰çš„ä¿¡æ¯ [Solaä¸¶å°å…‹]
-	BUILDIN_DEF2(gethotkey, "get_hotkey", "i?"),		// æŒ‡å®šä¸€ä¸ªåˆ«å, ä»¥ä¾¿å…¼å®¹çš„è€ç‰ˆæœ¬æˆ–å…¶ä»–æœåŠ¡ç«¯
+	BUILDIN_DEF(gethotkey, "i?"),						// »ñÈ¡Ö¸¶¨¿ì½İ¼üÎ»ÖÃµ±Ç°µÄĞÅÏ¢ [SolaØ¼Ğ¡¿Ë]
+	BUILDIN_DEF2(gethotkey, "get_hotkey", "i?"),		// Ö¸¶¨Ò»¸ö±ğÃû, ÒÔ±ã¼æÈİµÄÀÏ°æ±¾»òÆäËû·şÎñ¶Ë
 #endif // Pandas_ScriptCommand_GetHotkey
 #ifdef Pandas_ScriptCommand_SetHotkey
-	BUILDIN_DEF(sethotkey, "iiii"),						// è®¾ç½®æŒ‡å®šå¿«æ·é”®ä½ç½®çš„ä¿¡æ¯ [Solaä¸¶å°å…‹]
-	BUILDIN_DEF2(sethotkey, "set_hotkey", "iiii"),		// æŒ‡å®šä¸€ä¸ªåˆ«å, ä»¥ä¾¿å…¼å®¹çš„è€ç‰ˆæœ¬æˆ–å…¶ä»–æœåŠ¡ç«¯
+	BUILDIN_DEF(sethotkey, "iiii"),						// ÉèÖÃÖ¸¶¨¿ì½İ¼üÎ»ÖÃµÄĞÅÏ¢ [SolaØ¼Ğ¡¿Ë]
+	BUILDIN_DEF2(sethotkey, "set_hotkey", "iiii"),		// Ö¸¶¨Ò»¸ö±ğÃû, ÒÔ±ã¼æÈİµÄÀÏ°æ±¾»òÆäËû·şÎñ¶Ë
 #endif // Pandas_ScriptCommand_SetHotkey
 #ifdef Pandas_ScriptCommand_ShowVend
-	BUILDIN_DEF(showvend, "si?"),						// ä½¿æŒ‡å®šçš„ NPC å¤´ä¸Šå¯ä»¥æ˜¾ç¤ºéœ²å¤©å•†åº—çš„æ‹›ç‰Œ [Jian916]
+	BUILDIN_DEF(showvend, "si?"),						// Ê¹Ö¸¶¨µÄ NPC Í·ÉÏ¿ÉÒÔÏÔÊ¾Â¶ÌìÉÌµêµÄÕĞÅÆ [Jian916]
 #endif // Pandas_ScriptCommand_ShowVend
 #ifdef Pandas_ScriptCommand_ViewEquip
-	BUILDIN_DEF(viewequip, "i?"),						// æŸ¥çœ‹æŒ‡å®šåœ¨çº¿è§’è‰²çš„è£…å¤‡é¢æ¿ä¿¡æ¯ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(viewequip, "i?"),						// ²é¿´Ö¸¶¨ÔÚÏß½ÇÉ«µÄ×°±¸Ãæ°åĞÅÏ¢ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_ViewEquip
 #ifdef Pandas_ScriptCommand_CountItemIdx
-	BUILDIN_DEF(countitemidx, "i?"),					// è·å–æŒ‡å®šèƒŒåŒ…åºå·çš„é“å…·åœ¨èƒŒåŒ…ä¸­çš„æ•°é‡ [Solaä¸¶å°å…‹]
-	BUILDIN_DEF2(countitemidx, "countinventory", "i?"),	// æŒ‡å®šä¸€ä¸ªåˆ«å, ä»¥ä¾¿å…¼å®¹çš„è€ç‰ˆæœ¬æˆ–å…¶ä»–æœåŠ¡ç«¯
+	BUILDIN_DEF(countitemidx, "i?"),					// »ñÈ¡Ö¸¶¨±³°üĞòºÅµÄµÀ¾ßÔÚ±³°üÖĞµÄÊıÁ¿ [SolaØ¼Ğ¡¿Ë]
+	BUILDIN_DEF2(countitemidx, "countinventory", "i?"),	// Ö¸¶¨Ò»¸ö±ğÃû, ÒÔ±ã¼æÈİµÄÀÏ°æ±¾»òÆäËû·şÎñ¶Ë
 #endif // Pandas_ScriptCommand_CountItemIdx
 #ifdef Pandas_ScriptCommand_DelItemIdx
-	BUILDIN_DEF2(delitemidx, "delinventory", "i??"),	// æŒ‡å®šä¸€ä¸ªåˆ«å, ä»¥ä¾¿å…¼å®¹çš„è€ç‰ˆæœ¬æˆ–å…¶ä»–æœåŠ¡ç«¯ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF2(delitemidx, "delinventory", "i??"),	// Ö¸¶¨Ò»¸ö±ğÃû, ÒÔ±ã¼æÈİµÄÀÏ°æ±¾»òÆäËû·şÎñ¶Ë [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_DelItemIdx
 #ifdef Pandas_ScriptCommand_IdentifyIdx
-	BUILDIN_DEF(identifyidx, "i?"),						// é‰´å®šæŒ‡å®šèƒŒåŒ…åºå·çš„é“å…· [Solaä¸¶å°å…‹]
-	BUILDIN_DEF2(identifyidx, "identifybyidx", "i?"),	// æŒ‡å®šä¸€ä¸ªåˆ«å, ä»¥ä¾¿å…¼å®¹çš„è€ç‰ˆæœ¬æˆ–å…¶ä»–æœåŠ¡ç«¯
+	BUILDIN_DEF(identifyidx, "i?"),						// ¼ø¶¨Ö¸¶¨±³°üĞòºÅµÄµÀ¾ß [SolaØ¼Ğ¡¿Ë]
+	BUILDIN_DEF2(identifyidx, "identifybyidx", "i?"),	// Ö¸¶¨Ò»¸ö±ğÃû, ÒÔ±ã¼æÈİµÄÀÏ°æ±¾»òÆäËû·şÎñ¶Ë
 #endif // Pandas_ScriptCommand_IdentifyIdx
 #ifdef Pandas_ScriptCommand_UnEquipIdx
-	BUILDIN_DEF(unequipidx, "i?"),						// è„±ä¸‹æŒ‡å®šèƒŒåŒ…åºå·çš„é“å…· [Solaä¸¶å°å…‹]
-	BUILDIN_DEF2(unequipidx, "unequipinventory", "i?"),	// æŒ‡å®šä¸€ä¸ªåˆ«å, ä»¥ä¾¿å…¼å®¹çš„è€ç‰ˆæœ¬æˆ–å…¶ä»–æœåŠ¡ç«¯
+	BUILDIN_DEF(unequipidx, "i?"),						// ÍÑÏÂÖ¸¶¨±³°üĞòºÅµÄµÀ¾ß [SolaØ¼Ğ¡¿Ë]
+	BUILDIN_DEF2(unequipidx, "unequipinventory", "i?"),	// Ö¸¶¨Ò»¸ö±ğÃû, ÒÔ±ã¼æÈİµÄÀÏ°æ±¾»òÆäËû·şÎñ¶Ë
 #endif // Pandas_ScriptCommand_UnEquipIdx
 #ifdef Pandas_ScriptCommand_EquipIdx
-	BUILDIN_DEF(equipidx, "i?"),						// ç©¿æˆ´æŒ‡å®šèƒŒåŒ…åºå·çš„é“å…· [Solaä¸¶å°å…‹]
-	BUILDIN_DEF2(equipidx, "equipinventory", "i?"),		// æŒ‡å®šä¸€ä¸ªåˆ«å, ä»¥ä¾¿å…¼å®¹çš„è€ç‰ˆæœ¬æˆ–å…¶ä»–æœåŠ¡ç«¯
+	BUILDIN_DEF(equipidx, "i?"),						// ´©´÷Ö¸¶¨±³°üĞòºÅµÄµÀ¾ß [SolaØ¼Ğ¡¿Ë]
+	BUILDIN_DEF2(equipidx, "equipinventory", "i?"),		// Ö¸¶¨Ò»¸ö±ğÃû, ÒÔ±ã¼æÈİµÄÀÏ°æ±¾»òÆäËû·şÎñ¶Ë
 #endif // Pandas_ScriptCommand_EquipIdx
 #ifdef Pandas_ScriptCommand_ItemExists
-	BUILDIN_DEF(itemexists, "v"),						// ç¡®è®¤ç‰©å“æ•°æ®åº“ä¸­æ˜¯å¦å­˜åœ¨æŒ‡å®šç‰©å“ [Solaä¸¶å°å…‹]
-	BUILDIN_DEF2(itemexists, "existitem", "v"),			// æŒ‡å®šä¸€ä¸ªåˆ«å, ä»¥ä¾¿å…¼å®¹çš„è€ç‰ˆæœ¬æˆ–å…¶ä»–æœåŠ¡ç«¯
+	BUILDIN_DEF(itemexists, "v"),						// È·ÈÏÎïÆ·Êı¾İ¿âÖĞÊÇ·ñ´æÔÚÖ¸¶¨ÎïÆ· [SolaØ¼Ğ¡¿Ë]
+	BUILDIN_DEF2(itemexists, "existitem", "v"),			// Ö¸¶¨Ò»¸ö±ğÃû, ÒÔ±ã¼æÈİµÄÀÏ°æ±¾»òÆäËû·şÎñ¶Ë
 #endif // Pandas_ScriptCommand_ItemExists
 #ifdef Pandas_ScriptCommand_RentTime
-	BUILDIN_DEF(renttime, "ii?"),						// å¢åŠ /å‡å°‘æŒ‡å®šä½ç½®è£…å¤‡çš„ç§Ÿèµæ—¶é—´ [Solaä¸¶å°å…‹]
-	BUILDIN_DEF2(renttime, "setrenttime", "ii?"),		// æŒ‡å®šä¸€ä¸ªåˆ«å, ä»¥ä¾¿å…¼å®¹çš„è€ç‰ˆæœ¬æˆ–å…¶ä»–æœåŠ¡ç«¯
-	BUILDIN_DEF2(renttime, "resume", "ii?"),			// æŒ‡å®šä¸€ä¸ªåˆ«å, ä»¥ä¾¿å…¼å®¹çš„è€ç‰ˆæœ¬æˆ–å…¶ä»–æœåŠ¡ç«¯
+	BUILDIN_DEF(renttime, "ii?"),						// Ôö¼Ó/¼õÉÙÖ¸¶¨Î»ÖÃ×°±¸µÄ×âÁŞÊ±¼ä [SolaØ¼Ğ¡¿Ë]
+	BUILDIN_DEF2(renttime, "setrenttime", "ii?"),		// Ö¸¶¨Ò»¸ö±ğÃû, ÒÔ±ã¼æÈİµÄÀÏ°æ±¾»òÆäËû·şÎñ¶Ë
+	BUILDIN_DEF2(renttime, "resume", "ii?"),			// Ö¸¶¨Ò»¸ö±ğÃû, ÒÔ±ã¼æÈİµÄÀÏ°æ±¾»òÆäËû·şÎñ¶Ë
 #endif // Pandas_ScriptCommand_RentTime
 #ifdef Pandas_ScriptCommand_GetEquipIdx
-	BUILDIN_DEF(getequipidx, "i?"),						// è·å–æŒ‡å®šä½ç½®è£…å¤‡çš„èƒŒåŒ…åºå· [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(getequipidx, "i?"),						// »ñÈ¡Ö¸¶¨Î»ÖÃ×°±¸µÄ±³°üĞòºÅ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_GetEquipIdx
 #ifdef Pandas_ScriptCommand_StatusCalc
-	BUILDIN_DEF2(recalculatestat, "statuscalc", ""),	// ç”±äº rAthena å·²ç»å®ç° recalculatestat æŒ‡ä»¤, è¿™é‡Œå…¼å®¹è€ç‰ˆæœ¬ statuscalc æŒ‡ä»¤ [Solaä¸¶å°å…‹]
-	BUILDIN_DEF2(recalculatestat, "status_calc", ""),	// ç”±äº rAthena å·²ç»å®ç° recalculatestat æŒ‡ä»¤, è¿™é‡Œå…¼å®¹è€ç‰ˆæœ¬ status_calc æŒ‡ä»¤
+	BUILDIN_DEF2(recalculatestat, "statuscalc", ""),	// ÓÉÓÚ rAthena ÒÑ¾­ÊµÏÖ recalculatestat Ö¸Áî, ÕâÀï¼æÈİÀÏ°æ±¾ statuscalc Ö¸Áî [SolaØ¼Ğ¡¿Ë]
+	BUILDIN_DEF2(recalculatestat, "status_calc", ""),	// ÓÉÓÚ rAthena ÒÑ¾­ÊµÏÖ recalculatestat Ö¸Áî, ÕâÀï¼æÈİÀÏ°æ±¾ status_calc Ö¸Áî
 #endif // Pandas_ScriptCommand_StatusCalc
 #ifdef Pandas_ScriptCommand_GetEquipExpireTick
-	BUILDIN_DEF(getequipexpiretick, "i?"),				// è·å–æŒ‡å®šä½ç½®è£…å¤‡çš„ç§Ÿèµåˆ°æœŸå‰©ä½™ç§’æ•° [Solaä¸¶å°å…‹]
-	BUILDIN_DEF2(getequipexpiretick, "isrental", "i?"),	// æŒ‡å®šä¸€ä¸ªåˆ«å, ä»¥ä¾¿å…¼å®¹çš„è€ç‰ˆæœ¬æˆ–å…¶ä»–æœåŠ¡ç«¯
+	BUILDIN_DEF(getequipexpiretick, "i?"),				// »ñÈ¡Ö¸¶¨Î»ÖÃ×°±¸µÄ×âÁŞµ½ÆÚÊ£ÓàÃëÊı [SolaØ¼Ğ¡¿Ë]
+	BUILDIN_DEF2(getequipexpiretick, "isrental", "i?"),	// Ö¸¶¨Ò»¸ö±ğÃû, ÒÔ±ã¼æÈİµÄÀÏ°æ±¾»òÆäËû·şÎñ¶Ë
 #endif // Pandas_ScriptCommand_GetEquipExpireTick
 #ifdef Pandas_ScriptCommand_GetInventoryInfo
-	BUILDIN_DEF(getinventoryinfo, "ii?"),							// æŸ¥è¯¢æŒ‡å®šèƒŒåŒ…åºå·çš„é“å…·è¯¦ç»†ä¿¡æ¯ [Solaä¸¶å°å…‹]
-	BUILDIN_DEF2(getinventoryinfo, "getcartinfo", "ii?"),			// æŸ¥è¯¢æŒ‡å®šæ‰‹æ¨è½¦åºå·çš„é“å…·è¯¦ç»†ä¿¡æ¯ [Solaä¸¶å°å…‹]
-	BUILDIN_DEF2(getinventoryinfo, "getguildstorageinfo", "ii?"),	// æŸ¥è¯¢æŒ‡å®šå…¬ä¼šä»“åº“åºå·çš„é“å…·è¯¦ç»†ä¿¡æ¯ [Solaä¸¶å°å…‹]
-	BUILDIN_DEF2(getinventoryinfo, "getstorageinfo", "ii??"),		// æŸ¥è¯¢æŒ‡å®šä¸ªäººä»“åº“/æ‰©å……ä»“åº“åºå·çš„é“å…·è¯¦ç»†ä¿¡æ¯ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(getinventoryinfo, "ii?"),							// ²éÑ¯Ö¸¶¨±³°üĞòºÅµÄµÀ¾ßÏêÏ¸ĞÅÏ¢ [SolaØ¼Ğ¡¿Ë]
+	BUILDIN_DEF2(getinventoryinfo, "getcartinfo", "ii?"),			// ²éÑ¯Ö¸¶¨ÊÖÍÆ³µĞòºÅµÄµÀ¾ßÏêÏ¸ĞÅÏ¢ [SolaØ¼Ğ¡¿Ë]
+	BUILDIN_DEF2(getinventoryinfo, "getguildstorageinfo", "ii?"),	// ²éÑ¯Ö¸¶¨¹«»á²Ö¿âĞòºÅµÄµÀ¾ßÏêÏ¸ĞÅÏ¢ [SolaØ¼Ğ¡¿Ë]
+	BUILDIN_DEF2(getinventoryinfo, "getstorageinfo", "ii??"),		// ²éÑ¯Ö¸¶¨¸öÈË²Ö¿â/À©³ä²Ö¿âĞòºÅµÄµÀ¾ßÏêÏ¸ĞÅÏ¢ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_GetInventoryInfo
 #ifdef Pandas_ScriptCommand_StatusCheck
-	BUILDIN_DEF(statuscheck, "i?"),						// åˆ¤æ–­çŠ¶æ€æ˜¯å¦å­˜åœ¨, å¹¶å–å¾—ç›¸å…³çš„çŠ¶æ€å‚æ•° [Solaä¸¶å°å…‹]
-	BUILDIN_DEF2(statuscheck, "sc_check", "i?"),		// æŒ‡å®šä¸€ä¸ªåˆ«å, ä»¥ä¾¿å…¼å®¹çš„è€ç‰ˆæœ¬æˆ–å…¶ä»–æœåŠ¡ç«¯
+	BUILDIN_DEF(statuscheck, "i?"),						// ÅĞ¶Ï×´Ì¬ÊÇ·ñ´æÔÚ, ²¢È¡µÃÏà¹ØµÄ×´Ì¬²ÎÊı [SolaØ¼Ğ¡¿Ë]
+	BUILDIN_DEF2(statuscheck, "sc_check", "i?"),		// Ö¸¶¨Ò»¸ö±ğÃû, ÒÔ±ã¼æÈİµÄÀÏ°æ±¾»òÆäËû·şÎñ¶Ë
 #endif // Pandas_ScriptCommand_StatusCheck
 #ifdef Pandas_ScriptCommand_RentTimeIdx
-	BUILDIN_DEF(renttimeidx, "ii?"),					// å¢åŠ /å‡å°‘æŒ‡å®šèƒŒåŒ…åºå·é“å…·çš„ç§Ÿèµæ—¶é—´ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(renttimeidx, "ii?"),					// Ôö¼Ó/¼õÉÙÖ¸¶¨±³°üĞòºÅµÀ¾ßµÄ×âÁŞÊ±¼ä [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_RentTimeIdx
 #ifdef Pandas_ScriptCommand_PartyLeave
-	BUILDIN_DEF(party_leave, "?"),						// ä½¿å½“å‰è§’è‰²æˆ–æŒ‡å®šè§’è‰²é€€å‡ºé˜Ÿä¼ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(party_leave, "?"),						// Ê¹µ±Ç°½ÇÉ«»òÖ¸¶¨½ÇÉ«ÍË³ö¶ÓÎé [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_PartyLeave
 #ifdef Pandas_ScriptCommand_Script4Each
-	BUILDIN_DEF(script4each, "si?????"),					// å¯¹æŒ‡å®šèŒƒå›´çš„ç©å®¶æ‰§è¡Œç›¸åŒçš„ä¸€æ®µè„šæœ¬ [Solaä¸¶å°å…‹]
-	BUILDIN_DEF2(script4each, "script4eachmob", "si?????"),	// å¯¹æŒ‡å®šèŒƒå›´çš„é­”ç‰©æ‰§è¡Œç›¸åŒçš„ä¸€æ®µè„šæœ¬
-	BUILDIN_DEF2(script4each, "script4eachnpc", "si?????"),	// å¯¹æŒ‡å®šèŒƒå›´çš„ NPC æ‰§è¡Œç›¸åŒçš„ä¸€æ®µè„šæœ¬
+	BUILDIN_DEF(script4each, "si?????"),					// ¶ÔÖ¸¶¨·¶Î§µÄÍæ¼ÒÖ´ĞĞÏàÍ¬µÄÒ»¶Î½Å±¾ [SolaØ¼Ğ¡¿Ë]
+	BUILDIN_DEF2(script4each, "script4eachmob", "si?????"),	// ¶ÔÖ¸¶¨·¶Î§µÄÄ§ÎïÖ´ĞĞÏàÍ¬µÄÒ»¶Î½Å±¾
+	BUILDIN_DEF2(script4each, "script4eachnpc", "si?????"),	// ¶ÔÖ¸¶¨·¶Î§µÄ NPC Ö´ĞĞÏàÍ¬µÄÒ»¶Î½Å±¾
 #endif // Pandas_ScriptCommand_Script4Each
 #ifdef Pandas_ScriptCommand_SearchArray
-	BUILDIN_DEF2(inarray, "searcharray", "rv"),			// ç”±äº rAthena å·²ç»å®ç° inarray æŒ‡ä»¤, è¿™é‡Œå…¼å®¹è€ç‰ˆæœ¬ searcharray æŒ‡ä»¤ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF2(inarray, "searcharray", "rv"),			// ÓÉÓÚ rAthena ÒÑ¾­ÊµÏÖ inarray Ö¸Áî, ÕâÀï¼æÈİÀÏ°æ±¾ searcharray Ö¸Áî [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_SearchArray
 #ifdef Pandas_ScriptCommand_GetSameIpInfo
-	BUILDIN_DEF(getsameipinfo, "??"),					// è·å¾—æŸä¸ªæŒ‡å®š IP åœ¨çº¿çš„ç©å®¶ä¿¡æ¯ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(getsameipinfo, "??"),					// »ñµÃÄ³¸öÖ¸¶¨ IP ÔÚÏßµÄÍæ¼ÒĞÅÏ¢ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_GetSameIpInfo
 #ifdef Pandas_ScriptCommand_Logout
-	BUILDIN_DEF(logout, "i?"),							// ä½¿æŒ‡å®šçš„è§’è‰²ç«‹åˆ»ç™»å‡ºæ¸¸æˆ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(logout, "i?"),							// Ê¹Ö¸¶¨µÄ½ÇÉ«Á¢¿ÌµÇ³öÓÎÏ· [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_Logout
 #ifdef Pandas_ScriptCommand_WarpPartyRevive
-	BUILDIN_DEF2(warpparty, "warppartyrevive", "siii???"),	// ä¸ warpparty ç±»ä¼¼, ä½†å¯ä»¥å¤æ´»æ­»äº¡çš„é˜Ÿå‹å¹¶ä¼ é€ [Solaä¸¶å°å…‹]
-	BUILDIN_DEF2(warpparty, "warpparty2", "siii???"),		// æŒ‡å®šä¸€ä¸ªåˆ«å, ä»¥ä¾¿å…¼å®¹çš„è€ç‰ˆæœ¬æˆ–å…¶ä»–æœåŠ¡ç«¯
+	BUILDIN_DEF2(warpparty, "warppartyrevive", "siii???"),	// Óë warpparty ÀàËÆ, µ«¿ÉÒÔ¸´»îËÀÍöµÄ¶ÓÓÑ²¢´«ËÍ [SolaØ¼Ğ¡¿Ë]
+	BUILDIN_DEF2(warpparty, "warpparty2", "siii???"),		// Ö¸¶¨Ò»¸ö±ğÃû, ÒÔ±ã¼æÈİµÄÀÏ°æ±¾»òÆäËû·şÎñ¶Ë
 #endif // Pandas_ScriptCommand_WarpPartyRevive
 #ifdef Pandas_ScriptCommand_GetAreaGid
-	BUILDIN_DEF(getareagid, "ri??????"),				// è·å–æŒ‡å®šèŒƒå›´å†…ç‰¹å®šç±»å‹å•ä½çš„å…¨éƒ¨ GID [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(getareagid, "ri??????"),				// »ñÈ¡Ö¸¶¨·¶Î§ÄÚÌØ¶¨ÀàĞÍµ¥Î»µÄÈ«²¿ GID [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_GetAreaGid
 #ifdef Pandas_ScriptCommand_ProcessHalt
-	BUILDIN_DEF(processhalt, "?"),						// ç”¨äºä¸­æ–­æºä»£ç çš„åç»­å¤„ç†é€»è¾‘ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(processhalt, "?"),						// ÓÃÓÚÖĞ¶ÏÔ´´úÂëµÄºóĞø´¦ÀíÂß¼­ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_ProcessHalt
 #ifdef Pandas_ScriptCommand_SetEventTrigger
-	BUILDIN_DEF(settrigger, "ii"),						// ä½¿ç”¨è¯¥æŒ‡ä»¤å¯ä»¥è®¾ç½®æŸä¸ªäº‹ä»¶æˆ–è¿‡æ»¤å™¨çš„è§¦å‘è¡Œä¸º [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(settrigger, "ii"),						// Ê¹ÓÃ¸ÃÖ¸Áî¿ÉÒÔÉèÖÃÄ³¸öÊÂ¼ş»ò¹ıÂËÆ÷µÄ´¥·¢ĞĞÎª [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_SetEventTrigger
 #ifdef Pandas_ScriptCommand_MessageColor
-	BUILDIN_DEF(messagecolor, "s???"),					// å‘é€æŒ‡å®šé¢œè‰²çš„æ¶ˆæ¯æ–‡æœ¬åˆ°èŠå¤©çª—å£ä¸­ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(messagecolor, "s???"),					// ·¢ËÍÖ¸¶¨ÑÕÉ«µÄÏûÏ¢ÎÄ±¾µ½ÁÄÌì´°¿ÚÖĞ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_MessageColor
 #ifdef Pandas_ScriptCommand_Copynpc
-	BUILDIN_DEF(copynpc, "????????"),					// å¤åˆ¶æŒ‡å®šçš„ NPC åˆ°ä¸€ä¸ªæ–°çš„ä½ç½® [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(copynpc, "????????"),					// ¸´ÖÆÖ¸¶¨µÄ NPC µ½Ò»¸öĞÂµÄÎ»ÖÃ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_Copynpc
 #ifdef Pandas_ScriptCommand_GetTimeFmt
-	BUILDIN_DEF(gettimefmt, "s??"),						// å°†å½“å‰æ—¶é—´æ ¼å¼åŒ–è¾“å‡ºæˆå­—ç¬¦ä¸², æ˜¯ gettimestr çš„æ”¹è¿›ç‰ˆ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(gettimefmt, "s??"),						// ½«µ±Ç°Ê±¼ä¸ñÊ½»¯Êä³ö³É×Ö·û´®, ÊÇ gettimestr µÄ¸Ä½ø°æ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_GetTimeFmt
 #ifdef Pandas_ScriptCommand_MultiCatchPet
-	BUILDIN_DEF(multicatchpet, "*"),					// ä¸ catchpet æŒ‡ä»¤ç±»ä¼¼, ä½†å¯ä»¥æŒ‡å®šæ›´å¤šæ”¯æŒæ•æ‰çš„é­”ç‰©ç¼–å· [Solaä¸¶å°å…‹]
-		BUILDIN_DEF2(multicatchpet, "mpet", "*"),		// æŒ‡å®šä¸€ä¸ªåˆ«å, ä»¥ä¾¿ç®€åŒ–ç¼–ç å·¥ä½œé‡
+	BUILDIN_DEF(multicatchpet, "*"),					// Óë catchpet Ö¸ÁîÀàËÆ, µ«¿ÉÒÔÖ¸¶¨¸ü¶àÖ§³Ö²¶×½µÄÄ§Îï±àºÅ [SolaØ¼Ğ¡¿Ë]
+		BUILDIN_DEF2(multicatchpet, "mpet", "*"),		// Ö¸¶¨Ò»¸ö±ğÃû, ÒÔ±ã¼ò»¯±àÂë¹¤×÷Á¿
 #endif // Pandas_ScriptCommand_MultiCatchPet
 #ifdef Pandas_ScriptCommand_SelfDeletion
-	BUILDIN_DEF(selfdeletion, "*"),						// è®¾ç½® NPC çš„è‡ªæ¯ç­–ç•¥ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(selfdeletion, "*"),						// ÉèÖÃ NPC µÄ×Ô»Ù²ßÂÔ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_SelfDeletion
 #ifdef Pandas_ScriptCommand_SetCharTitle
-	BUILDIN_DEF(setchartitle, "i?"),					// è®¾ç½®æŒ‡å®šç©å®¶çš„ç§°å·ID [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(setchartitle, "i?"),					// ÉèÖÃÖ¸¶¨Íæ¼ÒµÄ³ÆºÅID [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_SetCharTitle
 #ifdef Pandas_ScriptCommand_GetCharTitle
-	BUILDIN_DEF(getchartitle, "?"),						// è·å¾—æŒ‡å®šç©å®¶çš„ç§°å·ID [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(getchartitle, "?"),						// »ñµÃÖ¸¶¨Íæ¼ÒµÄ³ÆºÅID [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_GetCharTitle
 #ifdef Pandas_ScriptCommand_NpcExists
-	BUILDIN_DEF(npcexists, "s?"),						// åˆ¤æ–­æŒ‡å®šåç§°çš„ NPC æ˜¯å¦å­˜åœ¨ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(npcexists, "s?"),						// ÅĞ¶ÏÖ¸¶¨Ãû³ÆµÄ NPC ÊÇ·ñ´æÔÚ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_NpcExists
 #ifdef Pandas_ScriptCommand_StorageGetItem
-	BUILDIN_DEF(storagegetitem, "vi?"),								// å¾€ä»“åº“ç›´æ¥åˆ›é€ ä¸€ä¸ªæŒ‡å®šçš„é“å…· [Solaä¸¶å°å…‹]
-	BUILDIN_DEF2(storagegetitem, "storagegetitembound", "vii?"),	// ä¸ getitembound ç±»ä¼¼, åªä¸è¿‡æ˜¯å°†é“å…·ç›´æ¥åˆ›å»ºåˆ°ä»“åº“
+	BUILDIN_DEF(storagegetitem, "vi?"),								// Íù²Ö¿âÖ±½Ó´´ÔìÒ»¸öÖ¸¶¨µÄµÀ¾ß [SolaØ¼Ğ¡¿Ë]
+	BUILDIN_DEF2(storagegetitem, "storagegetitembound", "vii?"),	// Óë getitembound ÀàËÆ, Ö»²»¹ıÊÇ½«µÀ¾ßÖ±½Ó´´½¨µ½²Ö¿â
 #endif // Pandas_ScriptCommand_StorageGetItem
 #ifdef Pandas_ScriptCommand_SetInventoryInfo
-	BUILDIN_DEF(setinventoryinfo, "iii??"),				// è®¾ç½®æŒ‡å®šèƒŒåŒ…åºå·çš„é“å…·çš„è¯¦ç»†ä¿¡æ¯ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(setinventoryinfo, "iii??"),				// ÉèÖÃÖ¸¶¨±³°üĞòºÅµÄµÀ¾ßµÄÏêÏ¸ĞÅÏ¢ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_SetInventoryInfo
 #ifdef Pandas_ScriptCommand_UpdateInventory
-	BUILDIN_DEF(updateinventory, "?"),					// é‡æ–°ä¸‹å‘å…³è”ç©å®¶çš„èƒŒåŒ…æ•°æ®ç»™å®¢æˆ·ç«¯ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(updateinventory, "?"),					// ÖØĞÂÏÂ·¢¹ØÁªÍæ¼ÒµÄ±³°üÊı¾İ¸ø¿Í»§¶Ë [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_UpdateInventory
 #ifdef Pandas_ScriptCommand_GetCharMacAddress
-	BUILDIN_DEF(getcharmac, "?"),						// è·å–æŒ‡å®šè§’è‰²ç™»å½•æ—¶ä½¿ç”¨çš„ MAC åœ°å€ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(getcharmac, "?"),						// »ñÈ¡Ö¸¶¨½ÇÉ«µÇÂ¼Ê±Ê¹ÓÃµÄ MAC µØÖ· [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_GetCharMacAddress
 #ifdef Pandas_ScriptCommand_GetConstant
-	BUILDIN_DEF(getconstant, "s"),						// æŸ¥è¯¢ä¸€ä¸ªå¸¸é‡å­—ç¬¦ä¸²å¯¹åº”çš„æ•°å€¼ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(getconstant, "s"),						// ²éÑ¯Ò»¸ö³£Á¿×Ö·û´®¶ÔÓ¦µÄÊıÖµ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_GetConstant
 #ifdef Pandas_ScriptCommand_Preg_Search
-	BUILDIN_DEF(preg_search, "ssir"),					// ä½¿ç”¨æ­£åˆ™è¡¨è¾¾å¼æœç´¢å¹¶è¿”å›é¦–ä¸ªåŒ¹é…çš„åˆ†ç»„å†…å®¹ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(preg_search, "ssir"),					// Ê¹ÓÃÕıÔò±í´ïÊ½ËÑË÷²¢·µ»ØÊ×¸öÆ¥ÅäµÄ·Ö×éÄÚÈİ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_Preg_Search
 #ifdef Pandas_ScriptCommand_Aura
-	BUILDIN_DEF(aura, "i?"),							// æ¿€æ´»æŒ‡å®šçš„å…‰ç¯ç»„åˆ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(aura, "i?"),							// ¼¤»îÖ¸¶¨µÄ¹â»·×éºÏ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_Aura
 #ifdef Pandas_ScriptCommand_UnitAura
-	BUILDIN_DEF(unitaura, "ii"),						// ç”¨äºè°ƒæ•´ä¸ƒç§å•ä½çš„å…‰ç¯ç»„åˆ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(unitaura, "ii"),						// ÓÃÓÚµ÷ÕûÆßÖÖµ¥Î»µÄ¹â»·×éºÏ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_UnitAura
 #ifdef Pandas_ScriptCommand_GetUnitTarget
-	BUILDIN_DEF(getunittarget, "i"),					// è·å–æŒ‡å®šå•ä½å½“å‰æ­£åœ¨æ”»å‡»çš„ç›®æ ‡å•ä½ç¼–å· [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(getunittarget, "i"),					// »ñÈ¡Ö¸¶¨µ¥Î»µ±Ç°ÕıÔÚ¹¥»÷µÄÄ¿±êµ¥Î»±àºÅ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_GetUnitTarget
 #ifdef Pandas_ScriptCommand_UnlockCmd
-	BUILDIN_DEF(unlockcmd, ""),							// è§£é”å®æ—¶äº‹ä»¶å’Œè¿‡æ»¤å™¨äº‹ä»¶çš„æŒ‡ä»¤é™åˆ¶ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(unlockcmd, ""),							// ½âËøÊµÊ±ÊÂ¼şºÍ¹ıÂËÆ÷ÊÂ¼şµÄÖ¸ÁîÏŞÖÆ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_UnlockCmd
 #ifdef Pandas_ScriptCommand_BattleRecordQuery
-	BUILDIN_DEF(batrec_query, "iii?"),					// æŸ¥è¯¢æŒ‡å®šå•ä½çš„æˆ˜æ–—è®°å½•, æŸ¥çœ‹ä¸äº¤äº’ç›®æ ‡å•ä½äº§ç”Ÿçš„å…·ä½“è®°å½•å€¼ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(batrec_query, "iii?"),					// ²éÑ¯Ö¸¶¨µ¥Î»µÄÕ½¶·¼ÇÂ¼, ²é¿´Óë½»»¥Ä¿±êµ¥Î»²úÉúµÄ¾ßÌå¼ÇÂ¼Öµ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_BattleRecordQuery
 #ifdef Pandas_ScriptCommand_BattleRecordRank
-	BUILDIN_DEF(batrec_rank, "irri??"),					// æŸ¥è¯¢æŒ‡å®šå•ä½çš„æˆ˜æ–—è®°å½•å¹¶å¯¹è®°å½•çš„å€¼è¿›è¡Œæ’åº, è¿”å›æ’è¡Œæ¦œå• [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(batrec_rank, "irri??"),					// ²éÑ¯Ö¸¶¨µ¥Î»µÄÕ½¶·¼ÇÂ¼²¢¶Ô¼ÇÂ¼µÄÖµ½øĞĞÅÅĞò, ·µ»ØÅÅĞĞ°ñµ¥ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_BattleRecordRank
 #ifdef Pandas_ScriptCommand_BattleRecordSortout
-	BUILDIN_DEF(batrec_sortout, "i?"),					// ç§»é™¤æŒ‡å®šå•ä½çš„æˆ˜æ–—è®°å½•ä¸­äº¤äº’å•ä½å·²ç»ä¸å­˜åœ¨ (æˆ–ä¸‹çº¿) çš„è®°å½• [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(batrec_sortout, "i?"),					// ÒÆ³ıÖ¸¶¨µ¥Î»µÄÕ½¶·¼ÇÂ¼ÖĞ½»»¥µ¥Î»ÒÑ¾­²»´æÔÚ (»òÏÂÏß) µÄ¼ÇÂ¼ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_BattleRecordSortout
 #ifdef Pandas_ScriptCommand_BattleRecordReset
-	BUILDIN_DEF(batrec_reset, "i"),						// æ¸…é™¤æŒ‡å®šå•ä½çš„æˆ˜æ–—è®°å½• [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(batrec_reset, "i"),						// Çå³ıÖ¸¶¨µ¥Î»µÄÕ½¶·¼ÇÂ¼ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_BattleRecordReset
 #ifdef Pandas_ScriptCommand_EnableBattleRecord
-	BUILDIN_DEF(enable_batrec, "?"),					// å¯ç”¨æŒ‡å®šå•ä½çš„æˆ˜æ–—è®°å½• [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(enable_batrec, "?"),					// ÆôÓÃÖ¸¶¨µ¥Î»µÄÕ½¶·¼ÇÂ¼ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_EnableBattleRecord
 #ifdef Pandas_ScriptCommand_DisableBattleRecord
-	BUILDIN_DEF(disable_batrec, "?"),					// ç¦ç”¨æŒ‡å®šå•ä½çš„æˆ˜æ–—è®°å½• [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(disable_batrec, "?"),					// ½ûÓÃÖ¸¶¨µ¥Î»µÄÕ½¶·¼ÇÂ¼ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_DisableBattleRecord
 #ifdef Pandas_ScriptCommand_Login
-	BUILDIN_DEF(login, "i????"),						// å°†æŒ‡å®šçš„è§’è‰²ä»¥ç‰¹å®šçš„ç™»å½•æ¨¡å¼æ‹‰ä¸Šçº¿ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(login, "i????"),						// ½«Ö¸¶¨µÄ½ÇÉ«ÒÔÌØ¶¨µÄµÇÂ¼Ä£Ê½À­ÉÏÏß [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_Login
 #ifdef Pandas_ScriptCommand_CheckSuspend
-	BUILDIN_DEF(checksuspend, "?"),						// è·å–æŒ‡å®šè§’è‰²æˆ–æŒ‡å®šè´¦å·å½“å‰åœ¨çº¿è§’è‰²çš„æŒ‚æœºæ¨¡å¼ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(checksuspend, "?"),						// »ñÈ¡Ö¸¶¨½ÇÉ«»òÖ¸¶¨ÕËºÅµ±Ç°ÔÚÏß½ÇÉ«µÄ¹Ò»úÄ£Ê½ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_CheckSuspend
 #ifdef Pandas_ScriptCommand_BonusScriptRemove
-	BUILDIN_DEF(bonus_script_remove, "i?"),				// ç§»é™¤æŒ‡å®šçš„ bonus_script æ•ˆæœè„šæœ¬ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(bonus_script_remove, "i?"),				// ÒÆ³ıÖ¸¶¨µÄ bonus_script Ğ§¹û½Å±¾ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_BonusScriptRemove
 #ifdef Pandas_ScriptCommand_BonusScriptList
-	BUILDIN_DEF(bonus_script_list, "r?"),				// è·å–æŒ‡å®šè§’è‰²å½“å‰æ¿€æ´»çš„å…¨éƒ¨ bonus_script æ•ˆæœè„šæœ¬ç¼–å· [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(bonus_script_list, "r?"),				// »ñÈ¡Ö¸¶¨½ÇÉ«µ±Ç°¼¤»îµÄÈ«²¿ bonus_script Ğ§¹û½Å±¾±àºÅ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_BonusScriptList
 #ifdef Pandas_ScriptCommand_BonusScriptExists
-	BUILDIN_DEF(bonus_script_exists, "i?"),				// æŸ¥è¯¢æŒ‡å®šè§’è‰²æ˜¯å¦å·²ç»æ¿€æ´»äº†ç‰¹å®šçš„ bonus_script æ•ˆæœè„šæœ¬ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(bonus_script_exists, "i?"),				// ²éÑ¯Ö¸¶¨½ÇÉ«ÊÇ·ñÒÑ¾­¼¤»îÁËÌØ¶¨µÄ bonus_script Ğ§¹û½Å±¾ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_BonusScriptExists
 #ifdef Pandas_ScriptCommand_BonusScriptGetId
-	BUILDIN_DEF(bonus_script_getid, "sr?"),				// æŸ¥è¯¢æ•ˆæœè„šæœ¬ä»£ç å¯¹åº”çš„æ•ˆæœè„šæœ¬ç¼–å· [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(bonus_script_getid, "sr?"),				// ²éÑ¯Ğ§¹û½Å±¾´úÂë¶ÔÓ¦µÄĞ§¹û½Å±¾±àºÅ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_BonusScriptGetId
 #ifdef Pandas_ScriptCommand_BonusScriptInfo
-	BUILDIN_DEF(bonus_script_info, "ii?"),				// æŸ¥è¯¢æŒ‡å®šæ•ˆæœè„šæœ¬çš„ç›¸å…³ä¿¡æ¯ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(bonus_script_info, "ii?"),				// ²éÑ¯Ö¸¶¨Ğ§¹û½Å±¾µÄÏà¹ØĞÅÏ¢ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_BonusScriptInfo
 #ifdef Pandas_ScriptCommand_ExpandInventoryAdjust
-	BUILDIN_DEF(expandinventory_adjust, "i"),			// å¢åŠ è§’è‰²çš„èƒŒåŒ…å®¹é‡ä¸Šé™ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(expandinventory_adjust, "i"),			// Ôö¼Ó½ÇÉ«µÄ±³°üÈİÁ¿ÉÏÏŞ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_ExpandInventoryAdjust
 #ifdef Pandas_ScriptCommand_GetInventorySize
-	BUILDIN_DEF(getinventorysize, "?"),					// æŸ¥è¯¢å¹¶è·å–å½“å‰è§’è‰²çš„èƒŒåŒ…å®¹é‡ä¸Šé™ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(getinventorysize, "?"),					// ²éÑ¯²¢»ñÈ¡µ±Ç°½ÇÉ«µÄ±³°üÈİÁ¿ÉÏÏŞ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_GetInventorySize
 #ifdef Pandas_ScriptCommand_GetMapSpawns
-	BUILDIN_DEF(getmapspawns, "s?"),					// åœ¨æ­¤å†™ä¸Šè„šæœ¬æŒ‡ä»¤è¯´æ˜ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(getmapspawns, "s?"),					// ÔÚ´ËĞ´ÉÏ½Å±¾Ö¸ÁîËµÃ÷ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_GetMapSpawns
 #ifdef Pandas_ScriptCommand_GetMobSpawns
-	BUILDIN_DEF(getmobspawns,"i??"),					// æŸ¥è¯¢æŒ‡å®šé­”ç‰©åœ¨ä¸åŒåœ°å›¾çš„åˆ·æ–°ç‚¹ä¿¡æ¯ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(getmobspawns,"i??"),					// ²éÑ¯Ö¸¶¨Ä§ÎïÔÚ²»Í¬µØÍ¼µÄË¢ĞÂµãĞÅÏ¢ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_GetMobSpawns
 #ifdef Pandas_ScriptCommand_GetCalendarTime
-	BUILDIN_DEF(getcalendartime,"ii??"),				// è·å–ä¸‹æ¬¡å‡ºç°æŒ‡å®šæ—¶é—´çš„ UNIX æ—¶é—´æˆ³ [Haru]
+	BUILDIN_DEF(getcalendartime,"ii??"),				// »ñÈ¡ÏÂ´Î³öÏÖÖ¸¶¨Ê±¼äµÄ UNIX Ê±¼ä´Á [Haru]
 #endif // Pandas_ScriptCommand_GetCalendarTime
 #ifdef Pandas_ScriptCommand_GetSkillInfo
-	BUILDIN_DEF(getskillinfo, "iv??"),					// è·å–æŒ‡å®šæŠ€èƒ½åœ¨æŠ€èƒ½æ•°æ®åº“ä¸­æ‰€é…ç½®çš„å„é¡¹ä¿¡æ¯ [è½é¢¨]
+	BUILDIN_DEF(getskillinfo, "iv??"),					// »ñÈ¡Ö¸¶¨¼¼ÄÜÔÚ¼¼ÄÜÊı¾İ¿âÖĞËùÅäÖÃµÄ¸÷ÏîĞÅÏ¢ [Â ïL]
 #endif // Pandas_ScriptCommand_GetSkillInfo
 #ifdef Pandas_ScriptCommand_BossMonster
-	BUILDIN_DEF2(monster,"boss_monster", "siisvi???"),	// å¬å”¤é­”ç‰©å¹¶ä½¿ä¹‹èƒ½è¢« BOSS é›·è¾¾æ¢æµ‹ (å“ªæ€•è¢«å¬å”¤é­”ç‰©æœ¬èº«ä¸æ˜¯ BOSS) [äººé±¼å§¬çš„æ€å¿µ]
+	BUILDIN_DEF2(monster,"boss_monster", "siisvi???"),	// ÕÙ»½Ä§Îï²¢Ê¹Ö®ÄÜ±» BOSS À×´ïÌ½²â (ÄÄÅÂ±»ÕÙ»½Ä§Îï±¾Éí²»ÊÇ BOSS) [ÈËÓã¼§µÄË¼Äî]
 #endif // Pandas_ScriptCommand_BossMonster
 #ifdef Pandas_ScriptCommand_Sleep3
-	BUILDIN_DEF(sleep3,"i"),							// ä¼‘çœ ä¸€æ®µæ—¶é—´å†æ‰§è¡Œåç»­è„šæœ¬, ä¸ sleep2 ç±»ä¼¼ä½†å¿½ç•¥æŠ¥é”™ [äººé±¼å§¬çš„æ€å¿µ]
+	BUILDIN_DEF(sleep3,"i"),							// ĞİÃßÒ»¶ÎÊ±¼äÔÙÖ´ĞĞºóĞø½Å±¾, Óë sleep2 ÀàËÆµ«ºöÂÔ±¨´í [ÈËÓã¼§µÄË¼Äî]
 #endif // Pandas_ScriptCommand_Sleep3
 #ifdef Pandas_ScriptCommand_GetQuestTime
-	BUILDIN_DEF(getquesttime,"i??"),					// æŸ¥è¯¢è§’è‰²æŒ‡å®šä»»åŠ¡çš„æ—¶é—´ä¿¡æ¯ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(getquesttime,"i??"),					// ²éÑ¯½ÇÉ«Ö¸¶¨ÈÎÎñµÄÊ±¼äĞÅÏ¢ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_GetQuestTime
 #ifdef Pandas_ScriptCommand_UnitSpecialEffect
-	BUILDIN_DEF(unitspecialeffect, "ii??"),				// ä½¿æŒ‡å®šæ¸¸æˆå•ä½å¯ä»¥æ˜¾ç¤ºæŸä¸ªç‰¹æ•ˆ, å¹¶æ”¯æŒæ§åˆ¶ç‰¹æ•ˆå¯è§èŒƒå›´ [äººé±¼å§¬çš„æ€å¿µ]
+	BUILDIN_DEF(unitspecialeffect, "ii??"),				// Ê¹Ö¸¶¨ÓÎÏ·µ¥Î»¿ÉÒÔÏÔÊ¾Ä³¸öÌØĞ§, ²¢Ö§³Ö¿ØÖÆÌØĞ§¿É¼û·¶Î§ [ÈËÓã¼§µÄË¼Äî]
 #endif // Pandas_ScriptCommand_UnitSpecialEffect
 #ifdef Pandas_ScriptCommand_Next_Dropitem_Special
-	BUILDIN_DEF(next_dropitem_special,"iii"),			// å¯¹ä¸‹ä¸€ä¸ªæ‰è½åˆ°åœ°é¢ä¸Šçš„ç‰©å“è¿›è¡Œç‰¹æ®Šè®¾ç½® [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(next_dropitem_special,"iii"),			// ¶ÔÏÂÒ»¸öµôÂäµ½µØÃæÉÏµÄÎïÆ·½øĞĞÌØÊâÉèÖÃ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_Next_Dropitem_Special
 #ifdef Pandas_ScriptCommand_GetGradeItem
-	BUILDIN_DEF2(getitem2,"getgradeitem","viiiiiiiiirrr?"),		// åˆ›é€ å¸¦æœ‰æŒ‡å®šé™„é­”è¯„çº§çš„é“å…· [Solaä¸¶å°å…‹]
+	BUILDIN_DEF2(getitem2,"getgradeitem","viiiiiiiiirrr?"),		// ´´Ôì´øÓĞÖ¸¶¨¸½Ä§ÆÀ¼¶µÄµÀ¾ß [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_GetGradeItem
 #ifdef Pandas_ScriptCommand_GetRateIdx
-	BUILDIN_DEF(getrateidx,"*"),						// éšæœºè·å–ä¸€ä¸ªæ•°å€¼å‹æ•°ç»„çš„ç´¢å¼•åºå· [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(getrateidx,"*"),						// Ëæ»ú»ñÈ¡Ò»¸öÊıÖµĞÍÊı×éµÄË÷ÒıĞòºÅ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_GetRateIdx
 #ifdef Pandas_ScriptCommand_GetBossInfo
-	BUILDIN_DEF(getbossinfo,"???"),						// æŸ¥è¯¢ BOSS é­”ç‰©é‡ç”Ÿæ—¶é—´åŠå…¶åŸå¢“ç­‰ä¿¡æ¯ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(getbossinfo,"???"),						// ²éÑ¯ BOSS Ä§ÎïÖØÉúÊ±¼ä¼°Æä·ØÄ¹µÈĞÅÏ¢ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_GetBossInfo
 #ifdef Pandas_ScriptCommand_WhoDropItem
-	BUILDIN_DEF(whodropitem,"v??"),						// æŸ¥è¯¢æŒ‡å®šé“å…·ä¼šä»å“ªäº›é­”ç‰©èº«ä¸Šæ‰è½ä»¥åŠæ‰è½çš„æœºç‡ä¿¡æ¯ [Solaä¸¶å°å…‹]
+	BUILDIN_DEF(whodropitem,"v??"),						// ²éÑ¯Ö¸¶¨µÀ¾ß»á´ÓÄÄĞ©Ä§ÎïÉíÉÏµôÂäÒÔ¼°µôÂäµÄ»úÂÊĞÅÏ¢ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_ScriptCommand_WhoDropItem
 #ifdef Pandas_ScriptCommand_Instance_Add_Map
-	BUILDIN_DEF(instance_add_map,"isii"),						// æ·»åŠ å‰¯æœ¬åœ°å›¾ [Muscipular]
+	BUILDIN_DEF(instance_add_map,"isii"),						// Ìí¼Ó¸±±¾µØÍ¼ [Muscipular]
 #endif // Pandas_ScriptCommand_Instance_Add_Map
 #ifdef Pandas_ScriptCommand_Instance_Add_Warp
-	BUILDIN_DEF(instance_add_warp,"isiisii"),						// æ·»åŠ å‰¯æœ¬åœ°å›¾ä¼ é€ç‚¹ [Muscipular]
+	BUILDIN_DEF(instance_add_warp,"isiisii"),						// Ìí¼Ó¸±±¾µØÍ¼´«ËÍµã [Muscipular]
 #endif // Pandas_ScriptCommand_Instance_Add_Warp
 #ifdef Pandas_ScriptCommand_Map_Get_Size
-	BUILDIN_DEF(getmapsize,"sii"),						// è·å–åœ°å›¾å¤§å° [Muscipular]
+	BUILDIN_DEF(getmapsize,"sii"),						// »ñÈ¡µØÍ¼´óĞ¡ [Muscipular]
 #endif // Pandas_ScriptCommand_Instance_Add_Warp
 	// PYHELP - SCRIPTCMD - INSERT POINT - <Section 3>
 

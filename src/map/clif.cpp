@@ -1,4 +1,4 @@
-ï»¿// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
+// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // Copyright (c) Hercules Dev Team - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
@@ -135,7 +135,7 @@ static inline int itemtype(t_itemid nameid) {
 	int type = id->type;
 
 #ifdef Pandas_Item_Amulet_System
-	// è‹¥æ˜¯æŠ¤èº«ç¬¦é“å…·, åœ¨è¿™é‡Œå…¨éƒ¨æŠŠå®ƒå½“åš IT_ETC ç±»åž‹è¿”å›ž
+	// ÈôÊÇ»¤Éí·ûµÀ¾ß, ÔÚÕâÀïÈ«²¿°ÑËüµ±×ö IT_ETC ÀàÐÍ·µ»Ø
 	if (type == IT_AMULET || amulet_is(nameid))
 		return IT_ETC;
 #endif // Pandas_Item_Amulet_System
@@ -1187,12 +1187,12 @@ static int clif_setlevel(struct block_list* bl) {
 #ifdef Pandas_Aura_Mechanism
 //************************************
 // Method:      clif_send_auras_single
-// Description: å°† bl çš„å…‰çŽ¯æ•ˆæžœä¿¡æ¯å‘é€ç»™ tsd çš„å®¢æˆ·ç«¯
+// Description: ½« bl µÄ¹â»·Ð§¹ûÐÅÏ¢·¢ËÍ¸ø tsd µÄ¿Í»§¶Ë
 // Access:      public 
 // Parameter:   struct block_list * bl
 // Parameter:   map_session_data * dsd
 // Returns:     void
-// Author:      Solaä¸¶å°å…‹(CairoLee)  2020/09/26 16:38
+// Author:      SolaØ¼Ð¡¿Ë(CairoLee)  2020/09/26 16:38
 //************************************
 void clif_send_auras_single(struct block_list* bl, map_session_data* tsd) {
 	if (!bl || !tsd || bl->m == -1) return;
@@ -1213,14 +1213,14 @@ void clif_send_auras_single(struct block_list* bl, map_session_data* tsd) {
 
 //************************************
 // Method:      clif_send_auras
-// Description: å°† sd çš„å…‰çŽ¯ä¿¡æ¯å‘é€ç»™æŒ‡å®šèŒƒå›´çš„å…¶ä»–å®¢æˆ·ç«¯
+// Description: ½« sd µÄ¹â»·ÐÅÏ¢·¢ËÍ¸øÖ¸¶¨·¶Î§µÄÆäËû¿Í»§¶Ë
 // Access:      public 
 // Parameter:   struct block_list * bl
 // Parameter:   enum send_target target
-// Parameter:   bool ignore_when_hidden è‹¥è§’è‰²å¤„äºŽéšè—çŠ¶æ€åˆ™ä¸å‘é€å…‰çŽ¯ä¿¡æ¯
-// Parameter:   enum e_aura_special flag æŒ‡å®šä»…å‘é€æŸäº›ç‰¹æ®Šæ•ˆæžœ
+// Parameter:   bool ignore_when_hidden Èô½ÇÉ«´¦ÓÚÒþ²Ø×´Ì¬Ôò²»·¢ËÍ¹â»·ÐÅÏ¢
+// Parameter:   enum e_aura_special flag Ö¸¶¨½ö·¢ËÍÄ³Ð©ÌØÊâÐ§¹û
 // Returns:     void
-// Author:      Solaä¸¶å°å…‹(CairoLee)  2020/10/11 11:49
+// Author:      SolaØ¼Ð¡¿Ë(CairoLee)  2020/10/11 11:49
 //************************************
 void clif_send_auras(struct block_list* bl, enum send_target target, bool ignore_when_hidden, enum e_aura_special flag) {
 	if (!bl || bl->m == -1) return;
@@ -1327,9 +1327,9 @@ static void clif_set_unit_idle( struct block_list* bl, bool walking, send_target
 #ifndef Pandas_Fix_Cloak_Status_Baffling
 		if( !nd->vd.dead_sit ){
 #else
-		// ç¡®è®¤çŽ©å®¶å½“å‰æ˜¯å¦æ­£åœ¨è¿›è¡Œ cloak çš„ç¿»è½¬è¿‡ç¨‹ä¸­ (ç¿»è½¬è¿˜æ²¡ç»“æŸ)
-		// åªæœ‰å½“å‰ç¿»è½¬ç»“æŸçš„æ—¶å€™ (sc->cloak_reverting == 0), æ‰éœ€è¦æ ¹æ®çŽ©å®¶çš„ sd->cloaked_npc
-		// æ¥å¯¹ OPTION_CLOAK æ ‡è®°è¿›è¡Œç¿»è½¬æ“ä½œ, å¦åˆ™ä¸ç”¨~
+		// È·ÈÏÍæ¼Òµ±Ç°ÊÇ·ñÕýÔÚ½øÐÐ cloak µÄ·­×ª¹ý³ÌÖÐ (·­×ª»¹Ã»½áÊø)
+		// Ö»ÓÐµ±Ç°·­×ª½áÊøµÄÊ±ºò (sc->cloak_reverting == 0), ²ÅÐèÒª¸ù¾ÝÍæ¼ÒµÄ sd->cloaked_npc
+		// À´¶Ô OPTION_CLOAK ±ê¼Ç½øÐÐ·­×ª²Ù×÷, ·ñÔò²»ÓÃ~
 		unsigned short cloak_reverting = (sc) ? sc->cloak_reverting : 0;
 		if( !nd->vd.dead_sit && !cloak_reverting){
 #endif // Pandas_Fix_Cloak_Status_Baffling
@@ -1426,13 +1426,13 @@ static void clif_set_unit_idle( struct block_list* bl, bool walking, send_target
 
 #ifdef Pandas_Aura_Mechanism
 	if (tbl->type == BL_PC) {
-		// è‹¥å°åŒ…å‘é€çš„ç›®æ ‡æ˜¯ä¸€ä¸ªçŽ©å®¶å•ä½,
-		// é‚£ä¹ˆè¿™é‡Œç»˜åˆ¶ bl çš„å…‰çŽ¯æ•ˆæžœç»™åˆ° tbl å¯¹åº”çš„çŽ©å®¶å®¢æˆ·ç«¯
+		// Èô·â°ü·¢ËÍµÄÄ¿±êÊÇÒ»¸öÍæ¼Òµ¥Î»,
+		// ÄÇÃ´ÕâÀï»æÖÆ bl µÄ¹â»·Ð§¹û¸øµ½ tbl ¶ÔÓ¦µÄÍæ¼Ò¿Í»§¶Ë
 		map_session_data* tsd = BL_CAST(BL_PC, tbl);
 		clif_send_auras_single(bl, tsd);
 	}
 	else {
-		// å¦åˆ™å¹¿æ’­ç»™ target æŒ‡å®šèŒƒå›´çŽ©å®¶
+		// ·ñÔò¹ã²¥¸ø target Ö¸¶¨·¶Î§Íæ¼Ò
 		clif_send_auras(bl, target, false, AURA_SPECIAL_NOTHING);
 	}
 #endif // Pandas_Aura_Mechanism
@@ -1585,9 +1585,9 @@ static void clif_spawn_unit( struct block_list *bl, enum send_target target ){
 	}
 
 #ifdef Pandas_Aura_Mechanism
-	// å½“ä¸€ä¸ªå•ä½è¢« clif_spawn_unit é€šçŸ¥åˆ°æŸä¸ªå®¢æˆ·ç«¯è¿›è¡Œç”Ÿæˆçš„æ—¶å€™,
-	// åŒæ—¶ä¹Ÿç»™è¿™ä¸ªå•ä½å¥—ç”¨ä¸Šå®ƒå¯¹åº”çš„å…‰çŽ¯
-	// clif_spawn_unit æ˜¯ clif_spawn çš„åº•å±‚å‡½æ•°, å¤„ç†å®ƒåº”è¯¥æ¥çš„æ›´å½»åº•äº›
+	// µ±Ò»¸öµ¥Î»±» clif_spawn_unit Í¨Öªµ½Ä³¸ö¿Í»§¶Ë½øÐÐÉú³ÉµÄÊ±ºò,
+	// Í¬Ê±Ò²¸øÕâ¸öµ¥Î»Ì×ÓÃÉÏËü¶ÔÓ¦µÄ¹â»·
+	// clif_spawn_unit ÊÇ clif_spawn µÄµ×²ãº¯Êý, ´¦ÀíËüÓ¦¸ÃÀ´µÄ¸ü³¹µ×Ð©
 	clif_send_auras(bl, target, true, AURA_SPECIAL_NOTHING);
 #endif // Pandas_Aura_Mechanism
 }
@@ -1702,20 +1702,20 @@ static void clif_set_unit_walking( struct block_list *bl, map_session_data *tsd,
 
 #ifdef Pandas_Aura_Mechanism
 	if (tsd) {
-		// æ•´ä¸ª clif_set_unit_walking åªæœ‰ä¸¤ä¸ªå¼•ç”¨, è‹¥ tsd éžç©ºåˆ™è¡¨ç¤º
-		// è¿™æ˜¯æ¥è‡ª clif_getareachar_unit çš„è°ƒç”¨
-		// æ­¤æ—¶æˆ‘ä»¬å¯ä»¥å°† bl çš„å…‰çŽ¯ä¿¡æ¯å‘é€ç»™ tsd çš„å®¢æˆ·ç«¯, è¯·æ±‚ç»˜åˆ¶å…‰çŽ¯
+		// Õû¸ö clif_set_unit_walking Ö»ÓÐÁ½¸öÒýÓÃ, Èô tsd ·Ç¿ÕÔò±íÊ¾
+		// ÕâÊÇÀ´×Ô clif_getareachar_unit µÄµ÷ÓÃ
+		// ´ËÊ±ÎÒÃÇ¿ÉÒÔ½« bl µÄ¹â»·ÐÅÏ¢·¢ËÍ¸ø tsd µÄ¿Í»§¶Ë, ÇëÇó»æÖÆ¹â»·
 		clif_send_auras_single(bl, tsd);
 	}
 	else {
-		// è‹¥ tsd ä¸ºç©ºåˆ™è¡¨ç¤ºè¿™æ˜¯ä¸€ä¸ªæ¥è‡ª clif_move2 çš„è°ƒç”¨
-		// æ­¤æ—¶è¿™ä¸ªå°åŒ…çš„ä¸»è¦ä½œç”¨æ˜¯è¿«ä½¿å®¢æˆ·ç«¯é‡æ–°ç»˜åˆ¶æ•´ä¸ª unit å•ä½, è¿«ä½¿ç§»åŠ¨é€Ÿåº¦ç”Ÿæ•ˆ
-		// ç”±äºŽå®¢æˆ·ç«¯çš„è®¾è®¡ç¼ºé™· (202 / 362 ç»‘å®šåˆ°äº†çº¸å¨ƒå¨ƒè€Œä¸æ˜¯ unit)
-		// ä½¿ç”¨ clif_set_unit_walking å°±ä¼šè¿«ä½¿é‡ç»˜çº¸å¨ƒå¨ƒ, å¯¼è‡´ 202 / 362 è¿™ç§ç‰¹æ®Šæ•ˆæžœæ¶ˆå¤±
-		// æ­¤æ—¶æˆ‘ä»¬åœ¨è¿™é‡Œè¡¥ä¸€ä¸ªå°åŒ…, è¦æ±‚å®¢æˆ·ç«¯å¯¹è¿™äº›ç‰¹æ®Šæ•ˆæžœè¿›è¡Œé‡ç»˜
+		// Èô tsd Îª¿ÕÔò±íÊ¾ÕâÊÇÒ»¸öÀ´×Ô clif_move2 µÄµ÷ÓÃ
+		// ´ËÊ±Õâ¸ö·â°üµÄÖ÷Òª×÷ÓÃÊÇÆÈÊ¹¿Í»§¶ËÖØÐÂ»æÖÆÕû¸ö unit µ¥Î», ÆÈÊ¹ÒÆ¶¯ËÙ¶ÈÉúÐ§
+		// ÓÉÓÚ¿Í»§¶ËµÄÉè¼ÆÈ±ÏÝ (202 / 362 °ó¶¨µ½ÁËÖ½ÍÞÍÞ¶ø²»ÊÇ unit)
+		// Ê¹ÓÃ clif_set_unit_walking ¾Í»áÆÈÊ¹ÖØ»æÖ½ÍÞÍÞ, µ¼ÖÂ 202 / 362 ÕâÖÖÌØÊâÐ§¹ûÏûÊ§
+		// ´ËÊ±ÎÒÃÇÔÚÕâÀï²¹Ò»¸ö·â°ü, ÒªÇó¿Í»§¶Ë¶ÔÕâÐ©ÌØÊâÐ§¹û½øÐÐÖØ»æ
 		//
-		// å½“ç„¶, æœ€ä½³çš„è§£å†³æ–¹æ¡ˆæ˜¯è®© clif_move ä¸­ä¸è¦ä½¿ç”¨ clif_move2 (æœ€åŽè°ƒç”¨äº† clif_set_unit_walking)
-		// æ¥è¿«ä½¿å®¢æˆ·ç«¯æ›´æ–°æŸä¸ªå•ä½çš„ç§»åŠ¨é€Ÿåº¦. ä½†ç›®å‰å°è¯•äº†ä¸€ä¸‹, å¹¶æ²¡æœ‰ç‰¹åˆ«å¥½çš„æ–¹æ³•..
+		// µ±È», ×î¼ÑµÄ½â¾ö·½°¸ÊÇÈÃ clif_move ÖÐ²»ÒªÊ¹ÓÃ clif_move2 (×îºóµ÷ÓÃÁË clif_set_unit_walking)
+		// À´ÆÈÊ¹¿Í»§¶Ë¸üÐÂÄ³¸öµ¥Î»µÄÒÆ¶¯ËÙ¶È. µ«Ä¿Ç°³¢ÊÔÁËÒ»ÏÂ, ²¢Ã»ÓÐÌØ±ðºÃµÄ·½·¨..
 		clif_send_auras(bl, target, true, AURA_SPECIAL_HIDE_DISAPPEAR);
 	}
 #endif // Pandas_Aura_Mechanism
@@ -1957,10 +1957,10 @@ int clif_spawn( struct block_list *bl, bool walking ){
 			clif_efst_status_change_sub(bl, bl, AREA);
 			clif_hat_effects(sd,bl,AREA);
 #ifdef Pandas_Aura_Mechanism
-			// å½“ sd å•ä½ç”Ÿæˆçš„æ—¶å€™, é€šçŸ¥è‡ªå·±çš„å®¢æˆ·ç«¯åŠ è½½è‡ªå·±çš„å…‰çŽ¯ä¿¡æ¯
-			// ä¹‹æ‰€ä»¥ä¸éœ€è¦é€šçŸ¥å…¶ä»–äºº, æ˜¯å› ä¸ºé¡¶éƒ¨å·²ç»è°ƒç”¨äº† clif_spawn_unit å‡½æ•°,
-			// åœ¨ clif_spawn_unit çš„å†…éƒ¨å·²ç»å°†å…‰çŽ¯ä¿¡æ¯å¹¿æ’­ç»™ AREA_WOS (è§†é‡Žå†…è‡ªå·±é™¤å¤–çš„å®¢æˆ·ç«¯)
-			// å› æ­¤è¿™é‡Œåªéœ€è¦ç»™è‡ªå·±è¡¥å‘ä¸€ä¸ªå°åŒ…å³å¯
+			// µ± sd µ¥Î»Éú³ÉµÄÊ±ºò, Í¨Öª×Ô¼ºµÄ¿Í»§¶Ë¼ÓÔØ×Ô¼ºµÄ¹â»·ÐÅÏ¢
+			// Ö®ËùÒÔ²»ÐèÒªÍ¨ÖªÆäËûÈË, ÊÇÒòÎª¶¥²¿ÒÑ¾­µ÷ÓÃÁË clif_spawn_unit º¯Êý,
+			// ÔÚ clif_spawn_unit µÄÄÚ²¿ÒÑ¾­½«¹â»·ÐÅÏ¢¹ã²¥¸ø AREA_WOS (ÊÓÒ°ÄÚ×Ô¼º³ýÍâµÄ¿Í»§¶Ë)
+			// Òò´ËÕâÀïÖ»ÐèÒª¸ø×Ô¼º²¹·¢Ò»¸ö·â°ü¼´¿É
 			clif_send_auras(bl, SELF, true, AURA_SPECIAL_NOTHING);
 #endif // Pandas_Aura_Mechanism
 		}
@@ -2372,8 +2372,8 @@ void clif_changemapserver(map_session_data* sd, const char* map, int x, int y, u
 	WFIFOL(fd,22) = htonl(ip);
 #ifdef Pandas_InterConfig_HideServerIpAddress
 	if (pandas_inter_hide_server_ipaddress) {
-		// è‹¥å¸Œæœ›ä¸ä¸»åŠ¨è¿”å›žæœåŠ¡å™¨çš„ IP åœ°å€, é‚£ä¹ˆå°†æ­¤å¤„çš„åœ°å›¾æœåŠ¡å™¨ IP é‡è®¾ä¸º 0
-		// æ­¤å¤„è°ƒæ•´ä¼šå¯¼è‡´æ— æ³•é€‚åº”å¤š IP åœ°å€çš„åœ°å›¾æœåŠ¡å™¨æž¶æž„, ä½†æ˜¯å¯ä»¥æ”¯æŒå•æœåŠ¡å™¨ä¸åŒç«¯å£çš„è¿™ç§å½¢å¼...
+		// ÈôÏ£Íû²»Ö÷¶¯·µ»Ø·þÎñÆ÷µÄ IP µØÖ·, ÄÇÃ´½«´Ë´¦µÄµØÍ¼·þÎñÆ÷ IP ÖØÉèÎª 0
+		// ´Ë´¦µ÷Õû»áµ¼ÖÂÎÞ·¨ÊÊÓ¦¶à IP µØÖ·µÄµØÍ¼·þÎñÆ÷¼Ü¹¹, µ«ÊÇ¿ÉÒÔÖ§³Öµ¥·þÎñÆ÷²»Í¬¶Ë¿ÚµÄÕâÖÖÐÎÊ½...
 		WFIFOL(fd,22) = 0;
 	}
 #endif // Pandas_InterConfig_HideServerIpAddress
@@ -3168,13 +3168,13 @@ void clif_delitem(map_session_data *sd,int n,int amount, short reason)
 #ifndef Pandas_FuncParams_Clif_Item_Equip
 static void clif_item_equip( short idx, struct EQUIPITEM_INFO *p, struct item *it, struct item_data *id, int eqp_pos ){
 #else
-// æ‹“å±• caller å‚æ•°çš„å¯é€‰å€¼:
+// ÍØÕ¹ caller ²ÎÊýµÄ¿ÉÑ¡Öµ:
 // -------------------------------------
-// 0 - æœªçŸ¥æˆ–è€…ä¸å…³å¿ƒçš„è°ƒç”¨è€…
-// 1 - è°ƒç”¨è€…æ˜¯ clif_inventorylist
-// 2 - è°ƒç”¨è€…æ˜¯ clif_storagelist
-// 3 - è°ƒç”¨è€…æ˜¯ clif_cartlist
-// 4 - è°ƒç”¨è€…æ˜¯ clif_viewequip_ack
+// 0 - Î´Öª»òÕß²»¹ØÐÄµÄµ÷ÓÃÕß
+// 1 - µ÷ÓÃÕßÊÇ clif_inventorylist
+// 2 - µ÷ÓÃÕßÊÇ clif_storagelist
+// 3 - µ÷ÓÃÕßÊÇ clif_cartlist
+// 4 - µ÷ÓÃÕßÊÇ clif_viewequip_ack
 static void clif_item_equip( short idx, struct EQUIPITEM_INFO *p, struct item *it, struct item_data *id, int eqp_pos, uint16 caller = 0 ){
 #endif // Pandas_FuncParams_Clif_Item_Equip
 	nullpo_retv( p );
@@ -3215,13 +3215,13 @@ static void clif_item_equip( short idx, struct EQUIPITEM_INFO *p, struct item *i
 #ifdef Pandas_Item_ControlViewID
 	switch (caller) {
 	case 1:
-		// å½“"çŽ©å®¶è‡ªå·±"çœ‹è‡ªå·±è£…å¤‡æ æ—¶, æ ¹æ®å¼€å…³å†³å®šæ˜¯å¦éšè—å¤–è§‚
+		// µ±"Íæ¼Ò×Ô¼º"¿´×Ô¼º×°±¸À¸Ê±, ¸ù¾Ý¿ª¹Ø¾ö¶¨ÊÇ·ñÒþ²ØÍâ¹Û
 		if (id->look && ITEM_PROPERTIES_HASFLAG(id, noview_mask, ITEM_NOVIEW_WHEN_I_SEE) && caller == 1) {
 			p->wItemSpriteNumber = 0;
 		}
 		break;
 	case 4:
-		// å½“"å…¶ä»–çŽ©å®¶"çœ‹è‡ªå·±è£…å¤‡æ æ—¶, æ ¹æ®å¼€å…³å†³å®šæ˜¯å¦éšè—å¤–è§‚
+		// µ±"ÆäËûÍæ¼Ò"¿´×Ô¼º×°±¸À¸Ê±, ¸ù¾Ý¿ª¹Ø¾ö¶¨ÊÇ·ñÒþ²ØÍâ¹Û
 		if (id->look && ITEM_PROPERTIES_HASFLAG(id, noview_mask, ITEM_NOVIEW_WHEN_T_SEE) && caller == 4) {
 			p->wItemSpriteNumber = 0;
 		}
@@ -4636,9 +4636,9 @@ void clif_initialstatus(map_session_data *sd) {
 #endif
 
 #ifdef Pandas_Extreme_Computing
-	// ZC_STATUS å°åŒ…å‘é€çš„ MATK ç­‰å­—æ®µä»…æ”¯æŒ WORD ç±»åž‹ä¸”æ˜¯æœ‰ç¬¦å·çš„, æœ€å¤§ä¹Ÿå°± 0x7FFF (32767)
-	// å› æ­¤å‘é€äº†ä¸Šè¿°å°åŒ…åŽæˆ‘ä»¬éœ€è¦å†è¡¥å……è°ƒç”¨ clif_updatestatus è¿™ä¸ªå°åŒ…é‡Œ MATK ç­‰å­—æ®µæ—¶ INT ç±»åž‹çš„ (æœ‰æ— ç¬¦å·æ²¡æµ‹è¯•)
-	// å°±ç®—æ˜¯æœ‰ç¬¦å·, ä¹Ÿåº”è¯¥èƒ½æ”¯æŒåˆ° 0x7FFFFFFF (2147483647) æ€»ä¹‹.... å¾ˆå¥½... å“ˆå“ˆå“ˆ
+	// ZC_STATUS ·â°ü·¢ËÍµÄ MATK µÈ×Ö¶Î½öÖ§³Ö WORD ÀàÐÍÇÒÊÇÓÐ·ûºÅµÄ, ×î´óÒ²¾Í 0x7FFF (32767)
+	// Òò´Ë·¢ËÍÁËÉÏÊö·â°üºóÎÒÃÇÐèÒªÔÙ²¹³äµ÷ÓÃ clif_updatestatus Õâ¸ö·â°üÀï MATK µÈ×Ö¶ÎÊ± INT ÀàÐÍµÄ (ÓÐÎÞ·ûºÅÃ»²âÊÔ)
+	// ¾ÍËãÊÇÓÐ·ûºÅ, Ò²Ó¦¸ÃÄÜÖ§³Öµ½ 0x7FFFFFFF (2147483647) ×ÜÖ®.... ºÜºÃ... ¹þ¹þ¹þ
 	clif_updatestatus(sd, SP_ATK1);
 	clif_updatestatus(sd, SP_ATK2);
 	clif_updatestatus(sd, SP_MATK1);
@@ -4787,7 +4787,7 @@ void clif_equipitemack( map_session_data& sd, uint8 flag, int index, int pos ){
 #endif
 
 #ifdef Pandas_Item_ControlViewID
-	// è‹¥è£…å¤‡åˆšç©¿æˆ´æˆåŠŸçš„è¯, ä¹Ÿéœ€è¦æ ¹æ®æƒ…å†µçœ‹çœ‹æ˜¯å¦éœ€è¦è¿‡æ»¤æŽ‰å¤–è§‚ [Solaä¸¶å°å…‹]
+	// Èô×°±¸¸Õ´©´÷³É¹¦µÄ»°, Ò²ÐèÒª¸ù¾ÝÇé¿ö¿´¿´ÊÇ·ñÐèÒª¹ýÂËµôÍâ¹Û [SolaØ¼Ð¡¿Ë]
 	if (flag == ITEM_EQUIP_ACK_OK && sd.inventory_data[index]->look != 0) {
 		if (ITEM_PROPERTIES_HASFLAG(sd.inventory_data[index], noview_mask, ITEM_NOVIEW_WHEN_I_SEE)) {
 			p.wItemSpriteNumber = 0;
@@ -4927,7 +4927,7 @@ void clif_changeoption_target( struct block_list* bl, struct block_list* target 
  
  	if (ucd) {
 		if (target && target->type == BL_PC) {
-			// æŒ‡å®šäº†æ˜Žç¡®çš„ target å‘é€ç›®æ ‡, é‚£ä¹ˆç›¸å…³å°åŒ…åªå‘é€ç»™æŒ‡å®šç›®æ ‡
+			// Ö¸¶¨ÁËÃ÷È·µÄ target ·¢ËÍÄ¿±ê, ÄÇÃ´Ïà¹Ø·â°üÖ»·¢ËÍ¸øÖ¸¶¨Ä¿±ê
 			map_session_data* tsd = BL_CAST(BL_PC, target);
 
 			clif_clearunit_single(bl->id, CLR_TRICKDEAD, tsd->fd);
@@ -4941,12 +4941,12 @@ void clif_changeoption_target( struct block_list* bl, struct block_list* target 
 			map_foreachinallrange(clif_insight, bl, AREA_SIZE, BL_PC, bl);
 		}
 
-		// è‹¥æ˜¯çŽ©å®¶å•ä½, é‚£ä¹ˆå°†èº«ä¸Šçš„ç‰¹æ®Šæ•ˆæžœå‘é€ç»™è‡ªå·± (çŒ¥ççš„è§£å†³å®¢æˆ·ç«¯ç¼ºé™·)
-		// å½“è‡ªå·±éšåŒ¿æˆ–ä¼ªè£…åŽé‡æ–°æ˜¾ç¤ºæ—¶, åƒ 202 / 362 è¿™ç§ç‰¹æ®Šçš„å…‰çŽ¯æ•ˆæžœä¼šè‡ªåŠ¨æ¶ˆå¤±
-		// è¿™æ˜¯å› ä¸ºå®¢æˆ·ç«¯å†…éƒ¨é€»è¾‘ä¸­, 202 / 362 ç»‘å®šåœ¨è§’è‰²çº¸å¨ƒå¨ƒèº«ä¸Š
-		// è€Œå…¶ä»–çš„ç‰¹æ•ˆæ˜¯ç»‘å®šåœ¨ unit å¯¹è±¡ä¸Šçš„, éšè—çš„æ—¶å€™å•ä½å¹¶æ²¡æ¶ˆå¤±, ä½†çº¸å¨ƒå¨ƒè¢«é”€æ¯
-		// å½“æ¢å¤éšè—çš„æ—¶å€™å®žé™…ä¸Šæ˜¯é‡æ–°å»ºç«‹äº†ä¸€ä¸ªçº¸å¨ƒå¨ƒå¤–è§‚,
-		// æ–°çš„çº¸å¨ƒå¨ƒå¹¶æ²¡æœ‰ 202 / 362 ç‰¹æ•ˆ, å› æ­¤è¿™é‡Œéœ€è¦è¡¥å‘ä¸€ä¸ªå°åŒ…é‡æ–°ç»˜åˆ¶ä¸€ä¸‹
+		// ÈôÊÇÍæ¼Òµ¥Î», ÄÇÃ´½«ÉíÉÏµÄÌØÊâÐ§¹û·¢ËÍ¸ø×Ô¼º (â«ËöµÄ½â¾ö¿Í»§¶ËÈ±ÏÝ)
+		// µ±×Ô¼ºÒþÄä»òÎ±×°ºóÖØÐÂÏÔÊ¾Ê±, Ïñ 202 / 362 ÕâÖÖÌØÊâµÄ¹â»·Ð§¹û»á×Ô¶¯ÏûÊ§
+		// ÕâÊÇÒòÎª¿Í»§¶ËÄÚ²¿Âß¼­ÖÐ, 202 / 362 °ó¶¨ÔÚ½ÇÉ«Ö½ÍÞÍÞÉíÉÏ
+		// ¶øÆäËûµÄÌØÐ§ÊÇ°ó¶¨ÔÚ unit ¶ÔÏóÉÏµÄ, Òþ²ØµÄÊ±ºòµ¥Î»²¢Ã»ÏûÊ§, µ«Ö½ÍÞÍÞ±»Ïú»Ù
+		// µ±»Ö¸´Òþ²ØµÄÊ±ºòÊµ¼ÊÉÏÊÇÖØÐÂ½¨Á¢ÁËÒ»¸öÖ½ÍÞÍÞÍâ¹Û,
+		// ÐÂµÄÖ½ÍÞÍÞ²¢Ã»ÓÐ 202 / 362 ÌØÐ§, Òò´ËÕâÀïÐèÒª²¹·¢Ò»¸ö·â°üÖØÐÂ»æÖÆÒ»ÏÂ
 		if (bl->type == BL_PC) {
 			clif_send_auras(bl, SELF, false, AURA_SPECIAL_HIDE_DISAPPEAR);
 		}
@@ -5821,13 +5821,13 @@ int clif_damage(struct block_list* src, struct block_list* dst, t_tick tick, int
 #endif
 #ifdef Pandas_MapFlag_HideDamage
 		if (src && map_getmapflag(src->m, MF_HIDEDAMAGE)) {
-			// ä¼¤å®³ä¼šå­˜åœ¨æ®µæ•°çš„æ¦‚å¿µ, è¿”å›žçš„ä¼¤å®³å€¼å®¢æˆ·ç«¯ä¼šé™¤ä»¥æ®µæ•°ä¹‹åŽå¾—åˆ°æ¯ä¸€æ®µçš„ä¼¤å®³å€¼, å¹¶ä¸”æ’­æ”¾ div æŒ‡å®šçš„æ®µæ•°. 
-			// è‹¥é™¤ä»¥ div æ®µæ•°åŽçš„ä¼¤å®³å€¼æ˜¯è´Ÿæ•°, åˆ™å®¢æˆ·ç«¯ä¸ä¼šå±•çŽ°å‡ºå…·ä½“çš„ä¼¤å®³å€¼.
+			// ÉËº¦»á´æÔÚ¶ÎÊýµÄ¸ÅÄî, ·µ»ØµÄÉËº¦Öµ¿Í»§¶Ë»á³ýÒÔ¶ÎÊýÖ®ºóµÃµ½Ã¿Ò»¶ÎµÄÉËº¦Öµ, ²¢ÇÒ²¥·Å div Ö¸¶¨µÄ¶ÎÊý. 
+			// Èô³ýÒÔ div ¶ÎÊýºóµÄÉËº¦ÖµÊÇ¸ºÊý, Ôò¿Í»§¶Ë²»»áÕ¹ÏÖ³ö¾ßÌåµÄÉËº¦Öµ.
 			// 
-			// å› æ­¤ä¸‹é¢ç›´æŽ¥è¿”å›žä¸€ä¸ªè´Ÿæ•°çš„ div ä½œä¸ºä¼¤å®³å€¼,
-			// å®¢æˆ·ç«¯è®¡ç®—å®ŒæˆåŽæ¯ä¸€æ®µçš„ä¼¤å®³å€¼å°±è¢«æˆ‘ä»¬æŽ§åˆ¶æˆäº† -1 ä»Žè€Œå®žçŽ°éšè—ä¼¤å®³çš„ç›®çš„.
+			// Òò´ËÏÂÃæÖ±½Ó·µ»ØÒ»¸ö¸ºÊýµÄ div ×÷ÎªÉËº¦Öµ,
+			// ¿Í»§¶Ë¼ÆËãÍê³ÉºóÃ¿Ò»¶ÎµÄÉËº¦Öµ¾Í±»ÎÒÃÇ¿ØÖÆ³ÉÁË -1 ´Ó¶øÊµÏÖÒþ²ØÉËº¦µÄÄ¿µÄ.
 			//
-			// å¤‡æ³¨: è¿™é‡Œåˆ»æ„ä¸å¤„ç† miss çš„æƒ…å†µ, ä»¥æ­¤å®žçŽ°æ‰“ miss çš„æ—¶å€™å®¢æˆ·ç«¯ä¹Ÿä¸ä¼šæ˜¾ç¤º miss
+			// ±¸×¢: ÕâÀï¿ÌÒâ²»´¦Àí miss µÄÇé¿ö, ÒÔ´ËÊµÏÖ´ò miss µÄÊ±ºò¿Í»§¶ËÒ²²»»áÏÔÊ¾ miss
 			WBUFL(buf, 22) = div * -1;
 			WBUFL(buf, 27 + offset) = div * -1;
 		} 
@@ -6680,13 +6680,13 @@ int clif_skill_damage(struct block_list *src,struct block_list *dst,t_tick tick,
 	WBUFW(buf,30)=div;
 #ifdef Pandas_MapFlag_HideDamage
 	if (src && map_getmapflag(src->m, MF_HIDEDAMAGE)) {
-		// ä¼¤å®³ä¼šå­˜åœ¨æ®µæ•°çš„æ¦‚å¿µ, è¿”å›žçš„ä¼¤å®³å€¼å®¢æˆ·ç«¯ä¼šé™¤ä»¥æ®µæ•°ä¹‹åŽå¾—åˆ°æ¯ä¸€æ®µçš„ä¼¤å®³å€¼, å¹¶ä¸”æ’­æ”¾ div æŒ‡å®šçš„æ®µæ•°. 
-		// è‹¥é™¤ä»¥ div æ®µæ•°åŽçš„ä¼¤å®³å€¼æ˜¯è´Ÿæ•°, åˆ™å®¢æˆ·ç«¯ä¸ä¼šå±•çŽ°å‡ºå…·ä½“çš„ä¼¤å®³å€¼.
+		// ÉËº¦»á´æÔÚ¶ÎÊýµÄ¸ÅÄî, ·µ»ØµÄÉËº¦Öµ¿Í»§¶Ë»á³ýÒÔ¶ÎÊýÖ®ºóµÃµ½Ã¿Ò»¶ÎµÄÉËº¦Öµ, ²¢ÇÒ²¥·Å div Ö¸¶¨µÄ¶ÎÊý. 
+		// Èô³ýÒÔ div ¶ÎÊýºóµÄÉËº¦ÖµÊÇ¸ºÊý, Ôò¿Í»§¶Ë²»»áÕ¹ÏÖ³ö¾ßÌåµÄÉËº¦Öµ.
 		// 
-		// å› æ­¤ä¸‹é¢ç›´æŽ¥è¿”å›žä¸€ä¸ªè´Ÿæ•°çš„ div ä½œä¸ºä¼¤å®³å€¼,
-		// å®¢æˆ·ç«¯è®¡ç®—å®ŒæˆåŽæ¯ä¸€æ®µçš„ä¼¤å®³å€¼å°±è¢«æˆ‘ä»¬æŽ§åˆ¶æˆäº† -1 ä»Žè€Œå®žçŽ°éšè—ä¼¤å®³çš„ç›®çš„.
+		// Òò´ËÏÂÃæÖ±½Ó·µ»ØÒ»¸ö¸ºÊýµÄ div ×÷ÎªÉËº¦Öµ,
+		// ¿Í»§¶Ë¼ÆËãÍê³ÉºóÃ¿Ò»¶ÎµÄÉËº¦Öµ¾Í±»ÎÒÃÇ¿ØÖÆ³ÉÁË -1 ´Ó¶øÊµÏÖÒþ²ØÉËº¦µÄÄ¿µÄ.
 		//
-		// å¤‡æ³¨: è¿™é‡Œåˆ»æ„ä¸å¤„ç† miss çš„æƒ…å†µ, ä»¥æ­¤å®žçŽ°æ‰“ miss çš„æ—¶å€™å®¢æˆ·ç«¯ä¹Ÿä¸ä¼šæ˜¾ç¤º miss
+		// ±¸×¢: ÕâÀï¿ÌÒâ²»´¦Àí miss µÄÇé¿ö, ÒÔ´ËÊµÏÖ´ò miss µÄÊ±ºò¿Í»§¶ËÒ²²»»áÏÔÊ¾ miss
 		WBUFL(buf, 24) = div * -1;
 	}
 #endif // Pandas_MapFlag_HideDamage
@@ -7346,8 +7346,8 @@ void clif_broadcast(struct block_list* bl, const char* mes, int len, int type, e
 	if (type & BC_NAME && bl && bl->type == BL_PC) {
 		int16 length = (int16)(NAME_LENGTH + 4);
 
-		// å¦‚æžœæ­¤å¤„ä»¥ micc å¼€å¤´, é‚£ä¹ˆ micc ç´§æŽ¥ç€çš„å­—ç¬¦ä¸²å°†ä½œä¸ºå‘é€è€…
-		// å‘é€è€…ä»¥å¤–çš„å…¶ä»–çŽ©å®¶åœ¨èŠå¤©çª—å£åŒå‡»ä¿¡æ¯æ—¶, å°†ä¼šæŠŠå‘é€è€…åç§°è‡ªåŠ¨æ”¾åˆ°èŠå¤©æ çš„ç§èŠç›®æ ‡ä¸­
+		// Èç¹û´Ë´¦ÒÔ micc ¿ªÍ·, ÄÇÃ´ micc ½ô½Ó×ÅµÄ×Ö·û´®½«×÷Îª·¢ËÍÕß
+		// ·¢ËÍÕßÒÔÍâµÄÆäËûÍæ¼ÒÔÚÁÄÌì´°¿ÚË«»÷ÐÅÏ¢Ê±, ½«»á°Ñ·¢ËÍÕßÃû³Æ×Ô¶¯·Åµ½ÁÄÌìÀ¸µÄË½ÁÄÄ¿±êÖÐ
 		sprintf(p->message, "micc%s", ((TBL_PC*)bl)->status.name);
 		strncpy(&p->message[length], mes, len);
 
@@ -7741,8 +7741,8 @@ void clif_use_card(map_session_data *sd,int idx)
 		return; //Avoid parsing invalid item indexes (no card/no item)
 
 #ifdef Pandas_BattleConfig_CashMounting_UseitemLimit
-	// å½“çŽ©å®¶åŒå‡»å¡ç‰‡æ—¶å…ˆåˆ¤å®šæ˜¯å¦ä¹˜åäº†â€œå•†åŸŽåéª‘â€,
-	// å¦‚æžœæ˜¯é‚£ä¹ˆå†æ ¹æ® cashmount_useitem_limit è®¾ç½®å†³å®šæ˜¯å¦æ‹’ç» [Solaä¸¶å°å…‹]
+	// µ±Íæ¼ÒË«»÷¿¨Æ¬Ê±ÏÈÅÐ¶¨ÊÇ·ñ³Ë×øÁË¡°ÉÌ³Ç×øÆï¡±,
+	// Èç¹ûÊÇÄÇÃ´ÔÙ¸ù¾Ý cashmount_useitem_limit ÉèÖÃ¾ö¶¨ÊÇ·ñ¾Ü¾ø [SolaØ¼Ð¡¿Ë]
 	if (sd && sd->sc.count && sd->sc.getSCE(SC_ALL_RIDING)) {
 		bool isblocked = false;
 
@@ -7755,7 +7755,7 @@ void clif_use_card(map_session_data *sd,int idx)
 
 		if (isblocked) {
 			char message[128] = { 0 };
-			safesnprintf(message, sizeof(message), msg_txt_cn(sd, 3), sd->inventory_data[idx]->ename.c_str());	// å¾ˆæŠ±æ­‰, å½“æ‚¨åä¸Šâ€œå•†åŸŽåéª‘â€æ—¶, æ— æ³•ä½¿ç”¨: %s
+			safesnprintf(message, sizeof(message), msg_txt_cn(sd, 3), sd->inventory_data[idx]->ename.c_str());	// ºÜ±§Ç¸, µ±Äú×øÉÏ¡°ÉÌ³Ç×øÆï¡±Ê±, ÎÞ·¨Ê¹ÓÃ: %s
 			clif_displaymessage(sd->fd, message);
 			return;
 		}
@@ -7775,7 +7775,7 @@ void clif_use_card(map_session_data *sd,int idx)
 		if(sd->inventory_data[i]->type!=IT_WEAPON && sd->inventory_data[i]->type!=IT_ARMOR)
 			continue;
 #else
-		// çŽ©å®¶åŒå‡»å¡ç‰‡æ—¶, å‡ºçŽ°çš„é“å…·åˆ—è¡¨ä¸­å…è®¸å½±å­è£…å¤‡å‡ºçŽ°
+		// Íæ¼ÒË«»÷¿¨Æ¬Ê±, ³öÏÖµÄµÀ¾ßÁÐ±íÖÐÔÊÐíÓ°×Ó×°±¸³öÏÖ
 		if(sd->inventory_data[i]->type!=IT_WEAPON && sd->inventory_data[i]->type!=IT_ARMOR && sd->inventory_data[i]->type!=IT_SHADOWGEAR)
 			continue;
 #endif // Pandas_Shadowgear_Support_Card
@@ -8060,7 +8060,7 @@ void clif_cart_additem( map_session_data *sd, int n, int amount ){
 #endif
 
 #ifdef Pandas_Item_Amulet_System
-	// è‹¥æ˜¯æŠ¤èº«ç¬¦é“å…·, é‚£ä¹ˆå‘é€ç»™å®¢æˆ·ç«¯çš„é“å…·ç±»åž‹ç›´æŽ¥ä»Ž IT_AMULET æ¢æˆ IT_ETC 
+	// ÈôÊÇ»¤Éí·ûµÀ¾ß, ÄÇÃ´·¢ËÍ¸ø¿Í»§¶ËµÄµÀ¾ßÀàÐÍÖ±½Ó´Ó IT_AMULET »»³É IT_ETC 
 	if (amulet_is(sd->cart.u.items_cart[n].nameid))
 		p.itemType = amulet_pandas_type(sd->cart.u.items_cart[n].nameid);
 #endif // Pandas_Item_Amulet_System
@@ -10343,7 +10343,7 @@ void clif_GM_kick(map_session_data *sd, map_session_data *tsd)
 		tsd->state.keepshop = true;
 
 #ifdef Pandas_Player_Suspend_System
-	// è‹¥ sd ä¸º NULL åˆ™è¡¨ç¤ºæ˜¯åœ°å›¾æœåŠ¡å™¨åœ¨è¸¢äºº [Solaä¸¶å°å…‹]
+	// Èô sd Îª NULL Ôò±íÊ¾ÊÇµØÍ¼·þÎñÆ÷ÔÚÌßÈË [SolaØ¼Ð¡¿Ë]
 	if (sd == NULL)
 		tsd->state.keepsuspend = true;
 #endif // Pandas_Player_Suspend_System
@@ -10722,12 +10722,12 @@ void clif_refresh(map_session_data *sd)
 	if (sd->progressbar.npc_id) {
 		int32 second = 0;
 		second = (int32)ceil((sd->progressbar.timeout - gettick()) / 1000.0);
-		clif_progressbar(sd, 0, max(second, 1));	// è‡³å°‘æ˜¾ç¤º 1 ç§’
+		clif_progressbar(sd, 0, max(second, 1));	// ÖÁÉÙÏÔÊ¾ 1 Ãë
 	}
 #endif // Pandas_Fix_Progressbar_Refresh_Stuck
 
 #ifdef Pandas_Aura_Mechanism
-	// ä½¿ç”¨ @refresh ç­‰æŒ‡ä»¤è¿›è¡Œåˆ·æ–°ä¹‹åŽ, éœ€è¦é‡æ–°å‘é€ä¸€æ¬¡å…‰çŽ¯ä¿¡æ¯ç»™å®¢æˆ·ç«¯
+	// Ê¹ÓÃ @refresh µÈÖ¸Áî½øÐÐË¢ÐÂÖ®ºó, ÐèÒªÖØÐÂ·¢ËÍÒ»´Î¹â»·ÐÅÏ¢¸ø¿Í»§¶Ë
 	clif_send_auras_single(&sd->bl, sd);
 #endif // Pandas_Aura_Mechanism
 }
@@ -10777,14 +10777,14 @@ void clif_name( struct block_list* src, struct block_list *bl, send_target targe
 			}
 			
 #ifdef Pandas_MapFlag_HidePartyInfo
-			// è‹¥å½“å‰åœ°å›¾å¯ç”¨äº† hidepartyinfo æ ‡è®°
-			// é‚£ä¹ˆé™¤äº†è‡ªå·±ä¹‹å¤–, ä¸å†è¿”å›žå½“å‰è§’è‰²çš„æ‰€åœ¨é˜Ÿä¼åç§° [Solaä¸¶å°å…‹]
+			// Èôµ±Ç°µØÍ¼ÆôÓÃÁË hidepartyinfo ±ê¼Ç
+			// ÄÇÃ´³ýÁË×Ô¼ºÖ®Íâ, ²»ÔÙ·µ»Øµ±Ç°½ÇÉ«µÄËùÔÚ¶ÓÎéÃû³Æ [SolaØ¼Ð¡¿Ë]
 			// 
-			// æ³¨æ„äº‹é¡¹:
+			// ×¢ÒâÊÂÏî:
 			// ---------------------------------------------------------
-			// åœ¨å•ç‹¬æ‰§è¡Œ clif_name_self æˆ– clif_name_area æ—¶,
-			// ç”±äºŽ src å’Œ bl ä¼šå®Œå…¨ä¸€è‡´, æ‰€ä»¥æ­¤å¤„ä»£ç å°†ä¼šå¤±æ•ˆ, ç›®å‰æµ‹è¯•çœ‹å·²ç»
-			// èƒ½å¤Ÿè¦†ç›–ä¸»è¦åœºæ™¯, æœªæ¥å¦‚æžœå‡ºçŽ°é—®é¢˜çš„è¯éœ€è¦å†è¿›è¡Œä¼˜åŒ–è°ƒæ•´
+			// ÔÚµ¥¶ÀÖ´ÐÐ clif_name_self »ò clif_name_area Ê±,
+			// ÓÉÓÚ src ºÍ bl »áÍêÈ«Ò»ÖÂ, ËùÒÔ´Ë´¦´úÂë½«»áÊ§Ð§, Ä¿Ç°²âÊÔ¿´ÒÑ¾­
+			// ÄÜ¹»¸²¸ÇÖ÷Òª³¡¾°, Î´À´Èç¹û³öÏÖÎÊÌâµÄ»°ÐèÒªÔÙ½øÐÐÓÅ»¯µ÷Õû
 			// ---------------------------------------------------------
 			if (p && map_getmapflag(sd->bl.m, MF_HIDEPARTYINFO) && src->id != bl->id) {
 				safestrncpy( packet.party_name, "", NAME_LENGTH );
@@ -10804,14 +10804,14 @@ void clif_name( struct block_list* src, struct block_list *bl, send_target targe
 			}
 			
 #ifdef Pandas_MapFlag_HideGuildInfo
-			// è‹¥å½“å‰åœ°å›¾å¯ç”¨äº† hideguildinfo æ ‡è®°
-			// é‚£ä¹ˆé™¤äº†è‡ªå·±ä¹‹å¤–, ä¸å†è¿”å›žè§’è‰²çš„å…¬ä¼šåç§°ä»¥åŠèŒä½åç§° [Solaä¸¶å°å…‹]
+			// Èôµ±Ç°µØÍ¼ÆôÓÃÁË hideguildinfo ±ê¼Ç
+			// ÄÇÃ´³ýÁË×Ô¼ºÖ®Íâ, ²»ÔÙ·µ»Ø½ÇÉ«µÄ¹«»áÃû³ÆÒÔ¼°Ö°Î»Ãû³Æ [SolaØ¼Ð¡¿Ë]
 			// 
-			// æ³¨æ„äº‹é¡¹:
+			// ×¢ÒâÊÂÏî:
 			// ---------------------------------------------------------
-			// åœ¨å•ç‹¬æ‰§è¡Œ clif_name_self æˆ– clif_name_area æ—¶,
-			// ç”±äºŽ src å’Œ bl ä¼šå®Œå…¨ä¸€è‡´, æ‰€ä»¥æ­¤å¤„ä»£ç å°†ä¼šå¤±æ•ˆ, ç›®å‰æµ‹è¯•çœ‹å·²ç»
-			// èƒ½å¤Ÿè¦†ç›–ä¸»è¦åœºæ™¯, æœªæ¥å¦‚æžœå‡ºçŽ°é—®é¢˜çš„è¯éœ€è¦å†è¿›è¡Œä¼˜åŒ–è°ƒæ•´
+			// ÔÚµ¥¶ÀÖ´ÐÐ clif_name_self »ò clif_name_area Ê±,
+			// ÓÉÓÚ src ºÍ bl »áÍêÈ«Ò»ÖÂ, ËùÒÔ´Ë´¦´úÂë½«»áÊ§Ð§, Ä¿Ç°²âÊÔ¿´ÒÑ¾­
+			// ÄÜ¹»¸²¸ÇÖ÷Òª³¡¾°, Î´À´Èç¹û³öÏÖÎÊÌâµÄ»°ÐèÒªÔÙ½øÐÐÓÅ»¯µ÷Õû
 			// ---------------------------------------------------------
 			if (sd->guild && map_getmapflag(sd->bl.m, MF_HIDEGUILDINFO) && src->id != bl->id) {
 				safestrncpy( packet.guild_name, "", NAME_LENGTH );
@@ -10923,8 +10923,8 @@ void clif_name( struct block_list* src, struct block_list *bl, send_target targe
 #endif // Pandas_MapFlag_MobInfo
 
 				// ========================================================
-				// å¼€å§‹å¤„ç†ç¬¬ä¸€ä¸ªæ•°æ®æ ä½çš„å†…å®¹
-				// è¿™ä¸ªæ ä½çš„å†…å®¹æœ€ç»ˆä¼šè¢«æ”¾åˆ° packet.party_name å‘é€å‡ºåŽ»
+				// ¿ªÊ¼´¦ÀíµÚÒ»¸öÊý¾ÝÀ¸Î»µÄÄÚÈÝ
+				// Õâ¸öÀ¸Î»µÄÄÚÈÝ×îÖÕ»á±»·Åµ½ packet.party_name ·¢ËÍ³öÈ¥
 				// ========================================================
 
 				char mobhp[50], *str_p = mobhp;
@@ -10962,26 +10962,26 @@ void clif_name( struct block_list* src, struct block_list *bl, send_target targe
 				}
 
 				if (str_p != mobhp) {
-					// å¦‚æžœç»è¿‡ä¸Šè¿°æ“ä½œå†…å®¹æœ‰æ”¹å˜,
-					// é‚£ä¹ˆéœ€è¦ç§»é™¤æœ«å°¾çš„ strlen(" | ") å…± 3 ä¸ªå­—èŠ‚
+					// Èç¹û¾­¹ýÉÏÊö²Ù×÷ÄÚÈÝÓÐ¸Ä±ä,
+					// ÄÇÃ´ÐèÒªÒÆ³ýÄ©Î²µÄ strlen(" | ") ¹² 3 ¸ö×Ö½Ú
 					*(str_p - 3) = '\0';
 				}
 
 				if (strlen(mobhp) >= NAME_LENGTH - 1) {
-					// è‹¥ç»è¿‡ä¸Šé¢çš„æ“ä½œ, å¦‚æžœå‘çŽ°æ–‡æœ¬çš„é•¿åº¦è¶…è¿‡äº† NAME_LENGTH - 1
-					// é‚£ä¹ˆæˆ‘ä»¬éœ€è¦åšä¸€äº›ç¼©çŸ­å¤„ç†, å°½å¯èƒ½ä¿ç•™ä¿¡æ¯é‡çš„åŒæ—¶ç¼©çŸ­æ–‡æœ¬çš„æ€»é•¿åº¦
+					// Èô¾­¹ýÉÏÃæµÄ²Ù×÷, Èç¹û·¢ÏÖÎÄ±¾µÄ³¤¶È³¬¹ýÁË NAME_LENGTH - 1
+					// ÄÇÃ´ÎÒÃÇÐèÒª×öÒ»Ð©Ëõ¶Ì´¦Àí, ¾¡¿ÉÄÜ±£ÁôÐÅÏ¢Á¿µÄÍ¬Ê±Ëõ¶ÌÎÄ±¾µÄ×Ü³¤¶È
 
-					// å…ˆé‡ç½®ä¸€ä¸‹ç›¸å…³çš„ç¼“å†²åŒºå’ŒæŒ‡é’ˆ
+					// ÏÈÖØÖÃÒ»ÏÂÏà¹ØµÄ»º³åÇøºÍÖ¸Õë
 					memset(mobhp, 0, sizeof(mobhp));
 					str_p = &mobhp[0];
 
-					// å¼€å§‹é‡æ–°è¿›è¡Œä¸€æ¬¡æ‹¼è£…æµç¨‹, ä¸è¿‡è¿™æ¬¡æˆ‘ä»¬æžçš„æ›´çŸ­ä¸€äº›
-					// ä¸»è¦å°±æ˜¯ç¼©çŸ­å­—æ®µä¹‹é—´ " | " çš„åˆ†éš”ç¬¦, å˜æˆç”¨ç®€å•çš„ç©ºæ ¼æ¥åˆ†éš”
+					// ¿ªÊ¼ÖØÐÂ½øÐÐÒ»´ÎÆ´×°Á÷³Ì, ²»¹ýÕâ´ÎÎÒÃÇ¸ãµÄ¸ü¶ÌÒ»Ð©
+					// Ö÷Òª¾ÍÊÇËõ¶Ì×Ö¶ÎÖ®¼ä " | " µÄ·Ö¸ô·û, ±ä³ÉÓÃ¼òµ¥µÄ¿Õ¸ñÀ´·Ö¸ô
 					if (option & 4) {
 						str_p += sprintf(str_p, "Lv.%d ", md->level);
 					}
 
-					// å°† &1 çš„å¤„ç†æ–¹å¼æ”¹æˆ &2 çš„ç™¾åˆ†æ¯”æ–¹å¼, å¹¶å°†ä¸¤ä¸ªé€‰é¡¹è§†ä¸ºåŒä¸€ä¸ªé€‰é¡¹
+					// ½« &1 µÄ´¦Àí·½Ê½¸Ä³É &2 µÄ°Ù·Ö±È·½Ê½, ²¢½«Á½¸öÑ¡ÏîÊÓÎªÍ¬Ò»¸öÑ¡Ïî
 					if (option & 1 || option & 2) {
 						str_p += sprintf(str_p, "HP:%u%% ", get_percentage(md->status.hp, md->status.max_hp));
 					}
@@ -10991,22 +10991,22 @@ void clif_name( struct block_list* src, struct block_list *bl, send_target targe
 					}
 
 					if (str_p != mobhp) {
-						// å¦‚æžœç»è¿‡ä¸Šè¿°æ“ä½œå†…å®¹æœ‰æ”¹å˜,
-						// é‚£ä¹ˆéœ€è¦ç§»é™¤æœ«å°¾çš„ strlen(" ") å…± 3 ä¸ªå­—èŠ‚
+						// Èç¹û¾­¹ýÉÏÊö²Ù×÷ÄÚÈÝÓÐ¸Ä±ä,
+						// ÄÇÃ´ÐèÒªÒÆ³ýÄ©Î²µÄ strlen(" ") ¹² 3 ¸ö×Ö½Ú
 						*(str_p - 1) = '\0';
 					}
 				}
 
 				// ========================================================
-				// å¼€å§‹å¤„ç†ç¬¬äºŒä¸ªæ•°æ®æ ä½çš„å†…å®¹
-				// è¿™ä¸ªæ ä½çš„å†…å®¹æœ€ç»ˆä¼šè¢«æ”¾åˆ° packet.guild_name å‘é€å‡ºåŽ»
+				// ¿ªÊ¼´¦ÀíµÚ¶þ¸öÊý¾ÝÀ¸Î»µÄÄÚÈÝ
+				// Õâ¸öÀ¸Î»µÄÄÚÈÝ×îÖÕ»á±»·Åµ½ packet.guild_name ·¢ËÍ³öÈ¥
 				// ========================================================
 
 				char mobhp2[50], *str_p2 = mobhp2;
 
 				if (option & 16) {
 					char mobsize_fmt[100] = { 0 };
-					sprintf(mobsize_fmt, "%s", msg_txt_cn(NULL, 22));	// [ä½“åž‹:%s%]
+					sprintf(mobsize_fmt, "%s", msg_txt_cn(NULL, 22));	// [ÌåÐÍ:%s%]
 
 					char mobsize[50] = { 0 };
 					sprintf(mobsize, "%s", msg_txt_cn(NULL, 23 + md->status.size));
@@ -11016,7 +11016,7 @@ void clif_name( struct block_list* src, struct block_list *bl, send_target targe
 
 				if (option & 32) {
 					char mobrace_fmt[100] = { 0 };
-					sprintf(mobrace_fmt, "%s", msg_txt_cn(NULL, 26));	// [ç§æ—:%s%]
+					sprintf(mobrace_fmt, "%s", msg_txt_cn(NULL, 26));	// [ÖÖ×å:%s%]
 
 					char mobrace[50] = { 0 };
 					sprintf(mobrace, "%s", msg_txt_cn(NULL, 27 + md->status.race));
@@ -11029,15 +11029,15 @@ void clif_name( struct block_list* src, struct block_list *bl, send_target targe
 				}
 
 				// ========================================================
-				// å¼€å§‹å¤„ç†ç¬¬ä¸‰ä¸ªæ•°æ®æ ä½çš„å†…å®¹
-				// è¿™ä¸ªæ ä½çš„å†…å®¹æœ€ç»ˆä¼šè¢«æ”¾åˆ° packet.position_name å‘é€å‡ºåŽ»
+				// ¿ªÊ¼´¦ÀíµÚÈý¸öÊý¾ÝÀ¸Î»µÄÄÚÈÝ
+				// Õâ¸öÀ¸Î»µÄÄÚÈÝ×îÖÕ»á±»·Åµ½ packet.position_name ·¢ËÍ³öÈ¥
 				// ========================================================
 
 				char mobhp3[50], *str_p3 = mobhp3;
 
 				if (option & 64) {
 					char mobele_fmt[100] = { 0 };
-					sprintf(mobele_fmt, "%s", msg_txt_cn(NULL, 51));	// å±žæ€§:%s%(Lv.%d%)
+					sprintf(mobele_fmt, "%s", msg_txt_cn(NULL, 51));	// ÊôÐÔ:%s%(Lv.%d%)
 
 					char mobele[50] = { 0 };
 					sprintf(mobele, "%s", msg_txt_cn(NULL, 52 + md->status.def_ele));
@@ -11046,7 +11046,7 @@ void clif_name( struct block_list* src, struct block_list *bl, send_target targe
 				}
 
 				// ========================================================
-				// å‡†å¤‡å‘é€æ‹¼è£…å®Œæ¯•çš„ mobinfo æ•°æ® (è‹¥æ²¡æ”¹åŠ¨å°±ä¸èµ‹å€¼äº†)
+				// ×¼±¸·¢ËÍÆ´×°Íê±ÏµÄ mobinfo Êý¾Ý (ÈôÃ»¸Ä¶¯¾Í²»¸³ÖµÁË)
 				// ========================================================
 
 				if (str_p != mobhp)
@@ -11876,12 +11876,12 @@ void clif_parse_LoadEndAck(int fd,map_session_data *sd)
 	if( sd->pd ) {
 #ifdef Pandas_MapFlag_NoPet
 		if (sd && map_getmapflag(sd->bl.m, MF_NOPET)) {
-			// å½“å‰åœ°å›¾ç¦æ­¢ä½¿ç”¨å® ç‰©, å·²è‡ªåŠ¨å˜å›žå® ç‰©è›‹
+			// µ±Ç°µØÍ¼½ûÖ¹Ê¹ÓÃ³èÎï, ÒÑ×Ô¶¯±ä»Ø³èÎïµ°
 			clif_displaymessage(sd->fd, msg_txt_cn(sd, 4));
 			pet_return_egg(sd, sd->pd);
 #if PACKETVER >= 20180620 && PACKETVER < 20180704
-			// ç›®å‰æµ‹è¯•åªè¦†ç›–äº† 20180620 å®¢æˆ·ç«¯
-			// è‹¥å®¢æˆ·ç«¯çš„å°åŒ…ç‰ˆæœ¬å¤§äºŽç­‰äºŽ 20180704 çš„è¯, pet_return_egg å†…éƒ¨æœ‰åšå¤„ç†
+			// Ä¿Ç°²âÊÔÖ»¸²¸ÇÁË 20180620 ¿Í»§¶Ë
+			// Èô¿Í»§¶ËµÄ·â°ü°æ±¾´óÓÚµÈÓÚ 20180704 µÄ»°, pet_return_egg ÄÚ²¿ÓÐ×ö´¦Àí
 			clif_inventorylist(sd);
 #endif // PACKETVER >= 20180620 && PACKETVER < 20180704
 		}
@@ -11892,8 +11892,8 @@ void clif_parse_LoadEndAck(int fd,map_session_data *sd)
 			pet_return_egg( sd, sd->pd );
 #ifdef Pandas_Fix_LoadEndAck_Pet_Return_To_Egg_Missing
 #if PACKETVER >= 20180620 && PACKETVER < 20180704
-			// ç›®å‰æµ‹è¯•åªè¦†ç›–äº† 20180620 å®¢æˆ·ç«¯
-			// è‹¥å®¢æˆ·ç«¯çš„å°åŒ…ç‰ˆæœ¬å¤§äºŽç­‰äºŽ 20180704 çš„è¯, pet_return_egg å†…éƒ¨æœ‰åšå¤„ç†
+			// Ä¿Ç°²âÊÔÖ»¸²¸ÇÁË 20180620 ¿Í»§¶Ë
+			// Èô¿Í»§¶ËµÄ·â°ü°æ±¾´óÓÚµÈÓÚ 20180704 µÄ»°, pet_return_egg ÄÚ²¿ÓÐ×ö´¦Àí
 			clif_inventorylist(sd);
 #endif // PACKETVER >= 20180620 && PACKETVER < 20180704
 #endif // Pandas_Fix_LoadEndAck_Pet_Return_To_Egg_Missing
@@ -11910,7 +11910,7 @@ void clif_parse_LoadEndAck(int fd,map_session_data *sd)
 	//homunculus [blackhole89]
 #ifdef Pandas_MapFlag_NoHomun
 	if (sd && hom_is_active(sd->hd) && map_getmapflag(sd->bl.m, MF_NOHOMUN)) {
-		// å½“å‰åœ°å›¾ç¦æ­¢ä½¿ç”¨äººå·¥ç”Ÿå‘½ä½“, å·²è‡ªåŠ¨å°†å…¶å®‰æ¯
+		// µ±Ç°µØÍ¼½ûÖ¹Ê¹ÓÃÈË¹¤ÉúÃüÌå, ÒÑ×Ô¶¯½«Æä°²Ï¢
 		clif_displaymessage(sd->fd, msg_txt_cn(sd, 6));
 		hom_vaporize(sd, HOM_ST_REST);
 	}
@@ -11932,7 +11932,7 @@ void clif_parse_LoadEndAck(int fd,map_session_data *sd)
 
 #ifdef Pandas_MapFlag_NoMerc
 	if (sd && sd->md && map_getmapflag(sd->bl.m, MF_NOMERC)) {
-		// å½“å‰åœ°å›¾ç¦æ­¢ä½¿ç”¨ä½£å…µ, å·²è‡ªåŠ¨å°†å…¶ç¦ç”¨
+		// µ±Ç°µØÍ¼½ûÖ¹Ê¹ÓÃÓ¶±ø, ÒÑ×Ô¶¯½«Æä½ûÓÃ
 		clif_displaymessage(sd->fd, msg_txt_cn(sd, 8));
 	}
 	else
@@ -12175,9 +12175,9 @@ void clif_parse_LoadEndAck(int fd,map_session_data *sd)
 	}
 
 #ifdef Pandas_Support_Transfer_Autotrade_Player
-	// å½“æ”¯æŒä½¿ç”¨ recall æŒªåŠ¨ç¦»çº¿é‡‡è´­çš„çŽ©å®¶æ—¶,
-	// è¿™é‡Œéœ€è¦åˆ¤æ–­è¢«å¬å”¤çš„çŽ©å®¶æ˜¯å¦å¼€å¯äº†é‡‡è´­å•†åº—, è‹¥å¼€å¯åˆ™éœ€è¦
-	// åˆ·æ–°é™„è¿‘çŽ©å®¶çš„å®¢æˆ·ç«¯, å‘Šè¯‰ä»–ä»¬åœ¨è§†é‡Žä¸­æœ‰ä¸€ä¸ªæ–°çš„ä½ç½®äº†é‡‡è´­æ‘Šä½çš„ç‰Œç‰Œ
+	// µ±Ö§³ÖÊ¹ÓÃ recall Å²¶¯ÀëÏß²É¹ºµÄÍæ¼ÒÊ±,
+	// ÕâÀïÐèÒªÅÐ¶Ï±»ÕÙ»½µÄÍæ¼ÒÊÇ·ñ¿ªÆôÁË²É¹ºÉÌµê, Èô¿ªÆôÔòÐèÒª
+	// Ë¢ÐÂ¸½½üÍæ¼ÒµÄ¿Í»§¶Ë, ¸æËßËûÃÇÔÚÊÓÒ°ÖÐÓÐÒ»¸öÐÂµÄÎ»ÖÃÁË²É¹ºÌ¯Î»µÄÅÆÅÆ
 	else if (sd->state.buyingstore) {
 		clif_buyingstore_open(sd);
 		clif_buyingstore_myitemlist(sd);
@@ -14392,7 +14392,7 @@ void clif_parse_NpcSelectMenu(int fd,map_session_data *sd){
 	sd->npc_menu = select;
 #ifdef Pandas_Fix_Prompt_Cancel_Combine_Close_Error
 	if (sd->npc_menu == 0xff) {
-		// è‹¥ç”¨æˆ·å–æ¶ˆäº†èœå•, é‚£ä¹ˆè®°å½•æ­¤æ—¶çš„ npc_id æ˜¯å¤šå°‘
+		// ÈôÓÃ»§È¡ÏûÁË²Ëµ¥, ÄÇÃ´¼ÇÂ¼´ËÊ±µÄ npc_id ÊÇ¶àÉÙ
 		sd->npc_menu_npcid = npc_id;
 	}
 #endif // Pandas_Fix_Prompt_Cancel_Combine_Close_Error
@@ -14475,8 +14475,8 @@ void clif_parse_NpcCloseClicked(int fd,map_session_data *sd)
 #else
 	int npc_id = RFIFOL(fd, packet_db[RFIFOW(fd, 0)].pos[0]);
 	
-	// å½“ npc_id ä¸º 0 ä¸”åˆšåˆšèœå•é€‰æ‹©çš„æ˜¯å–æ¶ˆæ—¶,
-	// ä¼˜å…ˆé‡‡ç”¨ sd->npc_menu_npcid é‡Œå¤‡ä»½çš„ npc_id æ¥è¿›è¡ŒåŽç»­æµç¨‹
+	// µ± npc_id Îª 0 ÇÒ¸Õ¸Õ²Ëµ¥Ñ¡ÔñµÄÊÇÈ¡ÏûÊ±,
+	// ÓÅÏÈ²ÉÓÃ sd->npc_menu_npcid Àï±¸·ÝµÄ npc_id À´½øÐÐºóÐøÁ÷³Ì
 	if (!npc_id && sd->npc_menu == 0xff) {
 		npc_id = sd->npc_menu_npcid;
 	}
@@ -16886,7 +16886,7 @@ void clif_Mail_setattachment( map_session_data* sd, int index, int amount, uint8
 
 #ifdef Pandas_Crashfix_Prevent_NullPointer
 			if (!sd->inventory_data[sd->mail.item[i].index]) {
-				return;	// ç›´æŽ¥æ”¾å¼ƒå‘é€å°åŒ…
+				return;	// Ö±½Ó·ÅÆú·¢ËÍ·â°ü
 			}
 #endif // Pandas_Crashfix_Prevent_NullPointer
 			p.weight += sd->mail.item[i].amount * ( sd->inventory_data[sd->mail.item[i].index]->weight / 10 );
@@ -17832,7 +17832,7 @@ void clif_mail_removeitem( map_session_data* sd, bool success, int index, int am
 
 #ifdef Pandas_Crashfix_Prevent_NullPointer
 		if (!sd->inventory_data[sd->mail.item[i].index]) {
-			return;		// ç›´æŽ¥æ”¾å¼ƒå‘é€å°åŒ…
+			return;		// Ö±½Ó·ÅÆú·¢ËÍ·â°ü
 		}
 #endif // Pandas_Crashfix_Prevent_NullPointer
 		total += sd->mail.item[i].amount * ( sd->inventory_data[sd->mail.item[i].index]->weight / 10 );
@@ -18771,11 +18771,11 @@ void clif_bossmapinfo(map_session_data *sd, struct mob_data *md, enum e_bossmap_
 #ifdef Pandas_ScriptCommand_BossMonster
 //************************************
 // Method:      clif_bossmapinfo_clear
-// Description: æ²¡æœ‰ä»»ä½•æç¤ºçš„æƒ…å†µä¸‹æ¸…é™¤æŒ‡å®šçŽ©å®¶çš„å°åœ°å›¾ BOSS æ ‡è¯†
+// Description: Ã»ÓÐÈÎºÎÌáÊ¾µÄÇé¿öÏÂÇå³ýÖ¸¶¨Íæ¼ÒµÄÐ¡µØÍ¼ BOSS ±êÊ¶
 // Access:      public 
 // Parameter:   map_session_data * sd
 // Returns:     void
-// Author:      Solaä¸¶å°å…‹(CairoLee)  2021/12/18 23:46
+// Author:      SolaØ¼Ð¡¿Ë(CairoLee)  2021/12/18 23:46
 //************************************ 
 void clif_bossmapinfo_clear(map_session_data* sd)
 {
@@ -18810,10 +18810,10 @@ void clif_parse_ViewPlayerEquip(int fd, map_session_data* sd)
 
 #ifdef Pandas_NpcFilter_VIEW_EQUIP
 	if (sd && sd->bl.type == BL_PC && tsd && tsd->bl.type == BL_PC && sd->bl.m == tsd->bl.m) {
-		pc_setregstr(sd, add_str("@vieweq_name$"), tsd->status.name);	// ä¸ºå…¼å®¹è„šæœ¬è€Œæ·»åŠ 
-		pc_setreg(sd, add_str("@vieweq_cid"), tsd->status.char_id);		// ä¸ºå…¼å®¹è„šæœ¬è€Œæ·»åŠ 
-		pc_setreg(sd, add_str("@vieweq_aid"), tsd->status.account_id);	// ä¸ºå…¼å®¹è„šæœ¬è€Œæ·»åŠ 
-		pc_setreg(sd, add_str("@eqview_cid"), tsd->status.char_id);		// ä¸ºå…¼å®¹è„šæœ¬è€Œæ·»åŠ 
+		pc_setregstr(sd, add_str("@vieweq_name$"), tsd->status.name);	// Îª¼æÈÝ½Å±¾¶øÌí¼Ó
+		pc_setreg(sd, add_str("@vieweq_cid"), tsd->status.char_id);		// Îª¼æÈÝ½Å±¾¶øÌí¼Ó
+		pc_setreg(sd, add_str("@vieweq_aid"), tsd->status.account_id);	// Îª¼æÈÝ½Å±¾¶øÌí¼Ó
+		pc_setreg(sd, add_str("@eqview_cid"), tsd->status.char_id);		// Îª¼æÈÝ½Å±¾¶øÌí¼Ó
 
 		pc_setregstr(sd, add_str("@view_equip_target_name$"), tsd->status.name);
 		pc_setreg(sd, add_str("@view_equip_target_cid"), tsd->status.char_id);
@@ -18824,7 +18824,7 @@ void clif_parse_ViewPlayerEquip(int fd, map_session_data* sd)
 		if (npc_script_filter(sd, NPCF_VIEW_EQUIP))
 			return;
 
-		// è‹¥ @view_equip_bypass_limit è¢«è®¾ç½®ä¸º 1 çš„è¯, é‚£ä¹ˆç›´æŽ¥çœ‹~
+		// Èô @view_equip_bypass_limit ±»ÉèÖÃÎª 1 µÄ»°, ÄÇÃ´Ö±½Ó¿´~
 		if (pc_readreg(sd, add_str("@view_equip_bypass_limit")) == 1) {
 			clif_viewequip_ack(sd, tsd);
 			return;
@@ -21017,9 +21017,9 @@ void clif_parse_MoveItem(int fd, map_session_data *sd) {
 	if ( sd->inventory.u.items_inventory[index].favorite && type == 1 )
 #ifdef Pandas_NpcFilter_FAVORITE_DEL
 	{
-		pc_setreg(sd, add_str("@unfavorite_nameid"), sd->inventory.u.items_inventory[index].nameid); // å³å°†ç§»å‡ºçš„é“å…·ç¼–å·
-		pc_setreg(sd, add_str("@unfavorite_amount"), sd->inventory.u.items_inventory[index].amount); // å³å°†ç§»å‡ºçš„é“å…·æ•°é‡
-		pc_setreg(sd, add_str("@unfavorite_idx"), index); // å³å°†ç§»å‡ºçš„é“å…·åºå· (èƒŒåŒ…åºå·)
+		pc_setreg(sd, add_str("@unfavorite_nameid"), sd->inventory.u.items_inventory[index].nameid); // ¼´½«ÒÆ³öµÄµÀ¾ß±àºÅ
+		pc_setreg(sd, add_str("@unfavorite_amount"), sd->inventory.u.items_inventory[index].amount); // ¼´½«ÒÆ³öµÄµÀ¾ßÊýÁ¿
+		pc_setreg(sd, add_str("@unfavorite_idx"), index); // ¼´½«ÒÆ³öµÄµÀ¾ßÐòºÅ (±³°üÐòºÅ)
 
 		if (npc_script_filter(sd, NPCF_FAVORITE_DEL))
 			return;
@@ -21032,9 +21032,9 @@ void clif_parse_MoveItem(int fd, map_session_data *sd) {
 	else if( type == 0 )
 #ifdef Pandas_NpcFilter_FAVORITE_ADD
 	{
-		pc_setreg(sd, add_str("@favorite_nameid"), sd->inventory.u.items_inventory[index].nameid); // å³å°†ç§»å…¥çš„é“å…·ç¼–å·
-		pc_setreg(sd, add_str("@favorite_amount"), sd->inventory.u.items_inventory[index].amount); // å³å°†ç§»å…¥çš„é“å…·æ•°é‡
-		pc_setreg(sd, add_str("@favorite_idx"), index); // å³å°†ç§»å…¥çš„é“å…·åºå· (èƒŒåŒ…åºå·)
+		pc_setreg(sd, add_str("@favorite_nameid"), sd->inventory.u.items_inventory[index].nameid); // ¼´½«ÒÆÈëµÄµÀ¾ß±àºÅ
+		pc_setreg(sd, add_str("@favorite_amount"), sd->inventory.u.items_inventory[index].amount); // ¼´½«ÒÆÈëµÄµÀ¾ßÊýÁ¿
+		pc_setreg(sd, add_str("@favorite_idx"), index); // ¼´½«ÒÆÈëµÄµÀ¾ßÐòºÅ (±³°üÐòºÅ)
 
 		if (npc_script_filter(sd, NPCF_FAVORITE_ADD))
 			return;
@@ -21767,7 +21767,7 @@ void clif_parse_change_title(int fd, map_session_data *sd)
 	title_id = RFIFOL(fd, 2);
 
 #ifdef Pandas_Character_Title_Controller
-	// çŽ©å®¶ä»Žè£…å¤‡é¢æ¿ä¸­ä¿®æ”¹äº†ç§°å·, èµ°ç›¸å…³çš„äº‹ä»¶åˆ¤æ–­æ˜¯å¦éœ€è¦å°±æ­¤ç»ˆæ­¢
+	// Íæ¼Ò´Ó×°±¸Ãæ°åÖÐÐÞ¸ÄÁË³ÆºÅ, ×ßÏà¹ØµÄÊÂ¼þÅÐ¶ÏÊÇ·ñÐèÒª¾Í´ËÖÕÖ¹
 	if (!npc_change_title_event(sd, title_id, 0))
 		return;
 #endif // Pandas_Character_Title_Controller
@@ -21881,15 +21881,15 @@ void clif_parse_roulette_open( int fd, map_session_data* sd ){
 	nullpo_retv(sd);
 
 #ifdef Pandas_NpcFilter_ROULETTE_OPEN
-	// ç¦æ­¢åœ¨äºŽ NPC å¯¹è¯çš„æ—¶å€™ä½¿ç”¨ä¹é€å¤§è½¬ç›˜
+	// ½ûÖ¹ÔÚÓÚ NPC ¶Ô»°µÄÊ±ºòÊ¹ÓÃÀÖÍ¸´ó×ªÅÌ
 	if (sd->npc_id || pc_hasprogress(sd, WIP_DISABLE_NPC)) {
 		clif_msg(sd, WORK_IN_PROGRESS);
 		return;
 	}
 
-	// åªæœ‰å½“å‰æ²¡æœ‰å’Œ NPC å¯¹è¯çš„æ—¶å€™, æ‰èƒ½è§¦å‘ NPCE_OPEN_ROULETTE_FILTER äº‹ä»¶
-	// å¦åˆ™ NPCE_OPEN_ROULETTE_FILTER äº‹ä»¶å¦‚æžœè¿è¡Œäº† mes ç­‰æŒ‡ä»¤, é‚£ä¹ˆåœ¨ä¸å…³é—­ NPC å¯¹è¯æ¡†çš„æƒ…å†µä¸‹
-	// å†æ¬¡ç‚¹å‡»å¤§ä¹é€æŒ‰é’®, ä¼šå¯¼è‡´å¤§ä¹é€é¢æ¿ç»•è¿‡ processhalt çš„ä¸­æ–­, è¢«ç›´æŽ¥æ‰“å¼€
+	// Ö»ÓÐµ±Ç°Ã»ÓÐºÍ NPC ¶Ô»°µÄÊ±ºò, ²ÅÄÜ´¥·¢ NPCE_OPEN_ROULETTE_FILTER ÊÂ¼þ
+	// ·ñÔò NPCE_OPEN_ROULETTE_FILTER ÊÂ¼þÈç¹ûÔËÐÐÁË mes µÈÖ¸Áî, ÄÇÃ´ÔÚ²»¹Ø±Õ NPC ¶Ô»°¿òµÄÇé¿öÏÂ
+	// ÔÙ´Îµã»÷´óÀÖÍ¸°´Å¥, »áµ¼ÖÂ´óÀÖÍ¸Ãæ°åÈÆ¹ý processhalt µÄÖÐ¶Ï, ±»Ö±½Ó´ò¿ª
 	if (sd && sd->bl.type == BL_PC && !sd->npc_id) {
 		if (npc_script_filter(sd, NPCF_ROULETTE_OPEN))
 			return;
@@ -26582,6 +26582,57 @@ int clif_vend(map_session_data* sd, int skill_lv) {
 	return 1;
 }
 
+
+void clif_set_dialog_align(map_session_data& sd, int npcid, e_say_dialog_align align)
+{
+#if PACKETVER_MAIN_NUM >= 20210203 || PACKETVER_RE_NUM >= 20211103 || PACKETVER_ZERO_NUM >= 20221024
+	PACKET_ZC_DIALOG_TEXT_ALIGN p = {};
+
+	p.PacketType = HEADER_ZC_DIALOG_TEXT_ALIGN;
+	p.align = align;
+
+	clif_send( &p, sizeof( p ), &sd.bl, SELF );
+#endif  // PACKETVER_MAIN_NUM >= 20210203 || PACKETVER_RE_NUM >= 20211103 || PACKETVER_ZERO_NUM >= 20221024
+}
+
+void clif_set_npc_window_size(map_session_data& sd, int width, int height)
+{
+#if PACKETVER_MAIN_NUM >= 20220504
+	PACKET_ZC_DIALOG_WINDOW_SIZE p = {};
+
+	p.PacketType = HEADER_ZC_DIALOG_WINDOW_SIZE;
+	p.width = width;
+	p.height = height;
+
+	clif_send( &p, sizeof( p ), &sd.bl, SELF );
+#endif  // PACKETVER_MAIN_NUM >= 20220504
+}
+
+void clif_set_npc_window_pos(map_session_data& sd, int x, int y)
+{
+#if PACKETVER_MAIN_NUM >= 20220504
+	PACKET_ZC_DIALOG_WINDOW_POS p = {};
+
+	p.PacketType = HEADER_ZC_DIALOG_WINDOW_POS;
+	p.x = x;
+	p.y = y;
+
+	clif_send( &p, sizeof( p ), &sd.bl, SELF );
+#endif  // PACKETVER_MAIN_NUM >= 20220504
+}
+
+void clif_set_npc_window_pos_percent(map_session_data& sd, int x, int y)
+{
+#if PACKETVER_MAIN_NUM >= 20220504
+	PACKET_ZC_DIALOG_WINDOW_POS2 p = {};
+
+	p.PacketType = HEADER_ZC_DIALOG_WINDOW_POS2;
+	p.x = x;
+	p.y = y;
+
+	clif_send( &p, sizeof( p ), &sd.bl, SELF );
+#endif  // PACKETVER_MAIN_NUM >= 20220504
+}
 
 /*==========================================
  * Main client packet processing function

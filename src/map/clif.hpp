@@ -1,4 +1,4 @@
-ï»¿// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
+// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
 #ifndef CLIF_HPP
@@ -651,9 +651,9 @@ enum e_siege_teleport_result : uint8 {
 
 #ifdef Pandas_ScriptCommand_Next_Dropitem_Special
 struct s_next_dropitem_special {
-	uint32 rent_duration = 0;		// ç§Ÿèµæ—¶é•¿, å•ä½: ç§’ (ç§Ÿèµæ—¶é—´å¤§äº 0 çš„é“å…·å°†ä¼šåœ¨æ—¶é—´åˆ°ä¹‹åè¿‡æœŸ)
-	int8 bound = -1;				// é“å…·ç»‘å®šç±»å‹ (è®¾ä¸º -1 è¡¨ç¤ºä¸è¿›è¡Œç‰¹æ®Šæ§åˆ¶)
-	int8 drop_effect = -1;			// é“å…·æ‰è½åˆ°åœ°é¢çš„å…‰æŸ± (è®¾ä¸º -1 è¡¨ç¤ºå°Šé‡ DB ä¸­çš„é…ç½®)
+	uint32 rent_duration = 0;		// ×âÁŞÊ±³¤, µ¥Î»: Ãë (×âÁŞÊ±¼ä´óÓÚ 0 µÄµÀ¾ß½«»áÔÚÊ±¼äµ½Ö®ºó¹ıÆÚ)
+	int8 bound = -1;				// µÀ¾ß°ó¶¨ÀàĞÍ (ÉèÎª -1 ±íÊ¾²»½øĞĞÌØÊâ¿ØÖÆ)
+	int8 drop_effect = -1;			// µÀ¾ßµôÂäµ½µØÃæµÄ¹âÖù (ÉèÎª -1 ±íÊ¾×ğÖØ DB ÖĞµÄÅäÖÃ)
 };
 extern s_next_dropitem_special next_dropitem_special;
 #endif // Pandas_ScriptCommand_Next_Dropitem_Special
@@ -1306,12 +1306,17 @@ void clif_dynamicnpc_result( map_session_data& sd, e_dynamicnpc_result result );
 int clif_vend(map_session_data* sd, int skill_lv);
 
 #ifdef Pandas_Character_Title_Controller
-// å°† rAthena å®˜æ–¹ç¼–å†™çš„ clif_change_title_ack æš´éœ²å‡ºæ¥, ä»¥ä¾¿ npc.cpp ä¸­çš„å‡½æ•°è°ƒç”¨
+// ½« rAthena ¹Ù·½±àĞ´µÄ clif_change_title_ack ±©Â¶³öÀ´, ÒÔ±ã npc.cpp ÖĞµÄº¯Êıµ÷ÓÃ
 void clif_change_title_ack(map_session_data* sd, unsigned char result, unsigned long title_id);
 #endif // Pandas_Character_Title_Controller
 
 #ifdef Pandas_Aura_Mechanism
 void clif_send_auras(struct block_list* bl, enum send_target target, bool ignore_when_hidden, enum e_aura_special flag);
 #endif // Pandas_Aura_Mechanism
+
+void clif_set_dialog_align(map_session_data& sd, int npcid, e_say_dialog_align align);
+void clif_set_npc_window_size(map_session_data& sd, int width, int height);
+void clif_set_npc_window_pos(map_session_data& sd, int x, int y);
+void clif_set_npc_window_pos_percent(map_session_data& sd, int x, int y);
 
 #endif /* CLIF_HPP */
