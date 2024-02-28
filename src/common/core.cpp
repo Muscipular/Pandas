@@ -1,4 +1,4 @@
-ï»¿// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
+// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
 #include "core.hpp"
@@ -136,10 +136,10 @@ static void sig_proc(int sn) {
 			global_core->signal_crash();
 		}
 #ifndef Pandas_Google_Breakpad
-		// åœ¨ Windows çŽ¯å¢ƒä¸‹, è‹¥å¯ç”¨äº† Google Breakpad æ¨¡å—
-		// é‚£ä¹ˆå®ƒå°†åœ¨åˆå§‹åŒ–çš„æ—¶å€™è°ƒç”¨ SetUnhandledExceptionFilter è®¾ç½®äº†æœªå¤„ç†çš„é”™è¯¯å›žè°ƒå‡½æ•°.
-		// è¿™é‡Œåˆ™ä¸å†éœ€è¦å¯¹ SIGSEGV ç­‰ä¿¡å·è¿›è¡Œå¤„ç†, å¦åˆ™é”™è¯¯å›žè°ƒå‡½æ•°å°†æ°¸è¿œä¸ä¼šè¢«è§¦å‘,
-		// æœ€ç»ˆä¼šå¯¼è‡´ Breakpad æ— æ³•åœ¨ç¨‹åºå´©æºƒçš„æ—¶å€™è¿›è¡Œè½¬å‚¨æ–‡ä»¶çš„ç”Ÿæˆå·¥ä½œ.
+		// ÔÚ Windows »·¾³ÏÂ, ÈôÆôÓÃÁË Google Breakpad Ä£¿é
+		// ÄÇÃ´Ëü½«ÔÚ³õÊ¼»¯µÄÊ±ºòµ÷ÓÃ SetUnhandledExceptionFilter ÉèÖÃÁËÎ´´¦ÀíµÄ´íÎó»Øµ÷º¯Êý.
+		// ÕâÀïÔò²»ÔÙÐèÒª¶Ô SIGSEGV µÈÐÅºÅ½øÐÐ´¦Àí, ·ñÔò´íÎó»Øµ÷º¯Êý½«ÓÀÔ¶²»»á±»´¥·¢,
+		// ×îÖÕ»áµ¼ÖÂ Breakpad ÎÞ·¨ÔÚ³ÌÐò±ÀÀ£µÄÊ±ºò½øÐÐ×ª´¢ÎÄ¼þµÄÉú³É¹¤×÷.
 
 		// Pass the signal to the system's default handler
 		compat_signal(sn, SIG_DFL);
@@ -361,7 +361,7 @@ static void display_title(void) {
 	const char* compile_mode = "Release";
 #endif // _DEBUG
 
-	// åœ¨ç¨‹åºå¯åŠ¨æ—¶æ˜¾ç¤ºç†ŠçŒ«æ¨¡æ‹Ÿå™¨çš„ç‰ˆæœ¬å·
+	// ÔÚ³ÌÐòÆô¶¯Ê±ÏÔÊ¾ÐÜÃ¨Ä£ÄâÆ÷µÄ°æ±¾ºÅ
 	if (isCommercialVersion()) {
 		std::string community_ver = formatVersion(Pandas_Version, true, true, 0);
 		ShowInfo("Welcome to Pandas Pro: " CL_GREEN "%s" CL_RESET " (Build on community version %s)\n", getPandasVersion().c_str(), community_ver.c_str());
@@ -372,7 +372,7 @@ static void display_title(void) {
 
 	ShowInfo("Compile for Client PACKETVER: " CL_WHITE "%d" CL_RESET " | Mode: %s | %s\n", PACKETVER, work_mode, compile_mode);
 
-	// è‹¥å®å®šä¹‰å¼€å…³æŒ‡å®šäº†æºç çš„ç‰ˆæœ¬å·å’Œåˆ†æ”¯, é‚£ä¹ˆä¹Ÿä¸€èµ·æ‰“å°å‡ºæ¥
+	// Èôºê¶¨Òå¿ª¹ØÖ¸¶¨ÁËÔ´ÂëµÄ°æ±¾ºÅºÍ·ÖÖ§, ÄÇÃ´Ò²Ò»Æð´òÓ¡³öÀ´
 	std::string branch(GIT_BRANCH), hash(GIT_HASH);
 	if (branch.length() > 0 && hash.length() > 0) {
 		ShowInfo("Compiled from Git Hash: " CL_WHITE "'%s'" CL_RESET " at " CL_WHITE "'%s'" CL_RESET " branch.\n", hash.substr(0, 7).c_str(), branch.c_str());
@@ -439,12 +439,11 @@ int Core::start( int argc, char **argv ){
 		char *p1;
 		if((p1 = strrchr(argv[0], '/')) != NULL ||  (p1 = strrchr(argv[0], '\\')) != NULL ){
 			char *pwd = NULL; //path working directory
-			int n=0;
 			SERVER_NAME = ++p1;
-			n = p1-argv[0]; //calc dir name len
+			size_t n = p1-argv[0]; //calc dir name len
 
 #ifdef Pandas_CodeAnalysis_Suggestion
-			// å¯¹é€šè¿‡å‚æ•°ä¼ å…¥çš„å·¥ä½œè·¯å¾„è¿›è¡Œé•¿åº¦é™åˆ¶åˆ¤æ–­ (æš‚å®šä¸º 1kb çš„é•¿åº¦)
+			// ¶ÔÍ¨¹ý²ÎÊý´«ÈëµÄ¹¤×÷Â·¾¶½øÐÐ³¤¶ÈÏÞÖÆÅÐ¶Ï (ÔÝ¶¨Îª 1kb µÄ³¤¶È)
 			n = (n > 1024 ? 1024 : n);
 #endif // Pandas_CodeAnalysis_Suggestion
 
@@ -553,7 +552,7 @@ void Core::handle_main( t_tick next ){
 	// By default we handle all socket packets
 	do_sockets( next );
 
-	// å¦‚æžœæ˜¯åœ°å›¾æœåŠ¡å™¨çš„è¯é‚£ä¹ˆé¡ºå¸¦éœ€è¦æ‰§è¡Œå¼‚æ­¥ä»»åŠ¡
+	// Èç¹ûÊÇµØÍ¼·þÎñÆ÷µÄ»°ÄÇÃ´Ë³´øÐèÒªÖ´ÐÐÒì²½ÈÎÎñ
 	if (this->get_type() == e_core_type::MAP) {
 		do_future();
 	}
