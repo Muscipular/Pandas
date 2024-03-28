@@ -1,4 +1,4 @@
-ï»¿// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
+// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
 #ifndef BATTLE_HPP
@@ -76,7 +76,9 @@ struct Damage {
 	int64 statusAtk, statusAtk2, weaponAtk, weaponAtk2, equipAtk, equipAtk2, masteryAtk, masteryAtk2, percentAtk, percentAtk2;
 #endif
 	int64 damage, /// Right hand damage
-		damage2; /// Left hand damage
+		damage2, /// Left hand damage
+		basedamage, /// Right hand base damage after def reduction
+		basedamage2; /// Left hand base damage after def reduction
 	enum e_damage_type type; /// Check clif_damage for type
 	short div_; /// Number of hit
 	int amotion,
@@ -96,7 +98,7 @@ int64 battle_calc_return_damage(struct block_list *bl, struct block_list *src, i
 
 void battle_drain(map_session_data *sd, struct block_list *tbl, int64 rdamage, int64 ldamage, int race, int class_);
 
-int64 battle_attr_fix(struct block_list *src, struct block_list *target, int64 damage,int atk_elem,int def_type, int def_lv);
+int64 battle_attr_fix(struct block_list* src, struct block_list* target, int64 damage, int atk_elem, int def_type, int def_lv, int flag = 0);
 int64_t battle_calc_cardfix(int attack_type, struct block_list* src, struct block_list* target, std::bitset<NK_MAX> nk,
                             int s_ele, int s_ele_, int64 damage, int left, int flag);
 
@@ -736,91 +738,91 @@ struct Battle_Config
 
 	// Pandas Configure
 #ifdef Pandas_BattleConfig_Force_LoadEvent
-	int force_loadevent;					// å¼ºåˆ¶è§¦å‘ OnPCLoadMapEvent äº‹ä»¶
+	int force_loadevent;					// Ç¿ÖÆ´¥·¢ OnPCLoadMapEvent ÊÂ¼ş
 #endif // Pandas_BattleConfig_Force_LoadEvent
 #ifdef Pandas_BattleConfig_Force_Identified
-	int force_identified;					// å¼ºåˆ¶ç‰¹å®šæ¸ é“è·å¾—çš„è£…å¤‡è‡ªåŠ¨å˜æˆå·²é‰´å®š
+	int force_identified;					// Ç¿ÖÆÌØ¶¨ÇşµÀ»ñµÃµÄ×°±¸×Ô¶¯±ä³ÉÒÑ¼ø¶¨
 #endif // Pandas_BattleConfig_Force_Identified
 #ifdef Pandas_BattleConfig_CashMounting_UseitemLimit
-	int cashmount_useitem_limit;			// ä¹˜åâ€œå•†åŸåéª‘â€æ—¶ç¦æ­¢ä½¿ç”¨ç‰¹å®šç±»å‹çš„ç‰©å“
+	int cashmount_useitem_limit;			// ³Ë×ø¡°ÉÌ³Ç×øÆï¡±Ê±½ûÖ¹Ê¹ÓÃÌØ¶¨ÀàĞÍµÄÎïÆ·
 #endif // Pandas_BattleConfig_CashMounting_UseitemLimit
 #ifdef Pandas_BattleConfig_MaxAspdForPVP
-	int max_aspd_for_pvp;					// é™åˆ¶ç©å®¶åœ¨ PVP åœ°å›¾ä¸Šçš„æœ€å¤§æ”»é€Ÿ
+	int max_aspd_for_pvp;					// ÏŞÖÆÍæ¼ÒÔÚ PVP µØÍ¼ÉÏµÄ×î´ó¹¥ËÙ
 #endif // Pandas_BattleConfig_MaxAspdForPVP
 #ifdef Pandas_BattleConfig_MaxAspdForGVG
-	int max_aspd_for_gvg;					// é™åˆ¶ç©å®¶åœ¨ GVG åœ°å›¾ä¸Šçš„æœ€å¤§æ”»é€Ÿ
+	int max_aspd_for_gvg;					// ÏŞÖÆÍæ¼ÒÔÚ GVG µØÍ¼ÉÏµÄ×î´ó¹¥ËÙ
 #endif // Pandas_BattleConfig_MaxAspdForGVG
 #ifdef Pandas_BattleConfig_AtCmd_No_Permission
-	int atcmd_no_permission;				// å½“æ²¡æœ‰æƒé™çš„ç©å®¶æ‰§è¡Œäº† GM æŒ‡ä»¤æ—¶çš„å¤„ç†ç­–ç•¥
+	int atcmd_no_permission;				// µ±Ã»ÓĞÈ¨ÏŞµÄÍæ¼ÒÖ´ĞĞÁË GM Ö¸ÁîÊ±µÄ´¦Àí²ßÂÔ
 #endif // Pandas_BattleConfig_AtCmd_No_Permission
 #ifdef Pandas_BattleConfig_Suspend_MonsterIgnore
-	int suspend_monsterignore;				// å½“ç©å®¶ä½¿ç”¨æŒ‚æœºç³»åˆ—æŒ‡ä»¤æ—¶, å¤„äºå“ªäº›æ¨¡å¼ä¸ä¼šè¢«é­”ç‰©æ”»å‡»
+	int suspend_monsterignore;				// µ±Íæ¼ÒÊ¹ÓÃ¹Ò»úÏµÁĞÖ¸ÁîÊ±, ´¦ÓÚÄÄĞ©Ä£Ê½²»»á±»Ä§Îï¹¥»÷
 #endif // Pandas_BattleConfig_Suspend_MonsterIgnore
 #ifdef Pandas_BattleConfig_Suspend_Whisper_Response
-	int suspend_whisper_response;			// å½“ç©å®¶ä½¿ç”¨æŒ‚æœºç³»åˆ—æŒ‡ä»¤æ—¶, å¤„äºå“ªäº›æ¨¡å¼ä¼šè‡ªåŠ¨å›å¤ç§èŠè®¯æ¯
+	int suspend_whisper_response;			// µ±Íæ¼ÒÊ¹ÓÃ¹Ò»úÏµÁĞÖ¸ÁîÊ±, ´¦ÓÚÄÄĞ©Ä£Ê½»á×Ô¶¯»Ø¸´Ë½ÁÄÑ¶Ï¢
 #endif // Pandas_BattleConfig_Suspend_Whisper_Response
 #ifdef Pandas_BattleConfig_Suspend_Offline_BodyDirection
-	int suspend_offline_bodydirection;		// å½“ç©å®¶è¿›å…¥ç¦»çº¿æŒ‚æœºæ¨¡å¼æ—¶, åœ°å›¾æœåŠ¡å™¨é‡å¯åçš„èº«ä½“æœå‘å“ªé‡Œ
+	int suspend_offline_bodydirection;		// µ±Íæ¼Ò½øÈëÀëÏß¹Ò»úÄ£Ê½Ê±, µØÍ¼·şÎñÆ÷ÖØÆôºóµÄÉíÌå³¯ÏòÄÄÀï
 #endif // Pandas_BattleConfig_Suspend_Offline_BodyDirection
 #ifdef Pandas_BattleConfig_Suspend_Offline_HeadDirection
-	int suspend_offline_headdirection;		// å½“ç©å®¶è¿›å…¥ç¦»çº¿æŒ‚æœºæ¨¡å¼æ—¶, åœ°å›¾æœåŠ¡å™¨é‡å¯åçš„å¤´éƒ¨æœå‘å“ªé‡Œ
+	int suspend_offline_headdirection;		// µ±Íæ¼Ò½øÈëÀëÏß¹Ò»úÄ£Ê½Ê±, µØÍ¼·şÎñÆ÷ÖØÆôºóµÄÍ·²¿³¯ÏòÄÄÀï
 #endif // Pandas_BattleConfig_Suspend_Offline_HeadDirection
 #ifdef Pandas_BattleConfig_Suspend_Offline_Sitdown
-	int suspend_offline_sitdown;			// å½“ç©å®¶è¿›å…¥ç¦»çº¿æŒ‚æœºæ¨¡å¼æ—¶, åœ°å›¾æœåŠ¡å™¨é‡å¯åå¤„äºç«™ç«‹è¿˜æ˜¯åä¸‹çŠ¶æ€
+	int suspend_offline_sitdown;			// µ±Íæ¼Ò½øÈëÀëÏß¹Ò»úÄ£Ê½Ê±, µØÍ¼·şÎñÆ÷ÖØÆôºó´¦ÓÚÕ¾Á¢»¹ÊÇ×øÏÂ×´Ì¬
 #endif // Pandas_BattleConfig_Suspend_Offline_Sitdown
 #ifdef Pandas_BattleConfig_Suspend_AFK_BodyDirection
-	int suspend_afk_bodydirection;			// å½“ç©å®¶è¿›å…¥ç¦»å¼€æ¨¡å¼æ—¶, åœ°å›¾æœåŠ¡å™¨é‡å¯åçš„èº«ä½“æœå‘å“ªé‡Œ
+	int suspend_afk_bodydirection;			// µ±Íæ¼Ò½øÈëÀë¿ªÄ£Ê½Ê±, µØÍ¼·şÎñÆ÷ÖØÆôºóµÄÉíÌå³¯ÏòÄÄÀï
 #endif // Pandas_BattleConfig_Suspend_AFK_BodyDirection
 #ifdef Pandas_BattleConfig_Suspend_AFK_Headdirection
-	int suspend_afk_headdirection;			// å½“ç©å®¶è¿›å…¥ç¦»å¼€æ¨¡å¼æ—¶, åœ°å›¾æœåŠ¡å™¨é‡å¯åçš„å¤´éƒ¨æœå‘å“ªé‡Œ
+	int suspend_afk_headdirection;			// µ±Íæ¼Ò½øÈëÀë¿ªÄ£Ê½Ê±, µØÍ¼·şÎñÆ÷ÖØÆôºóµÄÍ·²¿³¯ÏòÄÄÀï
 #endif // Pandas_BattleConfig_Suspend_AFK_Headdirection
 #ifdef Pandas_BattleConfig_Suspend_AFK_Sitdown
-	int suspend_afk_sitdown;				// å½“ç©å®¶è¿›å…¥ç¦»å¼€æ¨¡å¼æ—¶, åœ°å›¾æœåŠ¡å™¨é‡å¯åå¤„äºç«™ç«‹è¿˜æ˜¯åä¸‹çŠ¶æ€
+	int suspend_afk_sitdown;				// µ±Íæ¼Ò½øÈëÀë¿ªÄ£Ê½Ê±, µØÍ¼·şÎñÆ÷ÖØÆôºó´¦ÓÚÕ¾Á¢»¹ÊÇ×øÏÂ×´Ì¬
 #endif // Pandas_BattleConfig_Suspend_AFK_Sitdown
 #ifdef Pandas_BattleConfig_Suspend_AFK_HeadTop_ViewID
-	int suspend_afk_headtop_viewid;			// å½“ç©å®¶è¿›å…¥ç¦»å¼€æ¨¡å¼æ—¶, å°†å¤´é¥°ä¸Šçš„æ›´æ¢ä¸ºå“ªä¸€ä¸ªæŒ‡å®šçš„å¤´é¥°å¤–è§‚ç¼–å·
+	int suspend_afk_headtop_viewid;			// µ±Íæ¼Ò½øÈëÀë¿ªÄ£Ê½Ê±, ½«Í·ÊÎÉÏµÄ¸ü»»ÎªÄÄÒ»¸öÖ¸¶¨µÄÍ·ÊÎÍâ¹Û±àºÅ
 #endif // Pandas_BattleConfig_Suspend_AFK_HeadTop_ViewID
 #ifdef Pandas_BattleConfig_Suspend_Normal_BodyDirection
-	int suspend_normal_bodydirection;		// å½“ç©å®¶è¿›å…¥æ™®é€šæ¨¡å¼æ—¶, è¢«æ‹‰ä¸Šçº¿çš„è§’è‰²èº«ä½“æœå‘å“ªé‡Œ
+	int suspend_normal_bodydirection;		// µ±Íæ¼Ò½øÈëÆÕÍ¨Ä£Ê½Ê±, ±»À­ÉÏÏßµÄ½ÇÉ«ÉíÌå³¯ÏòÄÄÀï
 #endif // Pandas_BattleConfig_Suspend_Normal_BodyDirection
 #ifdef Pandas_BattleConfig_Suspend_Normal_HeadDirection
-	int suspend_normal_headdirection;		// å½“ç©å®¶è¿›å…¥æ™®é€šæ¨¡å¼æ—¶, è¢«æ‹‰ä¸Šçº¿çš„è§’è‰²å¤´éƒ¨æœå‘å“ªé‡Œ
+	int suspend_normal_headdirection;		// µ±Íæ¼Ò½øÈëÆÕÍ¨Ä£Ê½Ê±, ±»À­ÉÏÏßµÄ½ÇÉ«Í·²¿³¯ÏòÄÄÀï
 #endif // Pandas_BattleConfig_Suspend_Normal_HeadDirection
 #ifdef Pandas_BattleConfig_Suspend_Normal_Sitdown
-	int suspend_normal_sitdown;				// å½“ç©å®¶è¿›å…¥æ™®é€šæ¨¡å¼æ—¶, è¢«æ‹‰ä¸Šçº¿çš„è§’è‰²å¤„äºç«™ç«‹è¿˜æ˜¯åä¸‹çŠ¶æ€
+	int suspend_normal_sitdown;				// µ±Íæ¼Ò½øÈëÆÕÍ¨Ä£Ê½Ê±, ±»À­ÉÏÏßµÄ½ÇÉ«´¦ÓÚÕ¾Á¢»¹ÊÇ×øÏÂ×´Ì¬
 #endif // Pandas_BattleConfig_Suspend_Normal_Sitdown
 #ifdef Pandas_BattleConfig_Multiplayer_Recall_Behavior
-	int multiplayer_recall_behavior;		// æ§åˆ¶å¤šäººå¬å”¤æ—¶æ˜¯å¦é¿å¼€åœ¨çº¿æ‘†æ‘Šç©å®¶
+	int multiplayer_recall_behavior;		// ¿ØÖÆ¶àÈËÕÙ»½Ê±ÊÇ·ñ±Ü¿ªÔÚÏß°ÚÌ¯Íæ¼Ò
 #endif // Pandas_BattleConfig_Multiplayer_Recall_Behavior
 #ifdef Pandas_BattleConfig_AlwaysTriggerNPCKillEvent
-	int always_trigger_npc_killevent;		// å½“é­”ç‰©æ‹¥æœ‰ä¸”è§¦å‘äº†è‡ªå·±çš„æ­»äº¡äº‹ä»¶æ ‡ç­¾å, æ˜¯å¦è¿˜ä¼šç»§ç»­è§¦å‘ OnNPCKillEvent äº‹ä»¶
+	int always_trigger_npc_killevent;		// µ±Ä§ÎïÓµÓĞÇÒ´¥·¢ÁË×Ô¼ºµÄËÀÍöÊÂ¼ş±êÇ©ºó, ÊÇ·ñ»¹»á¼ÌĞø´¥·¢ OnNPCKillEvent ÊÂ¼ş
 #endif // Pandas_BattleConfig_AlwaysTriggerNPCKillEvent
 #ifdef Pandas_BattleConfig_AlwaysTriggerMVPKillEvent
-	int always_trigger_mvp_killevent;		// å½“ MVP é­”ç‰©æ‹¥æœ‰ä¸”è§¦å‘äº†è‡ªå·±çš„æ­»äº¡äº‹ä»¶æ ‡ç­¾å, æ˜¯å¦è¿˜ä¼šç»§ç»­è§¦å‘ OnPCKillMvpEvent äº‹ä»¶
+	int always_trigger_mvp_killevent;		// µ± MVP Ä§ÎïÓµÓĞÇÒ´¥·¢ÁË×Ô¼ºµÄËÀÍöÊÂ¼ş±êÇ©ºó, ÊÇ·ñ»¹»á¼ÌĞø´¥·¢ OnPCKillMvpEvent ÊÂ¼ş
 #endif // Pandas_BattleConfig_AlwaysTriggerMVPKillEvent
 #ifdef Pandas_BattleConfig_BattleRecord_AutoEnabled_Unit
-	int batrec_autoenabled_unit;			// æœ‰å“ªäº›å•ä½é»˜è®¤å¼€å¯æˆ˜æ–—è®°å½•
+	int batrec_autoenabled_unit;			// ÓĞÄÄĞ©µ¥Î»Ä¬ÈÏ¿ªÆôÕ½¶·¼ÇÂ¼
 #endif // Pandas_BattleConfig_BattleRecord_AutoEnabled_Unit
 #ifdef Pandas_BattleConfig_Repeat_ClearUnit_Interval
-	int repeat_clearunit_interval;			// é‡å‘é­”ç‰©æ­»äº¡å°åŒ…çš„é—´éš”æ—¶é—´
+	int repeat_clearunit_interval;			// ÖØ·¢Ä§ÎïËÀÍö·â°üµÄ¼ä¸ôÊ±¼ä
 #endif // Pandas_BattleConfig_Repeat_ClearUnit_Interval
 #ifdef Pandas_BattleConfig_Dead_Area_Size
-	int dead_area_size;						// é­”ç‰©æ­»äº¡å°åŒ…å°†ä¼šå‘é€ç»™å‘¨å›´å¤šå°‘ä¸ªæ ¼çš„ç©å®¶
+	int dead_area_size;						// Ä§ÎïËÀÍö·â°ü½«»á·¢ËÍ¸øÖÜÎ§¶àÉÙ¸ö¸ñµÄÍæ¼Ò
 #endif // Pandas_BattleConfig_Dead_Area_Size
 #ifdef Pandas_BattleConfig_Remove_Manhole_With_Status
-	int remove_manhole_with_status;			// å½“"äººå­”/é»‘æ´é™·é˜±"åœ°é¢é™·é˜±è¢«ç§»é™¤çš„æ—¶å€™, æ˜¯å¦åŒæ—¶ä½¿è¢«æ•è·çš„ç©å®¶ç«‹å³è„±å›°
+	int remove_manhole_with_status;			// µ±"ÈË¿×/ºÚ¶´ÏİÚå"µØÃæÏİÚå±»ÒÆ³ıµÄÊ±ºò, ÊÇ·ñÍ¬Ê±Ê¹±»²¶»ñµÄÍæ¼ÒÁ¢¼´ÍÑÀ§
 #endif // Pandas_BattleConfig_Remove_Manhole_With_Status
 #ifdef Pandas_BattleConfig_Restore_Mes_Logic
-	int restore_mes_logic;					// ä½¿ 2021-11-03 åŠæ›´æ–°ç‰ˆæœ¬çš„å®¢æˆ·ç«¯åœ¨æ‰§è¡Œ mes æŒ‡ä»¤æ—¶ä½¿ç”¨ç»å…¸æ¢è¡Œç­–ç•¥
+	int restore_mes_logic;					// Ê¹ 2021-11-03 ¼°¸üĞÂ°æ±¾µÄ¿Í»§¶ËÔÚÖ´ĞĞ mes Ö¸ÁîÊ±Ê¹ÓÃ¾­µä»»ĞĞ²ßÂÔ
 #endif // Pandas_BattleConfig_Restore_Mes_Logic
 #ifdef Pandas_BattleConfig_ItemDB_Warning_Policy
-	int itemdb_warning_policy;				// æ˜¯å¦å…³é—­åŠ è½½ç‰©å“æ•°æ®åº“æ—¶çš„ä¸€äº›è­¦å‘Šä¿¡æ¯
+	int itemdb_warning_policy;				// ÊÇ·ñ¹Ø±Õ¼ÓÔØÎïÆ·Êı¾İ¿âÊ±µÄÒ»Ğ©¾¯¸æĞÅÏ¢
 #endif // Pandas_BattleConfig_ItemDB_Warning_Policy
 #ifdef Pandas_BattleConfig_MobDB_DamageMotion_Min
-	int mob_default_damagemotion;			// å½“é­”ç‰©è¢«æ”»å‡»æ—¶å—ä¼¤åŠ¨ç”»çš„é»˜è®¤æ’­æ”¾æ—¶é•¿, å€¼è¶Šå°çœ‹èµ·æ¥è¶Šå¿« (å•ä½ä¸º: æ¯«ç§’)
+	int mob_default_damagemotion;			// µ±Ä§Îï±»¹¥»÷Ê±ÊÜÉË¶¯»­µÄÄ¬ÈÏ²¥·ÅÊ±³¤, ÖµÔ½Ğ¡¿´ÆğÀ´Ô½¿ì (µ¥Î»Îª: ºÁÃë)
 #endif // Pandas_BattleConfig_MobDB_DamageMotion_Min
 #ifdef Pandas_BattleConfig_Mob_SetUnitData_Persistence
-	int mob_setunitdata_persistence;		// æ˜¯å¦é«˜ä¼˜å…ˆçº§æŒä¹…åŒ–ä¿å­˜ setunitdata å¯¹é­”ç‰©çš„è®¾ç½®
+	int mob_setunitdata_persistence;		// ÊÇ·ñ¸ßÓÅÏÈ¼¶³Ö¾Ã»¯±£´æ setunitdata ¶ÔÄ§ÎïµÄÉèÖÃ
 #endif // Pandas_BattleConfig_Mob_SetUnitData_Persistence
 	// PYHELP - BATTLECONFIG - INSERT POINT - <Section 2>
 	int gStack;

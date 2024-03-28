@@ -8329,6 +8329,8 @@ static pec_defType status_calc_def(struct block_list *bl, status_change *sc, int
 		def /= 2;
 	if(sc->getSCE(SC_FREEZE))
 		def /= 2;
+	if(sc->getSCE(SC_POISON) || sc->getSCE(SC_DPOISON) && bl->type != BL_PC)
+		def = def * 75 / 100; //Should round down
 	if(sc->getSCE(SC_SIGNUMCRUCIS))
 		def -= def * sc->getSCE(SC_SIGNUMCRUCIS)->val2/100;
 	if(sc->getSCE(SC_CONCENTRATION))
@@ -8424,10 +8426,8 @@ static pec_short status_calc_def2(struct block_list *bl, status_change *sc, int 
 	if(sc->getSCE(SC_CONCENTRATION))
 		def2 -= def2 * sc->getSCE(SC_CONCENTRATION)->val4/100;
 #endif
-	if(sc->getSCE(SC_POISON))
-		def2 -= def2 * 25/100;
-	if(sc->getSCE(SC_DPOISON))
-		def2 -= def2 * 25/100;
+	if(sc->getSCE(SC_POISON) || sc->getSCE(SC_DPOISON))
+		def2 = def2 * 75 / 100; //Should round down
 	if(sc->getSCE(SC_SKE))
 		def2 -= def2 * 50/100;
 	if(sc->getSCE(SC_PROVOKE))
@@ -10495,10 +10495,13 @@ t_tick status_get_sc_def(struct block_list *src, struct block_list *bl, enum sc_
 			sc_def = sc_def*battle_config.pc_sc_def_rate/100;
 			sc_def2 = sc_def2*battle_config.pc_sc_def_rate/100;
 		}
-
+#ifndef RENEWAL
+		sc_def = min(sc_def, battle_config.pc_max_sc_def*100);
+		sc_def2 = min(sc_def2, battle_config.pc_max_sc_def*100);
+#else
 		sc_def = cap_value(sc_def, 0, battle_config.pc_max_sc_def*100);
 		sc_def2 = cap_value(sc_def2, 0, battle_config.pc_max_sc_def*100);
-
+#endif
 		if (battle_config.pc_sc_def_rate != 100) {
 			tick_def = tick_def*battle_config.pc_sc_def_rate/100;
 			tick_def2 = tick_def2*battle_config.pc_sc_def_rate/100;
@@ -10508,10 +10511,13 @@ t_tick status_get_sc_def(struct block_list *src, struct block_list *bl, enum sc_
 			sc_def = sc_def*battle_config.mob_sc_def_rate/100;
 			sc_def2 = sc_def2*battle_config.mob_sc_def_rate/100;
 		}
-
+#ifndef RENEWAL
+		sc_def = min(sc_def, battle_config.mob_max_sc_def*100);
+		sc_def2 = min(sc_def2, battle_config.mob_max_sc_def*100);
+#else
 		sc_def = cap_value(sc_def, 0, battle_config.mob_max_sc_def*100);
 		sc_def2 = cap_value(sc_def2, 0, battle_config.mob_max_sc_def*100);
-
+#endif
 		if (battle_config.mob_sc_def_rate != 100) {
 			tick_def = tick_def*battle_config.mob_sc_def_rate/100;
 			tick_def2 = tick_def2*battle_config.mob_sc_def_rate/100;
@@ -11440,7 +11446,7 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 			tick = INFINITE_TICK; // Duration sent to the client should be infinite
 			break;
 		case SC_EDP:
-			val2 = val1 + 2; // Chance to Poison enemies.
+			val2 = (val1 + 1) / 2 + 2; // Chance to Poison enemies.
 #ifndef RENEWAL
 			val3 = 50*(val1+1); // Damage increase (+50 +50*lv%)
 #endif
