@@ -1,4 +1,4 @@
-# This file is a part of rAthena.
+﻿# This file is a part of rAthena.
 #   Copyright(C) 2021 rAthena Development Team
 #   https://rathena.org - https://github.com/rathena
 #
@@ -37065,10 +37065,13 @@ Body:
     MaxLevel: 5
     Type: Weapon
     TargetType: Attack
+    DamageFlags:
+      Splash: true
     Range: 9
     Hit: Multi_Hit
     HitCount: -7
     Element: Weapon
+    SplashArea: 3
     GiveAp: 3
     CastCancel: true
     CastTime: 500
