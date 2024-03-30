@@ -3478,7 +3478,7 @@ int skill_mirage_cast(struct block_list* src, struct block_list* bl, int skill_i
 				map_foreachinrange(skill_area_sub, &itsu->unit->bl, skill_get_splash(skill_id, skill_lv), BL_CHAR,
 					src, skill_id, skill_lv, tick, BCT_ENEMY | SD_SPLASH | SD_ANIMATION | SKILL_ALTDMG_FLAG | 1, skill_castend_damage_id);
 				break;
-			case SS_KAGEGISSEN://damage splash
+			/*case SS_KAGEGISSEN://damage splash
 				x = bl->x;
 				y = bl->y;
 				skill_area_temp[1] = 0;
@@ -3493,7 +3493,7 @@ int skill_mirage_cast(struct block_list* src, struct block_list* bl, int skill_i
 						skill_get_splash(skill_id, skill_lv), skill_get_maxcount(skill_id, skill_lv), splash_target(src),
 						skill_get_type(skill_id), src, src, skill_id, skill_lv, tick, SKILL_ALTDMG_FLAG, BCT_ENEMY);
 				}
-				break;
+				break;*/
 			}
 		}
 	}
@@ -4625,7 +4625,7 @@ int64 skill_attack (int attack_type, struct block_list* src, struct block_list *
 					skill_addtimerskill(src, tick + dmg.amotion + skill_get_delay(skill_id, skill_lv), bl->id, 0, 0, skill_id, skill_lv, attack_type, flag|2);
 				break;
 			case ABC_DEFT_STAB:
-				if (skill_area_temp[1] == bl->id && rnd()%100 < 4 * skill_lv)// Need official autocast chance. [Rytech]
+				if (skill_area_temp[1] == bl->id && rnd()%100 < 0 * skill_lv)// Need official autocast chance. [Rytech]
 					skill_addtimerskill(src, tick + dmg.amotion, bl->id, 0, 0, skill_id, skill_lv, BF_WEAPON, 2);
 				break;
 		}
@@ -8815,7 +8815,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 				if (skill_id == AG_DESTRUCTIVE_HURRICANE)
 					splash_size = 9; // 19x19
 				else if(skill_id == AG_CRYSTAL_IMPACT)
-					splash_size = 14; // 29x29 - Entire screen.
+					splash_size = 7; // 15x15
 			}
 
 			skill_area_temp[1] = 0;
@@ -11843,9 +11843,9 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 		{
 			if (!(src == bl)) {
 				if ((sd && pc_checkskill(sd, SH_COMMUNE_WITH_KI_SUL)) || (sc && sc->getSCE(SC_TEMPORARY_COMMUNION)))
-					status_heal(bl, 0, 0, 6, 0);
+					status_heal(bl, 0, 0, 4, 0);
 				else
-					status_heal(bl, 0, 0, 3, 0);
+					status_heal(bl, 0, 0, 2, 0);
 			}
 		}
 		else
