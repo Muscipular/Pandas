@@ -7921,6 +7921,9 @@ Body:
       BlEffect: true
       DisplayPc: true
       SendVal1: true
+      NoBanishingBuster: true
+      NoDispell: true
+      NoClearance: true
   - Status: Shadow_Weapon
     Icon: EFST_SHADOW_WEAPON
     DurationLookup: SHC_ENCHANTING_SHADOW
@@ -7967,6 +7970,9 @@ Body:
     Flags:
       BlEffect: true
       DisplayPc: true
+      NoBanishingBuster: true
+      NoDispell: true
+      NoClearance: true
   - Status: Ultimate_S
     Icon: EFST_ULTIMATE_S
     DurationLookup: IG_ULTIMATE_SACRIFICE
@@ -8831,6 +8837,10 @@ Body:
     DurationLookup: NW_HIDDEN_CARD
     CalcFlags:
       All: true
+    Flags:
+      NoBanishingBuster: true
+      NoDispell: true
+      NoClearance: true
   - Status: Grenade_Fragment_1
     Icon: EFST_GRENADE_FRAGMENT_1
     DurationLookup: NW_GRENADE_FRAGMENT
