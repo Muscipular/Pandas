@@ -7654,6 +7654,8 @@ static pec_ushort status_calc_batk(struct block_list *bl, status_change *sc, int
 		batk += sc->getSCE(SC_ATKPOTION)->val1;
 	if(sc->getSCE(SC_BATKFOOD))
 		batk += sc->getSCE(SC_BATKFOOD)->val1;
+	if (sc->getSCE(SC_VOLCANO))
+		batk += sc->getSCE(SC_VOLCANO)->val2;
 #ifndef RENEWAL
 	if(sc->getSCE(SC_GATLINGFEVER))
 		batk += sc->getSCE(SC_GATLINGFEVER)->val3;
@@ -7726,7 +7728,7 @@ static pec_ushort status_calc_watk(struct block_list *bl, status_change *sc, int
 		watk += sc->getSCE(SC_IMPOSITIO)->val2;
 	if(sc->getSCE(SC_WATKFOOD))
 		watk += sc->getSCE(SC_WATKFOOD)->val1;
-	if(sc->getSCE(SC_VOLCANO))
+	if (sc->getSCE(SC_VOLCANO) && bl->type == BL_MOB)
 		watk += sc->getSCE(SC_VOLCANO)->val2;
 	if(sc->getSCE(SC_MERC_ATKUP))
 		watk += sc->getSCE(SC_MERC_ATKUP)->val2;
@@ -7946,9 +7948,9 @@ static pec_ushort status_calc_matk(struct block_list *bl, status_change *sc, int
 		matk += matk * sc->getSCE(SC_MTF_MATK)->val1 / 100;
 	if (sc->getSCE(SC_SHRIMP))
 		matk += matk * sc->getSCE(SC_SHRIMP)->val2 / 100;
+#ifdef RENEWAL
 	if (sc->getSCE(SC_VOLCANO))
 		matk += sc->getSCE(SC_VOLCANO)->val2;
-#ifdef RENEWAL
 	if (sc->getSCE(SC_NIBELUNGEN) && sc->getSCE(SC_NIBELUNGEN)->val2 == RINGNBL_MATKRATE)
 		matk += matk * 20 / 100;
 #endif
