@@ -1,4 +1,4 @@
-# This file is a part of rAthena.
+﻿# This file is a part of rAthena.
 #   Copyright(C) 2022 rAthena Development Team
 #   https://rathena.org - https://github.com/rathena
 #
@@ -5735,6 +5735,9 @@ Body:
       All: true
     Flags:
       DisplayPc: true
+      NoDispell: true
+      NoBanishingBuster: true
+      NoClearance: true
   - Status: Kings_Grace
     Icon: EFST_KINGS_GRACE
     DurationLookup: LG_KINGS_GRACE
@@ -7918,6 +7921,9 @@ Body:
       BlEffect: true
       DisplayPc: true
       SendVal1: true
+      NoBanishingBuster: true
+      NoDispell: true
+      NoClearance: true
   - Status: Shadow_Weapon
     Icon: EFST_SHADOW_WEAPON
     DurationLookup: SHC_ENCHANTING_SHADOW
@@ -7964,6 +7970,9 @@ Body:
     Flags:
       BlEffect: true
       DisplayPc: true
+      NoBanishingBuster: true
+      NoDispell: true
+      NoClearance: true
   - Status: Ultimate_S
     Icon: EFST_ULTIMATE_S
     DurationLookup: IG_ULTIMATE_SACRIFICE
@@ -8828,6 +8837,10 @@ Body:
     DurationLookup: NW_HIDDEN_CARD
     CalcFlags:
       All: true
+    Flags:
+      NoBanishingBuster: true
+      NoDispell: true
+      NoClearance: true
   - Status: Grenade_Fragment_1
     Icon: EFST_GRENADE_FRAGMENT_1
     DurationLookup: NW_GRENADE_FRAGMENT
@@ -9166,6 +9179,10 @@ Body:
       Smatk: true
     EndOnStart:
       T_Fourth_God: true
+    Flags:
+      NoDispell: true
+      NoBanishingBuster: true
+      NoClearance: true
   - Status: Heaven_and_Earth
     Icon: EFST_HEAVEN_AND_EARTH
     DurationLookup: SOA_SOUL_OF_HEAVEN_AND_EARTH
