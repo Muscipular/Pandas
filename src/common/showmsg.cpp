@@ -1,4 +1,4 @@
-ï»¿
+
 // Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
@@ -8,9 +8,8 @@
 #include <common/translate.hpp>
 #define strcat(a, b) ::strcat(a, translate(b).c_str())
 #endif // Pandas_Console_Translate
-
-#include <stdlib.h> // atexit
-#include <time.h>
+#include <cstdlib> // atexit
+#include <ctime>
 
 #ifdef WIN32
 	#include "winapi.hpp"
@@ -46,7 +45,7 @@
 #include "core.hpp" //[Ind] - For SERVER_TYPE
 #include "strlib.hpp" // StringBuf
 
-#include "assistant.hpp" // å¼•å…¥ Pandas çš„è¾…åŠ©å‡½æ•°åº“ - é‡å®šå‘ localtime å‡½æ•°
+#include "assistant.hpp" // ÒıÈë Pandas µÄ¸¨Öúº¯Êı¿â - ÖØ¶¨Ïò localtime º¯Êı
 
 ///////////////////////////////////////////////////////////////////////////////
 /// behavioral parameter.

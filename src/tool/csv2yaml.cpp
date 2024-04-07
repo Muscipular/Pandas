@@ -3,7 +3,7 @@
 
 #include "csv2yaml.hpp"
 
-#include <math.h>
+#include <cmath>
 
 #ifdef Pandas_Fix_Csv2Yaml_Extra_Slashes_In_The_Path
 #include <common/assistant.hpp>

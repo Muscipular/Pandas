@@ -1,14 +1,13 @@
-ï»¿// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
+// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
 #include "atcommand.hpp"
 
 #include <functional>
+#include <cmath>
+#include <cstdlib>
 #include <set>
 #include <unordered_map>
-
-#include <math.h>
-#include <stdlib.h>
 
 #include <common/cbasetypes.hpp>
 #include <common/database.hpp>
@@ -65,8 +64,8 @@
 #endif // Pandas_Aura_Mechanism
 
 #ifdef Pandas_Google_Breakpad
-// æ­¤å…¨å±€å˜é‡å®šä¹‰åœ¨ crashdump.cpp æ–‡ä»¶ä¸­
-// è¡¨ç¤ºæœ¬æ¬¡å´©æºƒæ˜¯ç”± @crashtest åˆ»æ„å¼•å‘çš„, ä¸ŠæŠ¥è½¬å‚¨æ–‡ä»¶æ—¶æºå¸¦ç›¸å…³æ ‡è®°
+// ´ËÈ«¾Ö±äÁ¿¶¨ÒåÔÚ crashdump.cpp ÎÄ¼şÖĞ
+// ±íÊ¾±¾´Î±ÀÀ£ÊÇÓÉ @crashtest ¿ÌÒâÒı·¢µÄ, ÉÏ±¨×ª´¢ÎÄ¼şÊ±Ğ¯´øÏà¹Ø±ê¼Ç
 extern bool g_crashByTestCommand;
 #endif // Pandas_Google_Breakpad
 
@@ -280,8 +279,8 @@ ACMD_FUNC(send)
 		return -1;
 	}
 
-	// ç”±äº rAthena é»˜è®¤çš„å†™æ³•åœ¨ä¸€ä¸ª if è¯­å¥é‡Œé¢ä½¿ç”¨äº† = èµ‹å€¼ç¬¦å·
-	// è¿™æ ·çš„è¡Œä¸ºä¼šè¢« LGTM åˆ¤å®šä¸ºæœ‰æ½œåœ¨é”™è¯¯é£é™©, ä¸ºäº†ä¿®æ­£æ­¤è­¦å‘Š, æˆ‘ä»¬å°† len çš„èµ‹å€¼å•ç‹¬æ‹†å¼€
+	// ÓÉÓÚ rAthena Ä¬ÈÏµÄĞ´·¨ÔÚÒ»¸ö if Óï¾äÀïÃæÊ¹ÓÃÁË = ¸³Öµ·ûºÅ
+	// ÕâÑùµÄĞĞÎª»á±» LGTM ÅĞ¶¨ÎªÓĞÇ±ÔÚ´íÎó·çÏÕ, ÎªÁËĞŞÕı´Ë¾¯¸æ, ÎÒÃÇ½« len µÄ¸³Öµµ¥¶À²ğ¿ª
 	if (sscanf(message, "len %8x", &type) == 1)
 		len = 1;
 #endif // Pandas_CodeAnalysis_Suggestion
@@ -4240,10 +4239,10 @@ ACMD_FUNC(partyrecall)
 #ifdef Pandas_FuncLogic_ATCOMMAND_RELOAD
 //************************************
 // Method:      atcommand_status_recalc_pc
-// Description: é‡æ–°è®¡ç®—å…¨æœç©å®¶çš„èƒ½åŠ›å€¼å±æ€§
-//              ç”¨äº @reload ç³»åˆ—æŒ‡ä»¤åçš„å…¨æœç©å®¶èƒ½åŠ›å€¼åˆ·æ–°ä½¿ç”¨
+// Description: ÖØĞÂ¼ÆËãÈ«·şÍæ¼ÒµÄÄÜÁ¦ÖµÊôĞÔ
+//              ÓÃÓÚ @reload ÏµÁĞÖ¸ÁîºóµÄÈ«·şÍæ¼ÒÄÜÁ¦ÖµË¢ĞÂÊ¹ÓÃ
 // Returns:     void
-// Author:      Solaä¸¶å°å…‹(CairoLee)  2020/02/28 12:08
+// Author:      SolaØ¼Ğ¡¿Ë(CairoLee)  2020/02/28 12:08
 //************************************
 static void atcommand_status_recalc_pc() {
 	struct s_mapiterator* iter = nullptr;
@@ -4335,7 +4334,7 @@ ACMD_FUNC(reload) {
 		}
 
 #ifdef Pandas_FuncLogic_ATCOMMAND_RELOAD
-		// å½“æ‰§è¡Œå®Œæˆ @reloadbattleconf ä¹‹å, é‡æ–°è®¡ç®—å…¨æœç©å®¶çš„èƒ½åŠ›å€¼å±æ€§
+		// µ±Ö´ĞĞÍê³É @reloadbattleconf Ö®ºó, ÖØĞÂ¼ÆËãÈ«·şÍæ¼ÒµÄÄÜÁ¦ÖµÊôĞÔ
 		atcommand_status_recalc_pc();
 #endif // Pandas_FuncLogic_ATCOMMAND_RELOAD
 
@@ -4659,7 +4658,7 @@ ACMD_FUNC(mapinfo) {
 	clif_displaymessage(fd, atcmd_output);
 
 #ifdef Pandas_Mapflags
-	std::string atcmd_output_str(msg_txt_cn(sd, 100)); // ç†ŠçŒ«åœ°å›¾æ ‡è®°:
+	std::string atcmd_output_str(msg_txt_cn(sd, 100)); // ĞÜÃ¨µØÍ¼±ê¼Ç:
 	for (const auto& it : mapflag_config) {
 		int args_count = it.second.args.size();
 
@@ -4667,36 +4666,36 @@ ACMD_FUNC(mapinfo) {
 			if (args_count == 0) {
 				std::string temp_str = atcmd_output_str + " " + it.second.name + " |";
 
-				// å¦‚æœ temp_str çš„é•¿åº¦åŠ ä¸Šç°åœ¨ atcmd_output çš„é•¿åº¦ä¸è¶…è¿‡ CHAT_SIZE_MAX - 1,
-				// é‚£ä¹ˆå°±å¯ä»¥ç›´æ¥ä½¿ç”¨ temp_str çš„å†…å®¹
+				// Èç¹û temp_str µÄ³¤¶È¼ÓÉÏÏÖÔÚ atcmd_output µÄ³¤¶È²»³¬¹ı CHAT_SIZE_MAX - 1,
+				// ÄÇÃ´¾Í¿ÉÒÔÖ±½ÓÊ¹ÓÃ temp_str µÄÄÚÈİ
 				if (temp_str.size() < CHAT_SIZE_MAX - 1) {
 					atcmd_output_str = temp_str;
 				}
 				else {
-					// å…ˆå°† atcmd_output_str æ”¾åˆ° atcmd_output ä¸­
+					// ÏÈ½« atcmd_output_str ·Åµ½ atcmd_output ÖĞ
 					strncpy(atcmd_output, atcmd_output_str.c_str(), sizeof(atcmd_output) - 1);
 					atcmd_output[sizeof(atcmd_output) - 1] = '\0';
 
-					// è°ƒç”¨ clif_displaymessage è¿›è¡Œä¸€æ¬¡æ•°æ®å‘é€
+					// µ÷ÓÃ clif_displaymessage ½øĞĞÒ»´ÎÊı¾İ·¢ËÍ
 					clif_displaymessage(fd, atcmd_output);
 
-					// æ¸…ç©º atcmd_output_str ç¼“å†²åŒºä¸­çš„å†…å®¹
+					// Çå¿Õ atcmd_output_str »º³åÇøÖĞµÄÄÚÈİ
 					atcmd_output_str.clear();
 
-					// ç„¶åå†å°è¯•è¿›è¡Œæ‹¼æ¥å·¥ä½œ
+					// È»ºóÔÙ³¢ÊÔ½øĞĞÆ´½Ó¹¤×÷
 					atcmd_output_str = std::string(it.second.name) + " |";
 				}
 			}
 			else {
 				std::string args_mes;
-				// ä½¿ç”¨ç´¢å¼•éå† it.second.args
+				// Ê¹ÓÃË÷Òı±éÀú it.second.args
 				for (int i = 0; i < args_count; i++) {
 					const char* unit = it.second.args[i].unit;
 					if (unit == nullptr) {
 						unit = "";
 					}
 					args_mes += std::to_string(map_getmapflag_param(m_id, it.first, i + 1)) + unit;
-					// å¦‚æœä¸æ˜¯æœ€åä¸€ä¸ªå‚æ•°, é‚£ä¹ˆåœ¨å…¶æœ«å°¾è¿½åŠ åˆ†éš”ç¬¦
+					// Èç¹û²»ÊÇ×îºóÒ»¸ö²ÎÊı, ÄÇÃ´ÔÚÆäÄ©Î²×·¼Ó·Ö¸ô·û
 					if (i != args_count - 1) {
 						args_mes += ", ";
 					}
@@ -4704,23 +4703,23 @@ ACMD_FUNC(mapinfo) {
 
 				std::string temp_str = atcmd_output_str + " " + it.second.name + ": " + args_mes + " |";
 
-				// å¦‚æœ temp_str çš„é•¿åº¦åŠ ä¸Šç°åœ¨ atcmd_output çš„é•¿åº¦ä¸è¶…è¿‡ CHAT_SIZE_MAX - 1,
-				// é‚£ä¹ˆå°±å¯ä»¥ç›´æ¥ä½¿ç”¨ temp_str çš„å†…å®¹
+				// Èç¹û temp_str µÄ³¤¶È¼ÓÉÏÏÖÔÚ atcmd_output µÄ³¤¶È²»³¬¹ı CHAT_SIZE_MAX - 1,
+				// ÄÇÃ´¾Í¿ÉÒÔÖ±½ÓÊ¹ÓÃ temp_str µÄÄÚÈİ
 				if (temp_str.size() < CHAT_SIZE_MAX - 1) {
 					atcmd_output_str = temp_str;
 				}
 				else {
-					// å…ˆå°† atcmd_output_str æ”¾åˆ° atcmd_output ä¸­
+					// ÏÈ½« atcmd_output_str ·Åµ½ atcmd_output ÖĞ
 					strncpy(atcmd_output, atcmd_output_str.c_str(), sizeof(atcmd_output) - 1);
 					atcmd_output[sizeof(atcmd_output) - 1] = '\0';
 
-					// è°ƒç”¨ clif_displaymessage è¿›è¡Œä¸€æ¬¡æ•°æ®å‘é€
+					// µ÷ÓÃ clif_displaymessage ½øĞĞÒ»´ÎÊı¾İ·¢ËÍ
 					clif_displaymessage(fd, atcmd_output);
 
-					// æ¸…ç©º atcmd_output_str ç¼“å†²åŒºä¸­çš„å†…å®¹
+					// Çå¿Õ atcmd_output_str »º³åÇøÖĞµÄÄÚÈİ
 					atcmd_output_str.clear();
 
-					// ç„¶åå†å°è¯•è¿›è¡Œæ‹¼æ¥å·¥ä½œ
+					// È»ºóÔÙ³¢ÊÔ½øĞĞÆ´½Ó¹¤×÷
 					atcmd_output_str = std::string(it.second.name) + ": " + args_mes + " |";
 				}
 			}
@@ -6687,8 +6686,8 @@ ACMD_FUNC(autotrade) {
 #endif // Pandas_Struct_Autotrade_Extend
 
 #ifdef Pandas_Struct_Map_Session_Data_Autotrade_Configure
-	// è¿™é‡Œéœ€è¦ç«‹åˆ»å¡«å……ç›¸å…³çš„å¤‡ä»½ä¿¡æ¯, é¿å…åœ¨å®ŒæˆæŒ‡ä»¤ä¸‹çº¿å,
-	// æœåŠ¡å™¨æ²¡è¿˜é‡å¯çš„æƒ…å†µä¸‹, è§’è‰²å°±è¢« recall å¯¼è‡´æœå‘ç­‰æ•°æ®æ— æ³•æ¢å¤
+	// ÕâÀïĞèÒªÁ¢¿ÌÌî³äÏà¹ØµÄ±¸·İĞÅÏ¢, ±ÜÃâÔÚÍê³ÉÖ¸ÁîÏÂÏßºó,
+	// ·şÎñÆ÷Ã»»¹ÖØÆôµÄÇé¿öÏÂ, ½ÇÉ«¾Í±» recall µ¼ÖÂ³¯ÏòµÈÊı¾İÎŞ·¨»Ö¸´
 	sd->pandas.at_dir = sd->ud.dir;
 	sd->pandas.at_head_dir = sd->head_dir;
 	sd->pandas.at_sit = pc_issit(sd);
@@ -8112,7 +8111,7 @@ ACMD_FUNC(mobinfo)
 			int droprate = mob_getdroprate( &sd->bl, mob, mob->dropitem[i].rate, drop_modifier );
 
 #ifdef Pandas_Database_MobItem_FixedRatio
-			// è‹¥ä¸¥æ ¼å›ºå®šæ‰ç‡, é‚£ä¹ˆæ— è§†ä¸Šé¢çš„ç­‰çº§æƒ©ç½šã€VIPæ‰ç‡åŠ æˆç­‰è®¡ç®—
+			// ÈôÑÏ¸ñ¹Ì¶¨µôÂÊ, ÄÇÃ´ÎŞÊÓÉÏÃæµÄµÈ¼¶³Í·£¡¢VIPµôÂÊ¼Ó³ÉµÈ¼ÆËã
 			if (mobdrop_strict_droprate(id->nameid, mob->vd.class_))
 				droprate = mob->dropitem[i].rate;
 #endif // Pandas_Database_MobItem_FixedRatio
@@ -8675,7 +8674,7 @@ ACMD_FUNC(whodrops)
 					dropchance += (dropchance * battle_config.vip_drop_increase) / 100;
 
 #ifdef Pandas_Database_MobItem_FixedRatio
-				// è‹¥ä¸¥æ ¼å›ºå®šæ‰ç‡, é‚£ä¹ˆæ— è§†ä¸Šé¢çš„ç­‰çº§æƒ©ç½šã€VIPæ‰ç‡åŠ æˆç­‰è®¡ç®—
+				// ÈôÑÏ¸ñ¹Ì¶¨µôÂÊ, ÄÇÃ´ÎŞÊÓÉÏÃæµÄµÈ¼¶³Í·£¡¢VIPµôÂÊ¼Ó³ÉµÈ¼ÆËã
 				if (mobdrop_strict_droprate(id->nameid, id->mob[j].id))
 					dropchance = id->mob[j].chance;
 #endif // Pandas_Database_MobItem_FixedRatio
@@ -9387,8 +9386,8 @@ ACMD_FUNC(mapflag) {
 												MF_SKILL_DURATION };
 
 #ifdef Pandas_Mapflags
-			// éå† mapflag_config åœ°å›¾æ ‡è®°é…ç½®,
-			// å°†å…¶ä¸­ block_atcmd ä¸º true çš„ mapflag åŠ å…¥ disabled_mf
+			// ±éÀú mapflag_config µØÍ¼±ê¼ÇÅäÖÃ,
+			// ½«ÆäÖĞ block_atcmd Îª true µÄ mapflag ¼ÓÈë disabled_mf
 			for (const auto& it : mapflag_config) {
 				if (it.second.block_atcmd) {
 					disabled_mf.insert(disabled_mf.begin(), it.first);
@@ -10846,10 +10845,10 @@ ACMD_FUNC(fontcolor)
 }
 
 #ifndef Pandas_Message_Reorganize
-// ä½¿ç”¨ langtype æŒ‡ä»¤å¹¶ä¸æ˜¯éå¸¸å®Œç¾çš„è¯­è¨€åˆ‡æ¢è§£å†³æ–¹æ¡ˆ
-// å› ä¸ºä»–åªèƒ½æ›¿ä»£ä¸€éƒ¨åˆ†çš„æœåŠ¡ç«¯å›æ˜¾ä¿¡æ¯, å®¢æˆ·ç«¯éƒ¨åˆ†è¦åšåˆ°å®Œç¾æ”¯æŒå¤šè¯­è¨€ä¹Ÿéå¸¸éº»çƒ¦
-// ç†ŠçŒ«æ¨¡æ‹Ÿå™¨æš‚æ—¶å°†è¯¥æŒ‡ä»¤ç§»é™¤æ‰, é¿å…ä½¿ç”¨è¯¥æŒ‡ä»¤å¸¦æ¥ä¸€äº›å°ç™½ç©å®¶çš„ç–‘æƒ‘
-// è‹¥æ‚¨è§‰å¾—è¯¥æŒ‡ä»¤æœ‰ç”¨, æ¬¢è¿åœ¨ Github ä¸­æäº¤ Issue è¿›è¡Œè®¨è®º [Solaä¸¶å°å…‹]
+// Ê¹ÓÃ langtype Ö¸Áî²¢²»ÊÇ·Ç³£ÍêÃÀµÄÓïÑÔÇĞ»»½â¾ö·½°¸
+// ÒòÎªËûÖ»ÄÜÌæ´úÒ»²¿·ÖµÄ·şÎñ¶Ë»ØÏÔĞÅÏ¢, ¿Í»§¶Ë²¿·ÖÒª×öµ½ÍêÃÀÖ§³Ö¶àÓïÑÔÒ²·Ç³£Âé·³
+// ĞÜÃ¨Ä£ÄâÆ÷ÔİÊ±½«¸ÃÖ¸ÁîÒÆ³ıµô, ±ÜÃâÊ¹ÓÃ¸ÃÖ¸Áî´øÀ´Ò»Ğ©Ğ¡°×Íæ¼ÒµÄÒÉ»ó
+// ÈôÄú¾õµÃ¸ÃÖ¸ÁîÓĞÓÃ, »¶Ó­ÔÚ Github ÖĞÌá½» Issue ½øĞĞÌÖÂÛ [SolaØ¼Ğ¡¿Ë]
 ACMD_FUNC(langtype)
 {
 	char langstr[8];
@@ -11590,10 +11589,10 @@ ACMD_FUNC(setcard)
 
 #ifdef Pandas_AtCommand_RecallMap
 /* ===========================================================
- * æŒ‡ä»¤: recallmap
- * æè¿°: å¬å”¤å½“å‰(æˆ–æŒ‡å®š)åœ°å›¾çš„ç©å®¶æ¥åˆ°èº«è¾¹
- * ç”¨æ³•: @recallmap {mapname}
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: recallmap
+ * ÃèÊö: ÕÙ»½µ±Ç°(»òÖ¸¶¨)µØÍ¼µÄÍæ¼ÒÀ´µ½Éí±ß
+ * ÓÃ·¨: @recallmap {mapname}
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 ACMD_FUNC(recallmap) {
 	map_session_data* pl_sd = nullptr;
@@ -11604,12 +11603,12 @@ ACMD_FUNC(recallmap) {
 
 	nullpo_retr(-1, sd);
 
-	// è‹¥ä½¿ç”¨æŒ‡ä»¤æ—¶æ²¡æœ‰æºå¸¦ä»»ä½•å‚æ•°, é‚£ä¹ˆè®¤ä¸ºéœ€è¦å¬å”¤ GM æ‰€åœ¨åœ°å›¾çš„ç©å®¶
+	// ÈôÊ¹ÓÃÖ¸ÁîÊ±Ã»ÓĞĞ¯´øÈÎºÎ²ÎÊı, ÄÇÃ´ÈÏÎªĞèÒªÕÙ»½ GM ËùÔÚµØÍ¼µÄÍæ¼Ò
 	if (message == nullptr || message[0] == '\0') {
 		mapindex = sd->mapindex;
 	}
 
-	// è‹¥æºå¸¦äº†ä¸€ä¸ªå‚æ•°ä¸”æˆåŠŸè¢« sscanf åŒ¹é…, é‚£ä¹ˆä¿®æ”¹éœ€è¦å¬å”¤çš„ç©å®¶åœ°å›¾
+	// ÈôĞ¯´øÁËÒ»¸ö²ÎÊıÇÒ³É¹¦±» sscanf Æ¥Åä, ÄÇÃ´ĞŞ¸ÄĞèÒªÕÙ»½µÄÍæ¼ÒµØÍ¼
 	if (sscanf(message, "%15s[^\n]", mapname) == 1) {
 		mapindex = mapindex_name2id(mapname);
 		if (mapindex == 0)
@@ -11648,7 +11647,7 @@ ACMD_FUNC(recallmap) {
 	}
 	mapit_free(iter);
 
-	clif_displaymessage(fd, msg_txt_cn(sd, 1)); // å·²å¬å”¤æŒ‡å®šåœ°å›¾çš„å…¨éƒ¨ç©å®¶!
+	clif_displaymessage(fd, msg_txt_cn(sd, 1)); // ÒÑÕÙ»½Ö¸¶¨µØÍ¼µÄÈ«²¿Íæ¼Ò!
 	if (count) {
 		sprintf(atcmd_output, msg_txt(sd, 1033), count); // Because you are not authorized to warp from some maps, %d player(s) have not been recalled.
 		clif_displaymessage(fd, atcmd_output);
@@ -11660,10 +11659,10 @@ ACMD_FUNC(recallmap) {
 
 #ifdef Pandas_AtCommand_Crashtest
 /* ===========================================================
- * æŒ‡ä»¤: crashtest
- * æè¿°: æ‰§è¡Œå´©æºƒæµ‹è¯•, åœ¨æ¯”è¾ƒä¸¥æ ¼çš„ç¯å¢ƒä¸Šæ•…æ„è§¦å‘åœ°å›¾æœåŠ¡å™¨å´©æºƒ
- * ç”¨æ³•: @crashtest
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: crashtest
+ * ÃèÊö: Ö´ĞĞ±ÀÀ£²âÊÔ, ÔÚ±È½ÏÑÏ¸ñµÄ»·¾³ÉÏ¹ÊÒâ´¥·¢µØÍ¼·şÎñÆ÷±ÀÀ£
+ * ÓÃ·¨: @crashtest
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 ACMD_FUNC(crashtest) {
 	map_session_data* pl_sd = nullptr;
@@ -11676,7 +11675,7 @@ ACMD_FUNC(crashtest) {
 	}
 	mapit_free(iter);
 
-	// è‹¥å½“å‰æœåŠ¡å™¨åªæœ‰ä¸€ä¸ªäººåœ¨çº¿, é‚£ä¹ˆè§¦å‘åœ°å›¾æœåŠ¡å™¨å´©æºƒ
+	// Èôµ±Ç°·şÎñÆ÷Ö»ÓĞÒ»¸öÈËÔÚÏß, ÄÇÃ´´¥·¢µØÍ¼·şÎñÆ÷±ÀÀ£
 	if (count <= 1) {
 		ShowWarning("Map-Server will trigger an crash for testing the crashrpt system.\n");
 
@@ -11685,8 +11684,8 @@ ACMD_FUNC(crashtest) {
 #endif // Pandas_Google_Breakpad
 
 		int* crashint = nullptr;
-		// 2015å¹´08æœˆ17æ—¥æ˜¯ rAthenaCN ç¬¬ä¸€ä¸ªç‰ˆæœ¬çš„å‘å¸ƒæ—¥æœŸ
-		// åœ¨è¿­ä»£åˆ° v1.8.0 ç‰ˆæœ¬åå¼€æº, å¹¶æ›´åä¸º Pandas ç†ŠçŒ«æ¨¡æ‹Ÿå™¨å¹¶é‡å†™ç›¸å…³åŠŸèƒ½
+		// 2015Äê08ÔÂ17ÈÕÊÇ rAthenaCN µÚÒ»¸ö°æ±¾µÄ·¢²¼ÈÕÆÚ
+		// ÔÚµü´úµ½ v1.8.0 °æ±¾ºó¿ªÔ´, ²¢¸üÃûÎª Pandas ĞÜÃ¨Ä£ÄâÆ÷²¢ÖØĞ´Ïà¹Ø¹¦ÄÜ
 		*crashint = 20150817;
 	}
 	else {
@@ -11704,24 +11703,24 @@ ACMD_FUNC(crashtest) {
 
 #ifdef Pandas_AtCommand_Title
 /* ===========================================================
- * æŒ‡ä»¤: title
- * æè¿°: ç»™è§’è‰²è®¾ç½®ä¸€ä¸ªæŒ‡å®šçš„ç§°å·ID
- * ç”¨æ³•: @title <ç§°å·ID>
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: title
+ * ÃèÊö: ¸ø½ÇÉ«ÉèÖÃÒ»¸öÖ¸¶¨µÄ³ÆºÅID
+ * ÓÃ·¨: @title <³ÆºÅID>
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 ACMD_FUNC(title) {
 	nullpo_retr(-1, sd);
 
 #if PACKETVER < 20150513
-	clif_displaymessage(fd, msg_txt_cn(sd, 16));		// å¾ˆæŠ±æ­‰, æ‚¨çš„å®¢æˆ·ç«¯ç‰ˆæœ¬ä½äº 20150513, æ— æ³•ä½¿ç”¨è¯¥æŒ‡ä»¤.
+	clif_displaymessage(fd, msg_txt_cn(sd, 16));		// ºÜ±§Ç¸, ÄúµÄ¿Í»§¶Ë°æ±¾µÍÓÚ 20150513, ÎŞ·¨Ê¹ÓÃ¸ÃÖ¸Áî.
 	return -1;
 #endif
 
 	uint32 title_id = 0;
 
 	if (!message || !*message || sscanf(message, "%11d", &title_id) < 1) {
-		clif_displaymessage(fd, msg_txt_cn(sd, 12));	// ä½¿ç”¨æ–¹æ³•: @title <ç§°å·ID, è‹¥è®¾ä¸º 0 åˆ™å–æ¶ˆç§°å·>
-		clif_displaymessage(fd, msg_txt_cn(sd, 13));	// ç§°å·IDä¸ç§°å·çš„å¯¹ç…§è¡¨ä½äºå®¢æˆ·ç«¯: data\luafiles514\lua files\datainfo\titletable.lub
+		clif_displaymessage(fd, msg_txt_cn(sd, 12));	// Ê¹ÓÃ·½·¨: @title <³ÆºÅID, ÈôÉèÎª 0 ÔòÈ¡Ïû³ÆºÅ>
+		clif_displaymessage(fd, msg_txt_cn(sd, 13));	// ³ÆºÅIDÓë³ÆºÅµÄ¶ÔÕÕ±íÎ»ÓÚ¿Í»§¶Ë: data\luafiles514\lua files\datainfo\titletable.lub
 		return -1;
 	}
 
@@ -11729,11 +11728,11 @@ ACMD_FUNC(title) {
 
 	if (!title_id) {
 		npc_change_title_event(sd, title_id, 2);
-		clif_displaymessage(fd, msg_txt_cn(sd, 15));	// ç§°å·å·²å–æ¶ˆ.
+		clif_displaymessage(fd, msg_txt_cn(sd, 15));	// ³ÆºÅÒÑÈ¡Ïû.
 	}
 	else {
 		npc_change_title_event(sd, title_id, 2);
-		clif_displaymessage(fd, msg_txt_cn(sd, 14));	// ç§°å·å·²æ›´æ¢å®Œæ¯•.
+		clif_displaymessage(fd, msg_txt_cn(sd, 14));	// ³ÆºÅÒÑ¸ü»»Íê±Ï.
 	}
 
 	return 0;
@@ -11742,10 +11741,10 @@ ACMD_FUNC(title) {
 
 #ifdef Pandas_AtCommand_Suspend
 /* ===========================================================
- * æŒ‡ä»¤: suspend
- * æè¿°: ä½¿è§’è‰²è¿›å…¥ç¦»çº¿æŒ‚æœºæ¨¡å¼, ç»´æŒå½“å‰çš„å…¨éƒ¨çŠ¶æ€ (æœå‘, ç«™ç«‹ä¸å¦)
- * ç”¨æ³•: @suspend
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: suspend
+ * ÃèÊö: Ê¹½ÇÉ«½øÈëÀëÏß¹Ò»úÄ£Ê½, Î¬³Öµ±Ç°µÄÈ«²¿×´Ì¬ (³¯Ïò, Õ¾Á¢Óë·ñ)
+ * ÓÃ·¨: @suspend
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 ACMD_FUNC(suspend) {
 	nullpo_retr(-1, sd);
@@ -11767,10 +11766,10 @@ ACMD_FUNC(suspend) {
 
 #ifdef Pandas_AtCommand_AFK
 /* ===========================================================
- * æŒ‡ä»¤: afk
- * æè¿°: ä½¿è§’è‰²è¿›å…¥ç¦»å¼€æ¨¡å¼, è§’è‰²å°†ä¼šååˆ°åœ°ä¸Šå¹¶è‡ªåŠ¨ä½¿ç”¨ AFK å¤´é¥°
- * ç”¨æ³•: @afk
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: afk
+ * ÃèÊö: Ê¹½ÇÉ«½øÈëÀë¿ªÄ£Ê½, ½ÇÉ«½«»á×øµ½µØÉÏ²¢×Ô¶¯Ê¹ÓÃ AFK Í·ÊÎ
+ * ÓÃ·¨: @afk
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 ACMD_FUNC(afk) {
 	nullpo_retr(-1, sd);
@@ -11792,34 +11791,34 @@ ACMD_FUNC(afk) {
 
 #ifdef Pandas_AtCommand_Aura
 /* ===========================================================
- * æŒ‡ä»¤: aura
- * æè¿°: æ¿€æ´»æŒ‡å®šçš„å…‰ç¯ç»„åˆ
- * ç”¨æ³•: @aura
- * ä½œè€…: Solaä¸¶å°å…‹
+ * Ö¸Áî: aura
+ * ÃèÊö: ¼¤»îÖ¸¶¨µÄ¹â»·×éºÏ
+ * ÓÃ·¨: @aura
+ * ×÷Õß: SolaØ¼Ğ¡¿Ë
  * -----------------------------------------------------------*/
 ACMD_FUNC(aura) {
 	uint32 aura_id = 0;
 
 	if (!message || !*message || sscanf(message, "%11d", &aura_id) < 1) {
-		clif_displaymessage(fd, msg_txt_cn(sd, 101));	// ä½¿ç”¨æ–¹æ³•: @aura <å…‰ç¯ç¼–å·, è‹¥è®¾ä¸º 0 åˆ™å–æ¶ˆå…‰ç¯>
-		clif_displaymessage(fd, msg_txt_cn(sd, 102));	// å…‰ç¯ç¼–å·å®šä¹‰åœ¨ db/aura_db.yml çš„å…‰ç¯ç»„åˆæ•°æ®åº“ä¸­, æ›´å¤šä¿¡æ¯è¯·æŸ¥çœ‹æ•°æ®åº“é¡¶éƒ¨çš„æ³¨é‡Š.
+		clif_displaymessage(fd, msg_txt_cn(sd, 101));	// Ê¹ÓÃ·½·¨: @aura <¹â»·±àºÅ, ÈôÉèÎª 0 ÔòÈ¡Ïû¹â»·>
+		clif_displaymessage(fd, msg_txt_cn(sd, 102));	// ¹â»·±àºÅ¶¨ÒåÔÚ db/aura_db.yml µÄ¹â»·×éºÏÊı¾İ¿âÖĞ, ¸ü¶àĞÅÏ¢Çë²é¿´Êı¾İ¿â¶¥²¿µÄ×¢ÊÍ.
 		return -1;
 	}
 
 	aura_id = max(aura_id, 0);
 
 	if (aura_id && !aura_search(aura_id)) {
-		clif_displaymessage(fd, msg_txt_cn(sd, 105));	// å¾ˆæŠ±æ­‰, æŒ‡å®šçš„å…‰ç¯ç¼–å·æ— æ•ˆ, è¯·æ£€æŸ¥åé‡æ–°è¾“å…¥.
+		clif_displaymessage(fd, msg_txt_cn(sd, 105));	// ºÜ±§Ç¸, Ö¸¶¨µÄ¹â»·±àºÅÎŞĞ§, Çë¼ì²éºóÖØĞÂÊäÈë.
 		return -1;
 	}
 
 	aura_make_effective(&sd->bl, aura_id);
 
 	if (aura_id != 0) {
-		clif_displaymessage(fd, msg_txt_cn(sd, 103));	// å·²æ¿€æ´»æŒ‡å®šçš„å…‰ç¯æ•ˆæœ.
+		clif_displaymessage(fd, msg_txt_cn(sd, 103));	// ÒÑ¼¤»îÖ¸¶¨µÄ¹â»·Ğ§¹û.
 	}
 	else {
-		clif_displaymessage(fd, msg_txt_cn(sd, 104));	// å·²å…³é—­å…‰ç¯æ•ˆæœ.
+		clif_displaymessage(fd, msg_txt_cn(sd, 104));	// ÒÑ¹Ø±Õ¹â»·Ğ§¹û.
 	}
 
 	return 0;
@@ -11844,25 +11843,25 @@ void atcommand_basecommands(void) {
 	AtCommandInfo atcommand_base[] = {
 
 #ifdef Pandas_AtCommand_RecallMap
-		ACMD_DEF(recallmap),			// å¬å”¤å½“å‰(æˆ–æŒ‡å®š)åœ°å›¾çš„ç©å®¶æ¥åˆ°èº«è¾¹ [Solaä¸¶å°å…‹]
+		ACMD_DEF(recallmap),			// ÕÙ»½µ±Ç°(»òÖ¸¶¨)µØÍ¼µÄÍæ¼ÒÀ´µ½Éí±ß [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_AtCommand_RecallMap
 #ifdef Pandas_AtCommand_Crashtest
-		ACMD_DEF(crashtest),			// æ‰§è¡Œå´©æºƒæµ‹è¯•, åœ¨æ¯”è¾ƒä¸¥æ ¼çš„ç¯å¢ƒä¸Šæ•…æ„è§¦å‘åœ°å›¾æœåŠ¡å™¨å´©æºƒ [Solaä¸¶å°å…‹]
+		ACMD_DEF(crashtest),			// Ö´ĞĞ±ÀÀ£²âÊÔ, ÔÚ±È½ÏÑÏ¸ñµÄ»·¾³ÉÏ¹ÊÒâ´¥·¢µØÍ¼·şÎñÆ÷±ÀÀ£ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_AtCommand_Crashtest
 #ifdef Pandas_AtCommand_Title
-		ACMD_DEF(title),				// ç»™è§’è‰²è®¾ç½®ä¸€ä¸ªæŒ‡å®šçš„ç§°å·ID [Solaä¸¶å°å…‹]
+		ACMD_DEF(title),				// ¸ø½ÇÉ«ÉèÖÃÒ»¸öÖ¸¶¨µÄ³ÆºÅID [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_AtCommand_Title
 #ifdef Pandas_AtCommand_Suspend
-		ACMD_DEF(suspend),				// ä½¿è§’è‰²è¿›å…¥ç¦»çº¿æŒ‚æœºæ¨¡å¼ [Solaä¸¶å°å…‹]
+		ACMD_DEF(suspend),				// Ê¹½ÇÉ«½øÈëÀëÏß¹Ò»úÄ£Ê½ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_AtCommand_Suspend
 #ifdef Pandas_AtCommand_AFK
-		ACMD_DEF(afk),					// ä½¿è§’è‰²è¿›å…¥ç¦»å¼€æ¨¡å¼ [Solaä¸¶å°å…‹]
+		ACMD_DEF(afk),					// Ê¹½ÇÉ«½øÈëÀë¿ªÄ£Ê½ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_AtCommand_AFK
 #ifdef Pandas_AtCommand_Aura
-		ACMD_DEF(aura),					// æ¿€æ´»æŒ‡å®šçš„å…‰ç¯ç»„åˆ [Solaä¸¶å°å…‹]
+		ACMD_DEF(aura),					// ¼¤»îÖ¸¶¨µÄ¹â»·×éºÏ [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_AtCommand_Aura
 #ifdef Pandas_AtCommand_ReloadLaphineDB
-		ACMD_DEF2("reloadlaphinedb", reload),			// é‡æ–°åŠ è½½ Laphine æ•°æ®åº“ [Solaä¸¶å°å…‹]
+		ACMD_DEF2("reloadlaphinedb", reload),			// ÖØĞÂ¼ÓÔØ Laphine Êı¾İ¿â [SolaØ¼Ğ¡¿Ë]
 #endif // Pandas_AtCommand_ReloadLaphineDB
 		// PYHELP - ATCMD - INSERT POINT - <Section 3>
 
@@ -12300,14 +12299,14 @@ static void atcommand_get_suggestions(map_session_data* sd, const char *name, bo
 #ifdef Pandas_BattleConfig_AtCmd_No_Permission
 //************************************
 // Method:      atcommand_noperm_halt
-// Description: åˆ¤æ–­å½“å‰è§’è‰²æ˜¯å¦æ— æƒæ‰§è¡Œ GM æŒ‡ä»¤, å¹¶æ ¹æ® atcmd_no_permission è®¾ç½®è¿›è¡Œå¤„ç†
+// Description: ÅĞ¶Ïµ±Ç°½ÇÉ«ÊÇ·ñÎŞÈ¨Ö´ĞĞ GM Ö¸Áî, ²¢¸ù¾İ atcmd_no_permission ÉèÖÃ½øĞĞ´¦Àí
 // Parameter:   const int fd
 // Parameter:   map_session_data * sd
 // Parameter:   const char * command
 // Parameter:   int fromtype
 // Parameter:   bool is_atcommand
-// Returns:     bool è¿”å› true è¡¨ç¤ºåº”è¯¥ç«‹åˆ»ä¸­æ–­åç»­æµç¨‹
-// Author:      Solaä¸¶å°å…‹(CairoLee)  2020/03/01 11:11
+// Returns:     bool ·µ»Ø true ±íÊ¾Ó¦¸ÃÁ¢¿ÌÖĞ¶ÏºóĞøÁ÷³Ì
+// Author:      SolaØ¼Ğ¡¿Ë(CairoLee)  2020/03/01 11:11
 //************************************
 static bool atcommand_noperm_halt(const int fd, map_session_data* sd, const char* command, int fromtype, bool is_atcommand) {
 	AtCommandInfo* info;

@@ -9,11 +9,10 @@
 
 #include "script.hpp"
 
-#include <atomic>
-#include <errno.h>
-#include <math.h>
-#include <setjmp.h>
-#include <stdlib.h> // atoi, strtol, strtoll, exit
+#include <cerrno>
+#include <cmath>
+#include <csetjmp>
+#include <cstdlib> // atoi, strtol, strtoll, exit
 
 #ifdef Pandas_ScriptEngine_Express
 #include <cctype>	// toupper, tolower

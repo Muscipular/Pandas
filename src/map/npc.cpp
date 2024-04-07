@@ -3,9 +3,9 @@
 
 #include "npc.hpp"
 
-#include <errno.h>
+#include <cerrno>
+#include <cstdlib>
 #include <map>
-#include <stdlib.h>
 #include <vector>
 #ifdef Pandas_Struct_Map_Session_Data_EventHalt
 #include <exception>
