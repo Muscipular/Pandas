@@ -1824,7 +1824,7 @@ int64 battle_calc_damage(struct block_list *src,struct block_list *bl,struct Dam
 
 		if((sce=tsc->getSCE(SC_ARMOR)) && //NPC_DEFENDER
 			sce->val3&flag && sce->val4&flag)
-			damage -= damage * tsc->getSCE(SC_ARMOR)->val2 / 100;
+			damage /= tsc->getSCE(SC_ARMOR)->val2;
 
 		if( tsc->getSCE(SC_ENERGYCOAT) && (skill_id == GN_HELLS_PLANT_ATK ||
 #ifdef RENEWAL
@@ -3073,10 +3073,9 @@ static bool is_attack_critical(struct Damage* wd, struct block_list *src, struct
 	if (!first_call)
 		return (wd->type == DMG_CRITICAL || wd->type == DMG_MULTI_HIT_CRITICAL);
 
-#ifdef RENEWAL
 	if (skill_id == NPC_CRITICALSLASH || skill_id == LG_PINPOINTATTACK) //Always critical skills
 		return true;
-#endif
+
 
 	status_change *sc = status_get_sc(src);
 
@@ -3519,25 +3518,72 @@ static bool attack_ignores_def(struct Damage* wd, struct block_list *src, struct
 	return nk[NK_IGNOREDEFENSE] != 0;
 }
 
-/*================================================
- * Should skill attack consider VVS and masteries?
- *------------------------------------------------
- * Credits:
- *	Original coder Skotlex
- *	Initial refactoring by Baalberith
- *	Refined and optimized by helvetica
+ * @param skill_id: Skill being used
+ * @param type 1 - Checking refine bonus; 2 - Checking Star Crumb bonus
+ * @return true = bonus applies; false = bonus does not apply
  */
-static bool battle_skill_stacks_masteries_vvs(uint16 skill_id)
+static bool battle_skill_stacks_masteries_vvs(uint16 skill_id, int type)
 {
-	if (
-#ifndef RENEWAL
-		skill_id == PA_SHIELDCHAIN || skill_id == CR_SHIELDBOOMERANG ||
-		skill_id == PA_SACRIFICE || skill_id == AM_ACIDTERROR ||
-#endif
-		skill_id == MO_INVESTIGATE || skill_id == MO_EXTREMITYFIST ||
-		skill_id == RK_DRAGONBREATH || skill_id == RK_DRAGONBREATH_WATER || skill_id == NC_SELFDESTRUCTION ||
-		skill_id == LG_SHIELDPRESS || skill_id == LG_EARTHDRIVE)
+	switch (skill_id) {
+		// PC skills that are unaffected
+		case PA_SHIELDCHAIN:
+		case CR_SHIELDBOOMERANG:
+		case AM_ACIDTERROR:
+		case MO_INVESTIGATE:
+		case MO_EXTREMITYFIST:
+		case PA_SACRIFICE:
+		case RK_DRAGONBREATH:
+		case RK_DRAGONBREATH_WATER:
+		case NC_SELFDESTRUCTION:
+		case LG_SHIELDPRESS:
+		case LG_EARTHDRIVE:
+		// NPC skills that are unaffected
+		case NPC_FIREBREATH:
+		case NPC_ICEBREATH:
+		case NPC_THUNDERBREATH:
+		case NPC_ACIDBREATH:
+		case NPC_DARKNESSBREATH:
+		case NPC_VAMPIRE_GIFT:
+		case NPC_DRAGONBREATH:
 			return false;
+		case CR_GRANDCROSS:
+		case NPC_GRANDDARKNESS:
+			// Grand Cross is influenced by refine bonus but not by atkpercent / masteries / Star Crumbs / Spirit Spheres
+			if (type != 1)
+				return false;
+			break;
+		case LK_SPIRALPIERCE:
+			// Spiral Pierce is influenced only by refine bonus and Star Crumbs
+			if (type != 1 && type != 2)
+				return false;
+			break;
+	}
+
+	return true;
+}
+
+/**
+ * This function lists which skills are unaffected by EDP and the elemental bonus from Magnum Break / EDP
+ * Unit skills (e.g. Bomb and Freezing Trap) are never affected.
+ * @param skill_id: Skill being used
+ * @return true = bonus applies; false = bonus does not apply
+ */
+static bool battle_skill_stacks_edp_element(uint16 skill_id)
+{
+	switch (skill_id) {
+		case TF_SPRINKLESAND:
+		case AS_SPLASHER:
+		case ASC_METEORASSAULT:
+		case ASC_BREAKER:
+		case AS_VENOMKNIFE:
+		case AM_ACIDTERROR:
+			return false;
+		default:
+			//Unit skills
+			if (skill_get_unit_id(skill_id))
+				return false;
+			break;
+	}
 
 	return true;
 }
