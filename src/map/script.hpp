@@ -2531,7 +2531,8 @@ enum e_inventory_query_flag : uint32{
 	INV_FAVORITE		= 0x2000,
 	INV_UID				= 0x4000,
 	INV_EQUIPSWITCH		= 0x8000,
-	INV_ALL				= 0xFFFF
+	INV_IVAL            = 0x10000,
+	INV_ALL				= 0xFFFFFFFF
 };
 #endif // Pandas_ScriptCommand_GetInventoryList
 

@@ -598,6 +598,8 @@ int char_memitemdata_to_sql(const struct item items[], int max, int id, enum sto
 
 	for( i = 0; i < MAX_SLOTS; ++i )
 		StringBuf_Printf(&buf, ", `card%d`", i);
+	for( i = 0; i < ARRAYLENGTH(item.ival); ++i )
+		StringBuf_Printf(&buf, ", `ival%d`", i);
 	for( i = 0; i < MAX_ITEM_RDM_OPT; ++i ) {
 		StringBuf_Printf(&buf, ", `option_id%d`", i);
 		StringBuf_Printf(&buf, ", `option_val%d`", i);

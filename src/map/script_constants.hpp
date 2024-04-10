@@ -259,6 +259,7 @@
 	export_constant(INV_FAVORITE);
 	export_constant(INV_UID);
 	export_constant(INV_EQUIPSWITCH);
+	export_constant(INV_IVAL);
 	export_constant(INV_ALL);
 #endif // Pandas_ScriptCommand_GetInventoryList
 

@@ -9642,7 +9642,10 @@ BUILDIN_FUNC(makeitem) {
 	// 这部分放在了 clif_dropflooritem 进行, 底部的 map_addflooritem 最终会调用它
 #endif // Pandas_ScriptCommand_Next_Dropitem_Special
 
+	script_pushint(st, map_addflooritem(&item_tmp, amount, m, x, y, 0, 0, 0, 4, 0, canShowEffect));
+	/*
 	map_addflooritem(&item_tmp, amount, m, x, y, 0, 0, 0, 4, 0, canShowEffect);
+	*/
 	return SCRIPT_CMD_SUCCESS;
 }
 
@@ -9776,7 +9779,10 @@ BUILDIN_FUNC(makeitem2) {
 			}
 		}
 
+		script_pushint(st, map_addflooritem(&item_tmp, amount, m, x, y, 0, 0, 0, 4, 0, canShowEffect));
+		/*
 		map_addflooritem(&item_tmp, amount, m, x, y, 0, 0, 0, 4, 0, canShowEffect);
+		 */
 	}
 	else
 		return SCRIPT_CMD_FAILURE;
@@ -16845,6 +16851,10 @@ BUILDIN_FUNC(getinventorylist) {
 		sprintf(card_var, "@inventorylist_card%d", k + 1);
 		script_cleararray_pc(sd, card_var);
 	}
+	for (k = 0; k < ARRAYLENGTH(inventory[0].ival); k++) {
+		sprintf(card_var, "@inventorylist_ival%d", k + 1);
+		script_cleararray_pc(sd, card_var);
+	}
 	script_cleararray_pc(sd, "@inventorylist_expire");
 	script_cleararray_pc(sd, "@inventorylist_bound");
 	script_cleararray_pc(sd, "@inventorylist_enchantgrade");
@@ -16875,6 +16885,10 @@ BUILDIN_FUNC(getinventorylist) {
 		for (k = 0; k < MAX_SLOTS; k++) {
 			sprintf(card_var, "@inventorylist_card%d", k + 1);
 			setreg(INV_CARD, card_var, inventory[i].card[k]);
+		}
+		for (k = 0; k < ARRAYLENGTH(inventory[0].ival); k++) {
+			sprintf(card_var, "@inventorylist_ival%d", k + 1);
+			setreg(INV_IVAL, card_var, inventory[i].ival[k]);
 		}
 		setreg(INV_EXPIRE, "@inventorylist_expire", inventory[i].expire_time);
 		setreg(INV_BOUND, "@inventorylist_bound", inventory[i].bound);
@@ -30744,8 +30758,10 @@ BUILDIN_FUNC(getinventoryinfo) {
 	case 28: script_pushint(st, inventory[idx].enchantgrade); break;
 	case 29: script_pushint(st, inventory[idx].equipSwitch); break;
 	case 30: script_pushint(st, inventory[idx].favorite); break;
+	case 31: case 32: case 33: case 34: case 35: case 36: case 37 :case 38:
+		script_pushint(st, inventory[idx].ival[type - 31]); break;
 	default:
-		ShowWarning("buildin_%s: The type should be in range 0-%d, currently type is: %d.\n", command, 30, type);
+		ShowWarning("buildin_%s: The type should be in range 0-%d, currently type is: %d.\n", command, 38, type);
 		script_pushint(st, -1);
 		return SCRIPT_CMD_FAILURE;
 	}
@@ -30753,6 +30769,60 @@ BUILDIN_FUNC(getinventoryinfo) {
 	return SCRIPT_CMD_SUCCESS;
 }
 #endif // Pandas_ScriptCommand_GetInventoryInfo
+
+BUILDIN_FUNC(getmapiteminfo) {
+	int blid = script_getnum(st, 2);
+	const char* command = script_getfuncname(st);
+
+	struct item* inventory = nullptr;
+
+	auto bl = BL_CAST(BL_ITEM, map_id2bl(blid));
+	if (!bl)	{
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	if (st->state == RERUNLINE) {
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	int idx = 0;
+	inventory = &bl->item;
+
+	int type = script_getnum(st, 3);
+	switch (type)
+	{
+	case 0:  script_pushint(st, inventory[idx].nameid); break;
+	case 1:  script_pushint(st, inventory[idx].amount); break;
+	case 2:  script_pushint(st, inventory[idx].equip); break;
+	case 3:  script_pushint(st, inventory[idx].refine); break;
+	case 4:  script_pushint(st, inventory[idx].identify); break;
+	case 5:  script_pushint(st, inventory[idx].attribute); break;
+	case 6:  script_pushint(st, inventory[idx].card[0]); break;
+	case 7:  script_pushint(st, inventory[idx].card[1]); break;
+	case 8:  script_pushint(st, inventory[idx].card[2]); break;
+	case 9:  script_pushint(st, inventory[idx].card[3]); break;
+	case 10: script_pushint(st, inventory[idx].expire_time); break;
+	case 11: script_pushint(st, inventory[idx].unique_id); break;
+	case 12: case 13: case 14: case 15: case 16:
+		script_pushint(st, inventory[idx].option[type - 12].id); break;
+	case 17: case 18: case 19: case 20: case 21:
+		script_pushint(st, inventory[idx].option[type - 17].value); break;
+	case 22: case 23: case 24: case 25: case 26:
+		script_pushint(st, inventory[idx].option[type - 22].param); break;
+	case 27: script_pushint(st, inventory[idx].bound); break;
+	case 28: script_pushint(st, inventory[idx].enchantgrade); break;
+	case 29: script_pushint(st, inventory[idx].equipSwitch); break;
+	case 30: script_pushint(st, inventory[idx].favorite); break;
+	case 31: case 32: case 33: case 34: case 35: case 36: case 37:case 38:
+		script_pushint(st, inventory[idx].ival[type - 31]); break;
+	default:
+		ShowWarning("buildin_%s: The type should be in range 0-%d, currently type is: %d.\n", command, 38, type);
+		script_pushint(st, -1);
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	return SCRIPT_CMD_SUCCESS;
+}
 
 #ifdef Pandas_ScriptCommand_StatusCheck
 /* ===========================================================
@@ -32288,7 +32358,7 @@ BUILDIN_FUNC(setinventoryinfo) {
 	int expire_tick = 0, flag = 0;
 	int idx = script_getnum(st, 2);
 	int type = script_getnum(st, 3);
-	uint64 value = script_getnum(st, 4);
+	auto value = script_getnum64(st, 4);
 	bool need_recalc_status = false;
 
 	if (!script_charid2sd(6, sd)) {
@@ -32421,6 +32491,10 @@ BUILDIN_FUNC(setinventoryinfo) {
 		value = cap_value(value, 0, 1);
 		sd->inventory.u.items_inventory[idx].favorite = (char)value;
 		break;
+	case 31: case 32: case 33: case 34: case 35: case 36: case 37:case 38:
+		value = cap_value(value, INT_MIN, INT_MAX);
+		sd->inventory.u.items_inventory[idx].ival[type - 31] = (int)value;
+		break;
 	default:
 		ShowWarning("buildin_setinventoryinfo: The type should be in range 3-%d, currently type is: %d.\n", 30, type);
 		script_pushint(st, 0);
@@ -32437,6 +32511,117 @@ BUILDIN_FUNC(setinventoryinfo) {
 	return SCRIPT_CMD_SUCCESS;
 }
 #endif // Pandas_ScriptCommand_SetInventoryInfo
+
+BUILDIN_FUNC(setmapiteminfo) {
+	int blid = script_getnum(st, 2);
+	const char* command = script_getfuncname(st);
+	int type = script_getnum(st, 3);
+	int64_t value = script_getnum64(st, 4);
+	struct item* inventory = nullptr;
+
+	auto bl = BL_CAST(BL_ITEM, map_id2bl(blid));
+	if (!bl) {
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	if (st->state == RERUNLINE) {
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	int idx = 0;
+	inventory = &bl->item;
+
+
+	switch (type)
+	{
+	case 3:
+		value = cap_value(value, 0, MAX_REFINE);
+		inventory[idx].refine = (char)value;
+		break;
+	case 4:
+		value = cap_value(value, 0, 1);
+		inventory[idx].identify = (char)value;
+		break;
+	case 5:
+		value = cap_value(value, 0, 1);
+		inventory[idx].attribute = (char)value;
+		break;
+	case 6: case 7: case 8: case 9: {
+		if (!value) {
+			inventory[idx].card[type - 6] = 0;
+			break;
+		}
+
+		std::shared_ptr<item_data> card_itemdata = item_db.find((t_itemid)value);
+		if (!card_itemdata) {
+			ShowWarning("buildin_setmapiteminfo: Nonexistant item : %u.\n", value);
+			script_pushint(st, 0);
+			return SCRIPT_CMD_SUCCESS;
+		}
+		inventory[idx].card[type - 6] = card_itemdata->nameid;
+		break;
+	}
+	case 10:
+		value = cap_value(value, 0, INT_MAX);
+		inventory[idx].expire_time = (unsigned int)value; // Timestamp, not seconds
+
+		break;
+	case 11:
+		inventory[idx].unique_id = value;
+		break;
+	case 12: case 13: case 14: case 15: case 16:
+		if (value) {
+			inventory[idx].option[type - 12].id = (short)value;
+		}
+		else {
+			inventory[idx].option[type - 12].id = 0;
+			inventory[idx].option[type - 12].value = 0;
+			inventory[idx].option[type - 12].param = 0;
+		}
+		break;
+	case 17: case 18: case 19: case 20: case 21:
+		inventory[idx].option[type - 17].value = (short)value;
+		break;
+	case 22: case 23: case 24: case 25: case 26:
+		inventory[idx].option[type - 22].param = (char)value;
+		break;
+	case 27:
+		if (value < BOUND_NONE || value >= BOUND_MAX) {
+			ShowWarning("buildin_setmapiteminfo: Invalid bound type\n");
+			script_pushint(st, 0);
+			return SCRIPT_CMD_SUCCESS;
+		}
+		inventory[idx].bound = (char)value;
+		break;
+	case 28:
+		if (value < 0 || value > MAX_ENCHANTGRADE) {
+			ShowWarning("buildin_setmapiteminfo: The Value should be in range 0-%d, but you passed %d.\n", MAX_ENCHANTGRADE, value);
+			script_pushint(st, 0);
+			return SCRIPT_CMD_SUCCESS;
+		}
+		inventory[idx].enchantgrade = (uint8)value;
+		break;
+	case 29:
+		inventory[idx].equipSwitch = (unsigned int)value;
+		break;
+	case 30:
+		value = cap_value(value, 0, 1);
+		inventory[idx].favorite = (char)value;
+		break;
+	case 31: case 32: case 33: case 34: case 35: case 36: case 37:case 38:
+		value = cap_value(value, INT_MIN, INT_MAX);
+		inventory[idx].ival[type - 31] = (int)value;
+		break;
+	default:
+		ShowWarning("buildin_setmapiteminfo: The type should be in range 3-%d, currently type is: %d.\n", 38, type);
+		script_pushint(st, 0);
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	script_pushint(st, 1);
+	return SCRIPT_CMD_SUCCESS;
+}
+
 
 #ifdef Pandas_ScriptCommand_UpdateInventory
 /* ===========================================================
@@ -35970,6 +36155,8 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(getglobalstack, ""),
 	BUILDIN_DEF(set_chara_temp_novice, "i"),
 	BUILDIN_DEF(restore_chara_temp, "i"),
+	BUILDIN_DEF(setmapiteminfo, "ii"),
+	BUILDIN_DEF(getmapiteminfo, "iii"),
 #include <custom/script_def.inc>
 
 	{NULL,NULL,NULL},
