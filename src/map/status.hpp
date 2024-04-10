@@ -1,4 +1,4 @@
-﻿// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
+// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
 #ifndef STATUS_HPP
@@ -1350,10 +1350,10 @@ enum sc_type : int16 {
 	SC_TEMPORARY_COMMUNION,
 	SC_BLESSING_OF_M_CREATURES,
 	SC_BLESSING_OF_M_C_DEBUFF,
+	SC_EXTREMITYFIST2,
+	SC_POWERUP,
+	SC_AGIUP,
 
-#ifdef RENEWAL
-	SC_EXTREMITYFIST2, //! NOTE: This SC should be right before SC_MAX, so it doesn't disturb if RENEWAL is disabled
-#endif
 
 	SC_CUSTOM_0,
 	SC_CUSTOM_1,

@@ -3185,7 +3185,7 @@ static bool is_attack_critical(struct Damage* wd, struct block_list *src, struct
 		}
 		if(tsd && tsd->bonus.critical_def)
 			cri = cri * ( 100 - tsd->bonus.critical_def ) / 100;
-		//法术暴击计算
+		//������������
 		if (wd->flag & BF_MAGIC) {
 			int cr = sd->bonus.sk_cri;
 			for (auto& sk : sd->sk_cri) {
@@ -4582,6 +4582,8 @@ static unsigned short battle_get_atkpercent(struct block_list* bl, uint16 skill_
 		atkpercent -= 25;
 	if (sc->getSCE(SC_INCATKRATE))
 		atkpercent += sc->getSCE(SC_INCATKRATE)->val1;
+	if (sc->getSCE(SC_POWERUP))
+		atkpercent += sc->getSCE(SC_POWERUP)->val1;
 	if (sc->getSCE(SC_SKE))
 		atkpercent += 300;
 	if (sc->getSCE(SC_BLOODLUST))
@@ -9214,7 +9216,7 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 #endif
 	} //Hint: Against plants damage will still be 1 at this point
 
-	//法术暴击
+	//��������
 	{
 		if (sd) {
 			Damage dmgDummy;
@@ -9738,16 +9740,16 @@ struct Damage battle_calc_attack(int attack_type,struct block_list *bl,struct bl
 	if (skill_id && bl && map_getmapflag(bl->m, MF_MAXDMG_SKILL)) {
 		int val = map_getmapflag_param(bl->m, MF_MAXDMG_SKILL, 1);
 		if (val > 0 && d.damage + d.damage2 > val) {
-			int64 overval = (d.damage + d.damage2) - val;	// 超了多少
+			int64 overval = (d.damage + d.damage2) - val;	// ���˶���
 			if (d.damage2 >= overval) {
-				// 如果 damage2 足够被扣减, 那么优先扣减 damage2
+				// ��� damage2 �㹻���ۼ�, ��ô���ȿۼ� damage2
 				d.damage2 -= overval;
 			}
 			else {
-				// 如果 damage2 不足以被扣减, 那么先把 damage2 调为 0
-				overval -= d.damage2;	// 更新超出的伤害数
+				// ��� damage2 �����Ա��ۼ�, ��ô�Ȱ� damage2 ��Ϊ 0
+				overval -= d.damage2;	// ���³������˺���
 				d.damage2 = 0;
-				d.damage = cap_value(d.damage - overval, 0, val);	// 最后再扣减 damage 中的伤害
+				d.damage = cap_value(d.damage - overval, 0, val);	// ����ٿۼ� damage �е��˺�
 			}
 		}
 	}
@@ -9757,16 +9759,16 @@ struct Damage battle_calc_attack(int attack_type,struct block_list *bl,struct bl
 	if (!skill_id && bl && map_getmapflag(bl->m, MF_MAXDMG_NORMAL)) {
 		int val = map_getmapflag_param(bl->m, MF_MAXDMG_NORMAL, 1);
 		if (val > 0 && d.damage + d.damage2 > val) {
-			int64 overval = (d.damage + d.damage2) - val;	// 超了多少
+			int64 overval = (d.damage + d.damage2) - val;	// ���˶���
 			if (d.damage2 >= overval) {
-				// 如果 damage2 足够被扣减, 那么优先扣减 damage2
+				// ��� damage2 �㹻���ۼ�, ��ô���ȿۼ� damage2
 				d.damage2 -= overval;
 			}
 			else {
-				// 如果 damage2 不足以被扣减, 那么先把 damage2 调为 0
-				overval -= d.damage2;	// 更新超出的伤害数
+				// ��� damage2 �����Ա��ۼ�, ��ô�Ȱ� damage2 ��Ϊ 0
+				overval -= d.damage2;	// ���³������˺���
 				d.damage2 = 0;
-				d.damage = cap_value(d.damage - overval, 0, val);	// 最后再扣减 damage 中的伤害
+				d.damage = cap_value(d.damage - overval, 0, val);	// ����ٿۼ� damage �е��˺�
 			}
 		}
 	}
@@ -10489,10 +10491,10 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 
 #ifdef Pandas_NpcExpress_PCHARMED
 	if (src && target && damage > 0) {
-		// 负责执行事件的玩家对象 (事件执行者)
+		// ����ִ���¼�����Ҷ��� (�¼�ִ����)
 		map_session_data* esd = nullptr;
 
-		// 若受伤害者不是玩家单位, 那么试图获取受伤害者的主人
+		// �����˺��߲�����ҵ�λ, ��ô��ͼ��ȡ���˺��ߵ�����
 		if (target->type != BL_PC) {
 			struct block_list* mbl = nullptr;
 			mbl = battle_get_master(target);
@@ -10501,13 +10503,13 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 			}
 		}
 		
-		// 若负责执行事件的玩家对象依然没被指定
-		// 且受伤害者是一个玩家单位, 那么将受伤害者直接指定成负责执行事件的玩家
+		// �����ִ���¼�����Ҷ�����Ȼû��ָ��
+		// �����˺�����һ����ҵ�λ, ��ô�����˺���ֱ��ָ���ɸ���ִ���¼������
 		if (!esd && target->type == BL_PC) {
 			esd = (TBL_PC*)target;
 		}
 
-		// 若到这里还没有一个合适的事件执行者则不需要触发事件
+		// ������ﻹû��һ�����ʵ��¼�ִ��������Ҫ�����¼�
 		if (esd) {
 			pc_setreg(esd, add_str("@harmed_target_type"), target->type);
 			pc_setreg(esd, add_str("@harmed_target_gid"), target->id);
@@ -10531,10 +10533,10 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 
 #ifdef Pandas_NpcExpress_PCATTACK
 	if (src && target && damage > 0) {
-		// 负责执行事件的玩家对象 (事件执行者)
+		// ����ִ���¼�����Ҷ��� (�¼�ִ����)
 		map_session_data* esd = nullptr;
 
-		// 若攻击者不是玩家单位, 那么试图获取攻击者的主人
+		// ������߲�����ҵ�λ, ��ô��ͼ��ȡ�����ߵ�����
 		if (src->type != BL_PC) {
 			struct block_list* mbl = nullptr;
 			mbl = battle_get_master(src);
@@ -10543,14 +10545,14 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 			}
 		}
 
-		// 若负责执行事件的玩家对象依然没被指定
-		// 且攻击者是一个玩家单位, 那么将攻击者直接指定成负责执行事件的玩家
+		// �����ִ���¼�����Ҷ�����Ȼû��ָ��
+		// �ҹ�������һ����ҵ�λ, ��ô��������ֱ��ָ���ɸ���ִ���¼������
 		if (!esd && src->type == BL_PC) {
 			esd = (TBL_PC*)src;
 		}
 
 
-		// 若到这里还没有一个合适的事件执行者则不需要触发事件
+		// ������ﻹû��һ�����ʵ��¼�ִ��������Ҫ�����¼�
 		if (esd) {
 			pc_setreg(esd, add_str("@attack_src_type"), src->type);
 			pc_setreg(esd, add_str("@attack_src_gid"), src->id);
@@ -11813,7 +11815,7 @@ static const struct _battle_data {
 	{ "fame_taekwon_mission",               &battle_config.fame_taekwon_mission,            1,      0,      INT_MAX,        },
 	{ "fame_refine_lv1",                    &battle_config.fame_refine_lv1,                 1,      0,      INT_MAX,        },
 #ifndef Pandas_BattleConfig_Verification
-	// 出现了重复定义, 这里先简单注释掉, 如果 rAthena 官方很久不改的话, 找个时间再提交个 PullRequest 修正下 [Sola丶小克]
+	// �������ظ�����, �����ȼ�ע�͵�, ��� rAthena �ٷ��ܾò��ĵĻ�, �Ҹ�ʱ�����ύ�� PullRequest ������ [SolaؼС��]
 	{ "fame_refine_lv1",                    &battle_config.fame_refine_lv1,                 1,      0,      INT_MAX,        },
 #endif // Pandas_BattleConfig_Verification
 	{ "fame_refine_lv2",                    &battle_config.fame_refine_lv2,                 25,     0,      INT_MAX,        },
@@ -12133,25 +12135,25 @@ void battle_adjust_conf()
 	battle_config.max_cart_weight *= 10;
 
 #ifdef Pandas_BattleConfig_MaxAspdForPVP
-	// 根据 max_aspd_for_pvp 约束玩家的最大攻速 [Sola丶小克]
-	// 这里对配置的 ASPD 数值 (例如: 193, 197) 转换成程序判断用的攻击间隔时间
+	// ���� max_aspd_for_pvp Լ����ҵ������ [SolaؼС��]
+	// ��������õ� ASPD ��ֵ (����: 193, 197) ת���ɳ����ж��õĹ������ʱ��
 	// 
-	// 攻击间隔 = 2000 - 攻速的 Aspd 数值 * 10
-	// 攻击间隔 = 2000 - 193 * 10
-	// 攻击间隔 = 2000 - 1930
-	// 攻击间隔 = 70 毫秒
+	// ������� = 2000 - ���ٵ� Aspd ��ֵ * 10
+	// ������� = 2000 - 193 * 10
+	// ������� = 2000 - 1930
+	// ������� = 70 ����
 	if (battle_config.max_aspd_for_pvp > 0)
 		battle_config.max_aspd_for_pvp = 2000 - battle_config.max_aspd_for_pvp * 10;
 #endif // Pandas_BattleConfig_MaxAspdForPVP
 
 #ifdef Pandas_BattleConfig_MaxAspdForGVG
-	// 根据 max_aspd_for_gvg 约束玩家的最大攻速 [Sola丶小克]
-	// 这里对配置的 ASPD 数值 (例如: 193, 197) 转换成程序判断用的攻击间隔时间
+	// ���� max_aspd_for_gvg Լ����ҵ������ [SolaؼС��]
+	// ��������õ� ASPD ��ֵ (����: 193, 197) ת���ɳ����ж��õĹ������ʱ��
 	// 
-	// 攻击间隔 = 2000 - 攻速的 Aspd 数值 * 10
-	// 攻击间隔 = 2000 - 193 * 10
-	// 攻击间隔 = 2000 - 1930
-	// 攻击间隔 = 70 毫秒
+	// ������� = 2000 - ���ٵ� Aspd ��ֵ * 10
+	// ������� = 2000 - 193 * 10
+	// ������� = 2000 - 1930
+	// ������� = 70 ����
 	if (battle_config.max_aspd_for_gvg > 0)
 		battle_config.max_aspd_for_gvg = 2000 - battle_config.max_aspd_for_gvg * 10;
 #endif // Pandas_BattleConfig_MaxAspdForGVG
@@ -12432,9 +12434,9 @@ int battle_config_read(const char* cfgName)
 		} bc_whitelist[] = {
 			{ "traps_setting" },
 			{ "item_enabled_npc" },
-			{ "guild_skill_relog_type" },				// 不同工作模式下拥有不同的默认值, 选项默认处于注释状态
-			{ "feature.instance_allow_reconnect" },		// 不同工作模式下拥有不同的默认值, 选项默认处于注释状态
-			{ "pet_hungry_friendly_decrease" }	// rAthena 对是否弃用此选项不明确, 先忽略检测
+			{ "guild_skill_relog_type" },				// ��ͬ����ģʽ��ӵ�в�ͬ��Ĭ��ֵ, ѡ��Ĭ�ϴ���ע��״̬
+			{ "feature.instance_allow_reconnect" },		// ��ͬ����ģʽ��ӵ�в�ͬ��Ĭ��ֵ, ѡ��Ĭ�ϴ���ע��״̬
+			{ "pet_hungry_friendly_decrease" }	// rAthena ���Ƿ����ô�ѡ���ȷ, �Ⱥ��Լ��
 		};
 
 		for (i = 0; i < ARRAYLENGTH(battle_data); i++) {

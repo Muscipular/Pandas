@@ -2394,6 +2394,8 @@
 
 #ifdef RENEWAL
 	export_constant(SC_EXTREMITYFIST2);
+	export_constant(SC_POWERUP);
+	export_constant(SC_AGIUP);
 #endif
 
 	export_constant(SC_CUSTOM_0);
