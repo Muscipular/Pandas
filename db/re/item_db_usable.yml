@@ -62961,7 +62961,23 @@ Body:
       NoMail: true
       NoAuction: true
     Script: |
-      /* TODO */
+      sc_start SC_PERIOD_RECEIVEITEM_2ND,604800000,50;
+      sc_start SC_PERIOD_PLUSEXP_2ND,604800000,50;
+  - Id: 100914
+    AegisName: EXP_Drop_Up_1Hours
+    Name: Kafra Buff(1 Hour)
+    Type: Usable
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoSell: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      sc_start SC_PERIOD_RECEIVEITEM_2ND,86400000,50;
+      sc_start SC_PERIOD_PLUSEXP_2ND,86400000,50;
   - Id: 100917
     AegisName: Hero_Weapon_Hammer_4
     Name: Modified Hero's Weapon Refinement Hammer IV
@@ -63057,6 +63073,37 @@ Body:
       Container: true
     Script: |
       getgroupitem(IG_SEASON_EVT_REWARD_9);
+  - Id: 100949
+    AegisName: EXP_Drop_Up_1day
+    Name: "[Security Campaign] Kafra Buff(1 Day)"
+    Type: Usable
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoSell: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      sc_start SC_PERIOD_RECEIVEITEM_2ND,86400000,50;
+      sc_start SC_PERIOD_PLUSEXP_2ND,86400000,50;
+  - Id: 100950
+    AegisName: Evt_RagFes_Box
+    Name: Ragfest Commemorative Box
+    Type: Usable
+    Flags:
+      Container: true
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoStorage: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      getgroupitem(IG_EVT_RAGFES_BOX);
   - Id: 100951
     AegisName: S_Ignition_Cube
     Name: Ignition Shadow Cube
@@ -65120,7 +65167,81 @@ Body:
       NoMail: true
       NoAuction: true
     Script: |
-      /* Missing description */
+      item_enchant(30);
+  - Id: 101234
+    AegisName: Booster_Pack_120
+    Name: Booster Pack(120)    # !todo check english name
+    Type: Usable
+    EquipLevelMin: 120
+    Flags:
+      Container: true
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoSell: true
+      NoCart: true
+      NoStorage: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      getgroupitem(IG_BOOSTER_PACK_120);
+  - Id: 101236
+    AegisName: Booster_Pack_150
+    Name: Booster Pack(150)    # !todo check english name
+    Type: Usable
+    EquipLevelMin: 150
+    Flags:
+      Container: true
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoSell: true
+      NoCart: true
+      NoStorage: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      getgroupitem(IG_BOOSTER_PACK_150);
+  - Id: 101238
+    AegisName: E_EXP_Drop_Up_7days
+    Name: "[NotForSale] Kafra Buff(7 Days)"
+    Type: Usable
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoSell: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      sc_start SC_PERIOD_RECEIVEITEM_2ND,604800000,50;
+      sc_start SC_PERIOD_PLUSEXP_2ND,604800000,50;
+  - Id: 101240
+    AegisName: Season_Evt_Reward_1
+    Name: January Event's Reward Box
+    Type: Usable
+    Flags:
+      Container: true
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoSell: true
+      NoCart: true
+      NoStorage: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      getgroupitem(IG_SEASON_EVT_REWARD_1);
+  - Id: 101241
+    AegisName: Strange_Tteokguk
+    Name: Hyul's Special Rice Cake Soup
+    Type: Usable
+#   Script: |
+#     /* TODO */
   - Id: 101243
     AegisName: Shadow_Changer_NPC
     Name: Shadow Changer
