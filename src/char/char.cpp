@@ -598,13 +598,13 @@ int char_memitemdata_to_sql(const struct item items[], int max, int id, enum sto
 
 	for( i = 0; i < MAX_SLOTS; ++i )
 		StringBuf_Printf(&buf, ", `card%d`", i);
-	for( i = 0; i < ARRAYLENGTH(item.ival); ++i )
-		StringBuf_Printf(&buf, ", `ival%d`", i);
 	for( i = 0; i < MAX_ITEM_RDM_OPT; ++i ) {
 		StringBuf_Printf(&buf, ", `option_id%d`", i);
 		StringBuf_Printf(&buf, ", `option_val%d`", i);
 		StringBuf_Printf(&buf, ", `option_parm%d`", i);
 	}
+	for( i = 0; i < ARRAYLENGTH(item.ival); ++i )
+		StringBuf_Printf(&buf, ", `ival%d`", i);
 	StringBuf_Printf(&buf, " FROM `%s` WHERE `%s`='%d'", tablename, selectoption, id);
 
 	stmt = SqlStmt_Malloc(sql_handle);
@@ -639,6 +639,8 @@ int char_memitemdata_to_sql(const struct item items[], int max, int id, enum sto
 		SqlStmt_BindColumn(stmt, 12+offset+MAX_SLOTS+i*3, SQLDT_SHORT, &item.option[i].value, 0, NULL, NULL);
 		SqlStmt_BindColumn(stmt, 13+offset+MAX_SLOTS+i*3, SQLDT_CHAR, &item.option[i].param, 0, NULL, NULL);
 	}
+	for (i = 0; i < ARRAYLENGTH(item.ival); ++i)
+		SqlStmt_BindColumn(stmt, 11 + offset + i + MAX_SLOTS + MAX_ITEM_RDM_OPT * 3, SQLDT_INT, &item.ival[i], 0, NULL, NULL);
 	// bit array indicating which inventory items have already been matched
 	flag = (bool*) aCalloc(max, sizeof(bool));
 
@@ -690,6 +692,8 @@ int char_memitemdata_to_sql(const struct item items[], int max, int id, enum sto
 						StringBuf_Printf(&buf, ", `option_val%d`=%d", j, items[i].option[j].value);
 						StringBuf_Printf(&buf, ", `option_parm%d`=%d", j, items[i].option[j].param);
 					}
+					for( j = 0; j < ARRAYLENGTH(item.ival); ++j )
+						StringBuf_Printf(&buf, ", `ival%d`=%d", j, items[i].ival[j]);
 					StringBuf_Printf(&buf, " WHERE `id`='%d' LIMIT 1", item.id);
 
 					if( SQL_ERROR == Sql_QueryStr(sql_handle, StringBuf_Value(&buf)) )
@@ -725,6 +729,8 @@ int char_memitemdata_to_sql(const struct item items[], int max, int id, enum sto
 		StringBuf_Printf(&buf, ", `option_val%d`", j);
 		StringBuf_Printf(&buf, ", `option_parm%d`", j);
 	}
+	for (j = 0; j < ARRAYLENGTH(item.ival); ++j)
+		StringBuf_Printf(&buf, ", `ival%d`", j);
 	StringBuf_AppendStr(&buf, ") VALUES ");
 
 	found = false;
@@ -751,6 +757,8 @@ int char_memitemdata_to_sql(const struct item items[], int max, int id, enum sto
 			StringBuf_Printf(&buf, ", '%d'", items[i].option[j].value);
 			StringBuf_Printf(&buf, ", '%d'", items[i].option[j].param);
 		}
+		for (j = 0; j < ARRAYLENGTH(item.ival); ++j)
+			StringBuf_Printf(&buf, ", '%d'", items[i].ival[j]);
 		StringBuf_AppendStr(&buf, ")");
 	}
 
@@ -833,6 +841,8 @@ bool char_memitemdata_from_sql(struct s_storage* p, int max, int id, enum storag
 		StringBuf_Printf(&buf, ", `option_val%d`", j);
 		StringBuf_Printf(&buf, ", `option_parm%d`", j);
 	}
+	for (j = 0; j < ARRAYLENGTH(item.ival); ++j)
+		StringBuf_Printf(&buf, ",`ival%d`", j);
 	StringBuf_Printf(&buf, " FROM `%s` WHERE `%s`=? ORDER BY `nameid`", tablename, selectoption );
 
 	if( SQL_ERROR == SqlStmt_PrepareStr(stmt, StringBuf_Value(&buf))
@@ -867,6 +877,8 @@ bool char_memitemdata_from_sql(struct s_storage* p, int max, int id, enum storag
 		SqlStmt_BindColumn(stmt, 12+offset+MAX_SLOTS+i*3, SQLDT_SHORT, &item.option[i].value, 0, NULL, NULL);
 		SqlStmt_BindColumn(stmt, 13+offset+MAX_SLOTS+i*3, SQLDT_CHAR, &item.option[i].param, 0, NULL, NULL);
  	}
+	for (i = 0; i < ARRAYLENGTH(item.ival); ++i)
+		SqlStmt_BindColumn(stmt, 11 + offset + MAX_SLOTS + MAX_ITEM_RDM_OPT * 3 + i, SQLDT_INT, &item.ival[i], 0, NULL, NULL);
 
 #ifndef Pandas_ScriptCommand_GetInventoryInfo
 	for( i = 0; i < max && SQL_SUCCESS == SqlStmt_NextRow(stmt); ++i )
