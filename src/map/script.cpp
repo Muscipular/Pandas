@@ -36155,8 +36155,8 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(getglobalstack, ""),
 	BUILDIN_DEF(set_chara_temp_novice, "i"),
 	BUILDIN_DEF(restore_chara_temp, "i"),
-	BUILDIN_DEF(setmapiteminfo, "ii"),
-	BUILDIN_DEF(getmapiteminfo, "iii"),
+	BUILDIN_DEF(setmapiteminfo, "iii"),
+	BUILDIN_DEF(getmapiteminfo, "ii"),
 #include <custom/script_def.inc>
 
 	{NULL,NULL,NULL},
