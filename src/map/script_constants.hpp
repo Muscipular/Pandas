@@ -11858,7 +11858,8 @@
 	export_constant(ENCHANTGRADE_B);
 	export_constant(ENCHANTGRADE_A);
 	export_constant(ENCHANTGRADE_S);
-	export_constant(ENCHANTGRADE_X);
+	export_constant(ENCHANTGRADE_SS);
+	export_constant(ENCHANTGRADE_SSS);
 	export_constant(ENCHANTGRADE_EX);
 	export_constant(MAX_ENCHANTGRADE);
 

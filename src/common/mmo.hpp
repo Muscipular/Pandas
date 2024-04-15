@@ -126,7 +126,7 @@ typedef uint32 t_itemid;
 #define MAX_GUILDLEVEL 99 ///Max Guild level
 #define MAX_GUARDIANS 8	///Local max per castle. If this value is increased, need to add more fields on MySQL `guild_castle` table [Skotlex]
 #define MAX_QUEST_OBJECTIVES 3 ///Max quest objectives for a quest
-#define MAX_PC_BONUS_SCRIPT 50 ///Max bonus script can be fetched from `bonus_script` table on player load [Cydh]
+#define MAX_PC_BONUS_SCRIPT 150 ///Max bonus script can be fetched from `bonus_script` table on player load [Cydh]
 #define MAX_ITEM_RDM_OPT 5	 /// Max item random option [Napster]
 #define DB_NAME_LEN 256 //max len of dbs
 #define MAX_CLAN 500
@@ -142,7 +142,8 @@ enum e_enchantgrade : uint16{
 	ENCHANTGRADE_B,
 	ENCHANTGRADE_A,
 	ENCHANTGRADE_S,
-	ENCHANTGRADE_X,
+	ENCHANTGRADE_SS,
+	ENCHANTGRADE_SSS,
 	ENCHANTGRADE_EX,
 };
 

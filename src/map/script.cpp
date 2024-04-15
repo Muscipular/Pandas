@@ -27182,9 +27182,9 @@ BUILDIN_FUNC(setrandomoption) {
 	value = script_getnum(st, 5);
 	param = script_getnum(st, 6);
 
-	std::shared_ptr<s_random_opt_data> opt = random_option_db.find(static_cast<uint16>(id));
+	std::shared_ptr<s_random_opt_data> opt = id == 0 ? nullptr : random_option_db.find(static_cast<uint16>(id));
 
-	if (opt == nullptr) {
+	if (opt == nullptr && id != 0) {
 		ShowError("buildin_setrandomoption: Random option ID %d does not exists.\n", id);
 		script_pushint(st, 0);
 		return SCRIPT_CMD_FAILURE;
