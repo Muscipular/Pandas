@@ -1233,6 +1233,7 @@ static inline void status_cpy(struct status_data* a, const struct status_data* b
 uint64 status_set_hp(struct block_list *bl, uint64 hp, int flag)
 {
 	struct status_data *status;
+	hp = cap_value(hp, 0, INT64_MAX);
 	if (hp < 1)
 		return 0;
 	status = status_get_status_data(bl);
@@ -1260,6 +1261,7 @@ uint64 status_set_maxhp(struct block_list *bl, uint64 maxhp, int flag)
 {
 	struct status_data *status;
 	int64 heal;
+	maxhp = cap_value(maxhp, 0, INT64_MAX);
 
 	if (maxhp < 1)
 		return 0;
