@@ -1273,7 +1273,7 @@ uint64 status_set_maxhp(struct block_list *bl, uint64 maxhp, int flag)
 #ifndef Pandas_Fix_Potential_Arithmetic_Overflow
 	heal = maxhp - status->max_hp;
 #else
-	heal = (int64)maxhp - (int64)status->max_hp;
+	heal = (uint64)maxhp - (uint64)status->max_hp;
 #endif // Pandas_Fix_Potential_Arithmetic_Overflow
 	status->max_hp = maxhp;
 
@@ -1748,7 +1748,7 @@ int status_damage(struct block_list *src,struct block_list *target,int64 dhp, in
  *		Forced healing overrides heal impedement statuses (Berserk)
  * @return hp+sp+ap
  */
-int status_heal(struct block_list *bl,int64 hhp,int64 hsp, int64 hap, int flag)
+int64 status_heal(struct block_list *bl,int64 hhp,int64 hsp, int64 hap, int flag)
 {
 	struct status_data *status;
 	status_change *sc;
@@ -1759,8 +1759,8 @@ int status_heal(struct block_list *bl,int64 hhp,int64 hsp, int64 hap, int flag)
 	}
 
 	int64 hp = (int)cap_value(hhp,INT64_MIN,INT64_MAX);
-	int sp = (int)cap_value(hsp,INT_MIN,INT_MAX);
-	int ap = (int)cap_value(hap,INT_MIN,INT_MAX);
+	int64 sp = (int)cap_value(hsp,INT_MIN,INT_MAX);
+	int64 ap = (int)cap_value(hap,INT_MIN,INT_MAX);
 
 	status = status_get_status_data(bl);
 
@@ -1838,7 +1838,7 @@ int status_heal(struct block_list *bl,int64 hhp,int64 hsp, int64 hap, int flag)
 		case BL_ELEM: elemental_heal((TBL_ELEM*)bl,hp,sp); break;
 	}
 
-	return (int)hp+sp+ap;
+	return hp+sp+ap;
 }
 
 /**

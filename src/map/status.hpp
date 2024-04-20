@@ -3416,8 +3416,8 @@ int status_set_sp(struct block_list *bl, unsigned int sp, int flag);
 int status_set_maxsp(struct block_list *bl, unsigned int hp, int flag);
 int status_set_ap(struct block_list *bl, unsigned int ap, int flag);
 int status_set_maxap(struct block_list *bl, unsigned int ap, int flag);
-int status_heal( struct block_list *bl,int64 hhp,int64 hsp, int64 hap, int flag );
-static int status_heal( struct block_list *bl,int64 hhp,int64 hsp, int flag ){
+int64 status_heal( struct block_list *bl,int64 hhp,int64 hsp, int64 hap, int flag );
+static int64 status_heal( struct block_list *bl,int64 hhp,int64 hsp, int flag ){
 	return status_heal( bl, hhp, hsp, 0, flag );
 }
 int status_revive(struct block_list *bl, unsigned char per_hp, unsigned char per_sp, unsigned char per_ap = 0);

@@ -20901,8 +20901,8 @@ void clif_monster_hp_bar( struct mob_data* md, int fd ) {
 
 	WFIFOW(fd,0)  = 0x977;
 	WFIFOL(fd,2)  = md->bl.id;
-	WFIFOL(fd,6)  = md->status.hp;
-	WFIFOL(fd,10) = md->status.max_hp;
+	WFIFOL(fd,6)  = CAP32(md->status.hp);
+	WFIFOL(fd,10) = CAP32(md->status.max_hp);
 
 	WFIFOSET(fd,packet_len(0x977));
 #endif

@@ -3717,7 +3717,7 @@ int mob_class_change (struct mob_data *md, int mob_id)
 /*==========================================
  * mob heal, update display hp info of mob for players
  *------------------------------------------*/
-void mob_heal(struct mob_data *md,unsigned int heal)
+void mob_heal(struct mob_data *md,int64 heal)
 {
 	if (battle_config.show_mob_info&3)
 		clif_name_area(&md->bl);

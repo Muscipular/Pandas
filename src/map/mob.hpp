@@ -555,7 +555,7 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type);
 int mob_dead(struct mob_data *md, struct block_list *src, int type, uint16 skill_id);
 #endif // Pandas_FuncDefine_UnitDead_With_ExtendInfo
 void mob_revive(struct mob_data *md, unsigned int hp);
-void mob_heal(struct mob_data *md,unsigned int heal);
+void mob_heal(struct mob_data *md, int64 heal);
 
 #define mob_stop_walking(md, type) unit_stop_walking(&(md)->bl, type)
 #define mob_stop_attack(md) unit_stop_attack(&(md)->bl)
