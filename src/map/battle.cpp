@@ -3188,7 +3188,7 @@ static bool is_attack_critical(struct Damage* wd, struct block_list *src, struct
 				}
 			}
 			if (cr) cri = cri * cr / 100;
-			cri = cri * 1.5 / (cri + 500) * 10;
+			cri = cri * 1.5 / (cri + 500) * 1000;
 		}
 		return (rnd()%1000 < cri);
 	}
