@@ -3179,6 +3179,16 @@ static bool is_attack_critical(struct Damage* wd, struct block_list *src, struct
 		}
 		if(tsd && tsd->bonus.critical_def)
 			cri = cri * ( 100 - tsd->bonus.critical_def ) / 100;
+		//法术暴击计算
+		if (wd->flag & BF_MAGIC) {
+			int cr = sd->bonus.sk_cri;
+			for (auto& sk : sd->sk_cri) {
+				if (sk.id == skill_id) {
+					cr = max(cr, sk.val);
+				}
+			}
+			if (cr) cri = cri * cr / 100;
+		}
 		return (rnd()%1000 < cri);
 	}
 	return false;
@@ -9003,6 +9013,18 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 		ad.damage += battle_calc_cardfix(BF_MAGIC, src, target, nk, s_ele, 0, ad.damage, 0, ad.flag);
 #endif
 	} //Hint: Against plants damage will still be 1 at this point
+
+	//法术暴击
+	{
+		if (sd) {
+			Damage dmgDummy;
+			dmgDummy.flag = BF_MAGIC;
+			if (is_attack_critical(&dmgDummy, src, target, 0, 0, true)) {
+				ad.damage = (int64)floor((float)((ad.damage * (1.4f + (0.01f * sstatus->crate)))));
+			}
+		}
+	}
+
 
 	//Apply DAMAGE_DIV_FIX and check for min damage
 	battle_apply_div_fix(&ad, skill_id);

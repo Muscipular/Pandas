@@ -14,6 +14,7 @@
 #include <nlohmann/json.hpp>
 #endif
 
+#include <functional>
 #include <common/cbasetypes.hpp>
 #include <common/core.hpp> // get_svn_revision()
 #include <common/database.hpp>
@@ -3737,6 +3738,25 @@ static void pc_bonus_subrace(map_session_data* sd, unsigned char race, short rat
 
 	sd->subrace3.push_back(entry);
 }
+
+template<typename T, typename E, typename V>
+static void pc_bonus_add(std::vector<T>& bonus, E id, V val, std::function<V(V, V)> fn)
+{
+	for (auto& it : bonus) {
+		if (it.id == id) {
+			it.val = fn(it.val, val);
+			return;
+		}
+	}
+
+	T entry = {};
+
+	entry.id = id;
+	entry.val = val;
+
+	bonus.push_back(entry);
+}
+
 /**
  * General item bonus for player
  * @param bonus: Bonus array
@@ -4027,6 +4047,10 @@ void pc_bonus(map_session_data *sd,int type,int val)
 				status->rhw.ele=val;
 				break;
 			}
+			break;
+		case SP_MAGIC_CRI:
+			if (sd->state.lr_flag != 2)
+				sd->bonus.sk_cri = max(val, sd->bonus.sk_cri);
 			break;
 		case SP_SKILL_COOLDOWN:
 			if(sd->state.lr_flag != 2)
@@ -4924,6 +4948,12 @@ void pc_bonus2(map_session_data *sd,int type,int type2,int val)
 		}
 
 		pc_bonus_itembonus(sd->sp_dmg_rate, type2, val, false);
+		break;
+
+	case SP_MAGIC_CRI: // bonus2 bMagicCri,sk,n;
+		if (sd->state.lr_flag != 2) {
+			pc_bonus_add<struct s_item_bonus, uint16, int>(sd->sk_cri, type, val, max);
+		}
 		break;
 	case SP_SKILL_HEAL: // bonus2 bSkillHeal,sk,n;
 		if(sd->state.lr_flag == 2)

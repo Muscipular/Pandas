@@ -703,6 +703,7 @@ public:
 	std::shared_ptr<s_dps_save> dps;
 	std::vector<s_autospell> autospell, autospell2, autospell3, autospell4;
 	std::vector<s_item_bonus> sp_dmg_rate;
+	std::vector<s_item_bonus> sk_cri;
 	std::vector<s_addeffect> addeff, addeff_atked;
 	std::vector<s_addeffectonskill> addeff_onskill;
 	std::vector<s_item_bonus> skillatk, skillusesprate, skillusesp, skillheal, skillheal2, skillblown, skillcastrate, skillfixcastrate, subskill, skillcooldown, skillfixcast, skillcooldownrate,
@@ -795,6 +796,7 @@ public:
 		int melee_rate;
 		int autospell_dmg_rate;
 		int autospell_rate;
+		int sk_cri;
 		int skillrange;
 		int skillatk;
 		int skill_cooldown;

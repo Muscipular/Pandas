@@ -1142,6 +1142,7 @@
 	export_constant2("bAddEffWhenHit",SP_ADDEFF_WHENHIT);
 	export_constant2("bAutoSpellWhenHit",SP_AUTOSPELL_WHENHIT);
 	export_constant2("bSpDmgRate", SP_SP_DMG_RATE);
+	export_constant2("bMagicCri", SP_MAGIC_CRI);
 	export_constant2("bSkillAtk",SP_SKILL_ATK);
 	export_constant2("bSkillAtkAll",SP_SKILL_ATK_ALL);
 	export_constant2("bUnstripable",SP_UNSTRIPABLE);
