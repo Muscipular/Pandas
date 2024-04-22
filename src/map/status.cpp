@@ -7081,6 +7081,8 @@ static pec_ushort status_calc_str(struct block_list *bl, status_change *sc, int 
 		str += sc->getSCE(SC_UNIVERSESTANCE)->val2;
 	if (sc->getSCE(SC_ULTIMATECOOK))
 		str += sc->getSCE(SC_ULTIMATECOOK)->val1;
+	if (sc->getSCE(SC_ALMIGHTY))
+		str += sc->getSCE(SC_ALMIGHTY)->val1;
 	if (sc->getSCE(SC_ALL_STAT_DOWN))
 		str -= sc->getSCE(SC_ALL_STAT_DOWN)->val2;
 
@@ -7166,6 +7168,8 @@ static pec_ushort status_calc_agi(struct block_list *bl, status_change *sc, int 
 		agi += sc->getSCE(SC_UNIVERSESTANCE)->val2;
 	if (sc->getSCE(SC_ULTIMATECOOK))
 		agi += sc->getSCE(SC_ULTIMATECOOK)->val1;
+	if (sc->getSCE(SC_ALMIGHTY))
+		agi += sc->getSCE(SC_ALMIGHTY)->val1;
 	if (sc->getSCE(SC_ALL_STAT_DOWN))
 		agi -= sc->getSCE(SC_ALL_STAT_DOWN)->val2;
 
@@ -7241,6 +7245,8 @@ static pec_ushort status_calc_vit(struct block_list *bl, status_change *sc, int 
 		vit += sc->getSCE(SC_UNIVERSESTANCE)->val2;
 	if (sc->getSCE(SC_ULTIMATECOOK))
 		vit += sc->getSCE(SC_ULTIMATECOOK)->val1;
+	if (sc->getSCE(SC_ALMIGHTY))
+		vit += sc->getSCE(SC_ALMIGHTY)->val1;
 	if (sc->getSCE(SC_CUP_OF_BOZA))
 		vit += 10;
 	if (sc->getSCE(SC_ALL_STAT_DOWN))
@@ -7333,6 +7339,8 @@ static pec_ushort status_calc_int(struct block_list *bl, status_change *sc, int 
 #endif
 	if (sc->getSCE(SC_ULTIMATECOOK))
 		int_ += sc->getSCE(SC_ULTIMATECOOK)->val1;
+	if (sc->getSCE(SC_ALMIGHTY))
+		int_ += sc->getSCE(SC_ALMIGHTY)->val1;
 	if (sc->getSCE(SC_ALL_STAT_DOWN))
 		int_ -= sc->getSCE(SC_ALL_STAT_DOWN)->val2;
 
@@ -7420,6 +7428,8 @@ static pec_ushort status_calc_dex(struct block_list *bl, status_change *sc, int 
 		dex += sc->getSCE(SC_UNIVERSESTANCE)->val2;
 	if (sc->getSCE(SC_ULTIMATECOOK))
 		dex += sc->getSCE(SC_ULTIMATECOOK)->val1;
+	if (sc->getSCE(SC_ALMIGHTY))
+		dex += sc->getSCE(SC_ALMIGHTY)->val1;
 	if (sc->getSCE(SC_ALL_STAT_DOWN))
 		dex -= sc->getSCE(SC_ALL_STAT_DOWN)->val2;
 
@@ -7493,6 +7503,8 @@ static pec_ushort status_calc_luk(struct block_list *bl, status_change *sc, int 
 		luk += sc->getSCE(SC_UNIVERSESTANCE)->val2;
 	if (sc->getSCE(SC_ULTIMATECOOK))
 		luk += sc->getSCE(SC_ULTIMATECOOK)->val1;
+	if (sc->getSCE(SC_ALMIGHTY))
+		luk += sc->getSCE(SC_ALMIGHTY)->val1;
 	if (sc->getSCE(SC_MYSTICPOWDER))
 		luk += 10;
 	if (sc->getSCE(SC_ALL_STAT_DOWN))
