@@ -4952,7 +4952,7 @@ void pc_bonus2(map_session_data *sd,int type,int type2,int val)
 
 	case SP_MAGIC_CRI: // bonus2 bMagicCri,sk,n;
 		if (sd->state.lr_flag != 2) {
-			pc_bonus_add<struct s_item_bonus, uint16, int>(sd->sk_cri, type, val, max);
+			pc_bonus_add<struct s_item_bonus, uint16, int>(sd->sk_cri, type2, val, max);
 		}
 		break;
 	case SP_SKILL_HEAL: // bonus2 bSkillHeal,sk,n;

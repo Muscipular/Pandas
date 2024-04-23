@@ -3183,7 +3183,7 @@ static bool is_attack_critical(struct Damage* wd, struct block_list *src, struct
 		if (wd->flag & BF_MAGIC) {
 			int cr = sd->bonus.sk_cri;
 			for (auto& sk : sd->sk_cri) {
-				if (sk.id == skill_id) {
+				if (sk.id == skill_lv) {
 					cr = max(cr, sk.val);
 				}
 			}
@@ -3192,7 +3192,7 @@ static bool is_attack_critical(struct Damage* wd, struct block_list *src, struct
 				if (cri >= 1000) {
 					return true;
 				}
-				cri = cri * 3 / (cri + 500) * 500;
+				cri = cri * 1500 / (cri + 500);
 			} else {
 				return false;
 			}
@@ -9027,8 +9027,9 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 		if (sd) {
 			Damage dmgDummy;
 			dmgDummy.flag = BF_MAGIC;
-			if (is_attack_critical(&dmgDummy, src, target, 0, 0, true)) {
+			if (is_attack_critical(&dmgDummy, src, target, 0, skill_id, true)) {
 				ad.damage = (int64)floor((float)((ad.damage * (1.4f + (0.01f * sstatus->crate)))));
+				ad.flag |= ad.flag & DMG_MULTI_HIT ? DMG_MULTI_HIT_CRITICAL : DMG_CRITICAL;
 			}
 		}
 	}

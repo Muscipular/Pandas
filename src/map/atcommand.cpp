@@ -9028,6 +9028,8 @@ ACMD_FUNC(bonuslist) {
 				}
 			}
 			for (auto& id : ids) {
+				printf("%d, %d\n", id.first, id.second);
+				printf("%s\n", skill_get_desc(id.first));
 				clif_print_bonus2_s(s, skill_get_desc(id.first), id.second);
 			}
 		};
