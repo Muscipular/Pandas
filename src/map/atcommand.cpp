@@ -3,6 +3,7 @@
 
 #include "atcommand.hpp"
 
+#include <functional>
 #include <set>
 #include <unordered_map>
 
@@ -8901,7 +8902,6 @@ ACMD_FUNC(bonuslist) {
 		clif_print_bonus(bShortAtkRate, sd->bonus.short_attack_atk_rate);
 		clif_print_bonus(bCritAtkRate, sd->bonus.crit_atk_rate);
 		clif_print_bonus(bWeaponAtkRate, sd->bonus.weapon_atk_rate);
-		clif_print_bonus(bMeleeRate, sd->bonus.melee_rate);
 	}
 	if (flag & (1 << 3)) {
 		clif_print_bonus(bFixedCastrate, sd->bonus.fixcastrate);
@@ -8999,6 +8999,16 @@ ACMD_FUNC(bonuslist) {
 		}
 	}
 	if (flag & (1 << 9)) {
+		clif_print_bonus2(bMagicSubEle, "All", sd->indexed_bonus.magic_subdefele[ELE_ALL]);
+		for (auto& p : um_eleid2elename) {
+			clif_print_bonus2(bMagicSubEle, p.first.c_str(), sd->indexed_bonus.magic_subdefele[p.second]);
+		}
+		clif_print_bonus2(bMagicSubSize, "All", sd->indexed_bonus.magic_subsize[SZ_ALL]);
+		for (auto& p : um_size2sizename) {
+			clif_print_bonus2(bMagicSubSize, p.first.c_str(), sd->indexed_bonus.magic_subsize[p.second]);
+		}
+	}
+	if (flag & (1 << 10)) {
 		clif_print_bonus2(bWeaponSubSize, "All", sd->indexed_bonus.weapon_subsize[SZ_ALL]);
 		for (auto& p : um_size2sizename) {
 			clif_print_bonus2(bWeaponSubSize, p.first.c_str(), sd->indexed_bonus.weapon_subsize[p.second]);
@@ -9016,15 +9026,15 @@ ACMD_FUNC(bonuslist) {
 			clif_print_bonus2(bSubSize, p.first.c_str(), sd->indexed_bonus.subsize[p.second]);
 		}
 	}
-	if (flag & (1 << 10)) {
-		auto fn = [&](const char* s, std::vector<s_item_bonus>& map) {
+	if (flag & (1 << 11)) {
+		auto fn = [&](const char* s, std::vector<s_item_bonus>& map, std::function<int(int,int)> fx) {
 			std::map<uint16, int> ids;
 			for (auto& p : map) {
 				if (ids.find(p.id) == ids.end()) {
 					ids.insert(std::make_pair(p.id, p.val));
 				}
 				else {
-					ids[p.id] = ids[p.id] + p.val;
+					ids[p.id] = fx(ids[p.id], p.val);
 				}
 			}
 			for (auto& id : ids) {
@@ -9032,11 +9042,13 @@ ACMD_FUNC(bonuslist) {
 			}
 		};
 		clif_print_bonus2(bSkillAtk, "All", sd->bonus.skillatk);
-		fn("bSkillAtk", sd->skillatk);
-		fn("bSkillCooldown", sd->skillcooldown);
-		fn("bSkillCooldownRate", sd->skillcooldownrate);
+		fn("bSkillAtk", sd->skillatk, [](int a, int b) {return a + b; });
+		fn("bSkillCooldown", sd->skillcooldown, [](int a, int b) {return a + b; });
+		fn("bSkillCooldownRate", sd->skillcooldownrate, [](int a, int b) {return a + b; });
+		clif_print_bonus2(bMagicCri, "All", sd->bonus.sk_cri);
+		fn("bMagicCri", sd->sk_cri, max);
 	}
-	if (flag & (1 << 11)) {
+	if (flag & (1 << 12)) {
 		auto fn = [&](const char* s, std::vector<s_item_bonus>& map) {
 			std::map<uint16, int> ids;
 			for (auto& p : map) {
