@@ -8997,36 +8997,26 @@ ACMD_FUNC(bonuslist) {
 		for (auto& p : um_class2classname) {
 			clif_print_bonus2(bSubClass, p.first.c_str(), sd->indexed_bonus.subclass[p.second]);
 		}
-	}
-	if (flag & (1 << 9)) {
-		clif_print_bonus2(bMagicSubEle, "All", sd->indexed_bonus.magic_subdefele[ELE_ALL]);
-		for (auto& p : um_eleid2elename) {
-			clif_print_bonus2(bMagicSubEle, p.first.c_str(), sd->indexed_bonus.magic_subdefele[p.second]);
-		}
-		clif_print_bonus2(bMagicSubSize, "All", sd->indexed_bonus.magic_subsize[SZ_ALL]);
-		for (auto& p : um_size2sizename) {
-			clif_print_bonus2(bMagicSubSize, p.first.c_str(), sd->indexed_bonus.magic_subsize[p.second]);
-		}
-	}
-	if (flag & (1 << 10)) {
-		clif_print_bonus2(bWeaponSubSize, "All", sd->indexed_bonus.weapon_subsize[SZ_ALL]);
-		for (auto& p : um_size2sizename) {
-			clif_print_bonus2(bWeaponSubSize, p.first.c_str(), sd->indexed_bonus.weapon_subsize[p.second]);
-		}
-		clif_print_bonus2(bMagicSubSize, "All", sd->indexed_bonus.magic_subdefele[ELE_ALL]);
-		for (auto& p : um_eleid2elename) {
-			clif_print_bonus2(bMagicSubSize, p.first.c_str(), sd->indexed_bonus.magic_subdefele[p.second]);
-		}
-		clif_print_bonus2(bMagicSubDefEle, "All", sd->indexed_bonus.magic_subsize[SZ_ALL]);
-		for (auto& p : um_size2sizename) {
-			clif_print_bonus2(bMagicSubDefEle, p.first.c_str(), sd->indexed_bonus.magic_subsize[p.second]);
-		}
 		clif_print_bonus2(bSubSize, "All", sd->indexed_bonus.subsize[SZ_ALL]);
 		for (auto& p : um_size2sizename) {
 			clif_print_bonus2(bSubSize, p.first.c_str(), sd->indexed_bonus.subsize[p.second]);
 		}
 	}
-	if (flag & (1 << 11)) {
+	if (flag & (1 << 9)) {
+		clif_print_bonus2(bMagicSubDefEle, "All", sd->indexed_bonus.magic_subdefele[ELE_ALL]);
+		for (auto& p : um_eleid2elename) {
+			clif_print_bonus2(bMagicSubDefEle, p.first.c_str(), sd->indexed_bonus.magic_subdefele[p.second]);
+		}
+		clif_print_bonus2(bMagicSubSize, "All", sd->indexed_bonus.magic_subsize[SZ_ALL]);
+		for (auto& p : um_size2sizename) {
+			clif_print_bonus2(bMagicSubSize, p.first.c_str(), sd->indexed_bonus.magic_subsize[p.second]);
+		}
+		clif_print_bonus2(bWeaponSubSize, "All", sd->indexed_bonus.weapon_subsize[SZ_ALL]);
+		for (auto& p : um_size2sizename) {
+			clif_print_bonus2(bWeaponSubSize, p.first.c_str(), sd->indexed_bonus.weapon_subsize[p.second]);
+		}
+	}
+	if (flag & (1 << 10)) {
 		auto fn = [&](const char* s, std::vector<s_item_bonus>& map, std::function<int(int,int)> fx) {
 			std::map<uint16, int> ids;
 			for (auto& p : map) {
@@ -9048,7 +9038,7 @@ ACMD_FUNC(bonuslist) {
 		clif_print_bonus2(bMagicCri, "All", sd->bonus.sk_cri);
 		fn("bMagicCri", sd->sk_cri, max);
 	}
-	if (flag & (1 << 12)) {
+	if (flag & (1 << 11)) {
 		auto fn = [&](const char* s, std::vector<s_item_bonus>& map) {
 			std::map<uint16, int> ids;
 			for (auto& p : map) {
