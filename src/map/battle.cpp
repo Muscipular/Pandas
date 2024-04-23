@@ -3096,7 +3096,7 @@ static bool is_attack_critical(struct Damage* wd, struct block_list *src, struct
 		status_change *sc = status_get_sc(src);
 		status_change *tsc = status_get_sc(target);
 		map_session_data *tsd = BL_CAST(BL_PC, target);
-		pec_short cri = sstatus->cri;
+		int cri = sstatus->cri;
 
 		if (sd) {
 			cri += sd->indexed_bonus.critaddrace[tstatus->race] + sd->indexed_bonus.critaddrace[RC_ALL];
@@ -3188,8 +3188,11 @@ static bool is_attack_critical(struct Damage* wd, struct block_list *src, struct
 				}
 			}
 			if (cr > 0) {
-				cri = cri * cr / 100;
-				cri = cri * 1.5 / (cri + 500) * 1000;
+				cri = cri * cr / 100 / 10;
+				if (cri >= 1000) {
+					return true;
+				}
+				cri = cri * 3 / (cri + 500) * 500;
 			} else {
 				return false;
 			}
