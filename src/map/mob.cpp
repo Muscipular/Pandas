@@ -2795,7 +2795,7 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type, uint16 skill
 		}
 		if(battle_config.mobs_level_up && md->level > md->db->lv) // [Valaris]
 			bonus += (md->level-md->db->lv)*battle_config.mobs_level_up_exp_rate;
-		if (battle_config.gStack > 0) {
+		if (battle_config.gStack > 0 && !map_getmapflag(md->bl.m, MF_NOGSTACK)) {
 			bonus *= battle_config.gStack * 0.0317 + 1;
 		}
 		for(i = 0; i < DAMAGELOG_SIZE && md->dmglog[i].id; i++) {
@@ -2987,7 +2987,7 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type, uint16 skill
 
 			if (battle_config.mobs_level_up && md->level > md->db->lv)
 				drop_rate += static_cast<int>((md->level - md->db->lv) * 0.015 * drop_rate);
-			if (battle_config.gStack > 0) {
+			if (battle_config.gStack > 0 && !map_getmapflag(md->bl.m, MF_NOGSTACK)) {
 				double tmp = battle_config.gStack * (item_dropped_data.type == item_types::IT_CARD ? 0.00197 : 0.003333);
 				drop_rate += tmp >= 1 ? org_rate : static_cast<int>(tmp * org_rate);
 			}
@@ -3253,7 +3253,7 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type, uint16 skill
 #endif
 				if (battle_config.mobs_level_up && md->level > md->db->lv) // [Valaris]
 					temp += static_cast<int>((md->level - md->db->lv) * 0.015 * temp);
-				if (battle_config.gStack > 0) {
+				if (battle_config.gStack > 0 && !map_getmapflag(md->bl.m, MF_NOGSTACK)) {
 					temp += battle_config.gStack * 0.003333 >= 1 ? org_rate : static_cast<int>(battle_config.gStack * 0.003333 * org_rate);
 				}
 				if (temp < 10000) {

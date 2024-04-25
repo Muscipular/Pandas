@@ -1430,7 +1430,10 @@ int status_damage(struct block_list *src,struct block_list *target,int64 dhp, in
 {
 	struct status_data *status;
 	status_change *sc;
+	/*
 	int64 hp = (int)cap_value(dhp,INT_MIN,INT_MAX);
+	*/
+	int64 hp = dhp;
 	int sp = (int)cap_value(dsp,INT_MIN,INT_MAX);
 	int ap = (int)cap_value(dap,INT_MIN,INT_MAX);
 
@@ -1467,17 +1470,17 @@ int status_damage(struct block_list *src,struct block_list *target,int64 dhp, in
 	if(!status || status == &dummy_status )
 		return 0;
 
-	if ((unsigned int)hp >= status->hp) {
+	if (hp >= status->hp) {
 		if (flag&2) return 0;
 		hp = status->hp;
 	}
 
-	if ((unsigned int)sp > status->sp) {
+	if (sp > status->sp) {
 		if (flag&2) return 0;
 		sp = status->sp;
 	}
 
-	if ((unsigned int)ap > status->ap) {
+	if (ap > status->ap) {
 		if (flag & 2) return 0;
 		ap = status->ap;
 	}
@@ -2800,7 +2803,7 @@ int status_calc_mob_(struct mob_data* md, uint8 opt)
 			float adelay_bonus = 1.0f;
 			pec_ushort amotion_origin = md->db->status.amotion;
 			status = &md->status;
-			if (battle_config.gStack > 0) {
+			if (battle_config.gStack > 0  && !map_getmapflag(md->bl.m, MF_NOGSTACK)) {
 				int diff = battle_config.gStack;
 				double dd = 0.005;
 				if (md->get_bosstype() == BOSSTYPE_MVP) {
@@ -2850,7 +2853,7 @@ int status_calc_mob_(struct mob_data* md, uint8 opt)
 	status = md->base_status;
 	memcpy(status, &md->db->status, sizeof(struct status_data));
 
-	if (battle_config.gStack > 0) {
+	if (battle_config.gStack > 0 && !map_getmapflag(md->bl.m, MF_NOGSTACK)) {
 		int diff = battle_config.gStack;
 		double dd = 0.005;
 		if (md->get_bosstype() == BOSSTYPE_MVP) {

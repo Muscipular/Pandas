@@ -885,6 +885,7 @@
 	export_constant(MF_NOATTACK2);
 #endif // Pandas_MapFlag_NoAttack2
 	export_constant(MF_NOMOBLEVELUP);
+	export_constant(MF_NOGSTACK);
 	export_constant(MF_NOMAGICIMMUNITY);
 
 	// PYHELP - MAPFLAG - INSERT POINT - <Section 3>
@@ -1143,6 +1144,7 @@
 	export_constant2("bAutoSpellWhenHit",SP_AUTOSPELL_WHENHIT);
 	export_constant2("bSpDmgRate", SP_SP_DMG_RATE);
 	export_constant2("bMagicCri", SP_MAGIC_CRI);
+	export_constant2("bMagicCriRate", SP_MAGIC_CRI_RATE);
 	export_constant2("bSkillAtk",SP_SKILL_ATK);
 	export_constant2("bSkillAtkAll",SP_SKILL_ATK_ALL);
 	export_constant2("bUnstripable",SP_UNSTRIPABLE);

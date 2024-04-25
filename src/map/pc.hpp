@@ -797,6 +797,7 @@ public:
 		int autospell_dmg_rate;
 		int autospell_rate;
 		int sk_cri;
+		int sk_cri_rate;
 		int skillrange;
 		int skillatk;
 		int skill_cooldown;

@@ -9028,7 +9028,12 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 			Damage dmgDummy;
 			dmgDummy.flag = BF_MAGIC;
 			if (is_attack_critical(&dmgDummy, src, target, 0, skill_id, true)) {
-				ad.damage = (int64)floor((float)((ad.damage * (1.4f + (0.01f * sstatus->crate)))));
+				double dmg = ad.damage;
+				if (sd->bonus.sk_cri_rate != 0) {
+					dmg = ad.damage / 100.0 * sd->bonus.sk_cri_rate;
+				}
+				dmg = ad.damage * (1.4 + (0.01 * sstatus->crate));
+				ad.damage = cap_value(dmg, 0, INT64_MAX);
 				ad.flag |= ad.flag & DMG_MULTI_HIT ? DMG_MULTI_HIT_CRITICAL : DMG_CRITICAL;
 			}
 		}

@@ -8826,10 +8826,10 @@ ACMD_FUNC(dps_log) {
 }
 
 #define printDMG(buf1, dmg) { 		if (dmg >= 1000 * 1000 * 100) {\
-sprintf(buf1, "%dM", (int)(dmg / 1000 / 1000 / 100));\
+sprintf(buf1, "%dM", (int)(dmg / 1000 / 1000));\
 }\
 else if (dmg >= 100000) {\
-	sprintf(buf1, "%dk", (int)(dmg / 1000 / 100));\
+	sprintf(buf1, "%dk", (int)(dmg / 1000));\
 } else { sprintf(buf1, "%d", (int)dmg); } }
 
 ACMD_FUNC(dps_show) {
@@ -8900,7 +8900,7 @@ ACMD_FUNC(bonuslist) {
 		clif_print_bonus(bMatkRate, sd->matk_rate);
 		clif_print_bonus(bLongAtkRate, sd->bonus.long_attack_atk_rate);
 		clif_print_bonus(bShortAtkRate, sd->bonus.short_attack_atk_rate);
-		clif_print_bonus(bCritAtkRate, sd->bonus.crit_atk_rate);
+		clif_print_bonus(bMagicCriRate, sd->bonus.sk_cri_rate);
 		clif_print_bonus(bWeaponAtkRate, sd->bonus.weapon_atk_rate);
 	}
 	if (flag & (1 << 3)) {

@@ -4048,6 +4048,10 @@ void pc_bonus(map_session_data *sd,int type,int val)
 				break;
 			}
 			break;
+		case SP_MAGIC_CRI_RATE:
+			if (sd->state.lr_flag != 2)
+				sd->bonus.sk_cri_rate += val;
+			break;
 		case SP_MAGIC_CRI:
 			if (sd->state.lr_flag != 2)
 				sd->bonus.sk_cri = max(val, sd->bonus.sk_cri);
