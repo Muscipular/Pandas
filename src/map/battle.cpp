@@ -2076,7 +2076,8 @@ int64 battle_calc_damage(struct block_list *src,struct block_list *bl,struct Dam
 		mob_data* md = BL_CAST(BL_MOB, src);
 		if (md) {
 			if (md->pandas.dmg_rate2 != 1 && md->pandas.dmg_rate2 >= 0) {
-				damage = (int64)(damage * (double)md->pandas.dmg_rate2);
+				double dmg1 = (damage * (double)md->pandas.dmg_rate2);
+				damage = (int64)(cap_value(dmg1, INT64_MIN, INT64_MAX));
 			}
 		}
 	}
