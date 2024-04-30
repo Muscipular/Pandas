@@ -684,7 +684,7 @@ int64_t battle_calc_cardfix(int attack_type, struct block_list* src, struct bloc
                             int rh_ele, int lh_ele, int64 damage, int left, int flag){
 	map_session_data *sd, ///< Attacker session data if BL_PC
 		*tsd; ///< Target session data if BL_PC
-	int cardfix = 1000000;
+	int64_t cardfix = 1000000;
 	int s_class, ///< Attacker class
 		t_class; ///< Target class
 	std::vector<e_race2> s_race2, /// Attacker Race2
@@ -742,7 +742,7 @@ int64_t battle_calc_cardfix(int attack_type, struct block_list* src, struct bloc
 
 			// Affected by target DEF bonuses
 			if( tsd && !nk[NK_IGNOREDEFCARD] ) {
-				cardfix = 1000; // reset var for target
+				cardfix = 1000000; // reset var for target
 
 				if( !nk[NK_IGNOREELEMENT] ) { // Affected by Element modifier bonuses
 					int ele_fix = tsd->indexed_bonus.subele[rh_ele] + tsd->indexed_bonus.subele[ELE_ALL] + tsd->indexed_bonus.subele_script[rh_ele] + tsd->indexed_bonus.subele_script[ELE_ALL];
@@ -806,7 +806,7 @@ int64_t battle_calc_cardfix(int attack_type, struct block_list* src, struct bloc
 		case BF_WEAPON:
 			// Affected by attacker ATK bonuses
 			if( sd && !nk[NK_IGNOREATKCARD] && (left&2) ) {
-				pec_short cardfix_ = 1000;
+				int64_t cardfix_ = 1000000;
 
 				int skill = 0;
 				// Calculates each right & left hand weapon bonuses separatedly
