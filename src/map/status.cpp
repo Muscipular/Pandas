@@ -1763,7 +1763,7 @@ int64 status_heal(struct block_list *bl,int64 hhp,int64 hsp, int64 hap, int flag
 		hap = hap * sd->aprecov_rate / 100;
 	}
 
-	int64 hp = (int)cap_value(hhp,INT64_MIN,INT64_MAX);
+	int64 hp = cap_value(hhp,INT64_MIN,INT64_MAX);
 	int64 sp = (int)cap_value(hsp,INT_MIN,INT_MAX);
 	int64 ap = (int)cap_value(hap,INT_MIN,INT_MAX);
 

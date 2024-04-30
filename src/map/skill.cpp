@@ -4225,8 +4225,8 @@ int64 skill_attack (int attack_type, struct block_list* src, struct block_list *
 			pc_setreg(esd, add_str("@harmed_damage_right"), dmg.damage);
 			pc_setreg(esd, add_str("@harmed_damage_left"), dmg.damage2);
 			npc_script_event(esd, NPCX_PCHARMED);
-			dmg.damage = (int)cap_value(pc_readreg(esd, add_str("@harmed_damage_right")), INT_MIN, INT_MAX);
-			dmg.damage2 = (int)cap_value(pc_readreg(esd, add_str("@harmed_damage_left")), INT_MIN, INT_MAX);
+			dmg.damage = (int64_t)cap_value(pc_readreg(esd, add_str("@harmed_damage_right")), INT_MIN, INT64_MAX);
+			dmg.damage2 = (int64_t)cap_value(pc_readreg(esd, add_str("@harmed_damage_left")), INT_MIN, INT64_MAX);
 			damage = dmg.damage + dmg.damage2;
 		}
 	}
@@ -4269,8 +4269,8 @@ int64 skill_attack (int attack_type, struct block_list* src, struct block_list *
 
 			npc_script_event(esd, NPCX_PCATTACK);
 
-			dmg.damage = (int)cap_value(pc_readreg(esd, add_str("@attack_damage_right")), INT_MIN, INT_MAX);
-			dmg.damage2 = (int)cap_value(pc_readreg(esd, add_str("@attack_damage_left")), INT_MIN, INT_MAX);
+			dmg.damage = (int64_t)cap_value(pc_readreg(esd, add_str("@attack_damage_right")), INT_MIN, INT64_MAX);
+			dmg.damage2 = (int64_t)cap_value(pc_readreg(esd, add_str("@attack_damage_left")), INT_MIN, INT64_MAX);
 			damage = dmg.damage + dmg.damage2;
 		}
 	}

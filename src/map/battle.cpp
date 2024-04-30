@@ -680,7 +680,8 @@ int64 battle_attr_fix(struct block_list *src, struct block_list *target, int64 d
  * @param flag Misc value of skill & damage flags
  * @return damage Damage diff between original damage and after calculation
  */
-int battle_calc_cardfix(int attack_type, struct block_list *src, struct block_list *target, std::bitset<NK_MAX> nk, int rh_ele, int lh_ele, int64 damage, int left, int flag){
+int64_t battle_calc_cardfix(int attack_type, struct block_list* src, struct block_list* target, std::bitset<NK_MAX> nk,
+                            int rh_ele, int lh_ele, int64 damage, int left, int flag){
 	map_session_data *sd, ///< Attacker session data if BL_PC
 		*tsd; ///< Target session data if BL_PC
 	int cardfix = 1000;
@@ -1082,7 +1083,7 @@ int battle_calc_cardfix(int attack_type, struct block_list *src, struct block_li
 
 #undef APPLY_CARDFIX
 
-	return (int)cap_value(damage - original_damage, INT_MIN, INT_MAX);
+	return cap_value(damage - original_damage, INT_MIN, INT64_MAX);
 }
 
 /**
@@ -2464,7 +2465,8 @@ static void battle_add_weapon_damage(map_session_data *sd, int64 *damage, int lr
 }
 
 #ifdef RENEWAL
-static int battle_calc_sizefix(int64 damage, map_session_data *sd, unsigned char t_size, unsigned char weapon_type, short flag)
+static int64_t battle_calc_sizefix(int64 damage, map_session_data* sd, unsigned char t_size, unsigned char weapon_type,
+                                   short flag)
 {
 	if (sd && sd->special_state.no_sizefix < 100 && !flag) // Size fix only for players
 	{
@@ -2476,7 +2478,7 @@ static int battle_calc_sizefix(int64 damage, map_session_data *sd, unsigned char
 		damage = damage * (sizeRate + bounsSizeRate) / 100;
 	}
 
-	return (int)cap_value(damage, INT_MIN, INT_MAX);
+	return cap_value(damage, INT_MIN, INT64_MAX);
 }
 
 static int battle_calc_status_attack(struct status_data *status, short hand)
@@ -2496,7 +2498,8 @@ static int battle_calc_status_attack(struct status_data *status, short hand)
  * @param sd Player
  * @return Base weapon damage
  */
-static int battle_calc_base_weapon_attack(struct block_list *src, struct status_data *tstatus, struct weapon_atk *wa, map_session_data *sd, bool critical)
+static int64_t battle_calc_base_weapon_attack(struct block_list* src, struct status_data* tstatus,
+                                              struct weapon_atk* wa, map_session_data* sd, bool critical)
 {
 	struct status_data *status = status_get_status_data(src);
 	uint8 type = (wa == &status->lhw)?EQI_HAND_L:EQI_HAND_R;
@@ -2547,7 +2550,7 @@ static int battle_calc_base_weapon_attack(struct block_list *src, struct status_
 
 	damage = battle_calc_sizefix(damage, sd, tstatus->size, type, weapon_perfection);
 
-	return (int)cap_value(damage, INT_MIN, INT_MAX);
+	return cap_value(damage, INT_MIN, INT64_MAX);
 }
 #endif
 
@@ -10327,8 +10330,8 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 			pc_setreg(esd, add_str("@harmed_damage_right"), wd.damage);
 			pc_setreg(esd, add_str("@harmed_damage_left"), wd.damage2);
 			npc_script_event(esd, NPCX_PCHARMED);
-			wd.damage = (int)cap_value(pc_readreg(esd, add_str("@harmed_damage_right")), INT_MIN, INT_MAX);
-			wd.damage2 = (int)cap_value(pc_readreg(esd, add_str("@harmed_damage_left")), INT_MIN, INT_MAX);
+			wd.damage = (int64_t)cap_value(pc_readreg(esd, add_str("@harmed_damage_right")), INT_MIN, INT64_MAX);
+			wd.damage2 = (int64_t)cap_value(pc_readreg(esd, add_str("@harmed_damage_left")), INT_MIN, INT64_MAX);
 			damage = wd.damage + wd.damage2;
 		}
 	}
@@ -10372,8 +10375,8 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 
 			npc_script_event(esd, NPCX_PCATTACK);
 
-			wd.damage = (int)cap_value(pc_readreg(esd, add_str("@attack_damage_right")), INT_MIN, INT_MAX);
-			wd.damage2 = (int)cap_value(pc_readreg(esd, add_str("@attack_damage_left")), INT_MIN, INT_MAX);
+			wd.damage = (int64_t)cap_value(pc_readreg(esd, add_str("@attack_damage_right")), INT_MIN, INT64_MAX);
+			wd.damage2 = (int64_t)cap_value(pc_readreg(esd, add_str("@attack_damage_left")), INT_MIN, INT64_MAX);
 			damage = wd.damage + wd.damage2;
 		}
 	}

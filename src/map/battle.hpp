@@ -97,7 +97,8 @@ int64 battle_calc_return_damage(struct block_list *bl, struct block_list *src, i
 void battle_drain(map_session_data *sd, struct block_list *tbl, int64 rdamage, int64 ldamage, int race, int class_);
 
 int64 battle_attr_fix(struct block_list *src, struct block_list *target, int64 damage,int atk_elem,int def_type, int def_lv);
-int battle_calc_cardfix(int attack_type, struct block_list *src, struct block_list *target, std::bitset<NK_MAX> nk, int s_ele, int s_ele_, int64 damage, int left, int flag);
+int64_t battle_calc_cardfix(int attack_type, struct block_list* src, struct block_list* target, std::bitset<NK_MAX> nk,
+                            int s_ele, int s_ele_, int64 damage, int left, int flag);
 
 // Final calculation Damage
 int64 battle_calc_damage(struct block_list *src,struct block_list *bl,struct Damage *d,int64 damage,uint16 skill_id,uint16 skill_lv);
