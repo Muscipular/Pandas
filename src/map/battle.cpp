@@ -10169,8 +10169,8 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 	if( damage > 0 && src != target )
 	{
 		if (sc && sc->getSCE(SC_DUPLELIGHT) && (wd.flag & BF_SHORT)) { // Activates only from regular melee damage. Success chance is seperate for both duple light attacks.
-			uint16 duple_rate = 10 + 2 * sc->getSCE(SC_DUPLELIGHT)->val1;
-
+			int duple_rate = 10 + 2 * sc->getSCE(SC_DUPLELIGHT)->val1;
+			duple_rate = duple_rate * (sstatus->luk + 100) / 100;
 			if (rand() % 100 < duple_rate)
 				skill_castend_damage_id(src, target, AB_DUPLELIGHT_MELEE, sc->getSCE(SC_DUPLELIGHT)->val1, tick, flag | SD_LEVEL);
 
@@ -10557,7 +10557,7 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 				clif_status_change(src, EFST_POSTDELAY, 1, skill_delayfix(src, r_skill, r_lv), 0, 0, 1);
 			}
 		}
-		if (wd.flag&BF_WEAPON && sc && sc->getSCE(SC_FALLINGSTAR) && rand()%100 < sc->getSCE(SC_FALLINGSTAR)->val2) {
+		if (wd.flag&BF_WEAPON && sc && sc->getSCE(SC_FALLINGSTAR) && rand()%100 < (sc->getSCE(SC_FALLINGSTAR)->val2 * (sstatus->luk + 100) / 100)) {
 			if (sd)
 				sd->state.autocast = 1;
 			if (status_charge(src, 0, skill_get_sp(SJ_FALLINGSTAR_ATK, sc->getSCE(SC_FALLINGSTAR)->val1)))
@@ -10567,7 +10567,7 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 		}
 
 		if( sc ){
-			if( sc->getSCE( SC_SERVANTWEAPON ) && sd->servantball > 0 && rnd() % 100 < ( 10 + sc->getSCE( SC_SERVANTWEAPON )->val1 * 5 ) ){
+			if( sc->getSCE( SC_SERVANTWEAPON ) && sd->servantball > 0 && rnd() % 100 < (( 10 + sc->getSCE( SC_SERVANTWEAPON )->val1 * 5 ) * (sstatus->luk + 100) / 100) ){
 				uint16 skill_id = DK_SERVANTWEAPON_ATK;
 				uint16 skill_lv = sc->getSCE(SC_SERVANTWEAPON)->val1;
 
@@ -10579,7 +10579,7 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 			}
 
 			// TODO: Whats the official success chance? Is SP consumed for every autocast? [Rytech]
-			if( sc->getSCE(SC_DUPLELIGHT) && pc_checkskill(sd, CD_PETITIO) > 0 && rnd() % 100 < 20 ){
+			if( sc->getSCE(SC_DUPLELIGHT) && pc_checkskill(sd, CD_PETITIO) > 0 && rnd() % 100 < (20 * (sstatus->luk + 100) / 100)){
 				uint16 skill_id = CD_PETITIO;
 				uint16 skill_lv = pc_checkskill( sd, CD_PETITIO );
 
@@ -10613,15 +10613,15 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 			}
 
 			// Autocasted skills from super elemental supportive buffs.
-			if (sc->getSCE(SC_FLAMETECHNIC_OPTION) && rnd() % 100 < 7)
+			if (sc->getSCE(SC_FLAMETECHNIC_OPTION) && rnd() % 100 < 7 * (sstatus->luk + 100) / 100)
 				battle_autocast_elembuff_skill(sd, target, MG_FIREBOLT, tick, flag);
-			if (sc->getSCE(SC_COLD_FORCE_OPTION) && rnd() % 100 < 7)
+			if (sc->getSCE(SC_COLD_FORCE_OPTION) && rnd() % 100 < 7 * (sstatus->luk + 100) / 100)
 				battle_autocast_elembuff_skill(sd, target, MG_COLDBOLT, tick, flag);
-			if (sc->getSCE(SC_GRACE_BREEZE_OPTION) && rnd() % 100 < 7)
+			if (sc->getSCE(SC_GRACE_BREEZE_OPTION) && rnd() % 100 < 7 * (sstatus->luk + 100) / 100)
 				battle_autocast_elembuff_skill(sd, target, MG_LIGHTNINGBOLT, tick, flag);
-			if (sc->getSCE(SC_EARTH_CARE_OPTION) && rnd() % 100 < 7)
+			if (sc->getSCE(SC_EARTH_CARE_OPTION) && rnd() % 100 < 7 * (sstatus->luk + 100) / 100)
 				battle_autocast_elembuff_skill(sd, target, WZ_EARTHSPIKE, tick, flag);
-			if (sc->getSCE(SC_DEEP_POISONING_OPTION) && rnd() % 100 < 7)
+			if (sc->getSCE(SC_DEEP_POISONING_OPTION) && rnd() % 100 < 7 * (sstatus->luk + 100) / 100)
 				battle_autocast_elembuff_skill(sd, target, SO_POISON_BUSTER, tick, flag);
 		}
 		if (wd.flag & BF_WEAPON && src != target && damage > 0) {
