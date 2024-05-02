@@ -1450,7 +1450,13 @@ int pc_equippoint_sub(map_session_data *sd,struct item_data* id){
 		return 0; //Not equippable by players.
 
 	ep = id->equip;
+	/*
 	if(id->subtype == W_DAGGER	|| id->subtype == W_1HSWORD || id->subtype == W_1HAXE) {
+	*/
+	if(id->subtype == W_DAGGER	|| id->subtype == W_1HSWORD || id->subtype == W_1HAXE
+		|| id->subtype == W_1HSPEAR || id->subtype == W_BOOK || id->subtype == W_STAFF || id->subtype == W_KNUCKLE
+		|| id->subtype == W_MUSICAL || id->subtype == W_WHIP ||id->subtype == W_MACE
+		) {
 		if(pc_checkskill(sd,AS_LEFT) > 0 || (sd->class_&MAPID_UPPERMASK) == MAPID_ASSASSIN || (sd->class_&MAPID_UPPERMASK) == MAPID_KAGEROUOBORO) { //Kagerou and Oboro can dual wield daggers. [Rytech]
 			if (ep == EQP_WEAPON)
 				return EQP_ARMS;
