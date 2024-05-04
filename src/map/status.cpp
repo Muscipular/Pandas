@@ -1433,7 +1433,7 @@ int status_damage(struct block_list *src,struct block_list *target,int64 dhp, in
 	/*
 	int64 hp = (int)cap_value(dhp,INT_MIN,INT_MAX);
 	*/
-	int64 hp = dhp;
+	int64 hp = cap_value(dhp, INT64_MIN + 1, INT64_MAX - 1);
 	int sp = (int)cap_value(dsp,INT_MIN,INT_MAX);
 	int ap = (int)cap_value(dap,INT_MIN,INT_MAX);
 
@@ -1763,7 +1763,7 @@ int64 status_heal(struct block_list *bl,int64 hhp,int64 hsp, int64 hap, int flag
 		hap = hap * sd->aprecov_rate / 100;
 	}
 
-	int64 hp = cap_value(hhp,INT64_MIN,INT64_MAX);
+	int64 hp = cap_value(hhp,INT64_MIN + 1,INT64_MAX - 1);
 	int64 sp = (int)cap_value(hsp,INT_MIN,INT_MAX);
 	int64 ap = (int)cap_value(hap,INT_MIN,INT_MAX);
 
@@ -2820,8 +2820,8 @@ int status_calc_mob_(struct mob_data* md, uint8 opt)
 				//CALCST(status->luk, 1 + dd, diff);
 				CALCST(status->def, 1 + dd, diff);
 				CALCST(status->mdef, 1 + dd, diff);
-				CALCST(status->res, 1 + dd, diff);
-				CALCST(status->mres, 1 + dd, diff);
+				status->res += diff;
+				status->mres += diff;
 				CALCST(status->matk_min, 1 + dd, diff);
 				CALCST(status->matk_max, 1 + dd, diff);
 				CALCST(status->hit, 1 + dd, diff);
@@ -2872,8 +2872,8 @@ int status_calc_mob_(struct mob_data* md, uint8 opt)
 		//CALCST(status->luk, 1 + dd, diff);
 		CALCST(status->def, 1 + dd, diff);
 		CALCST(status->mdef, 1 + dd, diff);
-		CALCST(status->res, 1 + dd, diff);
-		CALCST(status->mres, 1 + dd, diff);
+		status->res += diff;
+		status->mres += diff;
 		CALCST(status->rhw.atk, 1 + dd, diff);
 		CALCST(status->rhw.matk, 1 + dd, diff);
 		CALCST(status->matk_min, 1 + dd, diff);
@@ -2916,8 +2916,8 @@ int status_calc_mob_(struct mob_data* md, uint8 opt)
 			CALCST(status->luk, 1.025, diff);
 			CALCST(status->def, 1.025, diff);
 			CALCST(status->mdef, 1.025, diff);
-			CALCST(status->res, 1.025, diff);
-			CALCST(status->mres, 1.025, diff);
+			status->res += diff;
+			status->mres += diff;
 			CALCST(status->rhw.atk, 1.025, diff);
 			CALCST(status->rhw.matk, 1.025, diff);
 			CALCST(status->matk_min, 1.005, diff);
