@@ -8825,18 +8825,24 @@ ACMD_FUNC(dps_log) {
 	return 0;
 }
 
-#define printDMG(buf1, dmg) { 		if (dmg >= 1000 * 1000 * 100) {\
-sprintf(buf1, "%dM", (int)(dmg / 1000 / 1000));\
+#define printDMG(buf1, dmg) { 		if (dmg >= 1000 * 1000 * 1000 * 1000 * 100) {\
+sprintf(buf1, "%" PRId64 "dT", (int64)(dmg / 1000 / 1000 / 1000 / 1000));\
+}\
+else if (dmg >= 1000 * 1000 * 1000 * 100) {\
+sprintf(buf1, "%" PRId64 "dB", (int64)(dmg / 1000 / 1000 / 1000));\
+}\
+else if (dmg >= 1000 * 1000 * 100) {\
+sprintf(buf1, "%" PRId64 "dM", (int64)(dmg / 1000 / 1000));\
 }\
 else if (dmg >= 100000) {\
-	sprintf(buf1, "%dk", (int)(dmg / 1000));\
-} else { sprintf(buf1, "%d", (int)dmg); } }
+	sprintf(buf1, "%" PRId64 "K", (int64)(dmg / 1000));\
+} else { sprintf(buf1, "%" PRId64, (int64)dmg); } }
 
 ACMD_FUNC(dps_show) {
 	nullpo_retr(-1, sd);
 
 	auto tick = gettick();
-	int64_t dmg = 0;
+	double dmg = 0;
 	int time = cap_value((sd->dps->end - sd->dps->start) / 1000, 1, 100);
 	if (sd->dps->start > 0 && sd->dps->end < tick) {
 		for (const auto& it : sd->dps->map) {

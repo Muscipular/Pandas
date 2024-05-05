@@ -426,7 +426,7 @@ enum e_autotrade_mode : uint32 {
 
 bool pc_autotrade_suspend(map_session_data *sd);
 #endif // Pandas_Struct_Autotrade_Extend
-struct s_dps_dt { int64_t dmgTotal; int hit; };
+struct s_dps_dt { double dmgTotal; int hit; };
 struct s_dps_save
 {
 	std::unordered_map<uint16, std::shared_ptr<s_dps_dt>> map;
@@ -735,7 +735,7 @@ public:
 
 	// zeroed structures start here
 	struct s_regen {
-		short value;
+		int value;
 		int rate;
 		t_tick tick;
 	} hp_loss, sp_loss, hp_regen, sp_regen, percent_hp_regen, percent_sp_regen;
