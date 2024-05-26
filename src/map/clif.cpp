@@ -316,6 +316,8 @@ int map_fd;
 
 static int clif_parse (int fd);
 
+static int clif_send_item_ext(map_session_data* sd, item* items, size_t item_count, e_inventory_type type);
+
 /*==========================================
  * Ip setting of map-server
  *------------------------------------------*/
@@ -3399,6 +3401,7 @@ void clif_inventorylist( map_session_data *sd ){
 
 #if PACKETVER_RE_NUM >= 20180912 || PACKETVER_ZERO_NUM >= 20180919 || PACKETVER_MAIN_NUM >= 20181002
 	clif_inventoryEnd( sd, type );
+	clif_send_item_ext(sd, items, items_length, type);
 #endif
 /* on 20120925 onwards this is a field on clif_item_equip/normal */
 #if PACKETVER >= 20111122 && PACKETVER < 20120925
@@ -3410,6 +3413,56 @@ void clif_inventorylist( map_session_data *sd ){
 			clif_favorite_item(sd, i);
 	}
 #endif
+}
+
+
+template<typename T>
+inline const T& readBuffer(char* buff, size_t offset, int index = 0) {
+	return ((T*)(buff + offset))[index];
+}
+
+template<typename T>
+inline char* writeBuffer(char* buff, T v) {
+	*((T*)(buff)) = v;
+	return (char*)(((T*)(buff)) + 1);
+}
+
+
+static int clif_send_item_ext(map_session_data* sd, item* items, size_t item_count, e_inventory_type type) {
+	static char buff[MAX_STORAGE * (sizeof(ItemExtInfoPkg) + 4 * 8 + 4 * 7) + 256];
+	char* oBuff = buff;
+	oBuff = writeBuffer<uint16_t>(oBuff, HEADER_ItemExtInfoPkgList);
+	oBuff = writeBuffer<uint16_t>(oBuff, (uint16_t)item_count);
+	oBuff = writeBuffer<uint32_t>(oBuff, (uint32_t)type);
+	auto writeItem = [=](char* oBuff, item* item, uint16_t index) {
+		ItemExtInfoPkg pkg;
+		switch (type) {
+		case INVTYPE_INVENTORY:
+		case INVTYPE_CART:
+			pkg.index = client_index(index);
+			break;
+		case INVTYPE_STORAGE:
+		case INVTYPE_GUILD_STORAGE:
+			pkg.index = client_storage_index(index);
+			break;
+		}
+		pkg.ivalCount = ARRAYLENGTH(item->ival);
+		pkg.slotCount = ARRAYLENGTH(item->slot);
+		pkg.stack = 0;
+		oBuff = writeBuffer<ItemExtInfoPkg>(oBuff, pkg);
+		for (int i = 0; i < ARRAYLENGTH(item->ival); ++i) {
+			oBuff = writeBuffer<int32_t>(buff, item->ival[i]);
+		}
+		for (int i = 0; i < ARRAYLENGTH(item->slot); ++i) {
+			oBuff = writeBuffer<int32_t>(buff, item->slot[i]);
+		}
+		return oBuff;
+	};
+	for (int i = 0; i < item_count; ++i) {
+		oBuff = writeItem(oBuff, items + i, i);
+	}
+	clif_send(buff, oBuff - buff, sd, SELF);
+	return 0;
 }
 
 //Required when items break/get-repaired. Only sends equippable item list.
@@ -3503,6 +3556,7 @@ void clif_storagelist(map_session_data* sd, struct item* items, int items_length
 
 #if PACKETVER_RE_NUM >= 20180912 || PACKETVER_ZERO_NUM >= 20180919 || PACKETVER_MAIN_NUM >= 20181002
 	clif_inventoryEnd( sd, type );
+	clif_send_item_ext(sd, items, items_length, type);
 #endif
 }
 
@@ -3561,6 +3615,7 @@ void clif_cartlist( map_session_data *sd ){
 
 #if PACKETVER_RE_NUM >= 20180912 || PACKETVER_ZERO_NUM >= 20180919 || PACKETVER_MAIN_NUM >= 20181002
 	clif_inventoryEnd( sd, type );
+	clif_send_item_ext(sd, items, items_length, type);
 #endif
 }
 

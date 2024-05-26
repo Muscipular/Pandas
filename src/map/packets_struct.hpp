@@ -5964,6 +5964,14 @@ struct PACKET_CZ_ADVENTURER_AGENCY_JOIN_RESULT {
 DEFINE_PACKET_HEADER(CZ_ADVENTURER_AGENCY_JOIN_RESULT, 0x0af8);
 #endif  // PACKETVER_MAIN_NUM >= 20191218 || PACKETVER_RE_NUM >= 20191211 || PACKETVER_ZERO_NUM >= 20191224
 
+struct ItemExtInfoPkg {
+	uint16_t index;
+	uint8_t slotCount;
+	uint8_t ivalCount;
+	int32_t stack;
+};
+DEFINE_PACKET_HEADER(ItemExtInfoPkgList, 0x2001);
+
 #if !defined(sun) && (!defined(__NETBSD__) || __NetBSD_Version__ >= 600000000) // NetBSD 5 and Solaris don't like pragma pack but accept the packed attribute
 #pragma pack(pop)
 #endif // not NetBSD < 6 / Solaris

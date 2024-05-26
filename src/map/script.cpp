@@ -16856,6 +16856,10 @@ BUILDIN_FUNC(getinventorylist) {
 		sprintf(card_var, "@inventorylist_ival%d", k + 1);
 		script_cleararray_pc(sd, card_var);
 	}
+	for (k = 0; k < ARRAYLENGTH(inventory[0].slot); k++) {
+		sprintf(card_var, "@inventorylist_slot%d", k + 1);
+		script_cleararray_pc(sd, card_var);
+	}
 	script_cleararray_pc(sd, "@inventorylist_expire");
 	script_cleararray_pc(sd, "@inventorylist_bound");
 	script_cleararray_pc(sd, "@inventorylist_enchantgrade");
@@ -16890,6 +16894,10 @@ BUILDIN_FUNC(getinventorylist) {
 		for (k = 0; k < ARRAYLENGTH(inventory[0].ival); k++) {
 			sprintf(card_var, "@inventorylist_ival%d", k + 1);
 			setreg(INV_IVAL, card_var, inventory[i].ival[k]);
+		}
+		for (k = 0; k < ARRAYLENGTH(inventory[0].slot); k++) {
+			sprintf(card_var, "@inventorylist_slot%d", k + 1);
+			setreg(INV_IVAL, card_var, inventory[i].slot[k]);
 		}
 		setreg(INV_EXPIRE, "@inventorylist_expire", inventory[i].expire_time);
 		setreg(INV_BOUND, "@inventorylist_bound", inventory[i].bound);
@@ -30761,8 +30769,10 @@ BUILDIN_FUNC(getinventoryinfo) {
 	case 30: script_pushint(st, inventory[idx].favorite); break;
 	case 31: case 32: case 33: case 34: case 35: case 36: case 37 :case 38:
 		script_pushint(st, inventory[idx].ival[type - 31]); break;
+	case 39: case 40: case 41: case 42:
+		script_pushint(st, inventory[idx].slot[type - 39]); break;
 	default:
-		ShowWarning("buildin_%s: The type should be in range 0-%d, currently type is: %d.\n", command, 38, type);
+		ShowWarning("buildin_%s: The type should be in range 0-%d, currently type is: %d.\n", command, 42, type);
 		script_pushint(st, -1);
 		return SCRIPT_CMD_FAILURE;
 	}
@@ -30816,8 +30826,10 @@ BUILDIN_FUNC(getmapiteminfo) {
 	case 30: script_pushint(st, inventory[idx].favorite); break;
 	case 31: case 32: case 33: case 34: case 35: case 36: case 37:case 38:
 		script_pushint(st, inventory[idx].ival[type - 31]); break;
+	case 39: case 40: case 41: case 42:
+		script_pushint(st, inventory[idx].slot[type - 39]); break;
 	default:
-		ShowWarning("buildin_%s: The type should be in range 0-%d, currently type is: %d.\n", command, 38, type);
+		ShowWarning("buildin_%s: The type should be in range 0-%d, currently type is: %d.\n", command, 42, type);
 		script_pushint(st, -1);
 		return SCRIPT_CMD_FAILURE;
 	}
@@ -32496,8 +32508,12 @@ BUILDIN_FUNC(setinventoryinfo) {
 		value = cap_value(value, INT_MIN, INT_MAX);
 		sd->inventory.u.items_inventory[idx].ival[type - 31] = (int)value;
 		break;
+	case 39: case 40: case 41: case 42:
+		value = cap_value(value, INT_MIN, INT_MAX);
+		sd->inventory.u.items_inventory[idx].slot[type - 39] = (int)value;
+		break;
 	default:
-		ShowWarning("buildin_setinventoryinfo: The type should be in range 3-%d, currently type is: %d.\n", 30, type);
+		ShowWarning("buildin_setinventoryinfo: The type should be in range 3-%d, currently type is: %d.\n", 42, type);
 		script_pushint(st, 0);
 		return SCRIPT_CMD_SUCCESS;
 	}
@@ -32613,8 +32629,12 @@ BUILDIN_FUNC(setmapiteminfo) {
 		value = cap_value(value, INT_MIN, INT_MAX);
 		inventory[idx].ival[type - 31] = (int)value;
 		break;
+	case 39: case 40: case 41: case 42:
+		value = cap_value(value, INT_MIN, INT_MAX);
+		inventory[idx].slot[type - 39] = (int)value;
+		break;
 	default:
-		ShowWarning("buildin_setmapiteminfo: The type should be in range 3-%d, currently type is: %d.\n", 38, type);
+		ShowWarning("buildin_setmapiteminfo: The type should be in range 3-%d, currently type is: %d.\n", 42, type);
 		script_pushint(st, 0);
 		return SCRIPT_CMD_SUCCESS;
 	}
