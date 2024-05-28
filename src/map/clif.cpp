@@ -3117,7 +3117,7 @@ void clif_dropitem(map_session_data *sd,int n,int amount)
 	fd=sd->fd;
 	WFIFOHEAD(fd, packet_len(0xaf));
 	WFIFOW(fd,0)=0xaf;
-	WFIFOW(fd,2)=n+2;
+	WFIFOW(fd,2)=client_index(n);
 	WFIFOW(fd,4)=amount;
 	WFIFOSET(fd,packet_len(0xaf));
 }
@@ -3148,7 +3148,7 @@ void clif_delitem(map_session_data *sd,int n,int amount, short reason)
 	WFIFOHEAD(fd, packet_len(0x7fa));
 	WFIFOW(fd,0)=0x7fa;
 	WFIFOW(fd,2)=reason;
-	WFIFOW(fd,4)=n+2;
+	WFIFOW(fd,4)=client_index(n);
 	WFIFOW(fd,6)=amount;
 	WFIFOSET(fd,packet_len(0x7fa));
 #endif
@@ -4719,7 +4719,7 @@ void clif_unequipitemack(map_session_data *sd,int n,int pos,int ok)
 	fd=sd->fd;
 	WFIFOHEAD(fd, packet_len(header));
 	WFIFOW(fd,offs+0) = header;
-	WFIFOW(fd,offs+2) = n+2;
+	WFIFOW(fd,offs+2) = client_index(n);
 #if PACKETVER >= 20130000
 	WFIFOL(fd,offs+4) = pos;
 	offs += 2;
@@ -8215,7 +8215,7 @@ void clif_cart_delitem(map_session_data *sd,int n,int amount)
 
 	WFIFOHEAD(fd,packet_len(0x125));
 	WFIFOW(fd,0)=0x125;
-	WFIFOW(fd,2)=n+2;
+	WFIFOW(fd,2)=client_index(n);
 	WFIFOL(fd,4)=amount;
 	WFIFOSET(fd,packet_len(0x125));
 }
