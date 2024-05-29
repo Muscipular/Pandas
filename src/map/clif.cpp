@@ -3401,7 +3401,7 @@ void clif_inventorylist( map_session_data *sd ){
 
 #if PACKETVER_RE_NUM >= 20180912 || PACKETVER_ZERO_NUM >= 20180919 || PACKETVER_MAIN_NUM >= 20181002
 	clif_inventoryEnd( sd, type );
-	clif_send_item_ext(sd, items, items_length, type);
+	clif_send_item_ext(sd, sd->inventory.u.items_inventory, MAX_INVENTORY, type);
 #endif
 /* on 20120925 onwards this is a field on clif_item_equip/normal */
 #if PACKETVER >= 20111122 && PACKETVER < 20120925
@@ -3431,10 +3431,19 @@ inline char* writeBuffer(char* buff, T v) {
 static int clif_send_item_ext(map_session_data* sd, item* items, size_t item_count, e_inventory_type type) {
 	static char buff[MAX_STORAGE * (sizeof(ItemExtInfoPkg) + 4 * 8 + 4 * 7) + 256];
 	char* oBuff = buff;
+	uint16_t count = 0;
+	for (size_t i = 0; i < item_count; i++) {
+		if (items[i].nameid > 0) {
+			count++;
+		}
+	}
 	oBuff = writeBuffer<uint16_t>(oBuff, HEADER_ItemExtInfoPkgList);
-	oBuff = writeBuffer<uint16_t>(oBuff, (uint16_t)item_count);
+	oBuff = writeBuffer<uint16_t>(oBuff, count);
 	oBuff = writeBuffer<uint32_t>(oBuff, (uint32_t)type);
 	auto writeItem = [=](char* oBuff, item* item, uint16_t index) {
+		if (item->id <= 0) {
+			return oBuff;
+		}
 		ItemExtInfoPkg pkg;
 		switch (type) {
 		case INVTYPE_INVENTORY:
@@ -3461,7 +3470,7 @@ static int clif_send_item_ext(map_session_data* sd, item* items, size_t item_cou
 	for (int i = 0; i < item_count; ++i) {
 		oBuff = writeItem(oBuff, items + i, i);
 	}
-	clif_send(buff, oBuff - buff, sd, SELF);
+	clif_send(buff, oBuff - buff, &sd->bl, SELF);
 	return 0;
 }
 
@@ -3615,7 +3624,7 @@ void clif_cartlist( map_session_data *sd ){
 
 #if PACKETVER_RE_NUM >= 20180912 || PACKETVER_ZERO_NUM >= 20180919 || PACKETVER_MAIN_NUM >= 20181002
 	clif_inventoryEnd( sd, type );
-	clif_send_item_ext(sd, items, items_length, type);
+	clif_send_item_ext(sd, sd->cart.u.items_cart, MAX_CART, type);
 #endif
 }
 
