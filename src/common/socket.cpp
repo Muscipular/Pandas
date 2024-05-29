@@ -256,7 +256,7 @@ static time_t socket_data_last_tick = 0;
 
 // Maximum size of pending data in the write fifo. (for non-server connections)
 // The connection is closed if it goes over the limit.
-#define WFIFO_MAX (1*1024*1024)
+#define WFIFO_MAX (5*1024*1024)
 
 #ifndef Pandas_Crashfix_Variable_Init
 struct socket_data* session[MAXCONN];
