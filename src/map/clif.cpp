@@ -3438,8 +3438,9 @@ static int clif_send_item_ext(map_session_data* sd, item* items, size_t item_cou
 		}
 	}
 	oBuff = writeBuffer<uint16_t>(oBuff, HEADER_ItemExtInfoPkgList);
+	oBuff = writeBuffer<uint16_t>(oBuff, 0);
 	oBuff = writeBuffer<uint16_t>(oBuff, count);
-	oBuff = writeBuffer<uint32_t>(oBuff, (uint32_t)type);
+	oBuff = writeBuffer<uint16_t>(oBuff, type);
 	auto writeItem = [=](char* oBuff, item* item, uint16_t index) {
 		if (item->id <= 0) {
 			return oBuff;
@@ -3470,6 +3471,7 @@ static int clif_send_item_ext(map_session_data* sd, item* items, size_t item_cou
 	for (int i = 0; i < item_count; ++i) {
 		oBuff = writeItem(oBuff, items + i, i);
 	}
+	((uint16_t*)buff)[1] = oBuff - buff;
 	clif_send(buff, oBuff - buff, &sd->bl, SELF);
 	return 0;
 }
