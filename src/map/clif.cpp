@@ -3441,9 +3441,9 @@ static int clif_send_item_ext(map_session_data* sd, item* items, size_t item_cou
 	oBuff = writeBuffer<uint16_t>(oBuff, 0);
 	oBuff = writeBuffer<uint16_t>(oBuff, count);
 	oBuff = writeBuffer<uint16_t>(oBuff, type);
-	auto writeItem = [=](char* oBuff, item* item, uint16_t index) {
+	auto writeItem = [=](char* eBuff, item* item, uint16_t index) {
 		if (item->id <= 0) {
-			return oBuff;
+			return eBuff;
 		}
 		ItemExtInfoPkg pkg;
 		switch (type) {
@@ -3459,14 +3459,14 @@ static int clif_send_item_ext(map_session_data* sd, item* items, size_t item_cou
 		pkg.ivalCount = ARRAYLENGTH(item->ival);
 		pkg.slotCount = ARRAYLENGTH(item->slot);
 		pkg.stack = 0;
-		oBuff = writeBuffer<ItemExtInfoPkg>(oBuff, pkg);
+		eBuff = writeBuffer<ItemExtInfoPkg>(eBuff, pkg);
 		for (int i = 0; i < ARRAYLENGTH(item->ival); ++i) {
-			oBuff = writeBuffer<int32_t>(buff, item->ival[i]);
+			eBuff = writeBuffer<int32_t>(eBuff, item->ival[i]);
 		}
 		for (int i = 0; i < ARRAYLENGTH(item->slot); ++i) {
-			oBuff = writeBuffer<int32_t>(buff, item->slot[i]);
+			eBuff = writeBuffer<int32_t>(eBuff, item->slot[i]);
 		}
-		return oBuff;
+		return eBuff;
 	};
 	for (int i = 0; i < item_count; ++i) {
 		oBuff = writeItem(oBuff, items + i, i);
