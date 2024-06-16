@@ -87,9 +87,9 @@
 #endif // Pandas_Database_MobItem_FixedRatio
 
 extern "C" {
-#include "lua.h"
-#include "lualib.h"
-#include "lauxlib.h"
+#include "../../3rdparty/lua/lua.h"
+#include "../../3rdparty/lua/lualib.h"
+#include "../../3rdparty/lua/lauxlib.h"
 }
 
 using namespace rathena;

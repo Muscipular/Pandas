@@ -26,4 +26,5 @@ int item_cash;
 struct {
 	int job, exp, drop;
 } gExtRate;
+int ex_level;
 

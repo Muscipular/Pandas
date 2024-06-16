@@ -3005,10 +3005,12 @@ static void clif_addcards( struct EQUIPSLOTINFO* buf, struct item* item ){
 
 	int i = 0, j;
 
+	/*
 	// Client only receives four cards.. so randomly send them a set of cards. [Skotlex]
 	if( MAX_SLOTS > 4 && ( j = itemdb_slots( item->nameid ) ) > 4 ){
 		i = rnd() % ( j - 3 ); //eg: 6 slots, possible i values: 0->3, 1->4, 2->5 => i = rnd()%3;
 	}
+	*/
 
 	// Normal items.
 	for( int k = 0; k < 4; k++, i++ ){
