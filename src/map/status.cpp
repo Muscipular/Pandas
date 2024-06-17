@@ -4310,6 +4310,34 @@ int status_calc_pc_sub(map_session_data* sd, uint8 opt)
 				if (!calculating) // Abort, run_script his function. [Skotlex]
 					return 1;
 			}
+			for (j = 0; j < ARRAYLENGTH(sd->inventory.u.items_inventory[index].slot); j++) { // Uses MAX_SLOTS to support Soul Bound system [Inkfish]
+				int c = sd->inventory.u.items_inventory[index].slot[j];
+				current_equip_card_id= c;
+				if(!c)
+					continue;
+
+				std::shared_ptr<item_data> data = item_db.find(c);
+
+				if(!data)
+					continue;
+				if (opt&SCO_FIRST && data->equip_script && (pc_has_permission(sd,PC_PERM_USE_ALL_EQUIPMENT) || !itemdb_isNoEquip(data.get(), sd->bl.m))) {// Execute equip-script on login
+					run_script(data->equip_script,0,sd->bl.id,0);
+					if (!calculating)
+						return 1;
+				}
+				if(!data->script)
+					continue;
+				if(!pc_has_permission(sd,PC_PERM_USE_ALL_EQUIPMENT) && itemdb_isNoEquip(data.get(), sd->bl.m)) // Card restriction checks.
+					continue;
+				if(i == EQI_HAND_L && sd->inventory.u.items_inventory[index].equip == EQP_HAND_L) { // Left hand status.
+					sd->state.lr_flag = 1;
+					run_script(data->script,0,sd->bl.id,0);
+					sd->state.lr_flag = 0;
+				} else
+					run_script(data->script,0,sd->bl.id,0);
+				if (!calculating) // Abort, run_script his function. [Skotlex]
+					return 1;
+			}
 		}
 	}
 	current_equip_card_id = 0; // Clear stored card ID [Secret]
