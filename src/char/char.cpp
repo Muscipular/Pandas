@@ -605,8 +605,8 @@ int char_memitemdata_to_sql(const struct item items[], int max, int id, enum sto
 	}
 	for( i = 0; i < ARRAYLENGTH(item.ival); ++i )
 		StringBuf_Printf(&buf, ", `ival%d`", i);
-	for( i = 0; i < ARRAYLENGTH(item.slot); ++i )
-		StringBuf_Printf(&buf, ", `slot%d`", i);
+	//for( i = 0; i < ARRAYLENGTH(item.slot); ++i )
+	//	StringBuf_Printf(&buf, ", `slot%d`", i);
 	StringBuf_Printf(&buf, " FROM `%s` WHERE `%s`='%d'", tablename, selectoption, id);
 
 	stmt = SqlStmt_Malloc(sql_handle);
@@ -643,8 +643,8 @@ int char_memitemdata_to_sql(const struct item items[], int max, int id, enum sto
 	}
 	for (i = 0; i < ARRAYLENGTH(item.ival); ++i)
 		SqlStmt_BindColumn(stmt, 11 + offset + i + MAX_SLOTS + MAX_ITEM_RDM_OPT * 3, SQLDT_INT, &item.ival[i], 0, NULL, NULL);
-	for (i = 0; i < ARRAYLENGTH(item.slot); ++i)
-		SqlStmt_BindColumn(stmt, 11 + offset + i + MAX_SLOTS + MAX_ITEM_RDM_OPT * 3 + ARRAYLENGTH(item.ival), SQLDT_INT, &item.slot[i], 0, NULL, NULL);
+	//for (i = 0; i < ARRAYLENGTH(item.slot); ++i)
+		//SqlStmt_BindColumn(stmt, 11 + offset + i + MAX_SLOTS + MAX_ITEM_RDM_OPT * 3 + ARRAYLENGTH(item.ival), SQLDT_INT, &item.slot[i], 0, NULL, NULL);
 	// bit array indicating which inventory items have already been matched
 	flag = (bool*) aCalloc(max, sizeof(bool));
 
@@ -698,8 +698,8 @@ int char_memitemdata_to_sql(const struct item items[], int max, int id, enum sto
 					}
 					for( j = 0; j < ARRAYLENGTH(item.ival); ++j )
 						StringBuf_Printf(&buf, ", `ival%d`=%d", j, items[i].ival[j]);
-					for( j = 0; j < ARRAYLENGTH(item.slot); ++j )
-						StringBuf_Printf(&buf, ", `slot%d`=%d", j, items[i].slot[j]);
+					//for( j = 0; j < ARRAYLENGTH(item.slot); ++j )
+					//	StringBuf_Printf(&buf, ", `slot%d`=%d", j, items[i].slot[j]);
 					StringBuf_Printf(&buf, " WHERE `id`='%d' LIMIT 1", item.id);
 
 					if( SQL_ERROR == Sql_QueryStr(sql_handle, StringBuf_Value(&buf)) )
@@ -737,8 +737,8 @@ int char_memitemdata_to_sql(const struct item items[], int max, int id, enum sto
 	}
 	for (j = 0; j < ARRAYLENGTH(item.ival); ++j)
 		StringBuf_Printf(&buf, ", `ival%d`", j);
-	for (j = 0; j < ARRAYLENGTH(item.slot); ++j)
-		StringBuf_Printf(&buf, ", `slot%d`", j);
+	//for (j = 0; j < ARRAYLENGTH(item.slot); ++j)
+	//	StringBuf_Printf(&buf, ", `slot%d`", j);
 	StringBuf_AppendStr(&buf, ") VALUES ");
 
 	found = false;
@@ -767,8 +767,8 @@ int char_memitemdata_to_sql(const struct item items[], int max, int id, enum sto
 		}
 		for (j = 0; j < ARRAYLENGTH(item.ival); ++j)
 			StringBuf_Printf(&buf, ", '%d'", items[i].ival[j]);
-		for (j = 0; j < ARRAYLENGTH(item.slot); ++j)
-			StringBuf_Printf(&buf, ", '%d'", items[i].slot[j]);
+		//for (j = 0; j < ARRAYLENGTH(item.slot); ++j)
+		//	StringBuf_Printf(&buf, ", '%d'", items[i].slot[j]);
 		StringBuf_AppendStr(&buf, ")");
 	}
 
@@ -853,8 +853,8 @@ bool char_memitemdata_from_sql(struct s_storage* p, int max, int id, enum storag
 	}
 	for (j = 0; j < ARRAYLENGTH(item.ival); ++j)
 		StringBuf_Printf(&buf, ",`ival%d`", j);
-	for (j = 0; j < ARRAYLENGTH(item.slot); ++j)
-		StringBuf_Printf(&buf, ",`slot%d`", j);
+	//for (j = 0; j < ARRAYLENGTH(item.slot); ++j)
+	//	StringBuf_Printf(&buf, ",`slot%d`", j);
 	StringBuf_Printf(&buf, " FROM `%s` WHERE `%s`=? ORDER BY `nameid`", tablename, selectoption );
 
 	if( SQL_ERROR == SqlStmt_PrepareStr(stmt, StringBuf_Value(&buf))
@@ -892,8 +892,8 @@ bool char_memitemdata_from_sql(struct s_storage* p, int max, int id, enum storag
 	for (i = 0; i < ARRAYLENGTH(item.ival); ++i)
 		SqlStmt_BindColumn(stmt, 11 + offset + MAX_SLOTS + MAX_ITEM_RDM_OPT * 3 + i, SQLDT_INT, &item.ival[i], 0, NULL, NULL);
 
-	for (i = 0; i < ARRAYLENGTH(item.slot); ++i)
-		SqlStmt_BindColumn(stmt, 11 + offset + MAX_SLOTS + MAX_ITEM_RDM_OPT * 3 + i + ARRAYLENGTH(item.ival), SQLDT_INT, &item.slot[i], 0, NULL, NULL);
+	//for (i = 0; i < ARRAYLENGTH(item.slot); ++i)
+	//	SqlStmt_BindColumn(stmt, 11 + offset + MAX_SLOTS + MAX_ITEM_RDM_OPT * 3 + i + ARRAYLENGTH(item.ival), SQLDT_INT, &item.slot[i], 0, NULL, NULL);
 
 #ifndef Pandas_ScriptCommand_GetInventoryInfo
 	for( i = 0; i < max && SQL_SUCCESS == SqlStmt_NextRow(stmt); ++i )

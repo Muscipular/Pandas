@@ -82,7 +82,7 @@ typedef uint32 t_itemid;
 
 /** Number of slots carded equipment can have. Never set to less than 4 as they are also used to keep the data of forged items/equipment. [Skotlex]
 * Note: The client seems unable to receive data for more than 4 slots due to all related packets having a fixed size. */
-#define MAX_SLOTS 4
+#define MAX_SLOTS 9
 #define MAX_AMOUNT INT16_MAX ////Max amount of a single stacked item
 #define MAX_ZENY INT_MAX ///Max zeny
 #define MAX_BANK_ZENY SINT32_MAX ///Max zeny in Bank
@@ -398,8 +398,8 @@ struct item {
 	uint64 unique_id;
 	unsigned int equipSwitch; // location(s) where item is equipped for equip switching (using enum equip_pos for bitmasking)
 	uint8 enchantgrade;
-	int32_t ival[8];
-	int32_t slot[4];
+	int32_t ival[16];
+	//int32_t slot[4];
 } __attribute__((packed));
 
 // NetBSD 5 and Solaris don't like pragma pack but accept the packed attribute
@@ -1173,6 +1173,12 @@ enum e_job {
 	JOB_SKY_EMPEROR2 = 4316,
 
 	JOB_MAX,
+};
+
+enum G_Rate_Mode {
+	G_RATE_EXP,
+	G_RATE_JOB,
+	G_RATE_DROP,
 };
 
 enum e_sex : uint8 {

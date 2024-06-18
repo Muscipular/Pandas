@@ -3459,14 +3459,14 @@ static int clif_send_item_ext(map_session_data* sd, item* items, size_t item_cou
 			break;
 		}
 		pkg.ivalCount = ARRAYLENGTH(item->ival);
-		pkg.slotCount = ARRAYLENGTH(item->slot);
+		pkg.slotCount = MAX_SLOTS -  4;
 		pkg.stack = 0;
 		eBuff = writeBuffer<ItemExtInfoPkg>(eBuff, pkg);
 		for (int i = 0; i < ARRAYLENGTH(item->ival); ++i) {
 			eBuff = writeBuffer<int32_t>(eBuff, item->ival[i]);
 		}
-		for (int i = 0; i < ARRAYLENGTH(item->slot); ++i) {
-			eBuff = writeBuffer<int32_t>(eBuff, item->slot[i]);
+		for (int i = 4; i < MAX_SLOTS; ++i) {
+			eBuff = writeBuffer<int32_t>(eBuff, item->card[i]);
 		}
 		return eBuff;
 	};

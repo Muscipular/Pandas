@@ -2735,11 +2735,7 @@ uint64 ConstantDatabase::parseBodyNode( const ryml::NodeRef& node ) {
 
 	return 1;
 }
-enum G_Rate_Mode {
-	G_RATE_EXP,
-	G_RATE_JOB,
-	G_RATE_DROP,
-};
+
 
 ConstantDatabase constant_db;
 
@@ -16856,10 +16852,10 @@ BUILDIN_FUNC(getinventorylist) {
 		sprintf(card_var, "@inventorylist_ival%d", k + 1);
 		script_cleararray_pc(sd, card_var);
 	}
-	for (k = 0; k < ARRAYLENGTH(inventory[0].slot); k++) {
-		sprintf(card_var, "@inventorylist_slot%d", k + 1);
-		script_cleararray_pc(sd, card_var);
-	}
+	//for (k = 0; k < ARRAYLENGTH(inventory[0].slot); k++) {
+	//	sprintf(card_var, "@inventorylist_slot%d", k + 1);
+	//	script_cleararray_pc(sd, card_var);
+	//}
 	script_cleararray_pc(sd, "@inventorylist_expire");
 	script_cleararray_pc(sd, "@inventorylist_bound");
 	script_cleararray_pc(sd, "@inventorylist_enchantgrade");
@@ -16895,10 +16891,10 @@ BUILDIN_FUNC(getinventorylist) {
 			sprintf(card_var, "@inventorylist_ival%d", k + 1);
 			setreg(INV_IVAL, card_var, inventory[i].ival[k]);
 		}
-		for (k = 0; k < ARRAYLENGTH(inventory[0].slot); k++) {
-			sprintf(card_var, "@inventorylist_slot%d", k + 1);
-			setreg(INV_IVAL, card_var, inventory[i].slot[k]);
-		}
+		//for (k = 0; k < ARRAYLENGTH(inventory[0].slot); k++) {
+		//	sprintf(card_var, "@inventorylist_slot%d", k + 1);
+		//	setreg(INV_IVAL, card_var, inventory[i].slot[k]);
+		//}
 		setreg(INV_EXPIRE, "@inventorylist_expire", inventory[i].expire_time);
 		setreg(INV_BOUND, "@inventorylist_bound", inventory[i].bound);
 		setreg(INV_ENCHANTGRADE, "@inventorylist_enchantgrade", inventory[i].enchantgrade);
@@ -30768,9 +30764,12 @@ BUILDIN_FUNC(getinventoryinfo) {
 	case 29: script_pushint(st, inventory[idx].equipSwitch); break;
 	case 30: script_pushint(st, inventory[idx].favorite); break;
 	case 31: case 32: case 33: case 34: case 35: case 36: case 37 :case 38:
+	case 39: case 40: case 41: case 42: case 43: case 44: case 45:case 46:
 		script_pushint(st, inventory[idx].ival[type - 31]); break;
-	case 39: case 40: case 41: case 42:
-		script_pushint(st, inventory[idx].slot[type - 39]); break;
+	case 47: case 48: case 49: case 50: case 51:
+		script_pushint(st, inventory[idx].card[type - 47 + 4]); break;
+	//case 39: case 40: case 41: case 42:
+	//	script_pushint(st, inventory[idx].slot[type - 39]); break;
 	default:
 		ShowWarning("buildin_%s: The type should be in range 0-%d, currently type is: %d.\n", command, 42, type);
 		script_pushint(st, -1);
@@ -30825,11 +30824,14 @@ BUILDIN_FUNC(getmapiteminfo) {
 	case 29: script_pushint(st, inventory[idx].equipSwitch); break;
 	case 30: script_pushint(st, inventory[idx].favorite); break;
 	case 31: case 32: case 33: case 34: case 35: case 36: case 37:case 38:
+	case 39: case 40: case 41: case 42: case 43: case 44: case 45:case 46:
 		script_pushint(st, inventory[idx].ival[type - 31]); break;
-	case 39: case 40: case 41: case 42:
-		script_pushint(st, inventory[idx].slot[type - 39]); break;
+	case 47: case 48: case 49: case 50: case 51:
+		script_pushint(st, inventory[idx].card[type - 47 + 4]); break;
+	//case 39: case 40: case 41: case 42:
+	//	script_pushint(st, inventory[idx].slot[type - 39]); break;
 	default:
-		ShowWarning("buildin_%s: The type should be in range 0-%d, currently type is: %d.\n", command, 42, type);
+		ShowWarning("buildin_%s: The type should be in range 0-%d, currently type is: %d.\n", command, 51, type);
 		script_pushint(st, -1);
 		return SCRIPT_CMD_FAILURE;
 	}
@@ -32413,9 +32415,12 @@ BUILDIN_FUNC(setinventoryinfo) {
 		if (sd->inventory.u.items_inventory[idx].equip && value)
 			pc_unequipitem(sd, idx, 3);
 		break;
-	case 6: case 7: case 8: case 9: {
+	case 6: case 7: case 8: case 9:
+	case 47: case 48: case 49: case 50: case 51:
+		{
+		int posCard = type > 9 ? type - 47 + 4 : type - 6;
 		if (!value) {
-			sd->inventory.u.items_inventory[idx].card[type - 6] = 0;
+			sd->inventory.u.items_inventory[idx].card[posCard] = 0;
 			need_recalc_status = true;
 			break;
 		}
@@ -32432,7 +32437,7 @@ BUILDIN_FUNC(setinventoryinfo) {
 				return SCRIPT_CMD_SUCCESS;
 			}
 		}
-		sd->inventory.u.items_inventory[idx].card[type - 6] = card_itemdata->nameid;
+		sd->inventory.u.items_inventory[idx].card[posCard] = card_itemdata->nameid;
 		if (!(flag & 8)) {
 			struct item item_tmp = { 0 };
 			item_tmp.nameid = card_itemdata->nameid;
@@ -32505,15 +32510,16 @@ BUILDIN_FUNC(setinventoryinfo) {
 		sd->inventory.u.items_inventory[idx].favorite = (char)value;
 		break;
 	case 31: case 32: case 33: case 34: case 35: case 36: case 37:case 38:
+	case 39: case 40: case 41: case 42: case 43: case 44: case 45:case 46:
 		value = cap_value(value, INT_MIN, INT_MAX);
 		sd->inventory.u.items_inventory[idx].ival[type - 31] = (int)value;
 		break;
-	case 39: case 40: case 41: case 42:
-		value = cap_value(value, INT_MIN, INT_MAX);
-		sd->inventory.u.items_inventory[idx].slot[type - 39] = (int)value;
-		break;
+	//case 39: case 40: case 41: case 42:
+	//	value = cap_value(value, INT_MIN, INT_MAX);
+	//	sd->inventory.u.items_inventory[idx].slot[type - 39] = (int)value;
+	//	break;
 	default:
-		ShowWarning("buildin_setinventoryinfo: The type should be in range 3-%d, currently type is: %d.\n", 42, type);
+		ShowWarning("buildin_setinventoryinfo: The type should be in range 3-%d, currently type is: %d.\n", 51, type);
 		script_pushint(st, 0);
 		return SCRIPT_CMD_SUCCESS;
 	}
@@ -32563,9 +32569,12 @@ BUILDIN_FUNC(setmapiteminfo) {
 		value = cap_value(value, 0, 1);
 		inventory[idx].attribute = (char)value;
 		break;
-	case 6: case 7: case 8: case 9: {
+	case 6: case 7: case 8: case 9:
+	case 47: case 48: case 49: case 50: case 51:
+		{
+		int postCard = type >= 47 ? type - 47 + 4 : type - 6;
 		if (!value) {
-			inventory[idx].card[type - 6] = 0;
+			inventory[idx].card[postCard] = 0;
 			break;
 		}
 
@@ -32575,7 +32584,7 @@ BUILDIN_FUNC(setmapiteminfo) {
 			script_pushint(st, 0);
 			return SCRIPT_CMD_SUCCESS;
 		}
-		inventory[idx].card[type - 6] = card_itemdata->nameid;
+		inventory[idx].card[postCard] = card_itemdata->nameid;
 		break;
 	}
 	case 10:
@@ -32626,13 +32635,14 @@ BUILDIN_FUNC(setmapiteminfo) {
 		inventory[idx].favorite = (char)value;
 		break;
 	case 31: case 32: case 33: case 34: case 35: case 36: case 37:case 38:
+	case 39: case 40: case 41: case 42: case 43: case 44: case 45:case 46:
 		value = cap_value(value, INT_MIN, INT_MAX);
 		inventory[idx].ival[type - 31] = (int)value;
 		break;
-	case 39: case 40: case 41: case 42:
-		value = cap_value(value, INT_MIN, INT_MAX);
-		inventory[idx].slot[type - 39] = (int)value;
-		break;
+	//case 39: case 40: case 41: case 42:
+	//	value = cap_value(value, INT_MIN, INT_MAX);
+	//	inventory[idx].slot[type - 39] = (int)value;
+	//	break;
 	default:
 		ShowWarning("buildin_setmapiteminfo: The type should be in range 3-%d, currently type is: %d.\n", 42, type);
 		script_pushint(st, 0);
