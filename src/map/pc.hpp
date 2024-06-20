@@ -911,6 +911,7 @@ public:
 	int killerrid, killedrid, killedgid;
 
 	int cashPoints, kafraPoints;
+	int exLevel;
 	int rental_timer;
 
 	// Auction System [Zephyrus]

@@ -2368,6 +2368,7 @@ void pc_reg_received(map_session_data *sd)
 	// Cash shop
 	sd->cashPoints = static_cast<int>(pc_readaccountreg(sd, add_str(CASHPOINT_VAR)));
 	sd->kafraPoints = static_cast<int>(pc_readaccountreg(sd, add_str(KAFRAPOINT_VAR)));
+	sd->exLevel = static_cast<int>(pc_readreg2(sd, "ExLevel"));
 
 #ifdef Pandas_Struct_Unit_CommonData_Aura
 	// 从角色的变量中读取当前角色设置启用的光环编号
@@ -9289,17 +9290,34 @@ t_exp JobDatabase::get_baseExp(uint16 job_id, uint32 level) {
 	return job ? job->base_exp[level - 1] : 0;
 }
 
+#define EXP_EX(n) (t_exp)(pow(1.05, (n - 1)) * 999999999)
+
+t_exp* ex_exp = nullptr;//std::pow(1.05, 400) * 999999999;
+
 /**
  * Base exp needed for player to level up.
  * @param sd
  * @return Base EXP needed for next base level
  **/
-t_exp pc_nextbaseexp(map_session_data *sd){
+t_exp pc_nextbaseexp(map_session_data* sd) {
 	nullpo_ret(sd);
 	if (sd->status.base_level == 0) // Is this something that possible?
 		return 0;
-	if (pc_is_maxbaselv(sd))
+	if (pc_is_maxbaselv(sd)) {
+		if (battle_config.ex_level > 0 && sd->status.base_level >= battle_config.max_lv) {
+			if (ex_exp == nullptr) {
+				ex_exp = new t_exp[401];
+				for (size_t i = 0; i <= 400; i++) {
+					ex_exp[i] = EXP_EX(i);
+				}
+			}
+			if (sd->exLevel > 400)
+				return ex_exp[400];
+
+			return ex_exp[sd->exLevel];
+		}
 		return MAX_LEVEL_BASE_EXP; // On max level, player's base EXP limit is 99,999,999
+	}
 	return static_cast<t_exp>(job_db.get_baseExp(sd->status.class_, sd->status.base_level));
 }
 
