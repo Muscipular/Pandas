@@ -8895,8 +8895,17 @@ int pc_follow(map_session_data *sd,int target_id)
 int pc_checkbaselevelup(map_session_data *sd) {
 	t_exp next = pc_nextbaseexp(sd);
 
+		/*
 	if (!next || sd->status.base_exp < next || pc_is_maxbaselv(sd))
 		return 0;
+		*/
+	if (!next || sd->status.base_exp < next)
+		return 0;
+
+	bool processExLevel = false;
+	if (battle_config.ex_level > 0 && pc_is_maxbaselv(sd) && (sd->class_ & JOBL_FOURTH)) {
+		processExLevel = true;
+	}
 
 	uint32 base_level = sd->status.base_level;
 
@@ -8906,6 +8915,7 @@ int pc_checkbaselevelup(map_session_data *sd) {
 		if( ( !battle_config.multi_level_up || ( battle_config.multi_level_up_base > 0 && sd->status.base_level >= battle_config.multi_level_up_base ) ) && sd->status.base_exp > next-1 )
 			sd->status.base_exp = next-1;
 
+		if (!processExLevel) {
 		sd->status.status_point += statpoint_db.pc_gets_status_point(sd->status.base_level);
 		sd->status.trait_point += statpoint_db.pc_gets_trait_point(sd->status.base_level);
 		sd->status.base_level++;
@@ -8913,6 +8923,10 @@ int pc_checkbaselevelup(map_session_data *sd) {
 		if( pc_is_maxbaselv(sd) ){
 			sd->status.base_exp = u64min(sd->status.base_exp,MAX_LEVEL_BASE_EXP);
 			break;
+		}
+		}
+		else {
+
 		}
 	} while ((next=pc_nextbaseexp(sd)) > 0 && sd->status.base_exp >= next);
 
