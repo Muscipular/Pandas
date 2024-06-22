@@ -9191,6 +9191,9 @@ void pc_gainexp(map_session_data *sd, struct block_list *src, t_exp base_exp, t_
 
 	// Give EXP for Base Level
 	if (base_exp) {
+		if (battle_config.ex_level > 0 && pc_is_maxbaselv(sd) && (sd->class_ & JOBL_FOURTH)) {
+			base_exp /= 100;
+		}
 		sd->status.base_exp = util::safe_addition_cap(sd->status.base_exp, base_exp, MAX_EXP);
 
 		if (!pc_checkbaselevelup(sd))
