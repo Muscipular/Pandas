@@ -3429,9 +3429,24 @@ inline char* writeBuffer(char* buff, T v) {
 	return (char*)(((T*)(buff)) + 1);
 }
 
+void clif_update_exlv(map_session_data* sd) {
+	struct ExData
+	{
+		short type;
+		short len;
+		int lv;
+	} data;
+	nullpo_retv(sd);
+	if (battle_config.ex_level > 0) {
+		data.type = HEADER_ExLv;
+		data.len = sizeof(ExData);
+		data.lv = sd->exLevel;
+		clif_send(&data, data.len, &sd->bl, SELF);
+	}
+}
 
 static int clif_send_item_ext(map_session_data* sd, item* items, size_t item_count, e_inventory_type type) {
-	static char buff[MAX_STORAGE * (sizeof(ItemExtInfoPkg) + 4 * 8 + 4 * 7) + 256];
+	static char buff[MAX_STORAGE * (sizeof(ItemExtInfoPkg) + 4 * ARRAYLENGTH(items[0].ival) + 4 * (MAX_SLOTS - 4)) + 256];
 	char* oBuff = buff;
 	uint16_t count = 0;
 	for (size_t i = 0; i < item_count; i++) {
@@ -4238,11 +4253,12 @@ void clif_updatestatus(map_session_data *sd,int type)
 					ARR_FIND(0, MAX_PARTY, i, p->party.member[i].char_id == sd->status.char_id);
 
 					if( i < MAX_PARTY ){
-						p->party.member[i].lv = sd->status.base_level;
+						p->party.member[i].lv = sd->status.base_level + sd->exLevel;
 						clif_party_job_and_level( *sd );
 					}
 				}
 			}
+			clif_update_exlv(sd);
 			break;
 		case SP_HP:
 			clif_update_hp(*sd);
@@ -5181,7 +5197,7 @@ void clif_traderequest(map_session_data* sd, const char* name)
 	WFIFOW(fd,0) = 0x1f4;
 	safestrncpy(WFIFOCP(fd,2), name, NAME_LENGTH);
 	WFIFOL(fd,26) = tsd->status.char_id;
-	WFIFOW(fd,30) = tsd->status.base_level;
+	WFIFOW(fd,30) = tsd->status.base_level + tsd->exLevel;
 	WFIFOSET(fd,packet_len(0x1f4));
 #endif
 }
@@ -5211,7 +5227,7 @@ void clif_tradestart(map_session_data* sd, uint8 type)
 		WFIFOW(fd,0) = 0x1f5;
 		WFIFOB(fd,2) = type;
 		WFIFOL(fd,3) = tsd->status.char_id;
-		WFIFOW(fd,7) = tsd->status.base_level;
+		WFIFOW(fd,7) = tsd->status.base_level + tsd->exLevel;
 		WFIFOSET(fd,packet_len(0x1f5));
 	}
 }
@@ -8534,7 +8550,7 @@ void clif_party_member_info( struct party_data& party, map_session_data& sd ){
 	p.leader = ( party.party.member[id].leader != 0 ) ? 0 : 1;
 #if PACKETVER_MAIN_NUM >= 20170524 || PACKETVER_RE_NUM >= 20170502 || defined(PACKETVER_ZERO)
 	p.class_ = sd.status.class_;
-	p.baseLevel = sd.status.base_level;
+	p.baseLevel = sd.status.base_level + sd.exLevel;
 #endif
 	p.x = sd.bl.x;
 	p.y = sd.bl.y;
@@ -8842,7 +8858,7 @@ void clif_party_job_and_level( map_session_data& sd ){
 	p.PacketType = HEADER_ZC_NOTIFY_MEMBERINFO_TO_GROUPM;
 	p.AID = sd.status.account_id;
 	p.job = sd.status.class_;
-	p.level = sd.status.base_level;
+	p.level = sd.status.base_level + sd.exLevel;
 
 	clif_send( &p, sizeof( p ), &sd.bl, PARTY );
 #endif

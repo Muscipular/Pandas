@@ -558,6 +558,7 @@ struct Script_Config script_config = {
 	"OnInstanceInit", //instance_init_event_name (is executed right after instance creation)
 	"OnInstanceDestroy", //instance_destroy_event_name (is executed right before instance destruction)
 	"OnNaviGenerate", //navi_generate_name (is executed right before navi generation)
+	"OnExLvUp",
 };
 
 static jmp_buf     error_jump;
@@ -14469,6 +14470,7 @@ BUILDIN_FUNC(resetstatus)
 	if (!script_charid2sd(2,sd))
 		return SCRIPT_CMD_FAILURE;
 	pc_resetstate(sd);
+	clif_update_exlv(sd);
 	return SCRIPT_CMD_SUCCESS;
 }
 

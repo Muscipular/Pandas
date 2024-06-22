@@ -2368,7 +2368,7 @@ void pc_reg_received(map_session_data *sd)
 	// Cash shop
 	sd->cashPoints = static_cast<int>(pc_readaccountreg(sd, add_str(CASHPOINT_VAR)));
 	sd->kafraPoints = static_cast<int>(pc_readaccountreg(sd, add_str(KAFRAPOINT_VAR)));
-	sd->exLevel = static_cast<int>(pc_readreg2(sd, "ExLevel"));
+	sd->exLevel = static_cast<int>(pc_readreg2(sd, EX_LEVEL_VAR));
 
 #ifdef Pandas_Struct_Unit_CommonData_Aura
 	// 从角色的变量中读取当前角色设置启用的光环编号
@@ -8903,8 +8903,12 @@ int pc_checkbaselevelup(map_session_data *sd) {
 		return 0;
 
 	bool processExLevel = false;
-	if (battle_config.ex_level > 0 && pc_is_maxbaselv(sd) && (sd->class_ & JOBL_FOURTH)) {
+	bool maxLv = pc_is_maxbaselv(sd);
+	if (battle_config.ex_level > 0 && maxLv && (sd->class_ & JOBL_FOURTH)) {
 		processExLevel = true;
+	}
+	if (maxLv && !processExLevel) {
+		return 0;
 	}
 
 	uint32 base_level = sd->status.base_level;
@@ -8926,7 +8930,8 @@ int pc_checkbaselevelup(map_session_data *sd) {
 		}
 		}
 		else {
-
+			sd->exLevel++;
+			pc_setreg2(sd, EX_LEVEL_VAR, sd->exLevel);
 		}
 	} while ((next=pc_nextbaseexp(sd)) > 0 && sd->status.base_exp >= next);
 
@@ -8955,11 +8960,16 @@ int pc_checkbaselevelup(map_session_data *sd) {
 		}
 	}
 	clif_misceffect(&sd->bl,0);
+	if (processExLevel) {
+		npc_script_event(sd, NPCE_EXLVUP); //LORDALFA - LVLUPEVENT
+	}
+	else
 	npc_script_event(sd, NPCE_BASELVUP); //LORDALFA - LVLUPEVENT
 
 	if(sd->status.party_id)
 		party_send_levelup(sd);
-
+	if (processExLevel)
+		clif_update_exlv(sd);
 	pc_baselevelchanged(sd);
 	for (; base_level <= sd->status.base_level; base_level++) {
 		achievement_update_objective(sd, AG_GOAL_LEVEL, 1, base_level);
@@ -10015,6 +10025,7 @@ int pc_resetlvl(map_session_data* sd,int type)
 	clif_updatestatus(sd,SP_USPL);
 	clif_updatestatus(sd,SP_UCON);
 	clif_updatestatus(sd,SP_UCRT);
+	clif_update_exlv(sd);
 
 	for(i=0;i<EQI_MAX;i++) { // unequip items that can't be equipped by base 1 [Valaris]
 		if(sd->equip_index[i] >= 0)
@@ -11018,6 +11029,7 @@ int64 pc_readparam(map_session_data* sd,int64 type)
 		case SP_CHARFONT:		 val = sd->status.font; break;
 		case SP_BANK_VAULT:      val = sd->bank_vault; break;
 		case SP_CASHPOINTS:      val = sd->cashPoints; break;
+		case SP_EX_LEVEL:		 val = sd->exLevel; break;
 		case SP_KAFRAPOINTS:     val = sd->kafraPoints; break;
 		case SP_ROULETTE_BRONZE: val = sd->roulette_point.bronze; break;
 		case SP_ROULETTE_SILVER: val = sd->roulette_point.silver; break;
@@ -11406,6 +11418,12 @@ bool pc_setparam(map_session_data *sd,int64 type,int64 val_tmp)
 		sd->cashPoints = cap_value(val, 0, MAX_CASHPOINT);
 		pc_setaccountreg(sd, add_str(CASHPOINT_VAR), sd->cashPoints);
 		return true;
+	case SP_EX_LEVEL:
+		if (val < 0)
+			return false;
+		sd->exLevel = cap_value(val, 0, 30000);
+		pc_setreg2(sd, EX_LEVEL_VAR, sd->exLevel);
+		return true;
 	case SP_KAFRAPOINTS:
 		if (val < 0)
 			return false;
@@ -11723,6 +11741,7 @@ bool pc_jobchange(map_session_data *sd,int job, char upper)
 		clif_updatestatus(sd,SP_BASELEVEL);
 		clif_updatestatus(sd,SP_BASEEXP);
 		clif_updatestatus(sd,SP_NEXTBASEEXP);
+		clif_update_exlv(sd);
 	}
 
 	// Give or reduce transcendent status points
@@ -11768,6 +11787,7 @@ bool pc_jobchange(map_session_data *sd,int job, char upper)
 	clif_updatestatus(sd,SP_JOBLEVEL);
 	clif_updatestatus(sd,SP_JOBEXP);
 	clif_updatestatus(sd,SP_NEXTJOBEXP);
+	clif_update_exlv(sd);
 
 	for(i=0;i<EQI_MAX;i++) {
 		if(sd->equip_index[i] >= 0)

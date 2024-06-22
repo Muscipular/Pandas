@@ -223,6 +223,8 @@
 #endif // Pandas_NpcExpress_PCHARMED
 	// PYHELP - NPCEVENT - INSERT POINT - <Section 18>
 #endif // Pandas_ScriptCommands
+	export_constant(NPCE_EXLVUP);
+
 
 	export_constant(G_RATE_EXP);
 	export_constant(G_RATE_JOB);

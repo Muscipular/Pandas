@@ -415,6 +415,8 @@ struct Script_Config {
 
 	// Navigation related
 	const char* navi_generate_name;
+
+	const char* exlvup_event_name;
 };
 extern struct Script_Config script_config;
 

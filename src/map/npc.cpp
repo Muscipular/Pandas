@@ -7215,6 +7215,9 @@ const char *npc_get_script_event_name(int npce_index)
 #endif // Pandas_NpcExpress_PCHARMED
 	// PYHELP - NPCEVENT - INSERT POINT - <Section 15>
 
+	case NPCE_EXLVUP:
+		return script_config.exlvup_event_name;
+
 	default:
 		ShowError("npc_get_script_event_name: npce_index is outside the array limits: %d (max: %d).\n", npce_index, NPCE_MAX);
 		return NULL;
