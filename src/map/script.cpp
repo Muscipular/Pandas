@@ -10818,7 +10818,7 @@ BUILDIN_FUNC(setequipedcard)
 	}
 	int slot = script_getnum(st, 3);
 	uint32 itemId = script_getnum(st, 4);
-	if (slot < 0 || slot > 3) {
+	if (slot < 0 || slot >= MAX_SLOTS) {
 		script_pushint(st, 0);
 		return SCRIPT_CMD_FAILURE;
 	}
@@ -16661,7 +16661,7 @@ BUILDIN_FUNC(getequipcardid)
 
 	if (equip_index_check(num))
 		i=pc_checkequip(sd,equip_bitmask[num]);
-	if(i >= 0 && slot>=0 && slot<4)
+	if(i >= 0 && slot>=0 && slot< MAX_SLOTS)
 		script_pushint(st,sd->inventory.u.items_inventory[i].card[slot]);
 	else
 		script_pushint(st,0);
