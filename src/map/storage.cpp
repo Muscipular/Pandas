@@ -117,7 +117,7 @@ void do_final_storage(void)
  */
 void do_reconnect_storage(void){
 	for( const auto& entry : guild_storage_db ){
-		struct s_storage stor = entry.second;
+		auto& stor = entry.second;
 
 		// Save closed storages.
 		if( stor.dirty && stor.status == 0 ){

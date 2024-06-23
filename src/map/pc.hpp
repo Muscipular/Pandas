@@ -1684,6 +1684,7 @@ int pc_stop_following(map_session_data*);
 unsigned int pc_maxbaselv(map_session_data *sd);
 unsigned int pc_maxjoblv(map_session_data *sd);
 bool pc_is_maxbaselv(map_session_data *sd);
+bool pc_is_max_ex_lv(map_session_data* sd);
 bool pc_is_maxjoblv(map_session_data *sd);
 int pc_checkbaselevelup(map_session_data *sd);
 int pc_checkjoblevelup(map_session_data *sd);

@@ -27,4 +27,5 @@ struct {
 	int job, exp, drop;
 } gExtRate;
 int ex_level;
+int ex_level_max_paramter;
 

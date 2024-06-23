@@ -20,3 +20,4 @@
 { "item_zeny",							&battle_config.item_zeny,						0,		0,		INT32_MAX,		},
 { "item_cash",							&battle_config.item_cash,						0,		0,		INT32_MAX,		},
 { "ex_level",							&battle_config.ex_level,						0,		0,		INT32_MAX,		},
+{ "ex_level_max_paramter",				&battle_config.ex_level_max_paramter,			999,	0,		INT32_MAX,		},

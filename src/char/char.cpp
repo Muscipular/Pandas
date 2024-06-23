@@ -1942,8 +1942,8 @@ int char_mmo_char_tobuf(uint8* buffer, struct mmo_charstatus* p){
 	info->jobpoint = umin( p->status_point, INT16_MAX );
 	info->hp = p->hp;
 	info->maxhp = p->max_hp;
-	info->sp = min( p->sp, INT16_MAX );
-	info->maxsp = min( p->max_sp, INT16_MAX );
+	info->sp = p->sp;
+	info->maxsp = p->max_sp;
 	info->speed = DEFAULT_WALK_SPEED; // p->speed;
 	info->job = p->class_;
 	info->head = p->hair;

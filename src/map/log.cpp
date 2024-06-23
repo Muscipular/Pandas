@@ -225,7 +225,7 @@ void log_pick(int id, int16 m, e_log_pick_type type, int amount, struct item* it
 		StringBuf_Init(&buf);
 
 		StringBuf_Printf(&buf, "%s INTO `%s` (`time`, `char_id`, `type`, `nameid`, `amount`, `refine`, `map`, `unique_id`, `bound`, `enchantgrade`", LOG_QUERY, log_config.log_pick);
-		for (i = 0; i < MAX_SLOTS; ++i)
+		for (i = 0; i < 4; ++i)
 			StringBuf_Printf(&buf, ", `card%d`", i);
 		for (i = 0; i < MAX_ITEM_RDM_OPT; ++i) {
 			StringBuf_Printf(&buf, ", `option_id%d`", i);
@@ -235,7 +235,7 @@ void log_pick(int id, int16 m, e_log_pick_type type, int amount, struct item* it
 		StringBuf_Printf(&buf, ") VALUES(NOW(),'%u','%c','%u','%d','%d','%s','%" PRIu64 "','%d','%d'",
 			id, log_picktype2char(type), itm->nameid, amount, itm->refine, map_getmapdata(m)->name[0] ? map_getmapdata(m)->name : "", itm->unique_id, itm->bound, itm->enchantgrade);
 
-		for (i = 0; i < MAX_SLOTS; i++)
+		for (i = 0; i < 4; i++)
 			StringBuf_Printf(&buf, ",'%u'", itm->card[i]);
 		for (i = 0; i < MAX_ITEM_RDM_OPT; i++)
 			StringBuf_Printf(&buf, ",'%d','%d','%d'", itm->option[i].id, itm->option[i].value, itm->option[i].param);

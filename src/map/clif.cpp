@@ -4548,6 +4548,7 @@ void clif_initialstatus(map_session_data *sd) {
 	clif_updatestatus(sd, SP_HPLUS);
 	clif_updatestatus(sd, SP_CRATE);
 	clif_updatestatus(sd, SP_TRAITPOINT);
+	clif_updatestatus(sd, SP_STATUSPOINT);
 	clif_updatestatus(sd, SP_AP);
 	clif_updatestatus(sd, SP_MAXAP);
 	clif_updatestatus(sd, SP_UPOW);

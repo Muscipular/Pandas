@@ -6998,6 +6998,8 @@ BUILDIN_FUNC(rand)
 
 		if( maximum < 1 ){
 			ShowError( "buildin_rand: range (%" PRId64 ") is too small. No randomness possible.\n", maximum );
+			script_pushint64(st, minimum);
+			return SCRIPT_CMD_SUCCESS;
 			st->state = END;
 			return SCRIPT_CMD_FAILURE;
 		}

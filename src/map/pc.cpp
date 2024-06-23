@@ -2291,7 +2291,9 @@ bool pc_authok(map_session_data *sd, uint32 login_id2, time_t expiration_time, i
 
 	// Check EXP overflow, since in previous revision EXP on Max Level can be more than 'official' Max EXP
 	if (pc_is_maxbaselv(sd) && sd->status.base_exp > MAX_LEVEL_BASE_EXP) {
-		sd->status.base_exp = MAX_LEVEL_BASE_EXP;
+		if (battle_config.ex_level <= 0 || !(sd->class_ & MAPID_FOURTHMASK)) {
+			sd->status.base_exp = MAX_LEVEL_BASE_EXP;
+		}
 		clif_updatestatus(sd, SP_BASEEXP);
 	}
 	if (pc_is_maxjoblv(sd) && sd->status.job_exp > MAX_LEVEL_JOB_EXP) {
@@ -2532,6 +2534,8 @@ void pc_reg_received(map_session_data *sd)
 	}
 
 	channel_autojoin(sd);
+	clif_update_exlv(sd);
+	clif_updatestatus(sd, SP_STATUSPOINT);
 }
 
 static int pc_calc_skillpoint(map_session_data* sd)
@@ -8904,7 +8908,7 @@ int pc_checkbaselevelup(map_session_data *sd) {
 
 	bool processExLevel = false;
 	bool maxLv = pc_is_maxbaselv(sd);
-	if (battle_config.ex_level > 0 && maxLv && (sd->class_ & JOBL_FOURTH)) {
+	if (battle_config.ex_level > 0 && maxLv && (sd->class_ & MAPID_FOURTHMASK)) {
 		processExLevel = true;
 	}
 	if (maxLv && !processExLevel) {
@@ -9122,6 +9126,16 @@ void pc_gainexp_disp(map_session_data *sd, t_exp base_exp, t_exp next_base_exp, 
 	clif_messagecolor(&sd->bl, color_table[COLOR_LIGHT_GREEN], output, false, SELF);
 }
 
+bool pc_is_max_ex_lv(map_session_data* sd) {
+	if (!sd) {
+		return true;
+	}
+	if (battle_config.ex_level <= 0) return true;
+	if (!(sd->class_ & MAPID_FOURTHMASK)) return true;
+	if (sd->exLevel >= battle_config.ex_level) return true;
+	return false;
+}
+
 /**
  * Give Base or Job EXP to player, then calculate remaining exp for next lvl
  * @param sd Player
@@ -9152,7 +9166,7 @@ void pc_gainexp(map_session_data *sd, struct block_list *src, t_exp base_exp, t_
 
 	flag = ((base_exp) ? 1 : 0) |
 		((job_exp) ? 2 : 0) |
-		((pc_is_maxbaselv(sd)) ? 4 : 0) |
+		((pc_is_maxbaselv(sd)) && pc_is_max_ex_lv(sd) ? 4 : 0) |
 		((pc_is_maxjoblv(sd)) ? 8 : 0);
 
 	if (!(exp_flag&2))
@@ -9191,7 +9205,7 @@ void pc_gainexp(map_session_data *sd, struct block_list *src, t_exp base_exp, t_
 
 	// Give EXP for Base Level
 	if (base_exp) {
-		if (battle_config.ex_level > 0 && pc_is_maxbaselv(sd) && (sd->class_ & JOBL_FOURTH)) {
+		if (battle_config.ex_level > 0 && pc_is_maxbaselv(sd) && (sd->class_ & MAPID_FOURTHMASK)) {
 			base_exp /= 100;
 		}
 		sd->status.base_exp = util::safe_addition_cap(sd->status.base_exp, base_exp, MAX_EXP);
@@ -9335,7 +9349,7 @@ t_exp pc_nextbaseexp(map_session_data* sd) {
 			if (ex_exp == nullptr) {
 				ex_exp = new t_exp[401];
 				for (size_t i = 0; i <= 400; i++) {
-					ex_exp[i] = EXP_EX(i);
+					ex_exp[i] = EXP_EX(i + 1);
 				}
 			}
 			if (sd->exLevel > 400)
@@ -11256,7 +11270,7 @@ bool pc_setparam(map_session_data *sd,int64 type,int64 val_tmp)
 		sd->status.zeny = cap_value(val, 0, MAX_ZENY);
 		break;
 	case SP_BASEEXP:
-		val_tmp = cap_value(val_tmp, 0, pc_is_maxbaselv(sd) ? MAX_LEVEL_BASE_EXP : MAX_EXP);
+		val_tmp = cap_value(val_tmp, 0, pc_is_maxbaselv(sd) && pc_is_max_ex_lv(sd) ? MAX_LEVEL_BASE_EXP : MAX_EXP);
 		if (val_tmp < sd->status.base_exp) // Lost
 			pc_lostexp(sd, sd->status.base_exp - val_tmp, 0);
 		else // Gained
@@ -16293,6 +16307,10 @@ pec_ushort pc_maxparameter(map_session_data *sd, e_params param) {
 
 	if( job == nullptr || param == PARAM_MAX ){
 		return 0;
+	}
+
+	if (pc_is_maxbaselv(sd) && (sd->class_ & MAPID_FOURTHMASK) && sd->exLevel > 0) {
+		return battle_config.ex_level_max_paramter;
 	}
 
 	return job->max_param[param];
