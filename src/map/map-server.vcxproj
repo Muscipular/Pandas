@@ -241,6 +241,7 @@
     <ClInclude Include="itemdb.hpp" />
     <ClInclude Include="itemprops.hpp" />
     <ClInclude Include="log.hpp" />
+    <ClInclude Include="lua.hpp" />
     <ClInclude Include="mail.hpp" />
     <ClInclude Include="map.hpp" />
     <ClInclude Include="mapreg.hpp" />
@@ -296,6 +297,7 @@
     <ClCompile Include="itemdb.cpp" />
     <ClCompile Include="itemprops.cpp" />
     <ClCompile Include="log.cpp" />
+    <ClCompile Include="lua.cpp" />
     <ClCompile Include="mail.cpp" />
     <ClCompile Include="map.cpp" />
     <ClCompile Include="mapreg.cpp" />

@@ -334,6 +334,9 @@
     <ClCompile Include="suspend.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="lua.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="map-server-generator.rc">

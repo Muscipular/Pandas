@@ -86,11 +86,9 @@
 #include "mobdrop.hpp"
 #endif // Pandas_Database_MobItem_FixedRatio
 
-extern "C" {
-#include "../../3rdparty/lua/lua.h"
-#include "../../3rdparty/lua/lualib.h"
-#include "../../3rdparty/lua/lauxlib.h"
-}
+#include "lua.hpp"
+
+lua_State* m_lua = nullptr;
 
 using namespace rathena;
 
@@ -106,9 +104,6 @@ struct eri *stack_ers;
 std::atomic<int> script_batch{ 0 }; // For async SQL futures
 
 static bool script_rid2sd_( struct script_state *st, map_session_data** sd, const char *func );
-lua_State* lua;
-
-static bool init_lua();
 
 /**
  * Get `sd` from a account id in `loc` param instead of attached rid
@@ -230,9 +225,7 @@ static bool script_rid2bl_(struct script_state *st, uint8 loc, struct block_list
 
 
 
-#define LUA_FUNC(fn) int fn(lua_State* L)
-#define LUA_REGFUNC(s) luaL_Reg {#s, s}
-#define LUA_REGFUNC2(s,ss) luaL_Reg {s, ss}
+
 
 /// temporary buffer for passing around compiled bytecode
 /// @see add_scriptb, set_label, parse_script
@@ -5907,6 +5900,8 @@ void do_init_script(void) {
 	add_buildin_func();
 	constant_db.load();
 	script_hardcoded_constants();
+	init_lua();
+
 }
 
 void script_reload(void) {
@@ -5948,332 +5943,6 @@ void script_reload(void) {
 #endif // Pandas_ScriptEngine_MutliStackBackup
 
 	mapreg_reload();
-}
-
-bool checkSupport(const char* fn) {
-	static std::vector<std::string> blockcmd = {
-	"mes", "next", "close", "close2", "menu", "select", "prompt", "input",
-	"openstorage", "guildopenstorage", "produce", "cooking", "birthpet",
-	"callshop", "sleep", "sleep2", "openmail", "openauction", "progressbar",
-	"buyingstore", "makerune", "opendressroom", "openstorage2"
-	};
-
-	std::vector<std::string>::iterator iter;
-	std::string funcname = std::string(fn);
-	std::transform(
-		funcname.begin(), funcname.end(), funcname.begin(),
-		static_cast<int(*)(int)>(std::tolower)
-	);
-	iter = std::find(blockcmd.begin(), blockcmd.end(), funcname);
-
-	if (iter != blockcmd.end()) {
-		return false;
-	}
-	return true;
-}
-
-
-#include <variant>;
-
-typedef struct { int code; } ERROR_RET;
-
-typedef std::variant<const char*, int64_t, ERROR_RET> ARG_TYPE;
-
-ARG_TYPE callScriptFn(script_state* st, const char* fn, std::vector<ARG_TYPE> n) {
-	int i, j;
-	struct script_retinfo* ri;
-	struct script_code* scr;
-	const char* str = fn;
-	struct reg_db* ref = NULL;
-	ARG_TYPE ret = ERROR_RET({ 0 });
-
-	int stEnd = st->end;
-	scr = (struct script_code*)strdb_get(userfunc_db, str);
-	if (!scr) {
-		ShowError("callScriptFn: Function not found! [%s]\n", str);
-		st->state = END;
-		return ret;
-	}
-	
-	parse_script("{callfunc .@fn$;}", "tmp", 0, 0);
-	auto subSt = script_alloc_state(scr, 0, st->rid, st->oid);
-	subSt->refCount++;
-	script_pushnil(subSt);
-	//push_val(st->stack, c_op::C_NAME, fn);
-	//push_str(st->stack, c_op::C_STR, aStrdup(funcname));
-	push_val(subSt->stack, c_op::C_ARG, 0);
-	
-	for (i = 0, j = 0; i < n.size(); i++, j++) {
-		if (n[i].index() == 0) {
-			script_pushint64(subSt, std::get<int64_t>(n[i]));
-		} else {
-			script_pushconststr(subSt, std::get<const char*>(n[i]));
-		}
-	}
-
-
-	CREATE(ri, struct script_retinfo, 1);
-	ri->script = nullptr;              // script code
-	ri->scope.vars = st->stack->scope.vars;   // scope variables
-	ri->scope.arrays = st->stack->scope.arrays; // scope arrays
-	ri->pos = st->pos;                 // script location
-	ri->nargs = j;                       // argument count
-	ri->defsp = st->stack->defsp;        // default stack pointer
-	push_retinfo(st->stack, ri, ref);
-
-	st->pos = 0;
-	st->script = scr;
-	st->stack->defsp = st->stack->sp;
-	st->state = RUN;
-	st->stack->scope.vars = i64db_alloc(DB_OPT_RELEASE_DATA);
-	st->stack->scope.arrays = idb_alloc(DB_OPT_BASE);
-
-	if (!st->script->local.vars)
-		st->script->local.vars = i64db_alloc(DB_OPT_RELEASE_DATA);
-	st->start = 0;
-	run_script_main(st);
-	if (st->end > stEnd) {
-		auto retData = script_getdatatop(st, -1);
-		if (data_isstring(retData)) {
-			ret = conv_str(st, retData);
-		}
-		else if (data_isint(retData)) {
-			ret = conv_num64(st, retData);
-		}
-		pop_stack(st, stEnd + 1, st->end);
-	}
-	else {
-		return 0;
-	}
-	return ret;
-}
-
-LUA_FUNC(callScript) {
-	int argN = lua_gettop(L);
-	if (argN < 2) {
-		return luaL_error(L, "callScript error: 0");
-	}
-	if (!lua_islightuserdata(L, 1)) {
-		return luaL_error(L, "callScript error: 1");
-	}
-	if (!lua_isstring(L, 2)) {
-		return luaL_error(L, "callScript error: 2");
-	}
-	script_state* st = (script_state*)lua_touserdata(L, 1);
-	auto funcname = lua_tostring(L, 2);
-	int fn = -1;
-	for (int i = 0; i < 2000; i++) {
-		if (buildin_func[i].name == NULL) {
-			break;
-		}
-		if (strcmp(buildin_func[i].name, funcname) == 0) {
-			fn = i;
-			break;
-		}
-	}
-	if (fn < 0) {
-		return luaL_error(L, "callScript error: buildin_func not find %s", funcname);
-	}
-	if (!checkSupport(funcname)) {
-		return luaL_error(L, "callScript error: buildin_func %s not support", funcname);
-	}
-	auto start0 = st->start;
-	auto end0 = st->end;
-	auto sp = st->stack->sp;
-	auto funcname0 = st->funcname;
-	push_val(st->stack, c_op::C_NAME, fn);
-	//push_str(st->stack, c_op::C_STR, aStrdup(funcname));
-	push_val(st->stack, c_op::C_ARG, 0);
-	DBMap* m;
-	DBMap* m2;
-	reg_db scope;
-	m2 = idb_alloc(DB_OPT_BASE);
-	m = idb_alloc(DB_OPT_BASE);
-	scope.arrays = m;
-	scope.vars = m2;
-	char str[256];
-	for (int i = 3; i <= argN; i++) {
-		if (lua_isnumber(L, i)) {
-			push_val(st->stack, c_op::C_INT, lua_tonumber(L, i));
-		}
-		else if (lua_isstring(L, i)) {
-			push_str(st->stack, c_op::C_STR, aStrdup(lua_tostring(L, i)));
-		}
-		else if (lua_istable(L, i)) {
-			if (lua_objlen(L, i) > 0) {
-				lua_rawgeti(L, i, 1);
-				if (lua_isnumber(L, -1)) {
-					sprintf(str, ".@lua_arg_%d", i);
-					int uid = add_str(str);
-					idb_i64put(m2, uid, (int64)lua_tonumber(L, -1));
-					push_val2(st->stack, c_op::C_NAME, uid, &scope);
-				}
-				else if (lua_isstring(L, -1)) {
-					sprintf(str, ".@lua_arg_%d$", i);
-					int uid = add_str(str);
-					idb_put(m2, uid, aStrdup(lua_tostring(L, -1)));
-					push_val2(st->stack, c_op::C_NAME, uid, &scope);
-				}
-				else {
-					sprintf(str, ".@lua_arg_%d", i);
-					int uid = add_str(str);
-					idb_i64put(m2, uid, 0);
-					push_val2(st->stack, c_op::C_NAME, uid, &scope);
-				}
-				lua_pop(L, 1);
-			}
-			else {
-				lua_getfield(L, i, "type");
-				c_op type = (c_op)(uint64)lua_touserdata(L, -1);
-				lua_pop(L, 1);
-				lua_getfield(L, i, "num1");
-				int64 uid = (int)(uint64)lua_touserdata(L, -1);
-				lua_pop(L, 1);
-				lua_getfield(L, i, "num2");
-				uid |= ((int64)(uint64)lua_touserdata(L, -1) << 32);
-				lua_pop(L, 1);
-				lua_getfield(L, i, "ref");
-				reg_db* ref = (reg_db*)lua_touserdata(L, -1);
-				lua_pop(L, 1);
-				push_val2(st->stack, type, uid, ref);
-			}
-		}
-		else {
-			push_val(st->stack, c_op::C_INT, 0);
-		}
-	}
-
-	st->start = end0;
-	st->end = st->stack->sp;
-	int ret = buildin_func[fn].func(st);
-	auto retData = script_getdatatop(st, -1);
-	script_data data;
-	memcpy(&data, retData, sizeof(script_data));
-	auto retDataActual = get_val(st, retData);
-	if (data_isstring(retDataActual)) {
-		lua_pushstring(L, retData->u.str);
-	}
-	else if (data_isint(retDataActual)) {
-		lua_pushinteger(L, retData->u.num);
-	}
-	else {
-		lua_pushnil(L);
-	}
-	int count = 1;
-	if (data_isreference(&data)) {
-		lua_newtable(L);
-		lua_pushlightuserdata(L, (void*)(int)data.type);
-		lua_setfield(L, -2, "type");
-		lua_pushlightuserdata(L, (void*)(data.u.num & 0xffffffff));
-		lua_setfield(L, -2, "num1");
-		lua_pushlightuserdata(L, (void*)((data.u.num >> 32) & 0xffffffff));
-		lua_setfield(L, -2, "num2");
-		lua_pushlightuserdata(L, data.ref);
-		lua_setfield(L, -2, "ref");
-		count++;
-	}
-	if (ret != SCRIPT_CMD_SUCCESS) {
-		lua_pop(L, count);
-		pop_stack(st, end0 - 1, st->end);
-		st->start = start0;
-		st->end = end0;
-		st->funcname = funcname0;
-		db_destroy(m);
-		db_destroy(m2);
-		return luaL_error(L, "callScript error: buildin_func %s exec failed", funcname);
-	}
-	for (int i = 3; i <= argN; i++) {
-		if (lua_istable(L, i)) {
-			if (lua_objlen(L, i) > 0) {
-				auto d = script_getdata(st, i - 1);
-				if (is_string_variable(reference_getname(d))) {
-					lua_pushstring(L, conv_str(st, d));
-				}
-				else {
-					lua_pushnumber(L, conv_num64(st, d));
-				}
-				lua_rawseti(L, i, 1);
-			}
-		}
-	}
-	pop_stack(st, end0 - 1, st->end);
-	st->start = start0;
-	st->end = end0;
-	st->stack->sp = sp;
-	st->funcname = funcname0;
-	db_destroy(m);
-	db_destroy(m2);
-	return count;
-}
-
-LUA_FUNC(sleep) {
-	auto st = (script_state*)lua_touserdata(L, 1);
-	//if (st->sleep.tick == 0) {
-	int ticks;
-
-	ticks = luaL_optinteger(L, 2, 0);
-
-	if (ticks <= 0) {
-		ShowError("buildin_sleep: negative or zero amount('%d') of milli seconds is not supported\n", ticks);
-		lua_pushboolean(L, false);
-		return 1;
-	}
-
-	// detach the player
-	script_detach_rid(st);
-
-	// sleep for the target amount of time
-	st->state = RERUNLINE;
-	st->sleep.tick = ticks;
-	int n = lua_yield(L, 0);
-	if (n > 0) {
-		lua_pop(L, n);
-	}
-	lua_pushboolean(L, true);
-	return 1;
-	// Second call(by timer after sleeping time is over)
-	//}
-}
-
-
-static bool init_lua() {
-	if (lua) {
-		return false;
-	}
-	lua = luaL_newstate();
-	if (!lua) {
-		return false;
-	}
-	luaL_openlibs(lua);
-	auto ret = true;
-	luaL_Reg lib[] = {
-		LUA_REGFUNC(callScript),
-		LUA_REGFUNC(sleep),
-		LUA_REGFUNC2(NULL, NULL)
-	};
-	luaL_register(lua, "NLG", lib);
-	static char cmd[2048];
-	for (size_t i = 0; i < 2000; i++) {
-		if (buildin_func[i].name == NULL) {
-			break;
-		}
-		if (buildin_func[i].name && strlen(buildin_func[i].name) > 0) {
-			if (strcmp(buildin_func[i].name, "return")) {
-				continue;
-			}
-			sprintf(cmd, "if NLG['%s'] == nil then NLG['%s'] = function(st, ...) return NLG.callScript(st, '%s', ...) end end;", buildin_func[i].name, buildin_func[i].name, buildin_func[i].name);
-			ret = luaL_dostring(lua, cmd);
-			if (ret) {
-				return false;
-			}
-		}
-	}
-
-	ret = luaL_dostring(lua, "pcall(function() dofile('npc/init.lua') end);");
-	if (ret) {
-		return false;
-	}
-	return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -10811,7 +10480,7 @@ BUILDIN_FUNC(setequipedcard)
 	int i, num;
 	TBL_PC* sd;
 	struct item_data* item;
-
+	
 	if (!script_charid2sd(5, sd)) {
 		script_pushint(st, 0);
 		return SCRIPT_CMD_FAILURE;
@@ -20139,28 +19808,28 @@ BUILDIN_FUNC(callshop)
 				auto op = conv_str(st, data);
 				if (strcmpi(op, "lua") == 0) {
 					for (size_t e = 0; e < sd->inventory.amount; e++) {
-						lua_getglobal(lua, script_getstr(st, 5));
-						lua_pushlightuserdata(lua, st);
-						lua_pushinteger(lua, sd->inventory.u.items_inventory[e].nameid);
-						if (lua_pcall(lua, 3, 1, 0) == 0) {
-							if (lua_isboolean(lua, -1)) {
-								int ret = lua_toboolean(lua, -1);
+						lua_getglobal(m_lua, script_getstr(st, 5));
+						lua_pushlightuserdata(m_lua, st);
+						lua_pushinteger(m_lua, sd->inventory.u.items_inventory[e].nameid);
+						if (lua_pcall(m_lua, 3, 1, 0) == 0) {
+							if (lua_isboolean(m_lua, -1)) {
+								int ret = lua_toboolean(m_lua, -1);
 								if (ret) {
 									sd->dyn_sell_list.push_back({ (int)sd->inventory.u.items_inventory[e].nameid,  -1 });
 								}
 							}
-							else if (lua_isnumber(lua, -1)) {
-								int ret = lua_tonumber(lua, -1);
+							else if (lua_isnumber(m_lua, -1)) {
+								int ret = lua_tonumber(m_lua, -1);
 								if (ret >= -1) {
 									sd->dyn_sell_list.push_back({ (int)sd->inventory.u.items_inventory[e].nameid, ret >= 0 ? ret : -1 });
 								}
 							}
-							lua_pop(lua, 1);
+							lua_pop(m_lua, 1);
 						}
 						else {
-							ShowError("buildin_callshop: call lua error %s:%s\n", lua_tostring(lua, -1), lua_tostring(lua, -2));
+							ShowError("buildin_callshop: call lua error %s:%s\n", lua_tostring(m_lua, -1), lua_tostring(m_lua, -2));
 							script_pushint(st, 0);
-							lua_pop(lua, 2);
+							lua_pop(m_lua, 2);
 							return SCRIPT_CMD_FAILURE;
 						}
 					}
@@ -34533,63 +34202,57 @@ BUILDIN_FUNC(mob_clear_skill) {
 }
 // LUA
 BUILDIN_FUNC(lua_init) {
-	script_pushint(st, init_lua());
+	//script_pushint(st, init_lua());
 	return SCRIPT_CMD_SUCCESS;
 }
+
+struct ScriptState
+{
+	script_state* st;
+};
+
+
+int resume_lua(script_state* st, lua_State* L, int n);
+
 BUILDIN_FUNC(lua_call_fn) {
 	int n = script_lastdata(st);
 
-	lua_getglobal(lua, script_getstr(st, 2));
-	lua_pushlightuserdata(lua, st);
+	lua_getglobal(m_lua, script_getstr(st, 2));
+	auto p = (ScriptState*) lua_newuserdata(m_lua, sizeof(ScriptState));
+	p->st = st;
+	luaL_setmetatable(m_lua, "ScriptState");
 	for (int i = 3; i <= n; i++) {
 		script_data* data = get_val(st, script_getdata(st, i));
 		if (data_isint(data)) {
-			lua_pushnumber(lua, static_cast<lua_Number>(data->u.num));
+			lua_pushnumber(m_lua, static_cast<lua_Number>(data->u.num));
 		}
 		else if (data_isstring(data)) {
-			lua_pushstring(lua, data->u.str);
+			lua_pushstring(m_lua, data->u.str);
 		}
 		else {
-			lua_pushstring(lua, conv_str(st, data));
+			lua_pushstring(m_lua, conv_str(st, data));
 		}
 	}
-	int ret = lua_pcall(lua, n - 2 + 1, 1, 0);
+	int ret = lua_pcall(m_lua, n - 2 + 1, 1, 0);
 	if (ret == 0) {
-		if (lua_isnumber(lua, -1)) {
-			script_pushint64(st, static_cast<int64>(lua_tonumber(lua, -1)));
+		if (lua_isnumber(m_lua, -1)) {
+			script_pushint64(st, static_cast<int64>(lua_tonumber(m_lua, -1)));
 		}
-		else if (lua_isstring(lua, -1)) {
-			script_pushstrcopy(st, lua_tostring(lua, -1));
+		else if (lua_isstring(m_lua, -1)) {
+			script_pushstrcopy(st, lua_tostring(m_lua, -1));
 		}
-		lua_pop(lua, lua_gettop(lua));
+		lua_pop(m_lua, lua_gettop(m_lua));
 		return SCRIPT_CMD_SUCCESS;
 	}
-	printf("lua error: %s\n", lua_tostring(lua, -1));
+	printf("lua error: %s\n", lua_tostring(m_lua, -1));
 	return SCRIPT_CMD_FAILURE;
-}
-
-int resume_lua(script_state* st, lua_State* L, int n) {
-	int ret = lua_resume(L, n);
-	if (ret == LUA_YIELD) {
-		st->lua_state.thread = L;
-	}
-	else {
-		if (ret != 0) {
-			printf("lua error: %s\n", lua_tostring(lua, -1));
-		}
-		if (L == st->lua_state.thread) {
-			st->lua_state.thread = nullptr;
-		}
-		lua_close(L);
-	}
-	return ret;
 }
 
 BUILDIN_FUNC(lua_run) {
 	int n = script_lastdata(st);
 	int ret = 0;
 	if (st->state != e_script_state::RERUNLINE) {
-		auto L = lua_newthread(lua);
+		auto L = lua_newthread(m_lua);
 		lua_getglobal(L, script_getstr(st, 2));
 		lua_pushlightuserdata(L, st);
 		for (int i = 3; i <= n; i++) {
@@ -36196,3 +35859,15 @@ struct script_function buildin_func[] = {
 
 	{NULL,NULL,NULL},
 };
+
+DBMap* get_userfunc_db() {
+	return userfunc_db;
+}
+
+str_data_struct* get_str_data() {
+	return str_data;
+}
+
+char* get_str_buf() {
+	return str_buf;
+}
