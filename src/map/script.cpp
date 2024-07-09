@@ -5900,8 +5900,6 @@ void do_init_script(void) {
 	add_buildin_func();
 	constant_db.load();
 	script_hardcoded_constants();
-	init_lua();
-
 }
 
 void script_reload(void) {
@@ -34206,9 +34204,12 @@ BUILDIN_FUNC(lua_init) {
 	return SCRIPT_CMD_SUCCESS;
 }
 
-struct ScriptState
+
+template<typename T = void>
+struct UserData
 {
-	script_state* st;
+	e_user_data type;
+	T st;
 };
 
 
@@ -34218,8 +34219,9 @@ BUILDIN_FUNC(lua_call_fn) {
 	int n = script_lastdata(st);
 
 	lua_getglobal(m_lua, script_getstr(st, 2));
-	auto p = (ScriptState*) lua_newuserdata(m_lua, sizeof(ScriptState));
+	auto p = (UserData<script_state*>*) lua_newuserdata(m_lua, sizeof(UserData<script_state*>));
 	p->st = st;
+	p->type = ut_script_data;
 	luaL_setmetatable(m_lua, "ScriptState");
 	for (int i = 3; i <= n; i++) {
 		script_data* data = get_val(st, script_getdata(st, i));
@@ -35866,6 +35868,10 @@ DBMap* get_userfunc_db() {
 
 str_data_struct* get_str_data() {
 	return str_data;
+}
+
+int get_str_data_size() {
+	return str_data_size;
 }
 
 char* get_str_buf() {

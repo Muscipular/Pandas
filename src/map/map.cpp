@@ -54,6 +54,7 @@
 #include "storage.hpp"
 #include "trade.hpp"
 #include "asyncquery.hpp"
+#include "lua.hpp"
 
 #ifdef Pandas_Aura_Mechanism
 #include "aura.hpp"
@@ -6450,6 +6451,7 @@ bool MapServer::initialize( int argc, char *argv[] ){
 #ifdef Pandas_Player_Suspend_System
 	do_init_suspend();
 #endif // Pandas_Player_Suspend_System
+	init_lua();
 
 	npc_event_do_oninit();	// Init npcs (OnInit)
 

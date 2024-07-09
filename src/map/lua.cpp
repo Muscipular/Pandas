@@ -100,6 +100,7 @@ struct str_data_struct {
 };
 
 str_data_struct* get_str_data();
+int get_str_data_size();
 #define str_data get_str_data()
 char* get_str_buf();
 #define str_buf get_str_buf()
@@ -127,9 +128,11 @@ typedef struct { int code; } ERROR_RET;
 
 typedef std::variant<const char*, int64_t, ERROR_RET> ARG_TYPE;
 
-struct ScriptState
+template<typename T = void>
+struct UserData
 {
-	script_state* st;
+	e_user_data type;
+	T st;
 };
 
 ARG_TYPE callScriptFn(script_state* st, const char* fn, std::vector<ARG_TYPE> n) {
@@ -236,7 +239,7 @@ LUA_FUNC(callScript) {
 	if (!lua_isstring(L, 2)) {
 		return luaL_error(L, "callScript error: 2");
 	}
-	auto st = static_cast<ScriptState*>(lua_touserdata(L, 1))->st;
+	auto st = static_cast<UserData<script_state*>*>(lua_touserdata(L, 1))->st;
 	auto funcname = lua_tostring(L, 2);
 	int fn = -1;
 	for (int i = 0; i < 2000; i++) {
@@ -315,6 +318,9 @@ LUA_FUNC(callScript) {
 				push_val2(st->stack, type, uid, ref);
 			}
 		}
+		else if(lua_isuserdata(L, i) && static_cast<UserData<int64>*>(lua_touserdata(L, i))->type == ut_int64) {
+			push_val(st->stack, c_op::C_INT, static_cast<UserData<int64>*>(lua_touserdata(L, i))->st);
+		}
 		else {
 			push_val(st->stack, c_op::C_INT, 0);
 		}
@@ -387,7 +393,7 @@ LUA_FUNC(sleep) {
 	if (!lua_isuserdata(L, 1)) {
 		return luaL_error(L, "sleep error: 1");
 	}
-	auto st = ((ScriptState*)lua_touserdata(L, 1))->st;
+	auto st = ((UserData<script_state*>*)lua_touserdata(L, 1))->st;
 	//if (st->sleep.tick == 0) {
 	int ticks;
 
@@ -429,6 +435,26 @@ LUA_FUNC(ToString) {
 	lua_pushstring(L, buff);
 	return 1;
 }
+
+LUA_FUNC(INT64ToString) {
+	if (lua_gettop(L) != 1) {
+		lua_pushnil(L);
+		return 1;
+	}
+	if (lua_type(L, 1) != LUA_TUSERDATA) {
+		lua_pushnil(L);
+		return 1;
+	}
+	char buff[256] = { 0 };
+	sprintf(buff, "%" PRId64, ((UserData<int64>*)lua_touserdata(L, 1))->st);
+	lua_pushstring(L, buff);
+	return 1;
+}
+
+//void script_set_constant_(const char* name, int64 value, const char* constant_name, bool isparameter, bool deprecated);
+#define script_set_constant_(n,v,c,p,d) {auto e_ = (UserData<int64>*)lua_newuserdata(L, sizeof(UserData<int64>)); e_->type = ut_int64; luaL_setmetatable(L, "INT64"); e_->st = v;lua_setfield(L, -2, c? c:n);}
+#define script_set_constant(n,v,p,d) {auto e_ = (UserData<int64>*)lua_newuserdata(L, sizeof(UserData<int64>)); e_->type = ut_int64; luaL_setmetatable(L, "INT64"); e_->st = v;lua_setfield(L, -2, n);}
+//#define script_set_constant_()
 
 bool init_lua() {
 	if (m_lua) {
@@ -476,8 +502,16 @@ bool init_lua() {
 	lua_pushstring(L, "__tostring");
 	lua_pushcfunction(L, ToString);
 	lua_rawset(L, -3);
-	lua_settop(L, 0);
+	luaL_newmetatable(m_lua, "INT64");
+	lua_pushstring(L, "__tostring");
+	lua_pushcfunction(L, INT64ToString);
+	lua_rawset(L, -3);
+	lua_newtable(L);	
+#include "script_constants.hpp"
 
+	lua_setglobal(L, "CONST");
+	lua_settop(L, 0);
+	
 	ret = luaL_dostring(m_lua, "pcall(function() dofile('npc/init.lua') end);");
 	if (ret) {
 		return false;

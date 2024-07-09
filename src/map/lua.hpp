@@ -6,3 +6,8 @@ extern "C" {
 }
 extern lua_State* m_lua;
 bool init_lua();
+enum e_user_data
+{
+	ut_script_data,
+	ut_int64,
+};
