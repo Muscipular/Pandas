@@ -34204,25 +34204,13 @@ BUILDIN_FUNC(lua_init) {
 	return SCRIPT_CMD_SUCCESS;
 }
 
-
-template<typename T = void>
-struct UserData
-{
-	e_user_data type;
-	T st;
-};
-
-
 int resume_lua(script_state* st, lua_State* L, int n);
 
 BUILDIN_FUNC(lua_call_fn) {
 	int n = script_lastdata(st);
 
 	lua_getglobal(m_lua, script_getstr(st, 2));
-	auto p = (UserData<script_state*>*) lua_newuserdata(m_lua, sizeof(UserData<script_state*>));
-	p->st = st;
-	p->type = ut_script_data;
-	luaL_setmetatable(m_lua, "ScriptState");
+	auto p = luaL_newUserData<script_state*>(m_lua, st);
 	for (int i = 3; i <= n; i++) {
 		script_data* data = get_val(st, script_getdata(st, i));
 		if (data_isint(data)) {

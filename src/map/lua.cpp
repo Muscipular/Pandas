@@ -79,9 +79,10 @@
 #endif // Pandas_Database_MobItem_FixedRatio
 
 
-#include <variant>;
+#include <variant>
 /// Pushes a value into the stack
 #define push_val(stack,type,val) push_val2(stack, type, val, NULL)
+
 
 DBMap* get_userfunc_db();
 
@@ -128,12 +129,6 @@ typedef struct { int code; } ERROR_RET;
 
 typedef std::variant<const char*, int64_t, ERROR_RET> ARG_TYPE;
 
-template<typename T = void>
-struct UserData
-{
-	e_user_data type;
-	T st;
-};
 
 ARG_TYPE callScriptFn(script_state* st, const char* fn, std::vector<ARG_TYPE> n) {
 	int i, j;
@@ -233,13 +228,13 @@ LUA_FUNC(callScript) {
 	if (argN < 2) {
 		return luaL_error(L, "callScript error: 0");
 	}
-	if (!lua_isuserdata(L, 1)) {
+	if (!luaL_checkUserData<script_state*>(L, 1)) {
 		return luaL_error(L, "callScript error: 1");
 	}
 	if (!lua_isstring(L, 2)) {
 		return luaL_error(L, "callScript error: 2");
 	}
-	auto st = static_cast<UserData<script_state*>*>(lua_touserdata(L, 1))->st;
+	auto st = luaL_toUserData<script_state*>(L, 1)->st;
 	auto funcname = lua_tostring(L, 2);
 	int fn = -1;
 	for (int i = 0; i < 2000; i++) {
@@ -318,8 +313,8 @@ LUA_FUNC(callScript) {
 				push_val2(st->stack, type, uid, ref);
 			}
 		}
-		else if(lua_isuserdata(L, i) && static_cast<UserData<int64>*>(lua_touserdata(L, i))->type == ut_int64) {
-			push_val(st->stack, c_op::C_INT, static_cast<UserData<int64>*>(lua_touserdata(L, i))->st);
+		else if(luaL_checkUserData<int64_t>(L, i)) {
+			push_val(st->stack, c_op::C_INT, luaL_toUserData<int64_t>(L, i)->st);
 		}
 		else {
 			push_val(st->stack, c_op::C_INT, 0);
@@ -441,19 +436,20 @@ LUA_FUNC(INT64ToString) {
 		lua_pushnil(L);
 		return 1;
 	}
-	if (lua_type(L, 1) != LUA_TUSERDATA) {
+	if (!luaL_checkUserData<int64_t>(L, 1)) {
 		lua_pushnil(L);
 		return 1;
 	}
+	auto ud = luaL_toUserData<int64_t>(L, 1);
 	char buff[256] = { 0 };
-	sprintf(buff, "%" PRId64, ((UserData<int64>*)lua_touserdata(L, 1))->st);
+	sprintf(buff, "%" PRId64, ud->st);
 	lua_pushstring(L, buff);
 	return 1;
 }
 
 //void script_set_constant_(const char* name, int64 value, const char* constant_name, bool isparameter, bool deprecated);
-#define script_set_constant_(n,v,c,p,d) {auto e_ = (UserData<int64>*)lua_newuserdata(L, sizeof(UserData<int64>)); e_->type = ut_int64; luaL_setmetatable(L, "INT64"); e_->st = v;lua_setfield(L, -2, c? c:n);}
-#define script_set_constant(n,v,p,d) {auto e_ = (UserData<int64>*)lua_newuserdata(L, sizeof(UserData<int64>)); e_->type = ut_int64; luaL_setmetatable(L, "INT64"); e_->st = v;lua_setfield(L, -2, n);}
+#define script_set_constant_(n,v,c,p,d) {luaL_newUserData<int64_t>(L, v); lua_setfield(L, -2, c? c:n);}
+#define script_set_constant(n,v,p,d) {luaL_newUserData<int64_t>(L, v); lua_setfield(L, -2, n);}
 //#define script_set_constant_()
 
 bool init_lua() {
