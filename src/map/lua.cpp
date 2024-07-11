@@ -298,7 +298,8 @@ LUA_FUNC(callScript) {
 				}
 				lua_pop(L, 1);
 			}
-			else {
+			/*
+			 else {
 				lua_getfield(L, i, "type");
 				c_op type = (c_op)(uint64)lua_touserdata(L, -1);
 				lua_pop(L, 1);
@@ -313,9 +314,14 @@ LUA_FUNC(callScript) {
 				lua_pop(L, 1);
 				push_val2(st->stack, type, uid, ref);
 			}
+			*/
 		}
 		else if(luaL_checkUserData<int64_t>(L, i)) {
 			push_val(st->stack, c_op::C_INT, luaL_toUserData<int64_t>(L, i)->st);
+		}
+		else if(luaL_checkUserData<script_data>(L, i)) {
+			auto sRef = luaL_toUserData<script_data>(L, i);
+			push_val2(st->stack, sRef->st.type, sRef->st.u.num, sRef->st.ref);
 		}
 		else {
 			push_val(st->stack, c_op::C_INT, 0);
@@ -339,18 +345,18 @@ LUA_FUNC(callScript) {
 		lua_pushnil(L);
 	}
 	int count = 1;
-	if (data_isreference(&data)) {
-		lua_newtable(L);
-		lua_pushlightuserdata(L, (void*)(int)data.type);
-		lua_setfield(L, -2, "type");
-		lua_pushlightuserdata(L, (void*)(data.u.num & 0xffffffff));
-		lua_setfield(L, -2, "num1");
-		lua_pushlightuserdata(L, (void*)((data.u.num >> 32) & 0xffffffff));
-		lua_setfield(L, -2, "num2");
-		lua_pushlightuserdata(L, data.ref);
-		lua_setfield(L, -2, "ref");
-		count++;
-	}
+	//if (data_isreference(&data)) {
+	//	lua_newtable(L);
+	//	lua_pushlightuserdata(L, (void*)(int)data.type);
+	//	lua_setfield(L, -2, "type");
+	//	lua_pushlightuserdata(L, (void*)(data.u.num & 0xffffffff));
+	//	lua_setfield(L, -2, "num1");
+	//	lua_pushlightuserdata(L, (void*)((data.u.num >> 32) & 0xffffffff));
+	//	lua_setfield(L, -2, "num2");
+	//	lua_pushlightuserdata(L, data.ref);
+	//	lua_setfield(L, -2, "ref");
+	//	count++;
+	//}
 	if (ret != SCRIPT_CMD_SUCCESS) {
 		lua_pop(L, count);
 		pop_stack(st, end0 - 1, st->end);
@@ -449,6 +455,45 @@ LUA_FUNC(ToString) {
 	return 1;
 }
 
+LUA_FUNC(ToStringUserData) {
+	if (lua_gettop(L) != 1) {
+		lua_pushnil(L);
+		return 1;
+	}
+	if (lua_type(L, 1) != LUA_TUSERDATA) {
+		lua_pushnil(L);
+		return 1;
+	}
+	char buff[256] = { 0 };
+	sprintf(buff, "ScriptData@0x%p", lua_touserdata(L, 1));
+	lua_pushstring(L, buff);
+	return 1;
+}
+
+LUA_FUNC(ref) {
+	if (lua_gettop(L) != 2) {
+		return luaL_error(L, "error");
+	}
+	if (lua_type(L, 1) != LUA_TUSERDATA) {
+		return luaL_error(L, "error");
+	}
+	if (!lua_isstring(L, 2)) {
+		return luaL_error(L, "error");
+	}
+	auto buffer = lua_tostring(L, 2);
+	char varname[256] = "";
+	int elem = 0;
+	if (sscanf(buffer, "%99[^[][%11d]", varname, &elem) < 2)
+		elem = 0;
+	trim(varname);
+	auto s = luaL_newUserData<script_data>(L, {
+		C_NAME,
+		static_cast<int64>(reference_uid(add_str(varname), elem)),
+		nullptr
+	});
+	return 1;
+}
+
 LUA_FUNC(INT64ToString) {
 	if (lua_gettop(L) != 1) {
 		lua_pushnil(L);
@@ -509,16 +554,20 @@ bool init_lua() {
 		}
 	}
 
-	luaL_newmetatable(m_lua, "ScriptState");
+	luaL_newmetatable(m_lua, UserDataMetaTableFor<script_state*>());
 	lua_pushstring(L, "__index");
 	lua_pushvalue(L, 1);
 	lua_rawset(L, -3);
 	lua_pushstring(L, "__tostring");
 	lua_pushcfunction(L, ToString);
 	lua_rawset(L, -3);
-	luaL_newmetatable(m_lua, "INT64");
+	luaL_newmetatable(m_lua, UserDataMetaTableFor<int64_t>());
 	lua_pushstring(L, "__tostring");
 	lua_pushcfunction(L, INT64ToString);
+	lua_rawset(L, -3);
+	luaL_newmetatable(m_lua, UserDataMetaTableFor<script_data*>());
+	lua_pushstring(L, "__tostring");
+	lua_pushcfunction(L, ToStringUserData);
 	lua_rawset(L, -3);
 	lua_newtable(L);	
 #include "script_constants.hpp"

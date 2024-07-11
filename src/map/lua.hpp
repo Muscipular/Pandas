@@ -14,6 +14,7 @@ enum e_user_data
 {
 	ut_none,
 	ut_script_state,
+	ut_script_data,
 	ut_int64,
 };
 
@@ -22,13 +23,15 @@ struct UserData {
 	e_user_data type;
 	T st;
 };
-
+struct script_data;
 struct script_state;
 
 template<typename T = void>
-inline e_user_data UserDataTypeFor()
-{
+inline e_user_data UserDataTypeFor() {
 	if (std::is_same<T, script_state*>()) {
+		return ut_script_state;
+	}
+	if (std::is_same<T, script_data>()) {
 		return ut_script_state;
 	}
 	if (std::is_same<T, int64_t>()) {
@@ -41,6 +44,9 @@ template<typename T = void>
 inline const char* UserDataMetaTableFor() {
 	if (std::is_same<T, script_state*>()) {
 		return "ScriptState";
+	}
+	if (std::is_same<T, script_data>()) {
+		return "ScriptData";
 	}
 	if (std::is_same<T, int64_t>()) {
 		return  "INT64";
