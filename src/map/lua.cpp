@@ -105,7 +105,8 @@ int get_str_data_size();
 #define str_data get_str_data()
 char* get_str_buf();
 #define str_buf get_str_buf()
-
+const char* get_val2_str(struct script_state* st, int64 uid, struct reg_db* ref);
+int64 get_val2_num(struct script_state* st, int64 uid, struct reg_db* ref);
 struct script_data* push_val2(struct script_stack* stack, enum c_op type, int64 val, struct reg_db* ref);
 struct script_data* push_str(struct script_stack* stack, enum c_op type, char* str);
 struct script_data* push_retinfo(struct script_stack* stack, struct script_retinfo* ri, struct reg_db* ref);
@@ -360,17 +361,34 @@ LUA_FUNC(callScript) {
 		db_destroy(m2);
 		return luaL_error(L, "callScript error: buildin_func %s exec failed", funcname);
 	}
+
 	for (int i = 3; i <= argN; i++) {
 		if (lua_istable(L, i)) {
 			if (lua_objlen(L, i) > 0) {
 				auto d = script_getdata(st, i - 1);
-				if (is_string_variable(reference_getname(d))) {
-					lua_pushstring(L, conv_str(st, d));
+				auto is_str = is_string_variable(reference_getname(d));
+				auto xLen = script_array_highest_key(st, nullptr, reference_getname(d), reference_getref(d));
+				if (xLen > 1) {
+					auto dId = reference_getid(d);
+					for (int j = 0; j < xLen; ++j) {
+						if (is_str) {
+							lua_pushstring(L, get_val2_str(st, reference_uid(dId, j), d->ref));
+						}
+						else {
+							lua_pushnumber(L, get_val2_num(st, reference_uid(dId, j), d->ref));
+						}
+						lua_rawseti(L, j, j);
+					}
 				}
 				else {
-					lua_pushnumber(L, conv_num64(st, d));
+					if (is_str) {
+						lua_pushstring(L, conv_str(st, d));
+					}
+					else {
+						lua_pushnumber(L, conv_num64(st, d));
+					}
+					lua_rawseti(L, i, 1);
 				}
-				lua_rawseti(L, i, 1);
 			}
 		}
 	}
