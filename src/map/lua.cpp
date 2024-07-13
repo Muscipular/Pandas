@@ -316,10 +316,10 @@ LUA_FUNC(callScript) {
 			}
 			*/
 		}
-		else if(luaL_checkUserData<int64_t>(L, i)) {
+		else if (luaL_checkUserData<int64_t>(L, i)) {
 			push_val(st->stack, c_op::C_INT, luaL_toUserData<int64_t>(L, i)->st);
 		}
-		else if(luaL_checkUserData<script_data>(L, i)) {
+		else if (luaL_checkUserData<script_data>(L, i)) {
 			auto sRef = luaL_toUserData<script_data>(L, i);
 			push_val2(st->stack, sRef->st.type, sRef->st.u.num, sRef->st.ref);
 		}
@@ -383,7 +383,7 @@ LUA_FUNC(callScript) {
 						else {
 							lua_pushnumber(L, get_val2_num(st, reference_uid(dId, j), d->ref));
 						}
-						lua_rawseti(L, j, j);
+						lua_rawseti(L, i, j);
 					}
 				}
 				else {
@@ -470,6 +470,77 @@ LUA_FUNC(ToStringUserData) {
 	return 1;
 }
 
+LUA_FUNC(get_ref_value) {
+	int argN = lua_gettop(L);
+	if (argN < 2) {
+		return luaL_error(L, "callScript error: 0");
+	}
+	if (!luaL_checkUserData<script_state*>(L, 1)) {
+		return luaL_error(L, "callScript error: 1");
+	}
+	if (!luaL_checkUserData<script_data>(L, 2)) {
+		return luaL_error(L, "callScript error: 2");
+	}
+	auto st = luaL_toUserData<script_state*>(L, 1)->st;
+	auto data = luaL_toUserData<script_data>(L, 2);
+	auto is_str = is_string_variable(reference_getname(&data->st));
+	if (is_str) {
+		lua_pushstring(L, conv_str(st, &data->st));
+	}
+	else {
+		const auto v = conv_num64(st, &data->st);
+		if (v > INT32_MAX) {
+			luaL_newUserData<int64_t>(L, v);
+		}
+		else {
+			lua_pushinteger(L, static_cast<int32_t>(v));
+		}
+	}
+	return 1;
+}
+
+LUA_FUNC(get_ref_array) {
+	int argN = lua_gettop(L);
+	if (argN < 2) {
+		return luaL_error(L, "callScript error: 0");
+	}
+	if (!luaL_checkUserData<script_state*>(L, 1)) {
+		return luaL_error(L, "callScript error: 1");
+	}
+	if (!luaL_checkUserData<script_data>(L, 2)) {
+		return luaL_error(L, "callScript error: 2");
+	}
+	int offset = 0;
+	if (argN == 3) {
+		offset = lua_tointeger(L, 3);
+	}
+	auto st = luaL_toUserData<script_state*>(L, 1)->st;
+	auto data = luaL_toUserData<script_data>(L, 2);
+	auto is_str = is_string_variable(reference_getname(&data->st));
+	map_session_data* sd = map_id2sd(st->rid);
+	auto xLen = script_array_highest_key(st, sd, reference_getname(&data->st), data->st.ref);
+	lua_newtable(L);
+	auto d = &data->st;
+	auto dId = reference_getid(d);
+	for (int j = 0; j < xLen; ++j) {
+		if (is_str) {
+			lua_pushstring(L, get_val2_str(st, reference_uid(dId, j), d->ref));
+		}
+		else {
+			const auto v = get_val2_num(st, reference_uid(dId, j), d->ref);
+			if (v > INT32_MAX) {
+				luaL_newUserData<int64_t>(L, v);
+			}
+			else {
+				lua_pushinteger(L, static_cast<int32_t>(v));
+			}
+		}
+		lua_rawseti(L, -2, j + offset);
+	}
+
+	return 1;
+}
+
 LUA_FUNC(ref) {
 	if (lua_gettop(L) != 2) {
 		return luaL_error(L, "error");
@@ -490,7 +561,60 @@ LUA_FUNC(ref) {
 		C_NAME,
 		static_cast<int64>(reference_uid(add_str(varname), elem)),
 		nullptr
-	});
+		});
+	return 1;
+}
+
+//instance_ref
+LUA_FUNC(instance_ref) {
+	if (lua_gettop(L) != 3) {
+		return luaL_error(L, "error");
+	}
+	if (lua_type(L, 1) != LUA_TUSERDATA) {
+		return luaL_error(L, "error");
+	}
+	if (!lua_isstring(L, 2)) {
+		return luaL_error(L, "error");
+	}
+	if (!lua_isnumber(L, 3)) {
+		return luaL_error(L, "error");
+	}
+	auto buffer = lua_tostring(L, 2);
+	char varname[256] = "";
+	int elem = 0;
+	if (sscanf(buffer, "%99[^[][%11d]", varname, &elem) < 2)
+		elem = 0;
+
+	if (*varname != '\'') {
+		ShowError("instance_ref: Invalid scope. %s is not an instance variable.\n", varname);
+		return luaL_error(L, "error");
+	}
+
+	int instance_id = lua_tointeger(L, 3);
+
+	if (instance_id <= 0) {
+		ShowError("instance_ref: Invalid instance ID %d.\n", instance_id);
+		return luaL_error(L, "error");
+	}
+
+	std::shared_ptr<s_instance_data> im = rathena::util::umap_find(instances, instance_id);
+
+
+	if (!im || im->state != INSTANCE_BUSY) {
+		ShowError("instance_ref: Unknown instance ID %d.\n", instance_id);
+		return luaL_error(L, "error");
+	}
+
+	if (!im->regs.vars) {
+		im->regs.vars = i64db_alloc(DB_OPT_RELEASE_DATA);
+	}
+
+	auto s = luaL_newUserData<script_data>(L, {
+		C_NAME,
+		static_cast<int64>(reference_uid(add_str(varname), elem)),
+		&im->regs,
+		});
+
 	return 1;
 }
 
@@ -528,12 +652,6 @@ bool init_lua() {
 	auto ret = true;
 	lua_settop(L, 0);
 	lua_newtable(L);
-	lua_pushstring(L, "callScript");
-	lua_pushcfunction(L, callScript);
-	lua_rawset(L, -3);
-	lua_pushstring(L, "sleep");
-	lua_pushcfunction(L, sleep);
-	lua_rawset(L, -3);
 	// 1
 	static char cmd[2048] = "return function(fn) return function(st, ...) return st:callScript(fn, ...) end end";
 	luaL_loadstring(L, cmd); //2
@@ -553,6 +671,19 @@ bool init_lua() {
 			lua_rawset(L, 1);
 		}
 	}
+	lua_pop(L, -1);
+	lua_pushstring(L, "callScript");
+	lua_pushcfunction(L, callScript);
+	lua_rawset(L, -3);
+	lua_pushstring(L, "sleep");
+	lua_pushcfunction(L, sleep);
+	lua_rawset(L, -3);
+	lua_pushstring(L, "ref");
+	lua_pushcfunction(L, ref);
+	lua_rawset(L, -3);
+	lua_pushstring(L, "instance_ref");
+	lua_pushcfunction(L, instance_ref);
+	lua_rawset(L, -3);
 
 	luaL_newmetatable(m_lua, UserDataMetaTableFor<script_state*>());
 	lua_pushstring(L, "__index");
@@ -569,12 +700,12 @@ bool init_lua() {
 	lua_pushstring(L, "__tostring");
 	lua_pushcfunction(L, ToStringUserData);
 	lua_rawset(L, -3);
-	lua_newtable(L);	
+	lua_newtable(L);
 #include "script_constants.hpp"
 
 	lua_setglobal(L, "CONST");
 	lua_settop(L, 0);
-	
+
 	ret = luaL_dostring(m_lua, "pcall(function() dofile('npc/init.lua') end);");
 	if (ret) {
 		return false;
