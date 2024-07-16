@@ -26,35 +26,39 @@ struct UserData {
 struct script_data;
 struct script_state;
 
-template<typename T = void>
+template<typename T>
 inline e_user_data UserDataTypeFor() {
-	if (std::is_same<T, script_state*>()) {
+	if constexpr (std::is_same_v<T, script_state*>) {
 		return ut_script_state;
 	}
-	if (std::is_same<T, script_data>()) {
+	else if constexpr (std::is_same_v<T, script_data>) {
 		return ut_script_state;
 	}
-	if (std::is_same<T, int64_t>()) {
+	else if constexpr (std::is_same_v<T, int64_t>) {
 		return  ut_int64;
 	}
-	return ut_none;
+	else {
+		return T();
+	}
 }
 
-template<typename T = void>
+template<typename T>
 inline const char* UserDataMetaTableFor() {
-	if (std::is_same<T, script_state*>()) {
+	if constexpr (std::is_same_v<T, script_state*>) {
 		return "ScriptState";
 	}
-	if (std::is_same<T, script_data>()) {
+	else if constexpr (std::is_same_v<T, script_data>) {
 		return "ScriptData";
 	}
-	if (std::is_same<T, int64_t>()) {
+	else if constexpr (std::is_same_v<T, int64_t>) {
 		return  "INT64";
 	}
-	return "";
+	else {
+		return T();
+	}
 }
 
-template<typename T = void>
+template<typename T>
 inline UserData<T>* luaL_newUserData(lua_State* L, T v) {
 	auto d = static_cast<UserData<T>*>(lua_newuserdata(L, sizeof(UserData<T>)));
 	d->type = UserDataTypeFor<T>();
@@ -63,7 +67,7 @@ inline UserData<T>* luaL_newUserData(lua_State* L, T v) {
 	return d;
 }
 
-template<typename T = void>
+template<typename T>
 inline bool luaL_checkUserData(lua_State* L, int n) {
 	if (!lua_isuserdata(L, n)) {
 		return false;
@@ -73,7 +77,7 @@ inline bool luaL_checkUserData(lua_State* L, int n) {
 	return d->type == type;
 }
 
-template<typename T = void>
+template<typename T>
 inline UserData<T>* luaL_toUserData(lua_State* L, int n) {
 	if (!lua_isuserdata(L, n)) {
 		return nullptr;

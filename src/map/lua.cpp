@@ -430,6 +430,24 @@ LUA_FUNC(sleep) {
 	return lua_yield(L, 1);
 }
 
+LUA_FUNC(mes) {
+	if (!luaL_checkUserData<script_state*>(L, 1)) {
+		return luaL_error(L, "sleep error: 1");
+	}
+	auto st = luaL_toUserData<script_state*>(L, 1)->st;
+	map_session_data* sd = map_id2sd(st->rid);
+	if (!sd)
+		return luaL_error(L, "player not attached.");
+	auto n = lua_gettop(L);
+	for (int i = 2; i <= n; ++i)	{
+		clif_scriptmes(*sd, st->oid, lua_tostring(L, i));
+	}
+	st->mes_active = 1; // Invoking character has a NPC dialog box open.
+	return 0;
+}
+
+
+
 LUA_FUNC(ToString) {
 	if (lua_gettop(L) != 1) {
 		lua_pushnil(L);
@@ -687,12 +705,12 @@ bool init_lua() {
 	lua_pushstring(L, "__tostring");
 	lua_pushcfunction(L, INT64ToString);
 	lua_rawset(L, -3);
-	luaL_newmetatable(m_lua, UserDataMetaTableFor<script_data*>());
+	luaL_newmetatable(m_lua, UserDataMetaTableFor<script_data>());
 	lua_pushstring(L, "__tostring");
 	lua_pushcfunction(L, ToStringUserData);
 	lua_rawset(L, -3);
 	lua_newtable(L);
-	
+
 #include "script_constants.hpp"
 
 	lua_setglobal(L, "CONST");
