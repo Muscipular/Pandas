@@ -3429,6 +3429,7 @@ inline char* writeBuffer(char* buff, T v) {
 	return (char*)(((T*)(buff)) + 1);
 }
 
+/// 0x2002{w},len{w},lv{dw}
 void clif_update_exlv(map_session_data* sd) {
 	struct ExData
 	{
@@ -3445,6 +3446,7 @@ void clif_update_exlv(map_session_data* sd) {
 	}
 }
 
+/// 0x2001{w},len{w},item_count{w},type{w},item_struct...{index{w},ival_count{b},slot_count{b},stack{dw},ival_list...{dw},slot_list...{dw}}
 static int clif_send_item_ext(map_session_data* sd, item* items, size_t item_count, e_inventory_type type) {
 	static char buff[MAX_STORAGE * (sizeof(ItemExtInfoPkg) + 4 * ARRAYLENGTH(items[0].ival) + 4 * (MAX_SLOTS - 4)) + 256];
 	char* oBuff = buff;

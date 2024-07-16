@@ -201,6 +201,7 @@ ARG_TYPE callScriptFn(script_state* st, const char* fn, std::vector<ARG_TYPE> n)
 	return ret;
 }
 
+std::map<std::string, int> buildin_fn_map;
 
 bool checkSupport(const char* fn) {
 	static std::vector<std::string> blockcmd = {
@@ -238,14 +239,9 @@ LUA_FUNC(callScript) {
 	auto st = luaL_toUserData<script_state*>(L, 1)->st;
 	auto funcname = lua_tostring(L, 2);
 	int fn = -1;
-	for (int i = 0; i < 2000; i++) {
-		if (buildin_func[i].name == NULL) {
-			break;
-		}
-		if (strcmp(buildin_func[i].name, funcname) == 0) {
-			fn = i;
-			break;
-		}
+	auto it = buildin_fn_map.find(funcname);
+	if (it != buildin_fn_map.end()) {
+		fn = it->second;
 	}
 	if (fn < 0) {
 		return luaL_error(L, "callScript error: buildin_func not find %s", funcname);
@@ -430,14 +426,8 @@ LUA_FUNC(sleep) {
 	// sleep for the target amount of time
 	st->state = RERUNLINE;
 	st->sleep.tick = ticks;
-	int n = lua_yield(L, 0);
-	if (n > 0) {
-		lua_pop(L, n);
-	}
-	lua_pushboolean(L, true);
-	return 1;
-	// Second call(by timer after sleeping time is over)
-	//}
+	lua_pushstring(L, "sleep");
+	return lua_yield(L, 1);
 }
 
 LUA_FUNC(ToString) {
@@ -664,6 +654,7 @@ bool init_lua() {
 			if (strcmp(buildin_func[i].name, "return") == 0) {
 				continue;
 			}
+			buildin_fn_map[buildin_func[i].name] = (int)i;
 			lua_pushstring(L, buildin_func[i].name); //3
 			lua_pushvalue(L, 2);
 			lua_pushstring(L, buildin_func[i].name); //4
@@ -701,9 +692,11 @@ bool init_lua() {
 	lua_pushcfunction(L, ToStringUserData);
 	lua_rawset(L, -3);
 	lua_newtable(L);
+	
 #include "script_constants.hpp"
 
 	lua_setglobal(L, "CONST");
+	luaL_dostring(L, "function __WARP__() return call(coroutine.yield()) end ");
 	lua_settop(L, 0);
 
 	ret = luaL_dostring(m_lua, "pcall(function() dofile('npc/init.lua') end);");
@@ -713,19 +706,72 @@ bool init_lua() {
 	return true;
 }
 
-int resume_lua(script_state* st, lua_State* L, int n) {
-	int ret = lua_resume(L, n);
-	if (ret == LUA_YIELD) {
-		st->lua_state.thread = L;
-	}
-	else {
-		if (ret != 0) {
-			printf("lua error: %s\n", lua_tostring(m_lua, -1));
+int lua_run(script_state* st, lua_State* L) {
+	int n = script_lastdata(st);
+	int ret = 0;
+	if (st->state != e_script_state::RERUNLINE) {
+		lua_getglobal(L, "__WARP__");
+		lua_resume(L, 0);
+		lua_getglobal(L, script_getstr(st, 2));
+		auto p = luaL_newUserData<script_state*>(L, st);
+		for (int i = 3; i <= n; i++) {
+			script_data* data = get_val(st, script_getdata(st, i));
+			if (data_isint(data)) {
+				lua_pushnumber(L, static_cast<lua_Number>(data->u.num));
+			}
+			else if (data_isstring(data)) {
+				lua_pushstring(L, data->u.str);
+			}
+			else {
+				lua_pushstring(L, conv_str(st, data));
+			}
 		}
-		if (L == st->lua_state.thread) {
-			st->lua_state.thread = nullptr;
+		int ret = lua_resume(L, n - 2 + 1);
+		if (ret == LUA_OK) {
+			auto b = lua_toboolean(L, -2);
+			if (b) {
+				if (lua_isnumber(L, -1)) {
+					script_pushint64(st, static_cast<int64>(lua_tonumber(L, -1)));
+				}
+				else if (lua_isstring(L, -1)) {
+					script_pushstrcopy(st, lua_tostring(L, -1));
+				}
+			}
+			else {
+				printf("lua error: %s\n", lua_tostring(L, -1));
+			}
+			lua_settop(L, 0);
+			return b ? SCRIPT_CMD_SUCCESS : SCRIPT_CMD_FAILURE;
 		}
-		lua_close(L);
+		if (ret == LUA_YIELD) {
+			st->state = RERUNLINE;
+			st->lua_state.lastCmd = script_getstr(st, 1);
+			return SCRIPT_CMD_SUCCESS;
+		}
+		return SCRIPT_CMD_FAILURE;
 	}
-	return ret;
+	else if (st->state == e_script_state::RERUNLINE) {
+		auto it = buildin_fn_map.find(st->lua_state.lastCmd);
+		int fn = -1;
+		if (buildin_fn_map.end() != it) {
+			fn = it->second;
+		}
+		int ret = buildin_func[fn].func(st);
+		auto retData = script_getdatatop(st, -1);
+		script_data data;
+		memcpy(&data, retData, sizeof(script_data));
+		auto retDataActual = get_val(st, retData);
+		if (data_isstring(retDataActual)) {
+			lua_pushstring(L, retData->u.str);
+		}
+		else if (data_isint(retDataActual)) {
+			lua_pushinteger(L, retData->u.num);
+		}
+		else {
+			lua_pushnil(L);
+		}
+	}
+
+
+	return SCRIPT_CMD_SUCCESS;
 }

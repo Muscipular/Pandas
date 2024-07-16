@@ -34204,7 +34204,7 @@ BUILDIN_FUNC(lua_init) {
 	return SCRIPT_CMD_SUCCESS;
 }
 
-int resume_lua(script_state* st, lua_State* L, int n);
+int lua_run(script_state* st, lua_State* L);
 
 BUILDIN_FUNC(lua_call_fn) {
 	int n = script_lastdata(st);
@@ -34239,48 +34239,7 @@ BUILDIN_FUNC(lua_call_fn) {
 }
 
 BUILDIN_FUNC(lua_run) {
-	int n = script_lastdata(st);
-	int ret = 0;
-	if (st->state != e_script_state::RERUNLINE) {
-		auto L = lua_newthread(m_lua);
-		lua_getglobal(L, script_getstr(st, 2));
-		lua_pushlightuserdata(L, st);
-		for (int i = 3; i <= n; i++) {
-			script_data* data = get_val(st, script_getdata(st, i));
-			if (data_isint(data)) {
-				lua_pushnumber(L, static_cast<lua_Number>(data->u.num));
-			}
-			else if (data_isstring(data)) {
-				lua_pushstring(L, data->u.str);
-			}
-			else {
-				lua_pushstring(L, conv_str(st, data));
-			}
-		}
-		resume_lua(st, L, n - 2);
-	}
-	else if (st->lua_state.thread != nullptr) {
-		lua_pushlightuserdata(st->lua_state.thread, st);
-		if (strcmp(st->lua_state.lastCmd, "sleep") == 0) {
-			st->state = RUN;
-			st->sleep.tick = 0;
-			st->lua_state.lastCmd = nullptr;
-			resume_lua(st, st->lua_state.thread, 1);
-		}
-		//if (strcmp(st->lua_state.lastCmd, "sleep2") == 0) {
-		//	st->state = RUN;
-		//	st->sleep.tick = 0;
-		//	st->lua_state.lastCmd = nullptr;
-		//	resume_lua(st, st->lua_state.thread, 1);
-//		}
-		else {
-			st->state = RUN;
-			resume_lua(st, st->lua_state.thread, 1);
-		}
-	}
-
-
-	return SCRIPT_CMD_SUCCESS;
+	return lua_run(st, m_lua);
 }
 
 // END LUA
