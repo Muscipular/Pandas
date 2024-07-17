@@ -18,6 +18,9 @@ enum e_user_data
 	ut_int64,
 };
 
+#define RESUME_NAME(N) resume_##N
+#define RESUME_FUNC(N) int RESUME_NAME(N)(script_state* st)
+
 template<typename T = void>
 struct UserData {
 	e_user_data type;

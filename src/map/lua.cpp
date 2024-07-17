@@ -446,6 +446,224 @@ LUA_FUNC(mes) {
 	return 0;
 }
 
+LUA_FUNC(next) {
+	if (!luaL_checkUserData<script_state*>(L, 1)) {
+		return luaL_error(L, "sleep error: 1");
+	}
+	auto st = luaL_toUserData<script_state*>(L, 1)->st;
+	map_session_data* sd = map_id2sd(st->rid);
+
+	if (!st->mes_active) {
+		ShowWarning("buildin_next: There is no mes active.\n");
+		return luaL_error(L, "buildin_next: There is no mes active.\n");
+	}
+
+	if (!sd)
+		return 0;
+#ifdef SECURE_NPCTIMEOUT
+	sd->npc_idle_type = NPCT_WAIT;
+#endif
+	st->state = STOP;
+	clif_scriptnext(*sd, st->oid);
+	lua_pushstring(L, "next");
+	return lua_yield(L, 1);
+}
+
+LUA_FUNC(clear) {
+	if (!luaL_checkUserData<script_state*>(L, 1)) {
+		return luaL_error(L, "sleep error: 1");
+	}
+	auto st = luaL_toUserData<script_state*>(L, 1)->st;
+	map_session_data* sd = map_id2sd(st->rid);
+
+	if (!st->mes_active) {
+		ShowWarning("buildin_clear: There is no mes active.\n");
+		return luaL_error(L, "buildin_clear: There is no mes active.\n");
+	}
+
+	if (!sd)
+		return 0;
+
+	clif_scriptclear(*sd, st->oid);
+	return 0;
+}
+
+LUA_FUNC(close) {
+	if (!luaL_checkUserData<script_state*>(L, 1)) {
+		return luaL_error(L, "close error: 1");
+	}
+	auto st = luaL_toUserData<script_state*>(L, 1)->st;
+	map_session_data* sd = map_id2sd(st->rid);
+
+	if (!sd)
+		return 0;
+
+	npc_data* nd = map_id2nd(st->oid);
+
+	if (nd != nullptr && nd->dynamicnpc.owner_char_id != 0) {
+		nd->dynamicnpc.last_interaction = gettick();
+	}
+
+	const char* command = "close";
+
+	if (!st->mes_active) {
+		st->state = END; // Keep backwards compatibility.
+		ShowWarning("buildin_close: Incorrect use of '%s' command!\n", command);
+	}
+	else {
+		st->state = CLOSE;
+		st->mes_active = 0;
+	}
+
+	if (!strcmp(command, "close3")) {
+		st->clear_cutin = true;
+	}
+
+	clif_scriptclose(sd, st->oid);
+	return 0;
+}
+
+LUA_FUNC(close2) {
+	if (!luaL_checkUserData<script_state*>(L, 1)) {
+		return luaL_error(L, "close2 error: 1");
+	}
+	auto st = luaL_toUserData<script_state*>(L, 1)->st;
+	map_session_data* sd = map_id2sd(st->rid);
+
+	if (!sd)
+		return 0;
+
+	st->state = STOP;
+
+	if (st->mes_active)
+		st->mes_active = 0;
+
+	clif_scriptclose(sd, st->oid);
+	return 0;
+}
+
+LUA_FUNC(close3) {
+	if (!luaL_checkUserData<script_state*>(L, 1)) {
+		return luaL_error(L, "close3 error: 1");
+	}
+	auto st = luaL_toUserData<script_state*>(L, 1)->st;
+	map_session_data* sd = map_id2sd(st->rid);
+
+	if (!sd)
+		return 0;
+
+	npc_data* nd = map_id2nd(st->oid);
+
+	if (nd != nullptr && nd->dynamicnpc.owner_char_id != 0) {
+		nd->dynamicnpc.last_interaction = gettick();
+	}
+
+	const char* command = "close";
+
+	if (!st->mes_active) {
+		st->state = END; // Keep backwards compatibility.
+		ShowWarning("buildin_close: Incorrect use of '%s' command!\n", command);
+	}
+	else {
+		st->state = CLOSE;
+		st->mes_active = 0;
+	}
+
+	if (!strcmp(command, "close3")) {
+		st->clear_cutin = true;
+	}
+
+	clif_scriptclose(sd, st->oid);
+	return 0;
+}
+
+int menu_countoptions(const char* str, int max_count, int* total);
+
+LUA_FUNC(select) {
+	if (!luaL_checkUserData<script_state*>(L, 1)) {
+		return luaL_error(L, "close3 error: 1");
+	}
+	auto st = luaL_toUserData<script_state*>(L, 1)->st;
+	map_session_data* sd = map_id2sd(st->rid);
+
+	int i;
+	const char* text;
+
+	if (!sd)
+		return 0;
+
+#ifdef SECURE_NPCTIMEOUT
+	sd->npc_idle_type = NPCT_MENU;
+#endif
+
+	if (sd->state.menu_or_input == 0) {
+		struct StringBuf buf;
+
+		StringBuf_Init(&buf);
+		sd->npc_menu = 0;
+#ifdef Pandas_Fix_Prompt_Cancel_Combine_Close_Error
+		sd->npc_menu_npcid = 0;
+#endif // Pandas_Fix_Prompt_Cancel_Combine_Close_Error
+		for (i = 2; i <= script_lastdata(st); ++i) {
+			text = script_getstr(st, i);
+
+			if (sd->npc_menu > 0)
+				StringBuf_AppendStr(&buf, ":");
+
+			StringBuf_AppendStr(&buf, text);
+			sd->npc_menu += menu_countoptions(text, 0, NULL);
+		}
+
+		st->state = RERUNLINE;
+		sd->state.menu_or_input = 1;
+
+		/**
+		 * menus beyond this length crash the client (see bugreport:6402)
+		 **/
+		if (StringBuf_Length(&buf) >= 2047) {
+			struct npc_data* nd = map_id2nd(st->oid);
+			char* menu;
+			CREATE(menu, char, 2048);
+			safestrncpy(menu, StringBuf_Value(&buf), 2047);
+			ShowWarning("buildin_select: NPC Menu too long! (source:%s / length:%d)\n", nd ? nd->name : "Unknown", StringBuf_Length(&buf));
+			clif_scriptmenu(sd, st->oid, menu);
+			aFree(menu);
+		}
+		else
+			clif_scriptmenu(sd, st->oid, StringBuf_Value(&buf));
+		StringBuf_Destroy(&buf);
+
+		if (sd->npc_menu >= 0xff) {
+			ShowWarning("buildin_select: Too many options specified (current=%d, max=254).\n", sd->npc_menu);
+		}
+		lua_pushstring(L, "select");
+		return lua_yield(L, 1);
+	}
+	else if (sd->npc_menu == 0xff) {// Cancel was pressed
+		sd->state.menu_or_input = 0;
+		st->state = END;
+		lua_pushinteger(L, -1);
+		return 1;
+	}
+	else {// return selected option
+		int menu = 0;
+
+		sd->state.menu_or_input = 0;
+		for (i = 2; i <= script_lastdata(st); ++i) {
+			text = script_getstr(st, i);
+			sd->npc_menu -= menu_countoptions(text, sd->npc_menu, &menu);
+			if (sd->npc_menu <= 0)
+				break;// entry found
+		}
+		lua_pushinteger(L, menu);
+		return 1;
+	}
+}
+
+
+RESUME_FUNC(sleep) {
+	lua_resume(st->lua_state.thread, 0);
+}
 
 
 LUA_FUNC(ToString) {
@@ -681,18 +899,24 @@ bool init_lua() {
 		}
 	}
 	lua_pop(L, -1);
-	lua_pushstring(L, "callScript");
-	lua_pushcfunction(L, callScript);
-	lua_rawset(L, -3);
-	lua_pushstring(L, "sleep");
-	lua_pushcfunction(L, sleep);
-	lua_rawset(L, -3);
-	lua_pushstring(L, "ref");
-	lua_pushcfunction(L, ref);
-	lua_rawset(L, -3);
-	lua_pushstring(L, "instance_ref");
-	lua_pushcfunction(L, instance_ref);
-	lua_rawset(L, -3);
+#define ST_FUNC(N) {lua_pushstring(L, #N);lua_pushcfunction(L, N);	lua_rawset(L, -3);}
+#define ST_FUNC2(K,N) {lua_pushstring(L, K);lua_pushcfunction(L, N);	lua_rawset(L, -3);}
+
+	ST_FUNC(callScript)
+	ST_FUNC(sleep)
+	ST_FUNC(ref)
+	ST_FUNC(instance_ref)
+	ST_FUNC(get_ref_value)
+	ST_FUNC(get_ref_array)
+	ST_FUNC(mes)
+	ST_FUNC(next)
+	ST_FUNC(clear)
+	ST_FUNC(close)
+	ST_FUNC(close2)
+	ST_FUNC(close3)
+
+#undef ST_FUNC
+#undef ST_FUNC2
 
 	luaL_newmetatable(m_lua, UserDataMetaTableFor<script_state*>());
 	lua_pushstring(L, "__index");
