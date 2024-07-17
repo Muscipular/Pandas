@@ -439,7 +439,7 @@ LUA_FUNC(mes) {
 	if (!sd)
 		return luaL_error(L, "player not attached.");
 	auto n = lua_gettop(L);
-	for (int i = 2; i <= n; ++i)	{
+	for (int i = 2; i <= n; ++i) {
 		clif_scriptmes(*sd, st->oid, lua_tostring(L, i));
 	}
 	st->mes_active = 1; // Invoking character has a NPC dialog box open.
@@ -844,6 +844,79 @@ LUA_FUNC(instance_ref) {
 	return 1;
 }
 
+map_session_data* mapid2sd_(script_state* st, lua_State* L, int n) {
+	if (lua_gettop(L) >= n && lua_type(L, n) == LUA_TNUMBER) {
+		return map_id2sd(lua_tointeger(L, n));
+	}
+	if (lua_gettop(L) < n) {
+		return map_id2sd(st->rid);
+	}
+	return nullptr;
+}
+
+LUA_FUNC(getmapxy) {
+	if (!luaL_checkUserData<script_state*>(L, 1)) {
+		return luaL_error(L, "callScript error: 1");
+	}
+	auto st = luaL_toUserData<script_state*>(L, 1)->st;
+	map_session_data* sd = nullptr;
+	block_list* bl = nullptr;
+
+	auto type = BL_PC;
+
+	if (lua_isnumber(L, 2)) {
+		type = static_cast<bl_type>(lua_tointeger(L, 2));
+	}
+
+	switch (type) {
+	case BL_PC:	//Get Character Position
+		if ((lua_type(L, 3) == LUA_TSTRING && (sd = map_nick2sd(lua_tostring(L, 3), false))) || (sd = mapid2sd_(st, L, 3)))
+			bl = &sd->bl;
+		break;
+	case BL_NPC:	//Get NPC Position
+		if (lua_gettop(L)>=3) {
+			struct npc_data* nd;
+
+			if (lua_type(L, 3) == LUA_TSTRING)
+				nd = npc_name2id(lua_tostring(L, 3));
+			else
+				nd = map_id2nd(lua_tointeger(L, 3));
+			if (nd)
+				bl = &nd->bl;
+		}
+		else //In case the origin is not an NPC?
+			bl = map_id2bl(st->oid);
+		break;
+	case BL_PET:	//Get Pet Position
+		if (((lua_type(L, 3) == LUA_TSTRING && (sd = map_nick2sd(lua_tostring(L, 3), false))) || (sd = mapid2sd_(st, L, 3))) && sd->pd)
+			bl = &sd->pd->bl;
+		break;
+	case BL_HOM:	//Get Homun Position
+		if (((lua_type(L, 3) == LUA_TSTRING && (sd = map_nick2sd(lua_tostring(L, 3), false))) || (sd = mapid2sd_(st, L, 3))) && sd->hd)
+			bl = &sd->hd->bl;
+		break;
+	case BL_MER: //Get Mercenary Position
+		if (((lua_type(L, 3) == LUA_TSTRING && (sd = map_nick2sd(lua_tostring(L, 3), false))) || (sd = mapid2sd_(st, L, 3))) && sd->md)
+			bl = &sd->md->bl;
+		break;
+	case BL_ELEM: //Get Elemental Position
+		if (((lua_type(L, 3) == LUA_TSTRING && (sd = map_nick2sd(lua_tostring(L, 3), false))) || (sd = mapid2sd_(st, L, 3))) && sd->ed)
+			bl = &sd->ed->bl;
+		break;
+	default:
+		ShowWarning("script: buildin_getmapxy: Invalid type %d.\n", type);
+		return 0;
+	}
+	if (!bl) {
+		return 0;
+	}
+
+	lua_pushstring(L, map_getmapdata(bl->m)->name);
+	lua_pushinteger(L, bl->x);
+	lua_pushinteger(L, bl->y);
+	return 3;
+}
+
 LUA_FUNC(INT64ToString) {
 	if (lua_gettop(L) != 1) {
 		lua_pushnil(L);
@@ -903,22 +976,23 @@ bool init_lua() {
 #define ST_FUNC2(K,N) {lua_pushstring(L, K);lua_pushcfunction(L, N);	lua_rawset(L, -3);}
 
 	ST_FUNC(callScript)
-	ST_FUNC(sleep)
-	ST_FUNC(ref)
-	ST_FUNC(instance_ref)
-	ST_FUNC(get_ref_value)
-	ST_FUNC(get_ref_array)
-	ST_FUNC(mes)
-	ST_FUNC(next)
-	ST_FUNC(clear)
-	ST_FUNC(close)
-	ST_FUNC(close2)
-	ST_FUNC(close3)
+		ST_FUNC(sleep)
+		ST_FUNC(ref)
+		ST_FUNC(instance_ref)
+		ST_FUNC(get_ref_value)
+		ST_FUNC(get_ref_array)
+		ST_FUNC(mes)
+		ST_FUNC(next)
+		ST_FUNC(clear)
+		ST_FUNC(close)
+		ST_FUNC(close2)
+		ST_FUNC(close3)
+		ST_FUNC(getmapxy)
 
 #undef ST_FUNC
 #undef ST_FUNC2
 
-	luaL_newmetatable(m_lua, UserDataMetaTableFor<script_state*>());
+		luaL_newmetatable(m_lua, UserDataMetaTableFor<script_state*>());
 	lua_pushstring(L, "__index");
 	lua_pushvalue(L, 1);
 	lua_rawset(L, -3);

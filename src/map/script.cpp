@@ -6088,7 +6088,7 @@ BUILDIN_FUNC(close2)
 /// Counts the number of valid and total number of options in 'str'
 /// If max_count > 0 the counting stops when that valid option is reached
 /// total is incremented for each option (NULL is supported)
-static int menu_countoptions(const char* str, int max_count, int* total)
+int menu_countoptions(const char* str, int max_count, int* total)
 {
 	int count = 0;
 	int bogus_total;
