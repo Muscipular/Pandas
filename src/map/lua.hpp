@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include <cstdint>
+#include <string>
 #include <type_traits>
+#include <vector>
 #include <sys/stat.h>
 
 extern "C" {
@@ -21,13 +23,14 @@ enum e_user_data
 enum e_lua_cmd
 {
 	elc_sleep,
+	elc_sleep2,
 	elc_close,
 	elc_next,
 	elc_select,
 };
 
 #define RESUME_NAME(N) resume_##N
-#define RESUME_FUNC(N) script_cmd_result RESUME_NAME(N)(script_state* st, int& ret)
+#define RESUME_FUNC(N) script_cmd_result RESUME_NAME(N)(script_state* st, lua_State* L, int& ret)
 //typedef enum script_cmd_result (lua_Resume_Func*)(script_state* st, int& ret);
 template<typename T = void>
 struct UserData {
@@ -36,6 +39,7 @@ struct UserData {
 };
 struct script_data;
 struct script_state;
+struct Const { std::string name; int64_t val; bool type; };
 
 template<typename T>
 inline e_user_data UserDataTypeFor() {

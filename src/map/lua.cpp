@@ -130,6 +130,7 @@ typedef struct { int code; } ERROR_RET;
 
 typedef std::variant<const char*, int64_t, ERROR_RET> ARG_TYPE;
 
+std::vector<Const>* constList = new std::vector<Const>();
 
 ARG_TYPE callScriptFn(script_state* st, const char* fn, std::vector<ARG_TYPE> n) {
 	int i, j;
@@ -405,15 +406,17 @@ LUA_FUNC(callScript) {
 }
 
 RESUME_FUNC(sleep) {
-	auto L = m_lua;
-	ret = lua_resume(st->lua_state.thread, 0);
+	st->state = RUN;
+	st->sleep.tick = 0;
+	ret = lua_resume(L, 0);
+	return SCRIPT_CMD_SUCCESS;
 }
 
 LUA_FUNC(sleep) {
 	if (!lua_isuserdata(L, 1)) {
 		return luaL_error(L, "sleep error: 1");
 	}
-	auto st = ((UserData<script_state*>*)lua_touserdata(L, 1))->st;
+	auto st = luaL_toUserData<script_state*>(L, 1)->st;
 	//if (st->sleep.tick == 0) {
 	int ticks;
 
@@ -432,6 +435,30 @@ LUA_FUNC(sleep) {
 	st->state = RERUNLINE;
 	st->sleep.tick = ticks;
 	st->lua_state.lastCmd = elc_sleep;
+	st->lua_state.fn = resume_sleep;
+	return lua_yield(L, 0);
+}
+
+LUA_FUNC(sleep2) {
+	if (!lua_isuserdata(L, 1)) {
+		return luaL_error(L, "sleep error: 1");
+	}
+	auto st = luaL_toUserData<script_state*>(L, 1)->st;
+	//if (st->sleep.tick == 0) {
+	int ticks;
+
+	ticks = luaL_optinteger(L, 2, 0);
+
+	if (ticks <= 0) {
+		ShowError("buildin_sleep: negative or zero amount('%d') of milli seconds is not supported\n", ticks);
+		lua_pushboolean(L, false);
+		return 1;
+	}
+
+	// sleep for the target amount of time
+	st->state = RERUNLINE;
+	st->sleep.tick = ticks;
+	st->lua_state.lastCmd = elc_sleep2;
 	st->lua_state.fn = resume_sleep;
 	return lua_yield(L, 0);
 }
@@ -584,6 +611,35 @@ LUA_FUNC(close3) {
 	return 0;
 }
 
+LUA_FUNC(readparam) {
+	if (!luaL_checkUserData<script_state*>(L, 1)) {
+		return luaL_error(L, "readparam error: 1");
+	}
+	auto st = luaL_toUserData<script_state*>(L, 1)->st;
+	map_session_data* sd = nullptr;
+	if (lua_gettop(L) >= 3) {
+		if (lua_type(L, 3) == LUA_TSTRING)
+			sd = map_nick2sd(lua_tostring(L, 3), false);
+		else
+			sd = map_id2sd(lua_tointeger(L, 3));
+	}
+	else {
+		sd = map_id2sd(st->rid);
+	}
+
+	if (!sd)
+		return luaL_error(L, "player not found.");
+
+	auto val = pc_readparam(sd, lua_tointeger(L, 2));
+	if (val < INT32_MIN || val > INT32_MAX) {
+		luaL_newUserData(L, val);
+	}
+	else {
+		lua_pushinteger(L, val);
+	}
+	return 1;
+}
+
 int menu_countoptions(const char* str, int max_count, int* total);
 
 RESUME_FUNC(select) {
@@ -592,29 +648,21 @@ RESUME_FUNC(select) {
 	ret = LUA_OK;
 	if (!sd)
 		return SCRIPT_CMD_SUCCESS;
-	auto L = m_lua;
 	if (sd->npc_menu == 0xff) {// Cancel was pressed
 		sd->state.menu_or_input = 0;
 		st->state = END;
 		lua_pushinteger(L, -1);
-		ret = lua_resume(st->lua_state.thread, 1);
+		ret = lua_resume(L, 1);
 		return SCRIPT_CMD_SUCCESS;
 	}
 	else {// return selected option
-		int menu = 0;
-
+		int menu = sd->npc_menu;
+		sd->npc_menu = 0;
 		sd->state.menu_or_input = 0;
-		for (i = 2; i <= script_lastdata(st); ++i) {
-			text = script_getstr(st, i);
-			sd->npc_menu -= menu_countoptions(text, sd->npc_menu, &menu);
-			if (sd->npc_menu <= 0)
-				break;// entry found
-		}
 		lua_pushinteger(L, menu);
-		ret = lua_resume(st->lua_state.thread, 1);
+		ret = lua_resume(L, 1);
 		return SCRIPT_CMD_SUCCESS;
 	}
-	ret = lua_resume(st->lua_state.thread, 0);
 }
 
 LUA_FUNC(select) {
@@ -678,25 +726,7 @@ LUA_FUNC(select) {
 		st->lua_state.fn = resume_select;
 		return lua_yield(L, 0);
 	}
-	else if (sd->npc_menu == 0xff) {// Cancel was pressed
-		sd->state.menu_or_input = 0;
-		st->state = END;
-		lua_pushinteger(L, -1);
-		return 1;
-	}
-	else {// return selected option
-		int menu = 0;
-
-		sd->state.menu_or_input = 0;
-		for (i = 2; i <= script_lastdata(st); ++i) {
-			text = script_getstr(st, i);
-			sd->npc_menu -= menu_countoptions(text, sd->npc_menu, &menu);
-			if (sd->npc_menu <= 0)
-				break;// entry found
-		}
-		lua_pushinteger(L, menu);
-		return 1;
-	}
+	return 0;
 }
 
 
@@ -969,9 +999,11 @@ LUA_FUNC(INT64ToString) {
 }
 
 //void script_set_constant_(const char* name, int64 value, const char* constant_name, bool isparameter, bool deprecated);
-#define script_set_constant_(n,v,c,p,d) {luaL_newUserData<int64_t>(L, v); lua_setfield(L, -2, c? c:n);}
-#define script_set_constant(n,v,p,d) {luaL_newUserData<int64_t>(L, v); lua_setfield(L, -2, n);}
+#define script_set_constant_x(v) {if((v)>INT32_MAX||(v)<INT32_MIN) luaL_newUserData<int64_t>(L, (v)); else lua_pushinteger(L, (int32_t)(v));}
+#define script_set_constant_(n,v,c,p,d) {script_set_constant_x(v); lua_setfield(L, -2, c? c:n);}
+#define script_set_constant(n,v,p,d) { script_set_constant_x(v); lua_setfield(L, -2, n);}
 //#define script_set_constant_()
+extern ConstantDatabase constant_db;
 
 bool init_lua() {
 	if (m_lua) {
@@ -1006,12 +1038,14 @@ bool init_lua() {
 			lua_rawset(L, 1);
 		}
 	}
-	lua_pop(L, -1);
-#define ST_FUNC(N) {lua_pushstring(L, #N);lua_pushcfunction(L, N);	lua_rawset(L, -3);}
-#define ST_FUNC2(K,N) {lua_pushstring(L, K);lua_pushcfunction(L, N);	lua_rawset(L, -3);}
+	lua_pop(L, 1);
+
+#define ST_FUNC(N) {lua_pushstring(L, #N);lua_pushcfunction(L, N);	lua_rawset(L, 1);}
+#define ST_FUNC2(K,N) {lua_pushstring(L, K);lua_pushcfunction(L, N);	lua_rawset(L, 1);}
 
 	ST_FUNC(callScript)
 		ST_FUNC(sleep)
+		ST_FUNC(sleep2)
 		ST_FUNC(ref)
 		ST_FUNC(instance_ref)
 		ST_FUNC(get_ref_value)
@@ -1023,6 +1057,8 @@ bool init_lua() {
 		ST_FUNC(close2)
 		ST_FUNC(close3)
 		ST_FUNC(getmapxy)
+		ST_FUNC(select)
+		ST_FUNC(readparam)
 
 #undef ST_FUNC
 #undef ST_FUNC2
@@ -1043,11 +1079,16 @@ bool init_lua() {
 	lua_pushcfunction(L, ToStringUserData);
 	lua_rawset(L, -3);
 	lua_newtable(L);
-
+	for (auto& n : *constList) {
+		luaL_newUserData<int64_t>(L, n.val);
+		lua_setfield(L, -2, n.name.c_str());
+	}
+	delete constList;
+	constList = nullptr;
 #include "script_constants.hpp"
 
 	lua_setglobal(L, "CONST");
-	luaL_dostring(L, "function __WARP__() return call(coroutine.yield()) end ");
+	luaL_dostring(L, "function __WARP__() local fn = coroutine.yield(); return fn(coroutine.yield()) end ");
 	lua_settop(L, 0);
 
 	ret = luaL_dostring(m_lua, "pcall(function() dofile('npc/init.lua') end);");
@@ -1061,12 +1102,13 @@ bool init_lua() {
 script_cmd_result lua_run(script_state* st, lua_State* L0) {
 	int n = script_lastdata(st);
 	int ret = 0;
-	if (st->state != e_script_state::RERUNLINE) {
+	if (st->state == e_script_state::RUN) {
 		auto L = lua_newthread(L0);
 		auto lRef = luaL_ref(L0);
 		lua_getglobal(L, "__WARP__");
 		lua_resume(L, 0);
 		lua_getglobal(L, script_getstr(st, 2));
+		lua_resume(L, 1);
 		auto p = luaL_newUserData<script_state*>(L, st);
 		for (int i = 3; i <= n; i++) {
 			script_data* data = get_val(st, script_getdata(st, i));
@@ -1100,8 +1142,7 @@ script_cmd_result lua_run(script_state* st, lua_State* L0) {
 			return b ? SCRIPT_CMD_SUCCESS : SCRIPT_CMD_FAILURE;
 		}
 		if (ret == LUA_YIELD) {
-			st->lua_state.lastCmd = lua_tointeger(L, -1);
-			if (st->state == e_script_state::CLOSE || st->state == e_script_state::END) {
+			if (st->state == e_script_state::END || st->state == e_script_state::CLOSE) {
 				luaL_unref(L0, lRef);
 				return SCRIPT_CMD_SUCCESS;
 			}
@@ -1110,19 +1151,46 @@ script_cmd_result lua_run(script_state* st, lua_State* L0) {
 			st->state = RERUNLINE;
 			return SCRIPT_CMD_SUCCESS;
 		}
+		auto ei = lua_gettop(L);
+		printf("error ");
+		for (int i = 1; i <= ei; i++) {
+			printf("%d %s\n", i, lua_tostring(L, i));
+		}
+		printf("\n");
 		return SCRIPT_CMD_FAILURE;
 	}
-	else if (st->state == e_script_state::RERUNLINE) {
+	if (st->state == e_script_state::RERUNLINE) {
 		if (st->lua_state.fn != nullptr) {
 			int lRet = -1;
-			auto sRet = st->lua_state.fn(st, lRet);
+			auto fn = st->lua_state.fn;
+			auto L = st->lua_state.thread;
+			st->lua_state.fn = nullptr;
+			auto sRet = fn(st, L, lRet);
+			if (lRet >= LUA_ERRRUN) {
+				auto ei = lua_gettop(L);
+				printf("error ");
+				for (int i = 1; i <= ei; i++) {
+					printf("%d %s\n", i, lua_tostring(L, i));
+				}
+				printf("\n");
+			}
 			if (lRet != LUA_YIELD) {
 				luaL_unref(L0, st->lua_state.refId);
+				st->lua_state.thread = nullptr;
+			}
+			else if (st->state == e_script_state::END || st->state == e_script_state::CLOSE) {
+				luaL_unref(L0, st->lua_state.refId);
+				st->lua_state.thread = nullptr;
+				return SCRIPT_CMD_SUCCESS;
+			}
+			if (lRet == LUA_YIELD) {
+				st->state = RERUNLINE;
+				return SCRIPT_CMD_SUCCESS;
 			}
 			return sRet;
 		}
 	}
 
 
-	return SCRIPT_CMD_SUCCESS;
+	return SCRIPT_CMD_FAILURE;
 }

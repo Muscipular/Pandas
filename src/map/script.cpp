@@ -2702,6 +2702,8 @@ const std::string ConstantDatabase::getDefaultLocation(){
 	return std::string(db_path) + "/const.yml";
 }
 
+extern std::vector<Const>* constList;
+
 uint64 ConstantDatabase::parseBodyNode( const ryml::NodeRef& node ) {
 	std::string constant_name;
 
@@ -2726,7 +2728,7 @@ uint64 ConstantDatabase::parseBodyNode( const ryml::NodeRef& node ) {
 		return 0;
 
 	script_set_constant(name, val, type, false);
-
+	if (type == false) constList->push_back({ name ,val, type });
 	return 1;
 }
 
