@@ -514,6 +514,10 @@ struct script_stack {
 //
 enum e_script_state { RUN,STOP,END,RERUNLINE,GOTO,RETFUNC,CLOSE };
 
+struct script_state;
+
+typedef enum script_cmd_result (lua_Resume_Func*)(script_state* st, int& ret);
+
 struct script_state {
 	struct script_stack* stack;
 	int start,end;
@@ -546,7 +550,9 @@ struct script_state {
 	bool asyncSleep;
 	struct lua_state {
 		lua_State* thread;
-		const char* lastCmd;
+		int refId;
+		int lastCmd;
+		lua_Resume_Func fn;
 	} lua_state;
 	unsigned int refCount;
 };

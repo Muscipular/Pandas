@@ -18,9 +18,17 @@ enum e_user_data
 	ut_int64,
 };
 
-#define RESUME_NAME(N) resume_##N
-#define RESUME_FUNC(N) int RESUME_NAME(N)(script_state* st)
+enum e_lua_cmd
+{
+	elc_sleep,
+	elc_close,
+	elc_next,
+	elc_select,
+};
 
+#define RESUME_NAME(N) resume_##N
+#define RESUME_FUNC(N) script_cmd_result RESUME_NAME(N)(script_state* st, int& ret)
+//typedef enum script_cmd_result (lua_Resume_Func*)(script_state* st, int& ret);
 template<typename T = void>
 struct UserData {
 	e_user_data type;
@@ -43,6 +51,12 @@ inline e_user_data UserDataTypeFor() {
 	else {
 		return T();
 	}
+}
+
+int inline luaL_ref(lua_State* L) { return luaL_ref(L, LUA_REGISTRYINDEX); }
+void inline luaL_unref(lua_State* L, int ref) {
+	luaL_unref(L, LUA_REGISTRYINDEX, ref);
+	lua_gc(L, LUA_GCCOLLECT, 0);
 }
 
 template<typename T>

@@ -34204,7 +34204,7 @@ BUILDIN_FUNC(lua_init) {
 	return SCRIPT_CMD_SUCCESS;
 }
 
-int lua_run(script_state* st, lua_State* L);
+script_cmd_result lua_run(script_state* st, lua_State* L);
 
 BUILDIN_FUNC(lua_call_fn) {
 	int n = script_lastdata(st);

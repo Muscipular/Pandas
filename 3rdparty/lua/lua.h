@@ -1,7 +1,7 @@
 /*
 ** $Id: lua.h,v 1.218.1.5 2008/08/06 13:30:12 roberto Exp $
 ** Lua - An Extensible Extension Language
-** Lua.org, PUC-Rio, Brazil (http://www.lua.org)
+** Lua.org, PUC-Rio, Brazil (https://www.lua.org)
 ** See Copyright Notice at the end of this file
 */
 
@@ -371,6 +371,15 @@ struct lua_Debug {
   /* private part */
   int i_ci;  /* active function */
 };
+
+typedef struct __lua_const
+{
+    const char *name;
+    unsigned int size;
+    int vl;
+} lua_const;
+
+LUA_API int lua_setconstlist(lua_State *L, lua_const *constlist);
 
 /* }====================================================================== */
 

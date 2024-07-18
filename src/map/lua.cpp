@@ -404,6 +404,11 @@ LUA_FUNC(callScript) {
 	return count;
 }
 
+RESUME_FUNC(sleep) {
+	auto L = m_lua;
+	ret = lua_resume(st->lua_state.thread, 0);
+}
+
 LUA_FUNC(sleep) {
 	if (!lua_isuserdata(L, 1)) {
 		return luaL_error(L, "sleep error: 1");
@@ -426,8 +431,9 @@ LUA_FUNC(sleep) {
 	// sleep for the target amount of time
 	st->state = RERUNLINE;
 	st->sleep.tick = ticks;
-	lua_pushstring(L, "sleep");
-	return lua_yield(L, 1);
+	st->lua_state.lastCmd = elc_sleep;
+	st->lua_state.fn = resume_sleep;
+	return lua_yield(L, 0);
 }
 
 LUA_FUNC(mes) {
@@ -465,8 +471,9 @@ LUA_FUNC(next) {
 #endif
 	st->state = STOP;
 	clif_scriptnext(*sd, st->oid);
-	lua_pushstring(L, "next");
-	return lua_yield(L, 1);
+	st->lua_state.lastCmd = elc_next;
+	st->lua_state.fn = resume_sleep;
+	return lua_yield(L, 0);
 }
 
 LUA_FUNC(clear) {
@@ -579,6 +586,37 @@ LUA_FUNC(close3) {
 
 int menu_countoptions(const char* str, int max_count, int* total);
 
+RESUME_FUNC(select) {
+	map_session_data* sd = map_id2sd(st->rid);
+	int i;
+	ret = LUA_OK;
+	if (!sd)
+		return SCRIPT_CMD_SUCCESS;
+	auto L = m_lua;
+	if (sd->npc_menu == 0xff) {// Cancel was pressed
+		sd->state.menu_or_input = 0;
+		st->state = END;
+		lua_pushinteger(L, -1);
+		ret = lua_resume(st->lua_state.thread, 1);
+		return SCRIPT_CMD_SUCCESS;
+	}
+	else {// return selected option
+		int menu = 0;
+
+		sd->state.menu_or_input = 0;
+		for (i = 2; i <= script_lastdata(st); ++i) {
+			text = script_getstr(st, i);
+			sd->npc_menu -= menu_countoptions(text, sd->npc_menu, &menu);
+			if (sd->npc_menu <= 0)
+				break;// entry found
+		}
+		lua_pushinteger(L, menu);
+		ret = lua_resume(st->lua_state.thread, 1);
+		return SCRIPT_CMD_SUCCESS;
+	}
+	ret = lua_resume(st->lua_state.thread, 0);
+}
+
 LUA_FUNC(select) {
 	if (!luaL_checkUserData<script_state*>(L, 1)) {
 		return luaL_error(L, "close3 error: 1");
@@ -604,8 +642,8 @@ LUA_FUNC(select) {
 #ifdef Pandas_Fix_Prompt_Cancel_Combine_Close_Error
 		sd->npc_menu_npcid = 0;
 #endif // Pandas_Fix_Prompt_Cancel_Combine_Close_Error
-		for (i = 2; i <= script_lastdata(st); ++i) {
-			text = script_getstr(st, i);
+		for (i = 2; i <= lua_gettop(L); ++i) {
+			text = lua_tostring(L, i);
 
 			if (sd->npc_menu > 0)
 				StringBuf_AppendStr(&buf, ":");
@@ -636,8 +674,9 @@ LUA_FUNC(select) {
 		if (sd->npc_menu >= 0xff) {
 			ShowWarning("buildin_select: Too many options specified (current=%d, max=254).\n", sd->npc_menu);
 		}
-		lua_pushstring(L, "select");
-		return lua_yield(L, 1);
+		st->lua_state.lastCmd = elc_select;
+		st->lua_state.fn = resume_select;
+		return lua_yield(L, 0);
 	}
 	else if (sd->npc_menu == 0xff) {// Cancel was pressed
 		sd->state.menu_or_input = 0;
@@ -660,10 +699,6 @@ LUA_FUNC(select) {
 	}
 }
 
-
-RESUME_FUNC(sleep) {
-	lua_resume(st->lua_state.thread, 0);
-}
 
 
 LUA_FUNC(ToString) {
@@ -874,7 +909,7 @@ LUA_FUNC(getmapxy) {
 			bl = &sd->bl;
 		break;
 	case BL_NPC:	//Get NPC Position
-		if (lua_gettop(L)>=3) {
+		if (lua_gettop(L) >= 3) {
 			struct npc_data* nd;
 
 			if (lua_type(L, 3) == LUA_TSTRING)
@@ -1022,10 +1057,13 @@ bool init_lua() {
 	return true;
 }
 
-int lua_run(script_state* st, lua_State* L) {
+
+script_cmd_result lua_run(script_state* st, lua_State* L0) {
 	int n = script_lastdata(st);
 	int ret = 0;
 	if (st->state != e_script_state::RERUNLINE) {
+		auto L = lua_newthread(L0);
+		auto lRef = luaL_ref(L0);
 		lua_getglobal(L, "__WARP__");
 		lua_resume(L, 0);
 		lua_getglobal(L, script_getstr(st, 2));
@@ -1044,6 +1082,8 @@ int lua_run(script_state* st, lua_State* L) {
 		}
 		int ret = lua_resume(L, n - 2 + 1);
 		if (ret == LUA_OK) {
+			luaL_unref(L0, lRef);
+			lua_gc(L, LUA_GCCOLLECT, 0);
 			auto b = lua_toboolean(L, -2);
 			if (b) {
 				if (lua_isnumber(L, -1)) {
@@ -1060,31 +1100,26 @@ int lua_run(script_state* st, lua_State* L) {
 			return b ? SCRIPT_CMD_SUCCESS : SCRIPT_CMD_FAILURE;
 		}
 		if (ret == LUA_YIELD) {
+			st->lua_state.lastCmd = lua_tointeger(L, -1);
+			if (st->state == e_script_state::CLOSE || st->state == e_script_state::END) {
+				luaL_unref(L0, lRef);
+				return SCRIPT_CMD_SUCCESS;
+			}
+			st->lua_state.refId = lRef;
+			st->lua_state.thread = L;
 			st->state = RERUNLINE;
-			st->lua_state.lastCmd = script_getstr(st, 1);
 			return SCRIPT_CMD_SUCCESS;
 		}
 		return SCRIPT_CMD_FAILURE;
 	}
 	else if (st->state == e_script_state::RERUNLINE) {
-		auto it = buildin_fn_map.find(st->lua_state.lastCmd);
-		int fn = -1;
-		if (buildin_fn_map.end() != it) {
-			fn = it->second;
-		}
-		int ret = buildin_func[fn].func(st);
-		auto retData = script_getdatatop(st, -1);
-		script_data data;
-		memcpy(&data, retData, sizeof(script_data));
-		auto retDataActual = get_val(st, retData);
-		if (data_isstring(retDataActual)) {
-			lua_pushstring(L, retData->u.str);
-		}
-		else if (data_isint(retDataActual)) {
-			lua_pushinteger(L, retData->u.num);
-		}
-		else {
-			lua_pushnil(L);
+		if (st->lua_state.fn != nullptr) {
+			int lRet = -1;
+			auto sRet = st->lua_state.fn(st, lRet);
+			if (lRet != LUA_YIELD) {
+				luaL_unref(L0, st->lua_state.refId);
+			}
+			return sRet;
 		}
 	}
 
