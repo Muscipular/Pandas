@@ -35797,6 +35797,7 @@ struct script_function buildin_func[] = {
 
 	BUILDIN_DEF(lua_init, ""),
 	BUILDIN_DEF(lua_call_fn, "s*"),
+	BUILDIN_DEF2(lua_call_fn, "lua_call", "s*"),
 	BUILDIN_DEF(lua_run, "s*"),
 	BUILDIN_DEF(setglobalrate, "ii"),
 	BUILDIN_DEF(getglobalrate, "i"),

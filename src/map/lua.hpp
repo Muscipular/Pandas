@@ -27,6 +27,9 @@ enum e_lua_cmd
 	elc_close,
 	elc_next,
 	elc_select,
+	elc_input,
+	elc_progressbar,
+	elc_progressbar_npc,
 };
 
 #define RESUME_NAME(N) resume_##N
@@ -58,9 +61,21 @@ inline e_user_data UserDataTypeFor() {
 }
 
 int inline luaL_ref(lua_State* L) { return luaL_ref(L, LUA_REGISTRYINDEX); }
+void inline luaL_ref_get(lua_State* L, int ref) { lua_rawgeti(L, LUA_REGISTRYINDEX, ref); }
 void inline luaL_unref(lua_State* L, int ref) {
 	luaL_unref(L, LUA_REGISTRYINDEX, ref);
 	lua_gc(L, LUA_GCCOLLECT, 0);
+}
+void inline luaL_unref_ngc(lua_State* L, int ref) {	luaL_unref(L, LUA_REGISTRYINDEX, ref); }
+int inline luaL_getTableInt(lua_State* L, int ix, int index) {
+	lua_rawgeti(L, ix, index);
+	auto n = lua_tointeger(L, -1);
+	lua_pop(L, 1);
+	return n;
+}
+void inline luaL_setTableInt(lua_State* L, int ix, int index, int val) {
+	lua_pushinteger(L, val);
+	lua_rawseti(L, ix >= 0 ? ix : ix - 1, index);
 }
 
 template<typename T>

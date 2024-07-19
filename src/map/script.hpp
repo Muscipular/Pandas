@@ -551,7 +551,7 @@ struct script_state {
 	struct lua_state {
 		lua_State* thread = nullptr;
 		int refId = 0;
-		//int refVar = 0;
+		int refVar = 0;
 		int lastCmd = 0;
 		lua_Resume_Func fn;
 	} lua_state;

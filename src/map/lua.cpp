@@ -122,9 +122,16 @@ typedef struct script_function {
 extern script_function buildin_func[];
 
 
-#define LUA_FUNC(fn) int fn(lua_State* L)
+#define LUA_FUNC(fn) int __cdecl fn(lua_State* L)
 #define LUA_REGFUNC(s) luaL_Reg {#s, s}
 #define LUA_REGFUNC2(s,ss) luaL_Reg {s, ss}
+
+#define LUA_CHECK_ST(F) { if (!luaL_checkUserData<script_state*>(L, 1)) return luaL_error(L, "buildin_" #F " error: invalid st.");  }
+
+#define LUA_YIELD_RET(N, ref) {	st->lua_state.refVar = ref;\
+st->lua_state.lastCmd = elc_##N;\
+st->lua_state.fn = RESUME_NAME(N);\
+return lua_yield(L, 0); }
 
 typedef struct { int code; } ERROR_RET;
 
@@ -206,10 +213,8 @@ std::map<std::string, int> buildin_fn_map;
 
 bool checkSupport(const char* fn) {
 	static std::vector<std::string> blockcmd = {
-	"mes", "next", "close", "close2", "menu", "select", "prompt", "input",
-	"openstorage", "guildopenstorage", "produce", "cooking", "birthpet",
-	"callshop", "sleep", "sleep2", "openmail", "openauction", "progressbar",
-	"buyingstore", "makerune", "opendressroom", "openstorage2"
+	"mes", "next", "close",  "close3", "close2", "menu", "select", "prompt", "input", "end",
+	"sleep", "sleep2",  "progressbar", "progressbar_npc",
 	};
 
 	std::vector<std::string>::iterator iter;
@@ -729,34 +734,177 @@ LUA_FUNC(select) {
 	return 0;
 }
 
+RESUME_FUNC(input) {
+	map_session_data* sd = map_id2sd(st->rid);
+	ret = LUA_OK;
+	if (!sd)
+		return SCRIPT_CMD_SUCCESS;
+	int type, min, max;
+	sd->state.menu_or_input = 0;
+	if (st->lua_state.refVar > 0) {
+		luaL_ref_get(L, st->lua_state.refVar);
+		luaL_unref_ngc(L, st->lua_state.refVar);
+		st->lua_state.refVar = 0;
+	}
+	type = luaL_getTableInt(L, -1, 1);
+	min = luaL_getTableInt(L, -1, 2);
+	max = luaL_getTableInt(L, -1, 3);
+	lua_pop(L, 1);
+	if (type == 1)
+	{
+		int len = (int)strlen(sd->npc_str);
+		lua_pushinteger(L, (len > max ? 1 : len < min ? -1 : 0));
+		lua_pushstring(L, sd->npc_str);		
+	}
+	else
+	{
+		int amount = sd->npc_amount;
+		lua_pushinteger(L, (amount > max ? 1 : amount < min ? -1 : 0));
+		lua_pushinteger(L, cap_value(amount, min, max));
+	}
+	st->state = RUN;
+	ret = lua_resume(L, 2);
+	return SCRIPT_CMD_SUCCESS;
+}
 
+LUA_FUNC(input) {
+	LUA_CHECK_ST(input);
+	auto st = luaL_toUserData<script_state*>(L, 1)->st;
+	map_session_data* sd = map_id2sd(st->rid);
+	int min = script_config.input_min_value;
+	int max = script_config.input_max_value;
+	int type = lua_tointeger(L, 2);
+	if (!sd)
+		return 0;
 
+#ifdef SECURE_NPCTIMEOUT
+	sd->npc_idle_type = NPCT_WAIT;
+#endif
+
+	if (!sd->state.menu_or_input)
+	{	// first invocation, display npc input box
+		sd->state.menu_or_input = 1;
+		st->state = RERUNLINE;
+		if (type == 1)
+			clif_scriptinputstr(sd, st->oid);
+		else
+			clif_scriptinput(sd, st->oid);
+		lua_newtable(L);
+		luaL_setTableInt(L, -1, 1, type);
+		luaL_setTableInt(L, -1, 2, min);
+		luaL_setTableInt(L, -1, 3, max);
+		LUA_YIELD_RET(input, luaL_ref(L));
+	}
+	return luaL_error(L, "buildin_input error state.");
+}
+
+RESUME_FUNC(progressbar) {
+	ret = lua_resume(L, 0);
+	return SCRIPT_CMD_SUCCESS;
+}
+
+LUA_FUNC(progressbar) {
+	LUA_CHECK_ST(progressbar);
+	auto st = luaL_toUserData<script_state*>(L, 1)->st;
+	map_session_data* sd = map_id2sd(st->rid);
+	if (!sd)
+		return 0;
+
+	st->state = STOP;
+
+	auto color = lua_tostring(L, 2);
+	auto second = lua_tointeger(L, 3);
+
+	sd->progressbar.npc_id = st->oid;
+	sd->progressbar.timeout = gettick() + second * 1000;
+	sd->state.workinprogress = WIP_DISABLE_ALL;
+
+	clif_progressbar(sd, strtol(color, (char**)NULL, 0), second);
+	LUA_YIELD_RET(progressbar, 0);
+}
+
+RESUME_FUNC(progressbar_npc) {
+	map_session_data* sd = map_id2sd(st->rid);
+
+	luaL_ref_get(L, st->lua_state.refVar);
+	luaL_unref_ngc(L, st->lua_state.refVar);
+	st->lua_state.refVar = 0;
+	auto nid = lua_tointeger(L, -1);
+	lua_pop(L, 1);
+	auto nd = map_id2nd(nid);
+	// Continue the script
+	if (sd) { // Player attached - remove restrictions
+		sd->state.workinprogress = WIP_DISABLE_NONE;
+		sd->state.block_action &= ~(PCBLOCK_MOVE | PCBLOCK_ATTACK | PCBLOCK_SKILL);
+	}
+
+	st->state = RUN;
+	st->sleep.tick = 0;
+	nd->progressbar.timeout = nd->progressbar.color = 0;
+	ret = lua_resume(L, 0);
+	return SCRIPT_CMD_SUCCESS;
+}
+
+LUA_FUNC(progressbar_npc) {
+	LUA_CHECK_ST(progressbar_npc);
+	auto st = luaL_toUserData<script_state*>(L, 1)->st;
+	map_session_data* sd = map_id2sd(st->rid);
+	struct npc_data* nd = NULL;
+
+	if (lua_gettop(L)>=4) {
+		const char* name = lua_tostring(L, 4);
+
+		nd = npc_name2id(name);
+
+		if (!nd) {
+			return luaL_error(L, "buildin_progressbar_npc: NPC \"%s\" was not found.\n", name);			
+		}
+	}
+	else {
+		nd = map_id2nd(st->oid);
+	}
+
+	auto color = lua_tostring(L, 2);
+	auto second = lua_tointeger(L, 3);
+
+	if (!nd->progressbar.timeout) {
+		if (second < 0) {
+			return luaL_error(L, "buildin_progressbar_npc: negative amount('%d') of seconds is not supported\n", second);
+		}
+
+		if (sd) { // Player attached - keep them from doing other things
+			sd->state.workinprogress = WIP_DISABLE_ALL;
+			sd->state.block_action |= (PCBLOCK_MOVE | PCBLOCK_ATTACK | PCBLOCK_SKILL);
+		}
+
+		// sleep for the target amount of time
+		st->state = RERUNLINE;
+		st->sleep.tick = second * 1000;
+		nd->progressbar.timeout = gettick() + second * 1000;
+		nd->progressbar.color = strtol(color, nullptr, 0);
+
+		clif_progressbar_npc_area(nd);
+		// Second call(by timer after sleeping time is over)
+	}
+	else {
+		return luaL_error(L, "buildin_progressbar_npc: invalid state.\n");
+	}
+	lua_pushinteger(L, nd->bl.id);
+	LUA_YIELD_RET(progressbar_npc, luaL_ref(L));
+}
+
+template<typename T>
 LUA_FUNC(ToString) {
 	if (lua_gettop(L) != 1) {
 		lua_pushnil(L);
 		return 1;
 	}
-	if (lua_type(L, 1) != LUA_TUSERDATA) {
+	if (!luaL_checkUserData<T>(L, 1)) {
 		lua_pushnil(L);
 		return 1;
 	}
 	char buff[256] = { 0 };
-	sprintf(buff, "ScriptState@0x%p", lua_touserdata(L, 1));
-	lua_pushstring(L, buff);
-	return 1;
-}
-
-LUA_FUNC(ToStringUserData) {
-	if (lua_gettop(L) != 1) {
-		lua_pushnil(L);
-		return 1;
-	}
-	if (lua_type(L, 1) != LUA_TUSERDATA) {
-		lua_pushnil(L);
-		return 1;
-	}
-	char buff[256] = { 0 };
-	sprintf(buff, "ScriptData@0x%p", lua_touserdata(L, 1));
+	sprintf(buff, "%s@0x%p", UserDataMetaTableFor<T>(), lua_touserdata(L, 1));
 	lua_pushstring(L, buff);
 	return 1;
 }
@@ -982,28 +1130,13 @@ LUA_FUNC(getmapxy) {
 	return 3;
 }
 
-LUA_FUNC(INT64ToString) {
-	if (lua_gettop(L) != 1) {
-		lua_pushnil(L);
-		return 1;
-	}
-	if (!luaL_checkUserData<int64_t>(L, 1)) {
-		lua_pushnil(L);
-		return 1;
-	}
-	auto ud = luaL_toUserData<int64_t>(L, 1);
-	char buff[256] = { 0 };
-	sprintf(buff, "%" PRId64, ud->st);
-	lua_pushstring(L, buff);
-	return 1;
-}
-
 //void script_set_constant_(const char* name, int64 value, const char* constant_name, bool isparameter, bool deprecated);
 #define script_set_constant_x(v) {if((v)>INT32_MAX||(v)<INT32_MIN) luaL_newUserData<int64_t>(L, (v)); else lua_pushinteger(L, (int32_t)(v));}
 #define script_set_constant_(n,v,c,p,d) {script_set_constant_x(v); lua_setfield(L, -2, c? c:n);}
 #define script_set_constant(n,v,p,d) { script_set_constant_x(v); lua_setfield(L, -2, n);}
 //#define script_set_constant_()
-extern ConstantDatabase constant_db;
+
+void lua_reg_ctype(lua_State* L);
 
 bool init_lua() {
 	if (m_lua) {
@@ -1043,44 +1176,47 @@ bool init_lua() {
 #define ST_FUNC(N) {lua_pushstring(L, #N);lua_pushcfunction(L, N);	lua_rawset(L, 1);}
 #define ST_FUNC2(K,N) {lua_pushstring(L, K);lua_pushcfunction(L, N);	lua_rawset(L, 1);}
 
-	ST_FUNC(callScript)
-		ST_FUNC(sleep)
-		ST_FUNC(sleep2)
-		ST_FUNC(ref)
-		ST_FUNC(instance_ref)
-		ST_FUNC(get_ref_value)
-		ST_FUNC(get_ref_array)
-		ST_FUNC(mes)
-		ST_FUNC(next)
-		ST_FUNC(clear)
-		ST_FUNC(close)
-		ST_FUNC(close2)
-		ST_FUNC(close3)
-		ST_FUNC(getmapxy)
-		ST_FUNC(select)
-		ST_FUNC(readparam)
+	ST_FUNC(callScript);
+	ST_FUNC(sleep);
+	ST_FUNC(sleep2);
+	ST_FUNC(ref);
+	ST_FUNC(instance_ref);
+	ST_FUNC(get_ref_value);
+	ST_FUNC(get_ref_array);
+	ST_FUNC(mes);
+	ST_FUNC(next);
+	ST_FUNC(clear);
+	ST_FUNC(close);
+	ST_FUNC(close2);
+	ST_FUNC(close3);
+	ST_FUNC(getmapxy);
+	ST_FUNC(select);
+	ST_FUNC(input);
+	ST_FUNC(progressbar);
+	ST_FUNC(progressbar_npc);
+	ST_FUNC(readparam);
 
 #undef ST_FUNC
 #undef ST_FUNC2
 
-		luaL_newmetatable(m_lua, UserDataMetaTableFor<script_state*>());
+	luaL_newmetatable(m_lua, UserDataMetaTableFor<script_state*>());
 	lua_pushstring(L, "__index");
 	lua_pushvalue(L, 1);
 	lua_rawset(L, -3);
 	lua_pushstring(L, "__tostring");
-	lua_pushcfunction(L, ToString);
+	lua_pushcfunction(L, ToString<script_state*>);
 	lua_rawset(L, -3);
-	luaL_newmetatable(m_lua, UserDataMetaTableFor<int64_t>());
-	lua_pushstring(L, "__tostring");
-	lua_pushcfunction(L, INT64ToString);
-	lua_rawset(L, -3);
+
 	luaL_newmetatable(m_lua, UserDataMetaTableFor<script_data>());
 	lua_pushstring(L, "__tostring");
-	lua_pushcfunction(L, ToStringUserData);
+	lua_pushcfunction(L, ToString<script_data>);
 	lua_rawset(L, -3);
+
+	lua_reg_ctype(L);
+
 	lua_newtable(L);
 	for (auto& n : *constList) {
-		luaL_newUserData<int64_t>(L, n.val);
+		script_set_constant_x(n.val);
 		lua_setfield(L, -2, n.name.c_str());
 	}
 	delete constList;

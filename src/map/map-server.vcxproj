@@ -298,6 +298,7 @@
     <ClCompile Include="itemprops.cpp" />
     <ClCompile Include="log.cpp" />
     <ClCompile Include="lua.cpp" />
+    <ClCompile Include="lua_ctype.cpp" />
     <ClCompile Include="mail.cpp" />
     <ClCompile Include="map.cpp" />
     <ClCompile Include="mapreg.cpp" />
