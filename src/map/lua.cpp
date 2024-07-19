@@ -1130,6 +1130,58 @@ LUA_FUNC(getmapxy) {
 	return 3;
 }
 
+LUA_FUNC(getpartymember) {
+	LUA_CHECK_ST(getpartymember);
+	auto st = luaL_toUserData<script_state*>(L, 1)->st;
+	struct party_data* p;
+	uint8 j = 0;
+
+	int partyId = 0;
+	int n = lua_gettop(L);
+	if (n >= 2) {
+		partyId = lua_tonumber(L, 2);
+	}
+	else {
+		map_session_data* sd = map_id2sd(st->rid);
+		if (sd && sd->status.party_id) {
+			partyId = sd->status.party_id;
+		}
+	}
+
+	p = party_search(partyId);
+	lua_newtable(L);
+	if (p != NULL) {
+		uint8 i, type = 0;
+		struct script_data* data = NULL;
+		char* varname = NULL;
+
+		if (n >= 3)
+			type = lua_tointeger(L, 3);
+
+		for (i = 0; i < MAX_PARTY; i++) {
+			if (p->party.member[i].account_id) {
+				switch (type) {
+				case 2:
+					lua_pushinteger(L, p->party.member[i].account_id);
+					break;
+				case 1:
+					lua_pushinteger(L, p->party.member[i].char_id);
+					break;
+				default:
+					lua_pushstring(L, p->party.member[i].name);
+					break;
+				}
+
+				j++;
+				lua_rawseti(L, -2, j);
+			}
+		}
+	}
+
+	return 1;
+}
+
+
 //void script_set_constant_(const char* name, int64 value, const char* constant_name, bool isparameter, bool deprecated);
 #define script_set_constant_x(v) {if((v)>INT32_MAX||(v)<INT32_MIN) luaL_newUserData<int64_t>(L, (v)); else lua_pushinteger(L, (int32_t)(v));}
 #define script_set_constant_(n,v,c,p,d) {script_set_constant_x(v); lua_setfield(L, -2, c? c:n);}
@@ -1195,6 +1247,7 @@ bool init_lua() {
 	ST_FUNC(progressbar);
 	ST_FUNC(progressbar_npc);
 	ST_FUNC(readparam);
+	ST_FUNC(getpartymember);
 
 #undef ST_FUNC
 #undef ST_FUNC2
