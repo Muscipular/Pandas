@@ -219,6 +219,9 @@ LUA_FUNC2(G, newI64) {
 	if (luaL_checkUserData<int64_t>(L, 1)) {
 		r = luaL_toUserData<int64_t>(L, 1)->st;
 	}
+	else if (lua_type(L, 1) == LUA_TSTRING) {
+		r = std::strtoll(lua_tostring(L, 1), nullptr, 0);
+	}
 	else {
 		r = lua_tonumber(L, 1);
 	}
@@ -244,7 +247,8 @@ static void reg_int64(lua_State* L) {
 	SET_META_FN(INT64, eq);
 	SET_META_FN(INT64, lt);
 	SET_META_FN(INT64, le);
-	lua_pop(L, 1);
+	lua_setglobal(L, UserDataMetaTableFor<int64_t>());
+
 
 	lua_pushcfunction(L, LUA_FUNC_NAME2(G, tonumber));
 	lua_setglobal(L, "I64ToNumber");

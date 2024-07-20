@@ -390,6 +390,9 @@ e_mob_bosstype s_mob_db::get_bosstype(){
 }
 
 e_mob_bosstype mob_data::get_bosstype(){
+	if (this->state.mvp < 0) {
+		return BOSSTYPE_NONE;
+	}
 	if( this->db != nullptr ){
 		return this->db->get_bosstype();
 	}else{
@@ -3867,11 +3870,25 @@ int mob_summonslave(struct mob_data *md2,int *value,int amount,uint16 skill_id)
 		}
 		mob_spawn(md);
 
+		md->pandas.dmg_rate = md2->pandas.dmg_rate;
+		md->pandas.dmg_rate2 = md2->pandas.dmg_rate2;
+		if (md2->db->status.max_hp != md2->status.max_hp) {
+			md->status.max_hp = cap_value(1.0 * md2->status.max_hp / md2->db->status.max_hp * md->db->status.max_hp, 1, INT64_MAX);
+			md->status.hp = md->status.max_hp;
+			md->damagetaken = md2->damagetaken;
+			md->pandas.special_setunitdata[0][UMOB_HP] = md->status.max_hp;
+			md->pandas.special_setunitdata[0][UMOB_MAXHP] = md->status.max_hp;
+		}
+
 		if (hp_rate) //Scale HP
 			md->status.hp = md->status.max_hp*hp_rate/100;
 
 		if (skill_id == NPC_SUMMONSLAVE) // Only appies to NPC_SUMMONSLAVE
+		{
 			status_calc_slave_mode(md, md2); // Inherit the aggressive mode of the master.
+			md->state.boss = 0;
+			md->state.mvp = -1;
+		}
 
 		if (md2->state.copy_master_mode)
 			md->status.mode = md2->status.mode;

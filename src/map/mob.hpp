@@ -342,6 +342,7 @@ struct mob_data {
 		unsigned char steal_flag; //number of steal tries (to prevent steal exploit on mobs with few items) [Lupus]
 		unsigned char attacked_count; //For rude attacked.
 		int provoke_flag; // Celest
+		int mvp = 0;
 	} state;
 	struct guardian_data* guardian_data;
 	struct s_dmglog {

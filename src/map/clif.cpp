@@ -10848,7 +10848,23 @@ void clif_name( struct block_list* src, struct block_list *bl, send_target targe
 				}
 
 				if (option & 1) {
+					str_p += sprintf(str_p, "HP: ");
+					if (md->status.hp > 10000LL * 1000 * 1000) {
+						str_p += sprintf(str_p, "%" PRId64 "M", md->status.hp / 1000 / 1000);
+					}
+					else {
+						str_p += sprintf(str_p, "%" PRId64, md->status.hp);
+					}
+					if (md->status.max_hp > 10000LL * 1000 * 1000) {
+						str_p += sprintf(str_p, "/%" PRId64 "M", md->status.max_hp / 1000 / 1000);
+					}
+					else {
+						str_p += sprintf(str_p, "/%" PRId64, md->status.max_hp);
+					}
+					str_p += sprintf(str_p, " | ");
+					/*
 					str_p += sprintf(str_p, "HP: %llu/%llu | ", (long long unsigned int)md->status.hp, (long long unsigned int)md->status.max_hp);
+					*/
 				}
 
 				if (option & 2) {
@@ -20988,9 +21004,16 @@ void clif_monster_hp_bar( struct mob_data* md, int fd ) {
 
 	WFIFOW(fd,0)  = 0x977;
 	WFIFOL(fd,2)  = md->bl.id;
-	WFIFOL(fd,6)  = CAP32(md->status.hp);
-	WFIFOL(fd,10) = CAP32(md->status.max_hp);
-
+	if (md->status.max_hp > INT32_MAX)
+	{
+		int64_t n = md->status.hp == md->status.max_hp ? INT32_MAX : md->status.hp * 1.0 / md->status.max_hp * INT32_MAX;
+		WFIFOL(fd, 6) = CAP32(n);
+		WFIFOL(fd, 10) = CAP32(md->status.max_hp);
+	}
+	else {
+	WFIFOL(fd, 6) = CAP32(md->status.hp);
+	WFIFOL(fd, 10) = CAP32(md->status.max_hp);
+	}
 	WFIFOSET(fd,packet_len(0x977));
 #endif
 }

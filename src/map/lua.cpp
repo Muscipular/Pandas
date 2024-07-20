@@ -231,6 +231,25 @@ bool checkSupport(const char* fn) {
 	return true;
 }
 
+void free_stack(script_state* st, char* funcname0, int oStart, DBMap*& vars, DBMap*& arrays) {
+	/*ShowDebug("torelease  start: %d end: %d sp: %d \n", st->start, st->end, st->stack->sp);*/
+	pop_stack(st, st->start, st->stack->sp);
+	st->start = oStart;/*
+	st->end = end0;
+	st->stack->sp = sp;*/
+	st->funcname = funcname0;
+	/*ShowDebug("release    start: %d end: %d sp: %d \n", st->start, st->end, st->stack->sp);*/
+	arrays->destroy(arrays, script_free_array_db);
+	arrays = nullptr;
+	script_free_vars(vars);
+	vars = nullptr;
+}
+
+/**
+ * \brief
+ * \param L
+ * \return
+ */
 LUA_FUNC(callScript) {
 	int argN = lua_gettop(L);
 	if (argN < 2) {
@@ -255,6 +274,7 @@ LUA_FUNC(callScript) {
 	if (!checkSupport(funcname)) {
 		return luaL_error(L, "callScript error: buildin_func %s not support", funcname);
 	}
+	//ShowDebug("begin      start: %d end: %d sp: %d %s\n", st->start, st->end, st->stack->sp, funcname);
 	auto start0 = st->start;
 	auto end0 = st->end;
 	auto sp = st->stack->sp;
@@ -262,13 +282,13 @@ LUA_FUNC(callScript) {
 	push_val(st->stack, c_op::C_NAME, fn);
 	//push_str(st->stack, c_op::C_STR, aStrdup(funcname));
 	push_val(st->stack, c_op::C_ARG, 0);
-	DBMap* m;
-	DBMap* m2;
+	DBMap* map_arrays;
+	DBMap* map_vars;
 	reg_db scope;
-	m2 = idb_alloc(DB_OPT_BASE);
-	m = idb_alloc(DB_OPT_BASE);
-	scope.arrays = m;
-	scope.vars = m2;
+	map_vars = idb_alloc(DB_OPT_RELEASE_DATA);
+	map_arrays = idb_alloc(DB_OPT_BASE);
+	scope.arrays = map_arrays;
+	scope.vars = map_vars;
 	char str[256];
 	for (int i = 3; i <= argN; i++) {
 		if (lua_isnumber(L, i)) {
@@ -283,19 +303,22 @@ LUA_FUNC(callScript) {
 				if (lua_isnumber(L, -1)) {
 					sprintf(str, ".@lua_arg_%d", i);
 					int uid = add_str(str);
-					idb_i64put(m2, uid, (int64)lua_tonumber(L, -1));
+					idb_i64put(map_vars, uid, (int64)lua_tonumber(L, -1));
+					//ShowDebug("in %d:%d %d %s %s\n", i, argN, uid, str, str_buf + str_data[uid].str);
 					push_val2(st->stack, c_op::C_NAME, uid, &scope);
 				}
 				else if (lua_isstring(L, -1)) {
 					sprintf(str, ".@lua_arg_%d$", i);
 					int uid = add_str(str);
-					idb_put(m2, uid, aStrdup(lua_tostring(L, -1)));
+					idb_put(map_vars, uid, aStrdup(lua_tostring(L, -1)));
+					//ShowDebug("in %d:%d %d %s %s\n", i, argN, uid, str, str_buf + str_data[uid].str);
 					push_val2(st->stack, c_op::C_NAME, uid, &scope);
 				}
 				else {
 					sprintf(str, ".@lua_arg_%d", i);
 					int uid = add_str(str);
-					idb_i64put(m2, uid, 0);
+					idb_i64put(map_vars, uid, 0);
+					//ShowDebug("in %d:%d %d %s %s\n", i, argN, uid, str, str_buf + str_data[uid].str);
 					push_val2(st->stack, c_op::C_NAME, uid, &scope);
 				}
 				lua_pop(L, 1);
@@ -330,23 +353,37 @@ LUA_FUNC(callScript) {
 		}
 	}
 
-	st->start = end0;
+	st->start = sp;
 	st->end = st->stack->sp;
+	st->stack->defsp = sp;
+	auto osp = st->stack->sp;
+	st->funcname = (char*)funcname;
+	//ShowDebug("> stack sp %d:%d %d %d\n", st->start, st->end, st->end - st->start, st->stack->sp);
 	int ret = buildin_func[fn].func(st);
-	auto retData = script_getdatatop(st, -1);
-	script_data data;
-	memcpy(&data, retData, sizeof(script_data));
-	auto retDataActual = get_val(st, retData);
-	if (data_isstring(retDataActual)) {
-		lua_pushstring(L, retData->u.str);
+	//ShowDebug("< stack sp %d:%d %d %d\n", st->start, st->end, st->end - st->start, st->stack->sp);
+	int count = 0;
+	if (st->stack->sp > osp) {
+		count = 1;
+		auto retData = script_getdatatop(st, -1);
+		script_data data;
+		memcpy(&data, retData, sizeof(script_data));
+		auto retDataActual = get_val(st, retData);
+		if (data_isstring(retDataActual)) {
+			lua_pushstring(L, retData->u.str);
+			//ShowDebug("ret val %s\n", retData->u.str);
+		}
+		else if (data_isint(retDataActual)) {
+			lua_pushinteger(L, retData->u.num);
+			//ShowDebug("ret val %" PRId64 "\n", retData->u.num);
+		}
+		else {
+			lua_pushnil(L);
+		}
 	}
-	else if (data_isint(retDataActual)) {
-		lua_pushinteger(L, retData->u.num);
-	}
-	else {
+	if (count == 0) {
+		count = 1;
 		lua_pushnil(L);
 	}
-	int count = 1;
 	//if (data_isreference(&data)) {
 	//	lua_newtable(L);
 	//	lua_pushlightuserdata(L, (void*)(int)data.type);
@@ -359,14 +396,12 @@ LUA_FUNC(callScript) {
 	//	lua_setfield(L, -2, "ref");
 	//	count++;
 	//}
+
+
+
 	if (ret != SCRIPT_CMD_SUCCESS) {
 		lua_pop(L, count);
-		pop_stack(st, end0 - 1, st->end);
-		st->start = start0;
-		st->end = end0;
-		st->funcname = funcname0;
-		db_destroy(m);
-		db_destroy(m2);
+		free_stack(st, funcname0, start0, map_vars, map_arrays);
 		return luaL_error(L, "callScript error: buildin_func %s exec failed", funcname);
 	}
 
@@ -374,17 +409,21 @@ LUA_FUNC(callScript) {
 		if (lua_istable(L, i)) {
 			if (lua_objlen(L, i) > 0) {
 				auto d = script_getdata(st, i - 1);
-				auto is_str = is_string_variable(reference_getname(d));
-				auto xLen = script_array_highest_key(st, nullptr, reference_getname(d), reference_getref(d));
+				auto refName = reference_getname(d);
+				//				ShowDebug("out %d:%d %d %s %s\n", i, argN, (int32_t)d->u.num, refName, str_buf + str_data[d->u.num].str);
+				auto is_str = is_string_variable(refName);
+				auto xLen = script_array_highest_key(st, nullptr, refName, d->ref);
 				if (xLen > 1) {
 					auto dId = reference_getid(d);
 					for (int j = 0; j < xLen; ++j) {
+						auto r = reference_uid(dId, j);
 						if (is_str) {
-							lua_pushstring(L, get_val2_str(st, reference_uid(dId, j), d->ref));
+							lua_pushstring(L, get_val2_str(st, r, d->ref));
 						}
 						else {
-							lua_pushnumber(L, get_val2_num(st, reference_uid(dId, j), d->ref));
+							lua_pushnumber(L, get_val2_num(st, r, d->ref));
 						}
+						//idb_remove(map_vars, r);
 						lua_rawseti(L, i, j);
 					}
 				}
@@ -400,13 +439,9 @@ LUA_FUNC(callScript) {
 			}
 		}
 	}
-	pop_stack(st, end0 - 1, st->end);
-	st->start = start0;
-	st->end = end0;
-	st->stack->sp = sp;
-	st->funcname = funcname0;
-	db_destroy(m);
-	db_destroy(m2);
+	free_stack(st, funcname0, start0, map_vars, map_arrays);
+
+#undef freeStack
 	return count;
 }
 
@@ -622,18 +657,21 @@ LUA_FUNC(readparam) {
 	}
 	auto st = luaL_toUserData<script_state*>(L, 1)->st;
 	map_session_data* sd = nullptr;
+	int arg3Type = lua_type(L, 3);
 	if (lua_gettop(L) >= 3) {
-		if (lua_type(L, 3) == LUA_TSTRING)
+		if (arg3Type == LUA_TSTRING)
 			sd = map_nick2sd(lua_tostring(L, 3), false);
+		else if (arg3Type == LUA_TNUMBER)
+			sd = map_id2sd(lua_tointeger(L, 4));
 		else
-			sd = map_id2sd(lua_tointeger(L, 3));
+			sd = map_id2sd(st->rid);
 	}
 	else {
 		sd = map_id2sd(st->rid);
 	}
 
 	if (!sd)
-		return luaL_error(L, "player not found.");
+		return luaL_error(L, "buildin_readparam player not found. %p %d %d", sd, st->rid, arg3Type);
 
 	auto val = pc_readparam(sd, lua_tointeger(L, 2));
 	if (val < INT32_MIN || val > INT32_MAX) {
@@ -645,11 +683,49 @@ LUA_FUNC(readparam) {
 	return 1;
 }
 
+LUA_FUNC(setparam) {
+	LUA_CHECK_ST(setparam);
+	auto st = luaL_toUserData<script_state*>(L, 1)->st;
+	map_session_data* sd = nullptr;
+	int arg4Type = lua_type(L, 4);
+	if (lua_gettop(L) >= 4) {
+		if (arg4Type == LUA_TSTRING)
+			sd = map_nick2sd(lua_tostring(L, 4), false);
+		else if(arg4Type == LUA_TNUMBER)
+			sd = map_id2sd(lua_tointeger(L, 4));
+		else
+			sd = map_id2sd(st->rid);
+	}
+	else {
+		sd = map_id2sd(st->rid);
+	}
+
+	if (!sd)
+		return luaL_error(L, "buildin_setparam player not found. %p %d %d", sd, st->rid, arg4Type);
+	int64_t val = lua_tointeger(L, 3);
+	auto ret = pc_setparam(sd, lua_tointeger(L, 2), val);
+	lua_pushboolean(L, ret);
+	return 1;
+}
+
+LUA_FUNC(checkcell) {
+	LUA_CHECK_ST(checkcell);
+	//auto st = luaL_toUserData<script_state*>(L, 1)->st;
+
+	int16 m = map_mapname2mapid(lua_tostring(L, 2));
+	int16 x = lua_tointeger(L, 3);
+	int16 y = lua_tointeger(L, 4);
+	cell_chk type = (cell_chk)lua_tointeger(L, 5);
+
+	lua_pushinteger(L, map_getcell(m, x, y, type));
+
+	return 1;
+}
+
 int menu_countoptions(const char* str, int max_count, int* total);
 
 RESUME_FUNC(select) {
 	map_session_data* sd = map_id2sd(st->rid);
-	int i;
 	ret = LUA_OK;
 	if (!sd)
 		return SCRIPT_CMD_SUCCESS;
@@ -754,7 +830,7 @@ RESUME_FUNC(input) {
 	{
 		int len = (int)strlen(sd->npc_str);
 		lua_pushinteger(L, (len > max ? 1 : len < min ? -1 : 0));
-		lua_pushstring(L, sd->npc_str);		
+		lua_pushstring(L, sd->npc_str);
 	}
 	else
 	{
@@ -851,13 +927,13 @@ LUA_FUNC(progressbar_npc) {
 	map_session_data* sd = map_id2sd(st->rid);
 	struct npc_data* nd = NULL;
 
-	if (lua_gettop(L)>=4) {
+	if (lua_gettop(L) >= 4) {
 		const char* name = lua_tostring(L, 4);
 
 		nd = npc_name2id(name);
 
 		if (!nd) {
-			return luaL_error(L, "buildin_progressbar_npc: NPC \"%s\" was not found.\n", name);			
+			return luaL_error(L, "buildin_progressbar_npc: NPC \"%s\" was not found.\n", name);
 		}
 	}
 	else {
@@ -984,9 +1060,7 @@ LUA_FUNC(ref) {
 	if (lua_gettop(L) != 2) {
 		return luaL_error(L, "error");
 	}
-	if (lua_type(L, 1) != LUA_TUSERDATA) {
-		return luaL_error(L, "error");
-	}
+	LUA_CHECK_ST(ref);
 	if (!lua_isstring(L, 2)) {
 		return luaL_error(L, "error");
 	}
@@ -996,10 +1070,61 @@ LUA_FUNC(ref) {
 	if (sscanf(buffer, "%99[^[][%11d]", varname, &elem) < 2)
 		elem = 0;
 	trim(varname);
+	reg_db* reg = nullptr;
+	auto st = luaL_toUserData<script_state*>(L, 1)->st;
+
+	if (varname[0] == '\'') {
+		auto sd = map_id2sd(st->rid);
+		if (sd) {
+			int instance_id = -1;
+			switch (sd->instance_mode)
+			{
+			case IM_NONE:
+				break;
+			case IM_CHAR:
+				instance_id = sd->instance_id;
+				break;
+			case IM_PARTY:
+			{
+				auto pd = party_search(sd->status.party_id);
+				if (pd && pd->party.party_id == sd->status.party_id) {
+					instance_id = pd->instance_id;
+				}
+				break;
+			}
+			case IM_GUILD:
+			{
+				auto gd = guild_search(sd->status.guild_id);
+				if (gd && gd->guild.guild_id == sd->status.guild_id) {
+					instance_id = gd->instance_id;
+				}
+				break;
+			}
+			case IM_CLAN:
+			{
+				auto cd = clan_search(sd->status.clan_id);
+				if (cd && cd->id == sd->status.clan_id) {
+					instance_id = cd->instance_id;
+				}
+				break;
+			}
+			}
+
+			std::shared_ptr<s_instance_data> im = rathena::util::umap_find(instances, instance_id);
+
+			if (im && im->state == INSTANCE_BUSY) {
+				if (!im->regs.vars) {
+					im->regs.vars = i64db_alloc(DB_OPT_RELEASE_DATA);
+				}
+				reg = &im->regs;
+			}
+
+		}
+	}
 	auto s = luaL_newUserData<script_data>(L, {
 		C_NAME,
 		static_cast<int64>(reference_uid(add_str(varname), elem)),
-		nullptr
+		reg
 		});
 	return 1;
 }
@@ -1025,15 +1150,13 @@ LUA_FUNC(instance_ref) {
 		elem = 0;
 
 	if (*varname != '\'') {
-		ShowError("instance_ref: Invalid scope. %s is not an instance variable.\n", varname);
-		return luaL_error(L, "error");
+		return luaL_error(L, "instance_ref: Invalid scope. %s is not an instance variable.\n", varname);
 	}
 
 	int instance_id = lua_tointeger(L, 3);
 
 	if (instance_id <= 0) {
-		ShowError("instance_ref: Invalid instance ID %d.\n", instance_id);
-		return luaL_error(L, "error");
+		return luaL_error(L, "instance_ref: Invalid instance ID %d.\n", instance_id);
 	}
 
 	std::shared_ptr<s_instance_data> im = rathena::util::umap_find(instances, instance_id);
@@ -1182,6 +1305,380 @@ LUA_FUNC(getpartymember) {
 }
 
 
+LUA_FUNC(getunitdata) {
+	LUA_CHECK_ST(getunitdata);
+	auto st = luaL_toUserData<script_state*>(L, 1)->st;
+
+	TBL_PC* sd = st->rid ? map_id2sd(st->rid) : NULL;
+	struct block_list* bl;
+	TBL_MOB* md = NULL;
+	TBL_HOM* hd = NULL;
+	TBL_MER* mc = NULL;
+	TBL_PET* pd = NULL;
+	TBL_ELEM* ed = NULL;
+	TBL_NPC* nd = NULL;
+	char* name;
+	
+	if (!(bl = map_id2bl(lua_tointeger(L, 2)))) {
+		return luaL_error(L, "buildin_getunitdata: Error in finding object %d!\n", lua_tointeger(L, 2));
+	}
+
+	switch (bl->type) {
+	case BL_MOB:  md = map_id2md(bl->id); break;
+	case BL_HOM:  hd = map_id2hd(bl->id); break;
+	case BL_PET:  pd = map_id2pd(bl->id); break;
+	case BL_MER:  mc = map_id2mc(bl->id); break;
+	case BL_ELEM: ed = map_id2ed(bl->id); break;
+	case BL_NPC:  nd = map_id2nd(bl->id); break;
+	default:
+		return luaL_error(L, "buildin_getunitdata: Invalid object type!\n");
+	}
+	lua_newtable(L);
+#define getunitdata_sub(n, v) {if ((int64_t)(v) >= INT32_MIN && (int64_t)(v) <= INT32_MAX) lua_pushinteger(L, (int)(v)); else luaL_newUserData(L, (int64_t)(v)); lua_rawseti(L, -2, (n)); }
+
+	switch (bl->type) {
+	case BL_MOB:
+		if (!md) {
+			return luaL_error(L, "buildin_getunitdata: Error in finding object BL_MOB!\n");
+		}
+		getunitdata_sub(UMOB_SIZE, md->status.size);
+		getunitdata_sub(UMOB_LEVEL, md->level);
+		getunitdata_sub(UMOB_HP, md->status.hp);
+		getunitdata_sub(UMOB_MAXHP, md->status.max_hp);
+		getunitdata_sub(UMOB_MASTERAID, md->master_id);
+		getunitdata_sub(UMOB_MAPID, md->bl.m);
+		getunitdata_sub(UMOB_X, md->bl.x);
+		getunitdata_sub(UMOB_Y, md->bl.y);
+		getunitdata_sub(UMOB_SPEED, md->status.speed);
+		getunitdata_sub(UMOB_MODE, md->status.mode);
+		getunitdata_sub(UMOB_AI, md->special_state.ai);
+		getunitdata_sub(UMOB_SCOPTION, md->sc.option);
+		getunitdata_sub(UMOB_SEX, md->vd->sex);
+		getunitdata_sub(UMOB_CLASS, md->vd->class_);
+		getunitdata_sub(UMOB_HAIRSTYLE, md->vd->hair_style);
+		getunitdata_sub(UMOB_HAIRCOLOR, md->vd->hair_color);
+		getunitdata_sub(UMOB_HEADBOTTOM, md->vd->head_bottom);
+		getunitdata_sub(UMOB_HEADMIDDLE, md->vd->head_mid);
+		getunitdata_sub(UMOB_HEADTOP, md->vd->head_top);
+		getunitdata_sub(UMOB_CLOTHCOLOR, md->vd->cloth_color);
+		getunitdata_sub(UMOB_SHIELD, md->vd->shield);
+		getunitdata_sub(UMOB_WEAPON, md->vd->weapon);
+		getunitdata_sub(UMOB_LOOKDIR, md->ud.dir);
+		getunitdata_sub(UMOB_CANMOVETICK, md->ud.canmove_tick);
+		getunitdata_sub(UMOB_STR, md->status.str);
+		getunitdata_sub(UMOB_AGI, md->status.agi);
+		getunitdata_sub(UMOB_VIT, md->status.vit);
+		getunitdata_sub(UMOB_INT, md->status.int_);
+		getunitdata_sub(UMOB_DEX, md->status.dex);
+		getunitdata_sub(UMOB_LUK, md->status.luk);
+		//pow, sta, wis, spl, con, crt,
+		getunitdata_sub(UMOB_POW, md->status.pow);
+		getunitdata_sub(UMOB_STA, md->status.sta);
+		getunitdata_sub(UMOB_WIS, md->status.wis);
+		getunitdata_sub(UMOB_SPL, md->status.spl);
+		getunitdata_sub(UMOB_CON, md->status.con);
+		getunitdata_sub(UMOB_CRT, md->status.crt);
+		getunitdata_sub(UMOB_CHASERANGE, md->min_chase);
+		getunitdata_sub(UMOB_SLAVECPYMSTRMD, md->state.copy_master_mode);
+		getunitdata_sub(UMOB_DMGIMMUNE, md->ud.immune_attack);
+		getunitdata_sub(UMOB_ATKRANGE, md->status.rhw.range);
+		getunitdata_sub(UMOB_ATKMIN, md->status.rhw.atk);
+		getunitdata_sub(UMOB_ATKMAX, md->status.rhw.atk2);
+		getunitdata_sub(UMOB_MATKMIN, md->status.matk_min);
+		getunitdata_sub(UMOB_MATKMAX, md->status.matk_max);
+		getunitdata_sub(UMOB_DEF, md->status.def);
+		getunitdata_sub(UMOB_MDEF, md->status.mdef);
+		getunitdata_sub(UMOB_HIT, md->status.hit);
+		getunitdata_sub(UMOB_FLEE, md->status.flee);
+		getunitdata_sub(UMOB_PDODGE, md->status.flee2);
+		getunitdata_sub(UMOB_CRIT, md->status.cri);
+		getunitdata_sub(UMOB_RACE, md->status.race);
+		getunitdata_sub(UMOB_ELETYPE, md->status.def_ele);
+		getunitdata_sub(UMOB_ELELEVEL, md->status.ele_lv);
+		getunitdata_sub(UMOB_AMOTION, md->status.amotion);
+		getunitdata_sub(UMOB_ADELAY, md->status.adelay);
+		getunitdata_sub(UMOB_DMOTION, md->status.dmotion);
+		getunitdata_sub(UMOB_TARGETID, md->target_id);
+		getunitdata_sub(UMOB_ROBE, md->vd->robe);
+		getunitdata_sub(UMOB_BODY2, md->vd->body_style);
+		getunitdata_sub(UMOB_GROUP_ID, md->ud.group_id);
+		getunitdata_sub(UMOB_IGNORE_CELL_STACK_LIMIT, md->ud.state.ignore_cell_stack_limit);
+		getunitdata_sub(UMOB_RES, md->status.res);
+		getunitdata_sub(UMOB_MRES, md->status.mres);
+		getunitdata_sub(UMOB_DAMAGETAKEN, md->damagetaken);
+#ifdef Pandas_Struct_Unit_CommonData_Aura
+		getunitdata_sub(UMOB_AURA, md->ucd.aura.id);
+#endif // Pandas_Struct_Unit_CommonData_Aura
+#ifdef Pandas_ScriptParams_DamageTaken_From_Database
+		getunitdata_sub(UMOB_DMGRATE, md->pandas.dmg_rate);
+		getunitdata_sub(UMOB_DMGRATE2, md->pandas.dmg_rate2);
+		getunitdata_sub(UMOB_DAMAGETAKEN_DB, md->db->damagetaken);
+#endif // Pandas_ScriptParams_DamageTaken_From_Database
+#ifdef Pandas_ScriptParams_UnitData_Experience
+		getunitdata_sub(UMOB_MOBBASEEXP, md->pandas.base_exp);
+		getunitdata_sub(UMOB_MOBBASEEXP_DB, md->db->base_exp);
+		getunitdata_sub(UMOB_MOBJOBEXP, md->pandas.job_exp);
+		getunitdata_sub(UMOB_MOBJOBEXP_DB, md->db->job_exp);
+#endif // Pandas_ScriptParams_UnitData_Experience
+		break;
+
+	case BL_HOM:
+		if (!hd) {
+			return luaL_error(L, "buildin_getunitdata: Error in finding object BL_HOM!\n");
+		}
+		getunitdata_sub(UHOM_SIZE, hd->base_status.size);
+		getunitdata_sub(UHOM_LEVEL, hd->homunculus.level);
+		getunitdata_sub(UHOM_HP, hd->homunculus.hp);
+		getunitdata_sub(UHOM_MAXHP, hd->homunculus.max_hp);
+		getunitdata_sub(UHOM_SP, hd->homunculus.sp);
+		getunitdata_sub(UHOM_MAXSP, hd->homunculus.max_sp);
+		getunitdata_sub(UHOM_MASTERCID, hd->homunculus.char_id);
+		getunitdata_sub(UHOM_MAPID, hd->bl.m);
+		getunitdata_sub(UHOM_X, hd->bl.x);
+		getunitdata_sub(UHOM_Y, hd->bl.y);
+		getunitdata_sub(UHOM_HUNGER, hd->homunculus.hunger);
+		getunitdata_sub(UHOM_INTIMACY, hd->homunculus.intimacy);
+		getunitdata_sub(UHOM_SPEED, hd->base_status.speed);
+		getunitdata_sub(UHOM_LOOKDIR, hd->ud.dir);
+		getunitdata_sub(UHOM_CANMOVETICK, hd->ud.canmove_tick);
+		getunitdata_sub(UHOM_STR, hd->base_status.str);
+		getunitdata_sub(UHOM_AGI, hd->base_status.agi);
+		getunitdata_sub(UHOM_VIT, hd->base_status.vit);
+		getunitdata_sub(UHOM_INT, hd->base_status.int_);
+		getunitdata_sub(UHOM_DEX, hd->base_status.dex);
+		getunitdata_sub(UHOM_LUK, hd->base_status.luk);
+		getunitdata_sub(UHOM_DMGIMMUNE, hd->ud.immune_attack);
+		getunitdata_sub(UHOM_ATKRANGE, hd->battle_status.rhw.range);
+		getunitdata_sub(UHOM_ATKMIN, hd->base_status.rhw.atk);
+		getunitdata_sub(UHOM_ATKMAX, hd->base_status.rhw.atk2);
+		getunitdata_sub(UHOM_MATKMIN, hd->base_status.matk_min);
+		getunitdata_sub(UHOM_MATKMAX, hd->base_status.matk_max);
+		getunitdata_sub(UHOM_DEF, hd->battle_status.def);
+		getunitdata_sub(UHOM_MDEF, hd->battle_status.mdef);
+		getunitdata_sub(UHOM_HIT, hd->battle_status.hit);
+		getunitdata_sub(UHOM_FLEE, hd->battle_status.flee);
+		getunitdata_sub(UHOM_PDODGE, hd->battle_status.flee2);
+		getunitdata_sub(UHOM_CRIT, hd->battle_status.cri);
+		getunitdata_sub(UHOM_RACE, hd->battle_status.race);
+		getunitdata_sub(UHOM_ELETYPE, hd->battle_status.def_ele);
+		getunitdata_sub(UHOM_ELELEVEL, hd->battle_status.ele_lv);
+		getunitdata_sub(UHOM_AMOTION, hd->battle_status.amotion);
+		getunitdata_sub(UHOM_ADELAY, hd->battle_status.adelay);
+		getunitdata_sub(UHOM_DMOTION, hd->battle_status.dmotion);
+		getunitdata_sub(UHOM_TARGETID, hd->ud.target);
+		getunitdata_sub(UHOM_GROUP_ID, hd->ud.group_id);
+#ifdef Pandas_Struct_Unit_CommonData_Aura
+		getunitdata_sub(UHOM_AURA, hd->ucd.aura.id);
+#endif // Pandas_Struct_Unit_CommonData_Aura
+		break;
+
+	case BL_PET:
+		if (!pd) {
+			return luaL_error(L, "buildin_getunitdata: Error in finding object BL_PET!\n");
+		}
+		getunitdata_sub(UPET_SIZE, pd->status.size);
+		getunitdata_sub(UPET_LEVEL, pd->pet.level);
+		getunitdata_sub(UPET_HP, pd->status.hp);
+		getunitdata_sub(UPET_MAXHP, pd->status.max_hp);
+		getunitdata_sub(UPET_MASTERAID, pd->pet.account_id);
+		getunitdata_sub(UPET_MAPID, pd->bl.m);
+		getunitdata_sub(UPET_X, pd->bl.x);
+		getunitdata_sub(UPET_Y, pd->bl.y);
+		getunitdata_sub(UPET_HUNGER, pd->pet.hungry);
+		getunitdata_sub(UPET_INTIMACY, pd->pet.intimate);
+		getunitdata_sub(UPET_SPEED, pd->status.speed);
+		getunitdata_sub(UPET_LOOKDIR, pd->ud.dir);
+		getunitdata_sub(UPET_CANMOVETICK, pd->ud.canmove_tick);
+		getunitdata_sub(UPET_STR, pd->status.str);
+		getunitdata_sub(UPET_AGI, pd->status.agi);
+		getunitdata_sub(UPET_VIT, pd->status.vit);
+		getunitdata_sub(UPET_INT, pd->status.int_);
+		getunitdata_sub(UPET_DEX, pd->status.dex);
+		getunitdata_sub(UPET_LUK, pd->status.luk);
+		getunitdata_sub(UPET_DMGIMMUNE, pd->ud.immune_attack);
+		getunitdata_sub(UPET_ATKRANGE, pd->status.rhw.range);
+		getunitdata_sub(UPET_ATKMIN, pd->status.rhw.atk);
+		getunitdata_sub(UPET_ATKMAX, pd->status.rhw.atk2);
+		getunitdata_sub(UPET_MATKMIN, pd->status.matk_min);
+		getunitdata_sub(UPET_MATKMAX, pd->status.matk_max);
+		getunitdata_sub(UPET_DEF, pd->status.def);
+		getunitdata_sub(UPET_MDEF, pd->status.mdef);
+		getunitdata_sub(UPET_HIT, pd->status.hit);
+		getunitdata_sub(UPET_FLEE, pd->status.flee);
+		getunitdata_sub(UPET_PDODGE, pd->status.flee2);
+		getunitdata_sub(UPET_CRIT, pd->status.cri);
+		getunitdata_sub(UPET_RACE, pd->status.race);
+		getunitdata_sub(UPET_ELETYPE, pd->status.def_ele);
+		getunitdata_sub(UPET_ELELEVEL, pd->status.ele_lv);
+		getunitdata_sub(UPET_AMOTION, pd->status.amotion);
+		getunitdata_sub(UPET_ADELAY, pd->status.adelay);
+		getunitdata_sub(UPET_DMOTION, pd->status.dmotion);
+		getunitdata_sub(UPET_GROUP_ID, pd->ud.group_id);
+#ifdef Pandas_Struct_Unit_CommonData_Aura
+		getunitdata_sub(UPET_AURA, pd->ucd.aura.id);
+#endif // Pandas_Struct_Unit_CommonData_Aura
+		break;
+
+	case BL_MER:
+		if (!mc) {
+			return luaL_error(L, "buildin_getunitdata: Error in finding object BL_MER!\n");
+		}
+		getunitdata_sub(UMER_SIZE, mc->base_status.size);
+		getunitdata_sub(UMER_HP, mc->base_status.hp);
+		getunitdata_sub(UMER_MAXHP, mc->base_status.max_hp);
+		getunitdata_sub(UMER_MASTERCID, mc->mercenary.char_id);
+		getunitdata_sub(UMER_MAPID, mc->bl.m);
+		getunitdata_sub(UMER_X, mc->bl.x);
+		getunitdata_sub(UMER_Y, mc->bl.y);
+		getunitdata_sub(UMER_KILLCOUNT, mc->mercenary.kill_count);
+		getunitdata_sub(UMER_LIFETIME, mc->mercenary.life_time);
+		getunitdata_sub(UMER_SPEED, mc->base_status.speed);
+		getunitdata_sub(UMER_LOOKDIR, mc->ud.dir);
+		getunitdata_sub(UMER_CANMOVETICK, mc->ud.canmove_tick);
+		getunitdata_sub(UMER_STR, mc->base_status.str);
+		getunitdata_sub(UMER_AGI, mc->base_status.agi);
+		getunitdata_sub(UMER_VIT, mc->base_status.vit);
+		getunitdata_sub(UMER_INT, mc->base_status.int_);
+		getunitdata_sub(UMER_DEX, mc->base_status.dex);
+		getunitdata_sub(UMER_LUK, mc->base_status.luk);
+		getunitdata_sub(UMER_DMGIMMUNE, mc->ud.immune_attack);
+		getunitdata_sub(UMER_ATKRANGE, mc->base_status.rhw.range);
+		getunitdata_sub(UMER_ATKMIN, mc->base_status.rhw.atk);
+		getunitdata_sub(UMER_ATKMAX, mc->base_status.rhw.atk2);
+		getunitdata_sub(UMER_MATKMIN, mc->base_status.matk_min);
+		getunitdata_sub(UMER_MATKMAX, mc->base_status.matk_max);
+		getunitdata_sub(UMER_DEF, mc->base_status.def);
+		getunitdata_sub(UMER_MDEF, mc->base_status.mdef);
+		getunitdata_sub(UMER_HIT, mc->base_status.hit);
+		getunitdata_sub(UMER_FLEE, mc->base_status.flee);
+		getunitdata_sub(UMER_PDODGE, mc->base_status.flee2);
+		getunitdata_sub(UMER_CRIT, mc->base_status.cri);
+		getunitdata_sub(UMER_RACE, mc->base_status.race);
+		getunitdata_sub(UMER_ELETYPE, mc->base_status.def_ele);
+		getunitdata_sub(UMER_ELELEVEL, mc->base_status.ele_lv);
+		getunitdata_sub(UMER_AMOTION, mc->base_status.amotion);
+		getunitdata_sub(UMER_ADELAY, mc->base_status.adelay);
+		getunitdata_sub(UMER_DMOTION, mc->base_status.dmotion);
+		getunitdata_sub(UMER_TARGETID, mc->ud.target);
+		getunitdata_sub(UMER_GROUP_ID, mc->ud.group_id);
+#ifdef Pandas_Struct_Unit_CommonData_Aura
+		getunitdata_sub(UMER_AURA, mc->ucd.aura.id);
+#endif // Pandas_Struct_Unit_CommonData_Aura
+		break;
+
+	case BL_ELEM:
+		if (!ed) {
+			return luaL_error(L, "buildin_getunitdata: Error in finding object BL_ELEM!\n");
+		}
+		getunitdata_sub(UELE_SIZE, ed->base_status.size);
+		getunitdata_sub(UELE_HP, ed->elemental.hp);
+		getunitdata_sub(UELE_MAXHP, ed->elemental.max_hp);
+		getunitdata_sub(UELE_SP, ed->elemental.sp);
+		getunitdata_sub(UELE_MAXSP, ed->elemental.max_sp);
+		getunitdata_sub(UELE_MASTERCID, ed->elemental.char_id);
+		getunitdata_sub(UELE_MAPID, ed->bl.m);
+		getunitdata_sub(UELE_X, ed->bl.x);
+		getunitdata_sub(UELE_Y, ed->bl.y);
+		getunitdata_sub(UELE_LIFETIME, ed->elemental.life_time);
+		getunitdata_sub(UELE_MODE, ed->elemental.mode);
+		getunitdata_sub(UELE_SP, ed->base_status.speed);
+		getunitdata_sub(UELE_LOOKDIR, ed->ud.dir);
+		getunitdata_sub(UELE_CANMOVETICK, ed->ud.canmove_tick);
+		getunitdata_sub(UELE_STR, ed->base_status.str);
+		getunitdata_sub(UELE_AGI, ed->base_status.agi);
+		getunitdata_sub(UELE_VIT, ed->base_status.vit);
+		getunitdata_sub(UELE_INT, ed->base_status.int_);
+		getunitdata_sub(UELE_DEX, ed->base_status.dex);
+		getunitdata_sub(UELE_LUK, ed->base_status.luk);
+		getunitdata_sub(UELE_DMGIMMUNE, ed->ud.immune_attack);
+		getunitdata_sub(UELE_ATKRANGE, ed->base_status.rhw.range);
+		getunitdata_sub(UELE_ATKMIN, ed->base_status.rhw.atk);
+		getunitdata_sub(UELE_ATKMAX, ed->base_status.rhw.atk2);
+		getunitdata_sub(UELE_MATKMIN, ed->base_status.matk_min);
+		getunitdata_sub(UELE_MATKMAX, ed->base_status.matk_max);
+		getunitdata_sub(UELE_DEF, ed->base_status.def);
+		getunitdata_sub(UELE_MDEF, ed->base_status.mdef);
+		getunitdata_sub(UELE_HIT, ed->base_status.hit);
+		getunitdata_sub(UELE_FLEE, ed->base_status.flee);
+		getunitdata_sub(UELE_PDODGE, ed->base_status.flee2);
+		getunitdata_sub(UELE_CRIT, ed->base_status.cri);
+		getunitdata_sub(UELE_RACE, ed->base_status.race);
+		getunitdata_sub(UELE_ELETYPE, ed->base_status.def_ele);
+		getunitdata_sub(UELE_ELELEVEL, ed->base_status.ele_lv);
+		getunitdata_sub(UELE_AMOTION, ed->base_status.amotion);
+		getunitdata_sub(UELE_ADELAY, ed->base_status.adelay);
+		getunitdata_sub(UELE_DMOTION, ed->base_status.dmotion);
+		getunitdata_sub(UELE_TARGETID, ed->ud.target);
+		getunitdata_sub(UELE_GROUP_ID, ed->ud.group_id);
+#ifdef Pandas_Struct_Unit_CommonData_Aura
+		getunitdata_sub(UELE_AURA, ed->ucd.aura.id);
+#endif // Pandas_Struct_Unit_CommonData_Aura
+		break;
+
+	case BL_NPC:
+		if (!nd) {
+			return luaL_error(L, "buildin_getunitdata: Error in finding object BL_NPC!\n");
+		}
+		getunitdata_sub(UNPC_LEVEL, nd->level);
+		getunitdata_sub(UNPC_HP, nd->status.hp);
+		getunitdata_sub(UNPC_MAXHP, nd->status.max_hp);
+		getunitdata_sub(UNPC_MAPID, nd->bl.m);
+		getunitdata_sub(UNPC_X, nd->bl.x);
+		getunitdata_sub(UNPC_Y, nd->bl.y);
+		getunitdata_sub(UNPC_LOOKDIR, nd->ud.dir);
+		getunitdata_sub(UNPC_STR, nd->status.str);
+		getunitdata_sub(UNPC_AGI, nd->status.agi);
+		getunitdata_sub(UNPC_VIT, nd->status.vit);
+		getunitdata_sub(UNPC_INT, nd->status.int_);
+		getunitdata_sub(UNPC_DEX, nd->status.dex);
+		getunitdata_sub(UNPC_LUK, nd->status.luk);
+		getunitdata_sub(UNPC_PLUSALLSTAT, nd->stat_point);
+		getunitdata_sub(UNPC_DMGIMMUNE, nd->ud.immune_attack);
+		getunitdata_sub(UNPC_ATKRANGE, nd->status.rhw.range);
+		getunitdata_sub(UNPC_ATKMIN, nd->status.rhw.atk);
+		getunitdata_sub(UNPC_ATKMAX, nd->status.rhw.atk2);
+		getunitdata_sub(UNPC_MATKMIN, nd->status.matk_min);
+		getunitdata_sub(UNPC_MATKMAX, nd->status.matk_max);
+		getunitdata_sub(UNPC_DEF, nd->status.def);
+		getunitdata_sub(UNPC_MDEF, nd->status.mdef);
+		getunitdata_sub(UNPC_HIT, nd->status.hit);
+		getunitdata_sub(UNPC_FLEE, nd->status.flee);
+		getunitdata_sub(UNPC_PDODGE, nd->status.flee2);
+		getunitdata_sub(UNPC_CRIT, nd->status.cri);
+		getunitdata_sub(UNPC_RACE, nd->status.race);
+		getunitdata_sub(UNPC_ELETYPE, nd->status.def_ele);
+		getunitdata_sub(UNPC_ELELEVEL, nd->status.ele_lv);
+		getunitdata_sub(UNPC_AMOTION, nd->status.amotion);
+		getunitdata_sub(UNPC_ADELAY, nd->status.adelay);
+		getunitdata_sub(UNPC_DMOTION, nd->status.dmotion);
+		getunitdata_sub(UNPC_SEX, nd->vd.sex);
+		getunitdata_sub(UNPC_CLASS, nd->vd.class_);
+		getunitdata_sub(UNPC_HAIRSTYLE, nd->vd.hair_style);
+		getunitdata_sub(UNPC_HAIRCOLOR, nd->vd.hair_color);
+		getunitdata_sub(UNPC_HEADBOTTOM, nd->vd.head_bottom);
+		getunitdata_sub(UNPC_HEADMIDDLE, nd->vd.head_mid);
+		getunitdata_sub(UNPC_HEADTOP, nd->vd.head_top);
+		getunitdata_sub(UNPC_CLOTHCOLOR, nd->vd.cloth_color);
+		getunitdata_sub(UNPC_SHIELD, nd->vd.shield);
+		getunitdata_sub(UNPC_WEAPON, nd->vd.weapon);
+		getunitdata_sub(UNPC_ROBE, nd->vd.robe);
+		getunitdata_sub(UNPC_BODY2, nd->vd.body_style);
+		getunitdata_sub(UNPC_DEADSIT, nd->vd.dead_sit);
+		getunitdata_sub(UNPC_GROUP_ID, nd->ud.group_id);
+#ifdef Pandas_Struct_Unit_CommonData_Aura
+		getunitdata_sub(UNPC_AURA, nd->ucd.aura.id);
+#endif // Pandas_Struct_Unit_CommonData_Aura
+		break;
+
+	default:
+		return luaL_error(L, "buildin_getunitdata: Unknown object type!\n");
+	}
+
+#undef getunitdata_sub
+	return 1;
+}
+
+
 //void script_set_constant_(const char* name, int64 value, const char* constant_name, bool isparameter, bool deprecated);
 #define script_set_constant_x(v) {if((v)>INT32_MAX||(v)<INT32_MIN) luaL_newUserData<int64_t>(L, (v)); else lua_pushinteger(L, (int32_t)(v));}
 #define script_set_constant_(n,v,c,p,d) {script_set_constant_x(v); lua_setfield(L, -2, c? c:n);}
@@ -1202,7 +1699,7 @@ bool init_lua() {
 	luaL_openlibs(m_lua);
 	auto ret = true;
 	lua_settop(L, 0);
-	lua_newtable(L);
+	luaL_newmetatable(m_lua, UserDataMetaTableFor<script_state*>());
 	// 1
 	static char cmd[2048] = "return function(fn) return function(st, ...) return st:callScript(fn, ...) end end";
 	luaL_loadstring(L, cmd); //2
@@ -1247,23 +1744,26 @@ bool init_lua() {
 	ST_FUNC(progressbar);
 	ST_FUNC(progressbar_npc);
 	ST_FUNC(readparam);
+	ST_FUNC(setparam);
 	ST_FUNC(getpartymember);
+	ST_FUNC(checkcell);
+	ST_FUNC(getunitdata);
 
 #undef ST_FUNC
 #undef ST_FUNC2
-
-	luaL_newmetatable(m_lua, UserDataMetaTableFor<script_state*>());
+	lua_pushvalue(L, 1);
 	lua_pushstring(L, "__index");
 	lua_pushvalue(L, 1);
 	lua_rawset(L, -3);
 	lua_pushstring(L, "__tostring");
 	lua_pushcfunction(L, ToString<script_state*>);
 	lua_rawset(L, -3);
-
+	lua_setglobal(L, UserDataMetaTableFor<script_state*>());
 	luaL_newmetatable(m_lua, UserDataMetaTableFor<script_data>());
 	lua_pushstring(L, "__tostring");
 	lua_pushcfunction(L, ToString<script_data>);
 	lua_rawset(L, -3);
+	lua_setglobal(L, UserDataMetaTableFor<script_data>());
 
 	lua_reg_ctype(L);
 
@@ -1296,7 +1796,9 @@ script_cmd_result lua_run(script_state* st, lua_State* L0) {
 		auto lRef = luaL_ref(L0);
 		lua_getglobal(L, "__WARP__");
 		lua_resume(L, 0);
-		lua_getglobal(L, script_getstr(st, 2));
+		auto fnStr = script_getstr(st, 2);
+		//ShowDebug("lua_run %s", fnStr);
+		lua_getglobal(L, fnStr);
 		lua_resume(L, 1);
 		auto p = luaL_newUserData<script_state*>(L, st);
 		for (int i = 3; i <= n; i++) {
@@ -1313,8 +1815,7 @@ script_cmd_result lua_run(script_state* st, lua_State* L0) {
 		}
 		int ret = lua_resume(L, n - 2 + 1);
 		if (ret == LUA_OK) {
-			luaL_unref(L0, lRef);
-			lua_gc(L, LUA_GCCOLLECT, 0);
+			//ShowDebug("lua run ok\n");
 			auto b = lua_toboolean(L, -2);
 			if (b) {
 				if (lua_isnumber(L, -1)) {
@@ -1328,6 +1829,7 @@ script_cmd_result lua_run(script_state* st, lua_State* L0) {
 				printf("lua error: %s\n", lua_tostring(L, -1));
 			}
 			lua_settop(L, 0);
+			luaL_unref(L0, lRef);
 			return b ? SCRIPT_CMD_SUCCESS : SCRIPT_CMD_FAILURE;
 		}
 		if (ret == LUA_YIELD) {

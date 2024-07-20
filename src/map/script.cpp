@@ -34236,7 +34236,7 @@ BUILDIN_FUNC(lua_call_fn) {
 		lua_pop(m_lua, lua_gettop(m_lua));
 		return SCRIPT_CMD_SUCCESS;
 	}
-	printf("lua error: %s\n", lua_tostring(m_lua, -1));
+	ShowError("lua error: %s\n", lua_tostring(m_lua, -1));
 	return SCRIPT_CMD_FAILURE;
 }
 
@@ -34471,6 +34471,7 @@ BUILDIN_FUNC(mob_add_skill) {
 		ms->msg_id = msg_id;
 	else {
 		ms->msg_id = 0;
+		if (msg_id > 0)
 		ShowWarning("Unknown chat ID %d\n", msg_id);
 	}
 

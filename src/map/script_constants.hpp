@@ -5500,6 +5500,7 @@
 	export_constant(UMOB_RES);
 	export_constant(UMOB_MRES);
 	export_constant(UMOB_DAMAGETAKEN);
+	export_constant(UMOB_CHASERANGE);
 
 	/* unit control - homunculus */
 	export_constant(UHOM_SIZE);
