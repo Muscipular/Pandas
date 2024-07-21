@@ -1843,8 +1843,8 @@ int map_search_freecell(struct block_list *src, int16 m, int16 *x,int16 *y, int1
 	}
 
 	while(tries--) {
-		*x = (rx >= 0) ? rnd_value(bx - rx, bx + rx) : rnd_value<int16>(3, mapdata->xs - 3);
-		*y = (ry >= 0) ? rnd_value(by - ry, by + ry) : rnd_value<int16>(3, mapdata->ys - 3);
+		*x = (rx >= 0) ? rnd_value(bx - rx, bx + rx) : rnd_value<int16>(5, mapdata->xs - 5);
+		*y = (ry >= 0) ? rnd_value(by - ry, by + ry) : rnd_value<int16>(5, mapdata->ys - 5);
 
 		if (*x == bx && *y == by)
 			continue; //Avoid picking the same target tile.
