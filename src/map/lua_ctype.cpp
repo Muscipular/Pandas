@@ -230,6 +230,89 @@ LUA_FUNC2(G, newI64) {
 }
 
 
+std::mt19937 mt(std::clock());
+std::minstd_rand stdRand(time(nullptr));
+
+LUA_FUNC2(G, mtRand) {
+	int n = lua_gettop(L);
+	if (n == 1) {
+		int max = lua_tointeger(L, 1);
+		if (max <= 1) {
+			lua_pushinteger(L, 1);
+			return 1;
+		}
+		std::uniform_int_distribution<int> dist(1, max);
+		lua_pushinteger(L, dist(mt));
+		return 1;
+	}
+	if (n == 0) {
+		std::uniform_real_distribution<double> dist(0.0, 1.0);
+		lua_pushnumber(L, dist(mt));
+		return 1;
+	}
+	if (n == 2) {
+		int min = lua_tointeger(L, 1);
+		int max = lua_tointeger(L, 2);
+		if (min > max) {
+			std::swap(min, max);
+		}
+		if (min == max) {
+			lua_pushinteger(L, min);
+			return 1;
+		}
+		std::uniform_int_distribution<int> dist(min, max);
+		lua_pushinteger(L, dist(mt));
+		return 1;
+	}
+	else
+	{
+		std::uniform_int_distribution<int> dist(1, n);
+		lua_pushvalue(L, dist(mt));
+		return 1;
+	}
+	return luaL_error(L, "mtRand: invalid parameter");
+}
+
+LUA_FUNC2(G, stdRand) {
+	int n = lua_gettop(L);
+	if (n == 1) {
+		int max = lua_tointeger(L, 1);
+		if (max <= 1) {
+			lua_pushinteger(L, 1);
+			return 1;
+		}
+		std::uniform_int_distribution<int> dist(1, max);
+		lua_pushinteger(L, dist(stdRand));
+		return 1;
+	}
+	if (n == 0) {
+		std::uniform_real_distribution<double> dist(0.0, 1.0);
+		lua_pushnumber(L, dist(stdRand));
+		return 1;
+	}
+	if (n == 2) {
+		int min = lua_tointeger(L, 1);
+		int max = lua_tointeger(L, 2);
+		if (min > max) {
+			std::swap(min, max);
+		}
+		if (min == max) {
+			lua_pushinteger(L, min);
+			return 1;
+		}
+		std::uniform_int_distribution<int> dist(min, max);
+		lua_pushinteger(L, dist(stdRand));
+		return 1;
+	}
+	else
+	{
+		std::uniform_int_distribution<int> dist(1, n);
+		lua_pushvalue(L, dist(stdRand));
+		return 1;
+	}
+	return luaL_error(L, "mtRand: invalid parameter");
+}
+
 #define SET_META_FN(K, N) { lua_pushstring(L, "__" #N);\
 lua_pushcfunction(L, LUA_FUNC_NAME2(K, N));\
 lua_rawset(L, -3);}
@@ -254,6 +337,10 @@ static void reg_int64(lua_State* L) {
 	lua_setglobal(L, "I64ToNumber");
 	lua_pushcfunction(L, LUA_FUNC_NAME2(G, newI64));
 	lua_setglobal(L, "newI64");
+	lua_pushcfunction(L, LUA_FUNC_NAME2(G, mtRand));
+	lua_setglobal(L, "mtRand");
+	lua_pushcfunction(L, LUA_FUNC_NAME2(G, stdRand));
+	lua_setglobal(L, "stdRand");
 }
 
 void lua_reg_ctype(lua_State* L) {
