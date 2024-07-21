@@ -934,6 +934,8 @@
 	export_parameter("Zeny",SP_ZENY);
 	export_parameter("Sex",SP_SEX);
 	export_parameter("Weight",SP_WEIGHT);
+	export_parameter("ExLevel",SP_EX_LEVEL);
+	export_parameter("MfRate",SP_MF_RATE);
 	export_parameter("MaxWeight",SP_MAXWEIGHT);
 	export_parameter("JobLevel",SP_JOBLEVEL);
 	export_parameter("BaseExp",SP_BASEEXP);
@@ -1123,6 +1125,7 @@
 	export_constant2("bHealPower2",SP_ADD_HEAL2_RATE);
 	export_constant2("bIgnoreResRaceRate",SP_SP_IGNORE_RES_RACE_RATE);
 	export_constant2("bIgnoreMResRaceRate",SP_SP_IGNORE_MRES_RACE_RATE);
+	export_constant2("bMfRate", SP_MF_RATE);
 
 	export_constant2("bRestartFullRecover",SP_RESTART_FULL_RECOVER);
 	export_constant2("bNoCastCancel",SP_NO_CASTCANCEL);

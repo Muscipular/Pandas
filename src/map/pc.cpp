@@ -4640,6 +4640,10 @@ void pc_bonus(map_session_data *sd,int type,int val)
 			if (sd->state.lr_flag != 2)
 				sd->bonus.ammo_rate += val;
 			break;
+		case SP_MF_RATE:
+			if (sd->state.lr_flag != 2)
+				sd->bonus.mf += val;
+			break;
 		case SP_AMMO_DMG_RATE:
 			if (sd->state.lr_flag != 2)
 				sd->bonus.ammo_dmg_rate += val;
@@ -11047,6 +11051,7 @@ int64 pc_readparam(map_session_data* sd,int64 type)
 		case SP_BANK_VAULT:      val = sd->bank_vault; break;
 		case SP_CASHPOINTS:      val = sd->cashPoints; break;
 		case SP_EX_LEVEL:		 val = sd->exLevel; break;
+		case SP_MF_RATE:		 val = sd->bonus.mf; break;
 		case SP_KAFRAPOINTS:     val = sd->kafraPoints; break;
 		case SP_ROULETTE_BRONZE: val = sd->roulette_point.bronze; break;
 		case SP_ROULETTE_SILVER: val = sd->roulette_point.silver; break;
