@@ -5972,6 +5972,8 @@ struct ItemExtInfoPkg {
 };
 DEFINE_PACKET_HEADER(ItemExtInfoPkgList, 0x2001);
 DEFINE_PACKET_HEADER(ExLv, 0x2002);
+DEFINE_PACKET_HEADER(ItemExtInfoPkgOne, 0x2003);
+DEFINE_PACKET_HEADER(ItemExtInfoPkgDel, 0x2004);
 
 #if !defined(sun) && (!defined(__NETBSD__) || __NetBSD_Version__ >= 600000000) // NetBSD 5 and Solaris don't like pragma pack but accept the packed attribute
 #pragma pack(pop)

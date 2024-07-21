@@ -317,6 +317,8 @@ int map_fd;
 static int clif_parse (int fd);
 
 static int clif_send_item_ext(map_session_data* sd, item* items, size_t item_count, e_inventory_type type);
+static int clif_send_item_ext_del(map_session_data* sd, int index, e_inventory_type type);
+static int clif_send_item_ext_one(map_session_data* sd, item* item, int index, e_inventory_type type);
 
 /*==========================================
  * Ip setting of map-server
@@ -3104,6 +3106,8 @@ void clif_additem( map_session_data *sd, int n, int amount, unsigned char fail )
 	p.count = amount;
 	p.result = fail;
 
+	clif_send_item_ext_one(sd, &sd->inventory.u.items_inventory[n], n, e_inventory_type::INVTYPE_INVENTORY);
+
 	clif_send( &p, sizeof( p ), &sd->bl, SELF );
 }
 
@@ -3115,6 +3119,10 @@ void clif_dropitem(map_session_data *sd,int n,int amount)
 	int fd;
 
 	nullpo_retv(sd);
+
+	if (amount <= 0) {
+		clif_send_item_ext_del(sd, n, e_inventory_type::INVTYPE_INVENTORY);
+	}
 
 	fd=sd->fd;
 	WFIFOHEAD(fd, packet_len(0xaf));
@@ -3144,6 +3152,10 @@ void clif_delitem(map_session_data *sd,int n,int amount, short reason)
 	int fd;
 
 	nullpo_retv(sd);
+
+	if (amount <= 0) {
+		clif_send_item_ext_del(sd, n, e_inventory_type::INVTYPE_INVENTORY);
+	}
 
 	fd=sd->fd;
 
@@ -3444,6 +3456,71 @@ void clif_update_exlv(map_session_data* sd) {
 		data.lv = sd->exLevel;
 		clif_send(&data, data.len, &sd->bl, SELF);
 	}
+}
+
+static int clif_send_item_ext_(map_session_data* sd, item* items, size_t item_count, e_inventory_type type, uint16_t header);
+
+/// 0x2004{w},len{w},index{w},type{w}
+static int clif_send_item_ext_del(map_session_data* sd, int index, e_inventory_type type) {
+	char buff[sizeof(ItemExtInfoPkg)];
+	char* oBuff = buff;
+	oBuff = writeBuffer<uint16_t>(oBuff, HEADER_ItemExtInfoPkgDel);
+	oBuff = writeBuffer<uint16_t>(oBuff, sizeof(buff));
+	switch (type) {
+	case INVTYPE_INVENTORY:
+	case INVTYPE_CART:
+		oBuff = writeBuffer<uint16_t>(oBuff, client_index(index));
+		break;
+	case INVTYPE_STORAGE:
+	case INVTYPE_GUILD_STORAGE:
+		oBuff = writeBuffer<uint16_t>(oBuff, client_storage_index(index));
+		break;
+	}
+	oBuff = writeBuffer<uint16_t>(oBuff, type);
+	clif_send(buff, oBuff - buff, &sd->bl, SELF);
+	return 0;
+}
+
+/// 0x2003{w},1{w},item_count{w},type{w},item_struct{index{w},ival_count{b},slot_count{b},stack{dw},ival_list...{dw},slot_list...{dw}}
+static int clif_send_item_ext_one(map_session_data* sd, item* item_, int index, e_inventory_type type) {
+	static char buff[MAX_STORAGE * (sizeof(ItemExtInfoPkg) + 4 * ARRAYLENGTH(item_[0].ival) + 4 * (MAX_SLOTS - 4)) + 256];
+	char* oBuff = buff;
+	uint16_t count = 1;
+	oBuff = writeBuffer<uint16_t>(oBuff, HEADER_ItemExtInfoPkgOne);
+	oBuff = writeBuffer<uint16_t>(oBuff, 0);
+	oBuff = writeBuffer<uint16_t>(oBuff, count);
+	oBuff = writeBuffer<uint16_t>(oBuff, type);
+	auto writeItem = [=](char* eBuff, item* item, uint16_t index) {
+		if (item->id <= 0) {
+			return eBuff;
+		}
+		ItemExtInfoPkg pkg;
+		switch (type) {
+		case INVTYPE_INVENTORY:
+		case INVTYPE_CART:
+			pkg.index = client_index(index);
+			break;
+		case INVTYPE_STORAGE:
+		case INVTYPE_GUILD_STORAGE:
+			pkg.index = client_storage_index(index);
+			break;
+		}
+		pkg.ivalCount = ARRAYLENGTH(item->ival);
+		pkg.slotCount = MAX_SLOTS - 4;
+		pkg.stack = 0;
+		eBuff = writeBuffer<ItemExtInfoPkg>(eBuff, pkg);
+		for (int i = 0; i < ARRAYLENGTH(item->ival); ++i) {
+			eBuff = writeBuffer<int32_t>(eBuff, item->ival[i]);
+		}
+		for (int i = 4; i < MAX_SLOTS; ++i) {
+			eBuff = writeBuffer<int32_t>(eBuff, item->card[i]);
+		}
+		return eBuff;
+		};
+	oBuff = writeItem(oBuff, item_, index);
+	((uint16_t*)buff)[1] = oBuff - buff;
+	clif_send(buff, oBuff - buff, &sd->bl, SELF);
+	return 0;
 }
 
 /// 0x2001{w},len{w},item_count{w},type{w},item_struct...{index{w},ival_count{b},slot_count{b},stack{dw},ival_list...{dw},slot_list...{dw}}
@@ -5417,8 +5494,10 @@ void clif_storageitemadded( map_session_data* sd, struct item* i, int index, int
 	p.grade = i->enchantgrade;
 #endif
 #endif
+	clif_send_item_ext_one(sd, i, index, e_inventory_type::INVTYPE_STORAGE);
 
 	clif_send( &p, sizeof( p ), &sd->bl, SELF );
+
 }
 
 
@@ -5429,6 +5508,10 @@ void clif_storageitemremoved(map_session_data* sd, int index, int amount)
 	int fd;
 
 	nullpo_retv(sd);
+
+	if (amount <= 0) {
+		clif_send_item_ext_del(sd, index, e_inventory_type::INVTYPE_STORAGE);
+	}
 
 	fd=sd->fd;
 	WFIFOHEAD(fd,packet_len(0xf6));
@@ -7996,6 +8079,8 @@ void clif_cart_additem( map_session_data *sd, int n, int amount ){
 #endif
 #endif
 
+	clif_send_item_ext_one(sd, &sd->inventory.u.items_cart[n], n, e_inventory_type::INVTYPE_CART);
+
 	clif_send( &p, sizeof( p ), &sd->bl, SELF );
 }
 
@@ -8242,6 +8327,10 @@ void clif_cart_delitem(map_session_data *sd,int n,int amount)
 	int fd;
 
 	nullpo_retv(sd);
+
+	if (amount <= 0) {
+		clif_send_item_ext_del(sd, n, e_inventory_type::INVTYPE_CART);
+	}
 
 	fd=sd->fd;
 
