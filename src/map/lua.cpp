@@ -1697,6 +1697,7 @@ bool init_lua() {
 	}
 	auto L = m_lua;
 	luaL_openlibs(m_lua);
+	luaopen_bit(L);
 	auto ret = true;
 	lua_settop(L, 0);
 	luaL_newmetatable(m_lua, UserDataMetaTableFor<script_state*>());
