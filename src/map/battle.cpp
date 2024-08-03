@@ -1,4 +1,4 @@
-// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
+ï»¿// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
 #include "battle.hpp"
@@ -3185,7 +3185,7 @@ static bool is_attack_critical(struct Damage* wd, struct block_list *src, struct
 		}
 		if(tsd && tsd->bonus.critical_def)
 			cri = cri * ( 100 - tsd->bonus.critical_def ) / 100;
-		//·¨Êõ±©»÷¼ÆËã
+		//æ³•æœ¯æš´å‡»è®¡ç®—
 		if (wd->flag & BF_MAGIC) {
 			int cr = sd->bonus.sk_cri;
 			for (auto& sk : sd->sk_cri) {
@@ -3518,6 +3518,7 @@ static bool attack_ignores_def(struct Damage* wd, struct block_list *src, struct
 	return nk[NK_IGNOREDEFENSE] != 0;
 }
 
+/*
  * @param skill_id: Skill being used
  * @param type 1 - Checking refine bonus; 2 - Checking Star Crumb bonus
  * @return true = bonus applies; false = bonus does not apply
@@ -3966,7 +3967,7 @@ static void battle_calc_attack_masteries(struct Damage* wd, struct block_list *s
 	}
 
 	// Grand Cross is confirmed to be affected by refine bonus but not masteries
-	if (sd && battle_skill_stacks_masteries_vvs(skill_id) && skill_id != CR_GRANDCROSS)
+	if (sd && battle_skill_stacks_masteries_vvs(skill_id, 0) && skill_id != CR_GRANDCROSS)
 	{	//Add mastery damage
 		uint16 skill;
 
@@ -9213,7 +9214,7 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 #endif
 	} //Hint: Against plants damage will still be 1 at this point
 
-	//·¨Êõ±©»÷
+	//æ³•æœ¯æš´å‡»
 	{
 		if (sd) {
 			Damage dmgDummy;
@@ -9737,16 +9738,16 @@ struct Damage battle_calc_attack(int attack_type,struct block_list *bl,struct bl
 	if (skill_id && bl && map_getmapflag(bl->m, MF_MAXDMG_SKILL)) {
 		int val = map_getmapflag_param(bl->m, MF_MAXDMG_SKILL, 1);
 		if (val > 0 && d.damage + d.damage2 > val) {
-			int64 overval = (d.damage + d.damage2) - val;	// ³¬ÁË¶àÉÙ
+			int64 overval = (d.damage + d.damage2) - val;	// è¶…äº†å¤šå°‘
 			if (d.damage2 >= overval) {
-				// Èç¹û damage2 ×ã¹»±»¿Û¼õ, ÄÇÃ´ÓÅÏÈ¿Û¼õ damage2
+				// å¦‚æœ damage2 è¶³å¤Ÿè¢«æ‰£å‡, é‚£ä¹ˆä¼˜å…ˆæ‰£å‡ damage2
 				d.damage2 -= overval;
 			}
 			else {
-				// Èç¹û damage2 ²»×ãÒÔ±»¿Û¼õ, ÄÇÃ´ÏÈ°Ñ damage2 µ÷Îª 0
-				overval -= d.damage2;	// ¸üĞÂ³¬³öµÄÉËº¦Êı
+				// å¦‚æœ damage2 ä¸è¶³ä»¥è¢«æ‰£å‡, é‚£ä¹ˆå…ˆæŠŠ damage2 è°ƒä¸º 0
+				overval -= d.damage2;	// æ›´æ–°è¶…å‡ºçš„ä¼¤å®³æ•°
 				d.damage2 = 0;
-				d.damage = cap_value(d.damage - overval, 0, val);	// ×îºóÔÙ¿Û¼õ damage ÖĞµÄÉËº¦
+				d.damage = cap_value(d.damage - overval, 0, val);	// æœ€åå†æ‰£å‡ damage ä¸­çš„ä¼¤å®³
 			}
 		}
 	}
@@ -9756,16 +9757,16 @@ struct Damage battle_calc_attack(int attack_type,struct block_list *bl,struct bl
 	if (!skill_id && bl && map_getmapflag(bl->m, MF_MAXDMG_NORMAL)) {
 		int val = map_getmapflag_param(bl->m, MF_MAXDMG_NORMAL, 1);
 		if (val > 0 && d.damage + d.damage2 > val) {
-			int64 overval = (d.damage + d.damage2) - val;	// ³¬ÁË¶àÉÙ
+			int64 overval = (d.damage + d.damage2) - val;	// è¶…äº†å¤šå°‘
 			if (d.damage2 >= overval) {
-				// Èç¹û damage2 ×ã¹»±»¿Û¼õ, ÄÇÃ´ÓÅÏÈ¿Û¼õ damage2
+				// å¦‚æœ damage2 è¶³å¤Ÿè¢«æ‰£å‡, é‚£ä¹ˆä¼˜å…ˆæ‰£å‡ damage2
 				d.damage2 -= overval;
 			}
 			else {
-				// Èç¹û damage2 ²»×ãÒÔ±»¿Û¼õ, ÄÇÃ´ÏÈ°Ñ damage2 µ÷Îª 0
-				overval -= d.damage2;	// ¸üĞÂ³¬³öµÄÉËº¦Êı
+				// å¦‚æœ damage2 ä¸è¶³ä»¥è¢«æ‰£å‡, é‚£ä¹ˆå…ˆæŠŠ damage2 è°ƒä¸º 0
+				overval -= d.damage2;	// æ›´æ–°è¶…å‡ºçš„ä¼¤å®³æ•°
 				d.damage2 = 0;
-				d.damage = cap_value(d.damage - overval, 0, val);	// ×îºóÔÙ¿Û¼õ damage ÖĞµÄÉËº¦
+				d.damage = cap_value(d.damage - overval, 0, val);	// æœ€åå†æ‰£å‡ damage ä¸­çš„ä¼¤å®³
 			}
 		}
 	}
@@ -10488,10 +10489,10 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 
 #ifdef Pandas_NpcExpress_PCHARMED
 	if (src && target && damage > 0) {
-		// ¸ºÔğÖ´ĞĞÊÂ¼şµÄÍæ¼Ò¶ÔÏó (ÊÂ¼şÖ´ĞĞÕß)
+		// è´Ÿè´£æ‰§è¡Œäº‹ä»¶çš„ç©å®¶å¯¹è±¡ (äº‹ä»¶æ‰§è¡Œè€…)
 		map_session_data* esd = nullptr;
 
-		// ÈôÊÜÉËº¦Õß²»ÊÇÍæ¼Òµ¥Î», ÄÇÃ´ÊÔÍ¼»ñÈ¡ÊÜÉËº¦ÕßµÄÖ÷ÈË
+		// è‹¥å—ä¼¤å®³è€…ä¸æ˜¯ç©å®¶å•ä½, é‚£ä¹ˆè¯•å›¾è·å–å—ä¼¤å®³è€…çš„ä¸»äºº
 		if (target->type != BL_PC) {
 			struct block_list* mbl = nullptr;
 			mbl = battle_get_master(target);
@@ -10500,13 +10501,13 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 			}
 		}
 		
-		// Èô¸ºÔğÖ´ĞĞÊÂ¼şµÄÍæ¼Ò¶ÔÏóÒÀÈ»Ã»±»Ö¸¶¨
-		// ÇÒÊÜÉËº¦ÕßÊÇÒ»¸öÍæ¼Òµ¥Î», ÄÇÃ´½«ÊÜÉËº¦ÕßÖ±½ÓÖ¸¶¨³É¸ºÔğÖ´ĞĞÊÂ¼şµÄÍæ¼Ò
+		// è‹¥è´Ÿè´£æ‰§è¡Œäº‹ä»¶çš„ç©å®¶å¯¹è±¡ä¾ç„¶æ²¡è¢«æŒ‡å®š
+		// ä¸”å—ä¼¤å®³è€…æ˜¯ä¸€ä¸ªç©å®¶å•ä½, é‚£ä¹ˆå°†å—ä¼¤å®³è€…ç›´æ¥æŒ‡å®šæˆè´Ÿè´£æ‰§è¡Œäº‹ä»¶çš„ç©å®¶
 		if (!esd && target->type == BL_PC) {
 			esd = (TBL_PC*)target;
 		}
 
-		// Èôµ½ÕâÀï»¹Ã»ÓĞÒ»¸öºÏÊÊµÄÊÂ¼şÖ´ĞĞÕßÔò²»ĞèÒª´¥·¢ÊÂ¼ş
+		// è‹¥åˆ°è¿™é‡Œè¿˜æ²¡æœ‰ä¸€ä¸ªåˆé€‚çš„äº‹ä»¶æ‰§è¡Œè€…åˆ™ä¸éœ€è¦è§¦å‘äº‹ä»¶
 		if (esd) {
 			pc_setreg(esd, add_str("@harmed_target_type"), target->type);
 			pc_setreg(esd, add_str("@harmed_target_gid"), target->id);
@@ -10530,10 +10531,10 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 
 #ifdef Pandas_NpcExpress_PCATTACK
 	if (src && target && damage > 0) {
-		// ¸ºÔğÖ´ĞĞÊÂ¼şµÄÍæ¼Ò¶ÔÏó (ÊÂ¼şÖ´ĞĞÕß)
+		// è´Ÿè´£æ‰§è¡Œäº‹ä»¶çš„ç©å®¶å¯¹è±¡ (äº‹ä»¶æ‰§è¡Œè€…)
 		map_session_data* esd = nullptr;
 
-		// Èô¹¥»÷Õß²»ÊÇÍæ¼Òµ¥Î», ÄÇÃ´ÊÔÍ¼»ñÈ¡¹¥»÷ÕßµÄÖ÷ÈË
+		// è‹¥æ”»å‡»è€…ä¸æ˜¯ç©å®¶å•ä½, é‚£ä¹ˆè¯•å›¾è·å–æ”»å‡»è€…çš„ä¸»äºº
 		if (src->type != BL_PC) {
 			struct block_list* mbl = nullptr;
 			mbl = battle_get_master(src);
@@ -10542,14 +10543,14 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 			}
 		}
 
-		// Èô¸ºÔğÖ´ĞĞÊÂ¼şµÄÍæ¼Ò¶ÔÏóÒÀÈ»Ã»±»Ö¸¶¨
-		// ÇÒ¹¥»÷ÕßÊÇÒ»¸öÍæ¼Òµ¥Î», ÄÇÃ´½«¹¥»÷ÕßÖ±½ÓÖ¸¶¨³É¸ºÔğÖ´ĞĞÊÂ¼şµÄÍæ¼Ò
+		// è‹¥è´Ÿè´£æ‰§è¡Œäº‹ä»¶çš„ç©å®¶å¯¹è±¡ä¾ç„¶æ²¡è¢«æŒ‡å®š
+		// ä¸”æ”»å‡»è€…æ˜¯ä¸€ä¸ªç©å®¶å•ä½, é‚£ä¹ˆå°†æ”»å‡»è€…ç›´æ¥æŒ‡å®šæˆè´Ÿè´£æ‰§è¡Œäº‹ä»¶çš„ç©å®¶
 		if (!esd && src->type == BL_PC) {
 			esd = (TBL_PC*)src;
 		}
 
 
-		// Èôµ½ÕâÀï»¹Ã»ÓĞÒ»¸öºÏÊÊµÄÊÂ¼şÖ´ĞĞÕßÔò²»ĞèÒª´¥·¢ÊÂ¼ş
+		// è‹¥åˆ°è¿™é‡Œè¿˜æ²¡æœ‰ä¸€ä¸ªåˆé€‚çš„äº‹ä»¶æ‰§è¡Œè€…åˆ™ä¸éœ€è¦è§¦å‘äº‹ä»¶
 		if (esd) {
 			pc_setreg(esd, add_str("@attack_src_type"), src->type);
 			pc_setreg(esd, add_str("@attack_src_gid"), src->id);
@@ -11812,7 +11813,7 @@ static const struct _battle_data {
 	{ "fame_taekwon_mission",               &battle_config.fame_taekwon_mission,            1,      0,      INT_MAX,        },
 	{ "fame_refine_lv1",                    &battle_config.fame_refine_lv1,                 1,      0,      INT_MAX,        },
 #ifndef Pandas_BattleConfig_Verification
-	// ³öÏÖÁËÖØ¸´¶¨Òå, ÕâÀïÏÈ¼òµ¥×¢ÊÍµô, Èç¹û rAthena ¹Ù·½ºÜ¾Ã²»¸ÄµÄ»°, ÕÒ¸öÊ±¼äÔÙÌá½»¸ö PullRequest ĞŞÕıÏÂ [SolaØ¼Ğ¡¿Ë]
+	// å‡ºç°äº†é‡å¤å®šä¹‰, è¿™é‡Œå…ˆç®€å•æ³¨é‡Šæ‰, å¦‚æœ rAthena å®˜æ–¹å¾ˆä¹…ä¸æ”¹çš„è¯, æ‰¾ä¸ªæ—¶é—´å†æäº¤ä¸ª PullRequest ä¿®æ­£ä¸‹ [Solaä¸¶å°å…‹]
 	{ "fame_refine_lv1",                    &battle_config.fame_refine_lv1,                 1,      0,      INT_MAX,        },
 #endif // Pandas_BattleConfig_Verification
 	{ "fame_refine_lv2",                    &battle_config.fame_refine_lv2,                 25,     0,      INT_MAX,        },
@@ -12132,25 +12133,25 @@ void battle_adjust_conf()
 	battle_config.max_cart_weight *= 10;
 
 #ifdef Pandas_BattleConfig_MaxAspdForPVP
-	// ¸ù¾İ max_aspd_for_pvp Ô¼ÊøÍæ¼ÒµÄ×î´ó¹¥ËÙ [SolaØ¼Ğ¡¿Ë]
-	// ÕâÀï¶ÔÅäÖÃµÄ ASPD ÊıÖµ (ÀıÈç: 193, 197) ×ª»»³É³ÌĞòÅĞ¶ÏÓÃµÄ¹¥»÷¼ä¸ôÊ±¼ä
+	// æ ¹æ® max_aspd_for_pvp çº¦æŸç©å®¶çš„æœ€å¤§æ”»é€Ÿ [Solaä¸¶å°å…‹]
+	// è¿™é‡Œå¯¹é…ç½®çš„ ASPD æ•°å€¼ (ä¾‹å¦‚: 193, 197) è½¬æ¢æˆç¨‹åºåˆ¤æ–­ç”¨çš„æ”»å‡»é—´éš”æ—¶é—´
 	// 
-	// ¹¥»÷¼ä¸ô = 2000 - ¹¥ËÙµÄ Aspd ÊıÖµ * 10
-	// ¹¥»÷¼ä¸ô = 2000 - 193 * 10
-	// ¹¥»÷¼ä¸ô = 2000 - 1930
-	// ¹¥»÷¼ä¸ô = 70 ºÁÃë
+	// æ”»å‡»é—´éš” = 2000 - æ”»é€Ÿçš„ Aspd æ•°å€¼ * 10
+	// æ”»å‡»é—´éš” = 2000 - 193 * 10
+	// æ”»å‡»é—´éš” = 2000 - 1930
+	// æ”»å‡»é—´éš” = 70 æ¯«ç§’
 	if (battle_config.max_aspd_for_pvp > 0)
 		battle_config.max_aspd_for_pvp = 2000 - battle_config.max_aspd_for_pvp * 10;
 #endif // Pandas_BattleConfig_MaxAspdForPVP
 
 #ifdef Pandas_BattleConfig_MaxAspdForGVG
-	// ¸ù¾İ max_aspd_for_gvg Ô¼ÊøÍæ¼ÒµÄ×î´ó¹¥ËÙ [SolaØ¼Ğ¡¿Ë]
-	// ÕâÀï¶ÔÅäÖÃµÄ ASPD ÊıÖµ (ÀıÈç: 193, 197) ×ª»»³É³ÌĞòÅĞ¶ÏÓÃµÄ¹¥»÷¼ä¸ôÊ±¼ä
+	// æ ¹æ® max_aspd_for_gvg çº¦æŸç©å®¶çš„æœ€å¤§æ”»é€Ÿ [Solaä¸¶å°å…‹]
+	// è¿™é‡Œå¯¹é…ç½®çš„ ASPD æ•°å€¼ (ä¾‹å¦‚: 193, 197) è½¬æ¢æˆç¨‹åºåˆ¤æ–­ç”¨çš„æ”»å‡»é—´éš”æ—¶é—´
 	// 
-	// ¹¥»÷¼ä¸ô = 2000 - ¹¥ËÙµÄ Aspd ÊıÖµ * 10
-	// ¹¥»÷¼ä¸ô = 2000 - 193 * 10
-	// ¹¥»÷¼ä¸ô = 2000 - 1930
-	// ¹¥»÷¼ä¸ô = 70 ºÁÃë
+	// æ”»å‡»é—´éš” = 2000 - æ”»é€Ÿçš„ Aspd æ•°å€¼ * 10
+	// æ”»å‡»é—´éš” = 2000 - 193 * 10
+	// æ”»å‡»é—´éš” = 2000 - 1930
+	// æ”»å‡»é—´éš” = 70 æ¯«ç§’
 	if (battle_config.max_aspd_for_gvg > 0)
 		battle_config.max_aspd_for_gvg = 2000 - battle_config.max_aspd_for_gvg * 10;
 #endif // Pandas_BattleConfig_MaxAspdForGVG
@@ -12431,9 +12432,9 @@ int battle_config_read(const char* cfgName)
 		} bc_whitelist[] = {
 			{ "traps_setting" },
 			{ "item_enabled_npc" },
-			{ "guild_skill_relog_type" },				// ²»Í¬¹¤×÷Ä£Ê½ÏÂÓµÓĞ²»Í¬µÄÄ¬ÈÏÖµ, Ñ¡ÏîÄ¬ÈÏ´¦ÓÚ×¢ÊÍ×´Ì¬
-			{ "feature.instance_allow_reconnect" },		// ²»Í¬¹¤×÷Ä£Ê½ÏÂÓµÓĞ²»Í¬µÄÄ¬ÈÏÖµ, Ñ¡ÏîÄ¬ÈÏ´¦ÓÚ×¢ÊÍ×´Ì¬
-			{ "pet_hungry_friendly_decrease" }	// rAthena ¶ÔÊÇ·ñÆúÓÃ´ËÑ¡Ïî²»Ã÷È·, ÏÈºöÂÔ¼ì²â
+			{ "guild_skill_relog_type" },				// ä¸åŒå·¥ä½œæ¨¡å¼ä¸‹æ‹¥æœ‰ä¸åŒçš„é»˜è®¤å€¼, é€‰é¡¹é»˜è®¤å¤„äºæ³¨é‡ŠçŠ¶æ€
+			{ "feature.instance_allow_reconnect" },		// ä¸åŒå·¥ä½œæ¨¡å¼ä¸‹æ‹¥æœ‰ä¸åŒçš„é»˜è®¤å€¼, é€‰é¡¹é»˜è®¤å¤„äºæ³¨é‡ŠçŠ¶æ€
+			{ "pet_hungry_friendly_decrease" }	// rAthena å¯¹æ˜¯å¦å¼ƒç”¨æ­¤é€‰é¡¹ä¸æ˜ç¡®, å…ˆå¿½ç•¥æ£€æµ‹
 		};
 
 		for (i = 0; i < ARRAYLENGTH(battle_data); i++) {
